@@ -29,24 +29,11 @@ func ToTestTokens(tokens *[]token.Token) *TestTokens {
 	return &res
 }
 
-func tokennize(text string) *[]token.Token {
-	code := []rune(text)
-	res := []token.Token{}
-	x := token.NewTokenizer(&code)
-	for {
-		t := x.Next()
-		if t.Type == token.EOF {
-			break
-		}
-		res = append(res, *t)
-	}
-	return &res
-}
-
 type TestPattern struct {
 	name   string
 	text   string
 	tokens TestTokens
+	flags  token.TokeninzerFlag
 }
 
 func (ptn *TestPattern) TestName() string {
@@ -59,8 +46,22 @@ func (ptn *TestPattern) TestName() string {
 
 func (ptn *TestPattern) check(t *testing.T) {
 	t.Logf("Running test for %s\n", ptn.TestName())
-	tokens := tokennize(ptn.text)
+	tokens := ptn.tokennize(ptn.text)
 	assert.Equal(t, ptn.tokens, *ToTestTokens(tokens))
+}
+
+func (ptn *TestPattern) tokennize(text string) *[]token.Token {
+	code := []rune(text)
+	res := []token.Token{}
+	x := token.NewTokenizer(&code, ptn.flags)
+	for {
+		t := x.Next()
+		if t.Type == token.EOF {
+			break
+		}
+		res = append(res, *t)
+	}
+	return &res
 }
 
 type TestPatterns []*TestPattern
