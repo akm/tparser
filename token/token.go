@@ -2,6 +2,7 @@ package token
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/akm/opparser/runes"
 )
@@ -22,7 +23,13 @@ func (t *Token) Raw() []rune {
 }
 
 func (t *Token) Text() string {
-	return string(t.Raw())
+	res := string(t.Raw())
+	switch t.Type {
+	case ReservedWord, Directive, PortabilityDirective:
+		return strings.ToUpper(res)
+	default:
+		return res
+	}
 }
 
 func (t *Token) Len() int {
