@@ -42,3 +42,7 @@ func (t *Token) TextAbbr(n int) string {
 func (t *Token) String() string {
 	return fmt.Sprintf("%s %q at %d:%d", t.Type, t.TextAbbr(20), t.Start.Line, t.Start.Col)
 }
+
+func (t *Token) Is(pred TokenPredicate) bool {
+	return pred.Predicate(t)
+}
