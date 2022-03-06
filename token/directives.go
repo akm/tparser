@@ -5,48 +5,54 @@ import (
 )
 
 var Directives = ext.Strings{
-	"absolute",
+	// "absolute", // Used in VarDecl
 	"abstract",
-	"assembler",
-	"automated",
+	// "assembler", // Not found in Grammer
+	// "automated", // Not found in Grammer
 	"cdecl",
-	"contains",
-	"default",
-	"deprecated",
-	"dispid",
+	// "contains", // Used in ContainsClause
+	// "default",  // Used in PropertySpecifiers
+	// "deprecated", // ==> PortabilityDirective
+	// "dispid", // Not found in Grammer
 	"dynamic",
 	"export",
 	"external",
 	"far",
 	"forward",
-	"implements",
-	"index",
-	"library",
+	// "implements", // Used in PropertySpecifiers
+	// "index", // Used in ExportsItem or PropertySpecifiers
+	// "library", // Used in library / ==> PortabilityDirective
 	"local",
 	"message",
-	"name",
+	// "name", // Used in ExportsItem
 	"near",
-	"nodefault",
+	// "nodefault", // Used in PropertySpecifiers
 	"overload",
 	"override",
-	"package",
+	// "package", // Used in Package
 	"pascal",
-	"platform",
-	"private",
-	"protected",
-	"public",
-	"published",
-	"read",
-	"readonly",
+	// "platform", // ==> PortabilityDirective
+	// "private", // Used in ClassVisibility
+	// "protected", // Used in ClassVisibility
+	// "public", // Used in ClassVisibility
+	// "published", // Used in ClassVisibility
+	// "read", // Used in PropertySpecifiers
+	// "readonly", // Not found in Grammer
 	"register",
 	"reintroduce",
-	"requires",
-	"resident",
+	// "requires", // Used in RequiresClause
+	// "resident", // Not found in Grammer
 	"safecall",
 	"stdcall",
-	"stored",
+	// "stored", // Used in PropertySpecifiers
 	"varargs",
-	"virtual",
-	"write",
-	"writeonly",
+	// "virtual", // Used in MethodList
+	// "write", // Used in PropertySpecifiers
+	// "writeonly", // Not found in Grammer
+}.Set()
+
+var PortabilityDirectives = ext.Strings{
+	"platform",
+	"deprecated",
+	"library",
 }.Set()
