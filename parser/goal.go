@@ -5,7 +5,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (p *Parser) ParseFile() (ast.Goal, error) {
+func (p *Parser) ParseGoal() (ast.Goal, error) {
 	token := p.next()
 	switch token.Text() {
 	// case "PROGRAM":
