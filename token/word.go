@@ -11,11 +11,11 @@ func ProcessWord(c *runes.Cursor) *Token {
 		}
 		t := NewToken(Identifier, c.Text, start, c.Position.Clone())
 		s := t.Text()
-		if ReservedWords.Include(s) {
+		if isReservedWord(s) {
 			t.Type = ReservedWord
-		} else if PortabilityDirectives.Include(s) {
+		} else if isPortabilityDirective(s) {
 			t.Type = PortabilityDirective
-		} else if Directives.Include(s) {
+		} else if isDirective(s) {
 			t.Type = Directive
 		} else {
 			t.Type = Identifier

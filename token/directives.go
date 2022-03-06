@@ -1,58 +1,68 @@
 package token
 
 import (
+	"strings"
+
 	"github.com/akm/opparser/ext"
 )
 
-var Directives = ext.Strings{
-	// "absolute", // Used in VarDecl
-	"abstract",
-	// "assembler", // Not found in Grammer
-	// "automated", // Not found in Grammer
-	"cdecl",
-	// "contains", // Used in ContainsClause
-	// "default",  // Used in PropertySpecifiers
-	// "deprecated", // ==> PortabilityDirective
-	// "dispid", // Not found in Grammer
-	"dynamic",
-	"export",
-	"external",
-	"far",
-	"forward",
-	// "implements", // Used in PropertySpecifiers
-	// "index", // Used in ExportsItem or PropertySpecifiers
-	// "library", // Used in library / ==> PortabilityDirective
-	"local",
-	"message",
-	// "name", // Used in ExportsItem
-	"near",
-	// "nodefault", // Used in PropertySpecifiers
-	"overload",
-	"override",
-	// "package", // Used in Package
-	"pascal",
-	// "platform", // ==> PortabilityDirective
-	// "private", // Used in ClassVisibility
-	// "protected", // Used in ClassVisibility
-	// "public", // Used in ClassVisibility
-	// "published", // Used in ClassVisibility
-	// "read", // Used in PropertySpecifiers
-	// "readonly", // Not found in Grammer
-	"register",
-	"reintroduce",
-	// "requires", // Used in RequiresClause
-	// "resident", // Not found in Grammer
-	"safecall",
-	"stdcall",
-	// "stored", // Used in PropertySpecifiers
-	"varargs",
-	// "virtual", // Used in MethodList
-	// "write", // Used in PropertySpecifiers
-	// "writeonly", // Not found in Grammer
+func isDirective(w string) bool {
+	return directives.Include(strings.ToUpper(w))
+}
+
+var directives = ext.Strings{
+	// "ABSOLUTE", // Used in VarDecl
+	"ABSTRACT",
+	// "ASSEMBLER", // Not found in Grammer
+	// "AUTOMATED", // Not found in Grammer
+	"CDECL",
+	// "CONTAINS", // Used in ContainsClause
+	// "DEFAULT",  // Used in PropertySpecifiers
+	// "DEPRECATED", // ==> PortabilityDirective
+	// "DISPID", // Not found in Grammer
+	"DYNAMIC",
+	"EXPORT",
+	"EXTERNAL",
+	"FAR",
+	"FORWARD",
+	// "IMPLEMENTS", // Used in PropertySpecifiers
+	// "INDEX", // Used in ExportsItem or PropertySpecifiers
+	// "LIBRARY", // Used in library / ==> PortabilityDirective
+	"LOCAL",
+	"MESSAGE",
+	// "NAME", // Used in ExportsItem
+	"NEAR",
+	// "NODEFAULT", // Used in PropertySpecifiers
+	"OVERLOAD",
+	"OVERRIDE",
+	// "PACKAGE", // Used in Package
+	"PASCAL",
+	// "PLATFORM", // ==> PortabilityDirective
+	// "PRIVATE", // Used in ClassVisibility
+	// "PROTECTED", // Used in ClassVisibility
+	// "PUBLIC", // Used in ClassVisibility
+	// "PUBLISHED", // Used in ClassVisibility
+	// "READ", // Used in PropertySpecifiers
+	// "READONLY", // Not found in Grammer
+	"REGISTER",
+	"REINTRODUCE",
+	// "REQUIRES", // Used in RequiresClause
+	// "RESIDENT", // Not found in Grammer
+	"SAFECALL",
+	"STDCALL",
+	// "STORED", // Used in PropertySpecifiers
+	"VARARGS",
+	// "VIRTUAL", // Used in MethodList
+	// "WRITE", // Used in PropertySpecifiers
+	// "WRITEONLY", // Not found in Grammer
 }.Set()
 
-var PortabilityDirectives = ext.Strings{
-	"platform",
-	"deprecated",
-	"library",
+func isPortabilityDirective(w string) bool {
+	return portabilityDirectives.Include(strings.ToUpper(w))
+}
+
+var portabilityDirectives = ext.Strings{
+	"PLATFORM",
+	"DEPRECATED",
+	"LIBRARY",
 }.Set()
