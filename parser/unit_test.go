@@ -9,7 +9,7 @@ import (
 
 func TestUnit(t *testing.T) {
 	// "unit" is loaded already in goal.go
-	text := []rune(`Foo;
+	text := []rune(`U1;
 	interface
 	implementation
 	end.`)
@@ -18,7 +18,7 @@ func TestUnit(t *testing.T) {
 	res, err := parser.ParseUnit()
 	if assert.NoError(t, err) {
 		assert.Equal(t, &ast.Unit{
-			Ident:                 ast.Ident("Foo"),
+			Ident:                 ast.Ident("U1"),
 			InterfaceSection:      &ast.InterfaceSection{},
 			ImplementationSection: &ast.ImplementationSection{},
 		}, res)
