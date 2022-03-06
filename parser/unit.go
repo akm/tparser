@@ -23,14 +23,14 @@ func (p *Parser) ParseUnit() (*ast.Unit, error) {
 	if !t.Is(token.Symbol(';')) {
 		return nil, err
 	}
-	if _, err := p.get(token.ReservedWord.HasText("interface")); err != nil {
+	if _, err := p.get(token.ReservedWord.HasKeyword("interface")); err != nil {
 		return nil, err
 	}
 	intf, err := p.ParseInterfaceSection()
 	if err != nil {
 		return nil, err
 	}
-	if _, err := p.get(token.ReservedWord.HasText("implementation")); err != nil {
+	if _, err := p.get(token.ReservedWord.HasKeyword("implementation")); err != nil {
 		return nil, err
 	}
 	impl, err := p.ParseImplementationSection()
