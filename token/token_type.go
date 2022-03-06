@@ -1,5 +1,7 @@
 package token
 
+import "fmt"
+
 type Type uint8
 
 const (
@@ -36,4 +38,21 @@ var TypeNames = map[Type]string{
 
 func (t Type) String() string {
 	return TypeNames[t]
+}
+
+// As TokenPredicate
+
+func (typ Type) Name() string {
+	return TypeNames[typ]
+}
+
+func (typ Type) Predicate(t *Token) bool {
+	return t.Type == typ
+}
+
+func (typ Type) HasText(s string) TokenPredicate {
+	return &TokenPredicateImpl{
+		name:      fmt.Sprintf("%s has %q", typ.String(), s),
+		predicate: func(t *Token) bool { return t.Type == typ && t.Text() == s },
+	}
 }
