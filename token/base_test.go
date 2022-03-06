@@ -44,12 +44,21 @@ func tokennize(text string) *[]token.Token {
 }
 
 type TestPattern struct {
+	name   string
 	text   string
 	tokens TestTokens
 }
 
+func (ptn *TestPattern) TestName() string {
+	if ptn.name != "" {
+		return ptn.name
+	} else {
+		return ptn.text
+	}
+}
+
 func (ptn *TestPattern) check(t *testing.T) {
-	t.Logf("Running test for %s\n", ptn.text)
+	t.Logf("Running test for %s\n", ptn.TestName())
 	tokens := tokennize(ptn.text)
 	assert.Equal(t, ptn.tokens, *ToTestTokens(tokens))
 }
@@ -58,7 +67,7 @@ type TestPatterns []*TestPattern
 
 func (s TestPatterns) check(t *testing.T) {
 	for _, ptn := range s {
-		t.Run(ptn.text, func(t *testing.T) {
+		t.Run(ptn.TestName(), func(t *testing.T) {
 			ptn.check(t)
 		})
 	}

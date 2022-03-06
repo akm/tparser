@@ -9,6 +9,7 @@ import (
 func TestTokenizer(t *testing.T) {
 	patterns := TestPatterns{
 		{
+			name: "simple unit",
 			text: `unit Foo;
 interface
 type Bar = class // Bar is a class
