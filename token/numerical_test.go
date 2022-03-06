@@ -7,11 +7,7 @@ import (
 )
 
 func TestNumerical(t *testing.T) {
-	type pattern struct {
-		text   string
-		tokens TestTokens
-	}
-	patterns := []*pattern{
+	patterns := TestPatterns{
 		{
 			text:   `0`,
 			tokens: TestTokens{{Type: token.NumeralInt, Content: "0"}},
@@ -37,9 +33,5 @@ func TestNumerical(t *testing.T) {
 			tokens: TestTokens{{Type: token.NumeralReal, Content: "-9.9876"}},
 		},
 	}
-	for _, ptn := range patterns {
-		t.Run(ptn.text, func(t *testing.T) {
-			check(t, ptn.text, &ptn.tokens)
-		})
-	}
+	patterns.check(t)
 }

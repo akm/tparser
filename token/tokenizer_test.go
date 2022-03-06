@@ -7,11 +7,7 @@ import (
 )
 
 func TestTokenizer(t *testing.T) {
-	type pattern struct {
-		text   string
-		tokens TestTokens
-	}
-	patterns := []*pattern{
+	patterns := TestPatterns{
 		{
 			text: `unit Foo;
 interface
@@ -47,9 +43,5 @@ end.`,
 			},
 		},
 	}
-	for _, ptn := range patterns {
-		t.Run(ptn.text, func(t *testing.T) {
-			check(t, ptn.text, &ptn.tokens)
-		})
-	}
+	patterns.check(t)
 }

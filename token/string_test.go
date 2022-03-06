@@ -7,11 +7,7 @@ import (
 )
 
 func TestString(t *testing.T) {
-	type pattern struct {
-		text   string
-		tokens TestTokens
-	}
-	patterns := []*pattern{
+	patterns := TestPatterns{
 		{
 			text:   `''`,
 			tokens: TestTokens{{Type: token.CharacterString, Content: "''"}},
@@ -25,9 +21,5 @@ func TestString(t *testing.T) {
 			tokens: TestTokens{{Type: token.CharacterString, Content: "'with \\'single quotes\\''"}},
 		},
 	}
-	for _, ptn := range patterns {
-		t.Run(ptn.text, func(t *testing.T) {
-			check(t, ptn.text, &ptn.tokens)
-		})
-	}
+	patterns.check(t)
 }
