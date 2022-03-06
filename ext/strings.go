@@ -83,3 +83,15 @@ func (s Strings) Exclude(vals ...string) Strings {
 func (s Strings) Join(delimiter string) string {
 	return strings.Join(s, delimiter)
 }
+
+func (s Strings) Map(f func(string) string) Strings {
+	r := make(Strings, len(s))
+	for i, v := range s {
+		r[i] = f(v)
+	}
+	return r
+}
+
+func (s Strings) ToUpper() Strings {
+	return s.Map(strings.ToUpper)
+}
