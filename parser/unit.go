@@ -12,11 +12,11 @@ func (p *Parser) ParseUnit() (*ast.Unit, error) {
 		return nil, err
 	}
 	res := &ast.Unit{
-		Ident: ast.Ident(ident.Text()),
+		Ident: ast.Ident(ident.Value()),
 	}
 	t := p.next()
 	if t.Type == token.PortabilityDirective {
-		s := ast.PortabilityDirective(t.Text())
+		s := ast.PortabilityDirective(t.Value())
 		res.PortabilityDirective = &s
 		t = p.next()
 	}

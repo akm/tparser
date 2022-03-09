@@ -29,7 +29,7 @@ func OneOf(values ...string) TokenPredicate {
 	texts := ext.Strings(values).ToUpper().Set()
 	return &TokenPredicateImpl{
 		name:      fmt.Sprintf("One of %v", values),
-		predicate: func(t *Token) bool { return texts.Include(strings.ToUpper(t.Text())) },
+		predicate: func(t *Token) bool { return texts.Include(strings.ToUpper(t.Value())) },
 	}
 }
 

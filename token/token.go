@@ -22,7 +22,7 @@ func (t *Token) Raw() []rune {
 	return (*t.text)[t.Start.Index:t.End.Index]
 }
 
-func (t *Token) Text() string {
+func (t *Token) Value() string {
 	res := string(t.Raw())
 	switch t.Type {
 	case ReservedWord, Directive, PortabilityDirective:
@@ -39,7 +39,7 @@ func (t *Token) Len() int {
 func (t *Token) TextAbbr(n int) string {
 	l := t.Len()
 	if l < n {
-		return t.Text()
+		return t.Value()
 	} else {
 		st := t.Start.Index
 		return string((*t.text)[st:(st+n)]) + "..."

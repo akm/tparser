@@ -7,7 +7,7 @@ import (
 
 func (p *Parser) ParseGoal() (ast.Goal, error) {
 	token := p.next()
-	switch token.Text() {
+	switch token.Value() {
 	// case "PROGRAM":
 	// 	return p.ParseProgram()
 	// case "PACKAGE":

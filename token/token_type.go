@@ -55,7 +55,7 @@ func (typ Type) Predicate(t *Token) bool {
 func (typ Type) HasText(s string) TokenPredicate {
 	return &TokenPredicateImpl{
 		name:      fmt.Sprintf("%s has %q", typ.String(), s),
-		predicate: func(t *Token) bool { return t.Type == typ && t.Text() == s },
+		predicate: func(t *Token) bool { return t.Type == typ && t.Value() == s },
 	}
 }
 
@@ -63,6 +63,6 @@ func (typ Type) HasText(s string) TokenPredicate {
 func (typ Type) HasKeyword(kw string) TokenPredicate {
 	return &TokenPredicateImpl{
 		name:      fmt.Sprintf("%s has %q", typ.String(), kw),
-		predicate: func(t *Token) bool { return t.Type == typ && t.Text() == kw },
+		predicate: func(t *Token) bool { return t.Type == typ && t.Value() == kw },
 	}
 }

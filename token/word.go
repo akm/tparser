@@ -10,7 +10,7 @@ func ProcessWord(c *runes.Cursor) *Token {
 		for runes.IsWord(c.Next()) {
 		}
 		t := NewToken(Identifier, c.Text, start, c.Position.Clone())
-		s := t.Text()
+		s := t.Value()
 		if isReservedWord(s) {
 			t.Type = ReservedWord
 		} else if isPortabilityDirective(s) {
