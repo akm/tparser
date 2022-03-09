@@ -7,7 +7,7 @@ import (
 	"github.com/akm/opparser/ext"
 )
 
-type TokenPredicate interface {
+type Predicate interface {
 	Name() string
 	Predicate(*Token) bool
 }
@@ -25,7 +25,7 @@ func (p *TokenPredicateImpl) Predicate(token *Token) bool {
 	return p.predicate(token)
 }
 
-func OneOf(values ...string) TokenPredicate {
+func OneOf(values ...string) Predicate {
 	texts := ext.Strings(values).ToUpper().Set()
 	return &TokenPredicateImpl{
 		name:      fmt.Sprintf("One of %v", values),
@@ -33,14 +33,14 @@ func OneOf(values ...string) TokenPredicate {
 	}
 }
 
-func TokenType(typ Type) TokenPredicate {
+func TokenType(typ Type) Predicate {
 	return &TokenPredicateImpl{
 		name:      typ.String(),
 		predicate: func(t *Token) bool { return t.Type == typ },
 	}
 }
 
-func Symbol(r rune) TokenPredicate {
+func Symbol(r rune) Predicate {
 	return &TokenPredicateImpl{
 		name:      fmt.Sprintf("Symbol %q", r),
 		predicate: func(t *Token) bool { return t.Type == SpecialSymbol && t.Raw()[0] == r },

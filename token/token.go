@@ -50,6 +50,6 @@ func (t *Token) String() string {
 	return fmt.Sprintf("%s %q at %d:%d", t.Type, t.ValueAbbr(20), t.Start.Line, t.Start.Col)
 }
 
-func (t *Token) Is(pred TokenPredicate) bool {
+func (t *Token) Is(pred Predicate) bool {
 	return pred.Predicate(t)
 }
