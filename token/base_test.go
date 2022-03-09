@@ -55,7 +55,7 @@ func (ptn *TestPattern) tokennize(text string) *[]token.Token {
 	res := []token.Token{}
 	x := token.NewTokenizer(&code, ptn.flags)
 	for {
-		t := x.Next()
+		t := x.GetNext()
 		if t.Type == token.EOF {
 			break
 		}
