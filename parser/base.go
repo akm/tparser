@@ -23,9 +23,20 @@ func (p *Parser) NextToken() *token.Token {
 	return p.curr
 }
 
+func (p *Parser) CuurentToken() *token.Token {
+	return p.curr
+}
+
 func (p *Parser) Next(pred token.Predicate) (*token.Token, error) {
 	token := p.NextToken()
 	if err := p.Validate(token); err != nil {
+		return nil, err
+	}
+	return p.curr, nil
+}
+
+func (p *Parser) Current(pred token.Predicate) (*token.Token, error) {
+	if err := p.Validate(p.CuurentToken()); err != nil {
 		return nil, err
 	}
 	return p.curr, nil
