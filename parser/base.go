@@ -53,3 +53,24 @@ func (p *Parser) Validate(token *token.Token, predicates ...token.Predicate) err
 	}
 	return nil
 }
+
+func (p *Parser) Until(terminator token.Predicate, separator token.Predicate, fn func() error) error {
+	for {
+		if err := fn(); err != nil {
+			return err
+		}
+		token := p.NextToken()
+		if token == nil {
+			return errors.Errorf("something wrong, token is nil")
+		}
+		if terminator.Predicate(token) {
+			break
+		}
+		if separator != nil {
+			if p.Validate(token, separator) != nil {
+				return errors.Errorf("expects %s but was %s", separator.Name(), token.String())
+			}
+		}
+	}
+	return nil
+}
