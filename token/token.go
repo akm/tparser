@@ -36,7 +36,7 @@ func (t *Token) Len() int {
 	return t.End.Index - t.Start.Index
 }
 
-func (t *Token) TextAbbr(n int) string {
+func (t *Token) ValueAbbr(n int) string {
 	l := t.Len()
 	if l < n {
 		return t.Value()
@@ -47,7 +47,7 @@ func (t *Token) TextAbbr(n int) string {
 }
 
 func (t *Token) String() string {
-	return fmt.Sprintf("%s %q at %d:%d", t.Type, t.TextAbbr(20), t.Start.Line, t.Start.Col)
+	return fmt.Sprintf("%s %q at %d:%d", t.Type, t.ValueAbbr(20), t.Start.Line, t.Start.Col)
 }
 
 func (t *Token) Is(pred TokenPredicate) bool {
