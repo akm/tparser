@@ -14,11 +14,11 @@ func (p *Parser) ParseUnit() (*ast.Unit, error) {
 	res := &ast.Unit{
 		Ident: ast.Ident(ident.Value()),
 	}
-	t := p.next()
+	t := p.NextToken()
 	if t.Type == token.PortabilityDirective {
 		s := ast.PortabilityDirective(t.Value())
 		res.PortabilityDirective = &s
-		t = p.next()
+		t = p.NextToken()
 	}
 	if !t.Is(token.Symbol(';')) {
 		return nil, err

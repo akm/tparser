@@ -17,7 +17,7 @@ func NewParser(text *[]rune) *Parser {
 	}
 }
 
-func (p *Parser) next() *token.Token {
+func (p *Parser) NextToken() *token.Token {
 	p.prior, p.curr = p.curr, p.tokenizer.GetNext()
 	return p.curr
 }

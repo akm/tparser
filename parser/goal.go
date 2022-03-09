@@ -6,7 +6,7 @@ import (
 )
 
 func (p *Parser) ParseGoal() (ast.Goal, error) {
-	token := p.next()
+	token := p.NextToken()
 	switch token.Value() {
 	// case "PROGRAM":
 	// 	return p.ParseProgram()
