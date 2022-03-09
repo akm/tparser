@@ -7,15 +7,14 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestUnit(t *testing.T) {
-	// "unit" is loaded already in goal.go
-	text := []rune(`U1;
+func TestGoal(t *testing.T) {
+	text := []rune(`unit U1;
 	interface
 	implementation
 	end.`)
 
 	parser := NewParser(&text)
-	res, err := parser.ParseUnit()
+	res, err := parser.ParseGoal()
 	if assert.NoError(t, err) {
 		assert.Equal(t, &ast.Unit{
 			Ident:                 ast.Ident("U1"),

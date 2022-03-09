@@ -12,25 +12,25 @@ func (p *Parser) ParseUnit() (*ast.Unit, error) {
 		return nil, err
 	}
 	res := &ast.Unit{
-		Ident: ast.Ident(ident.Text()),
+		Ident: ast.Ident(ident.Value()),
 	}
 	t := p.next()
 	if t.Type == token.PortabilityDirective {
-		s := ast.PortabilityDirective(t.Text())
+		s := ast.PortabilityDirective(t.Value())
 		res.PortabilityDirective = &s
 		t = p.next()
 	}
 	if !t.Is(token.Symbol(';')) {
 		return nil, err
 	}
-	if _, err := p.get(token.ReservedWord.HasText("interface")); err != nil {
+	if _, err := p.get(token.ReservedWord.HasKeyword("INTERFACE")); err != nil {
 		return nil, err
 	}
 	intf, err := p.ParseInterfaceSection()
 	if err != nil {
 		return nil, err
 	}
-	if _, err := p.get(token.ReservedWord.HasText("implementation")); err != nil {
+	if _, err := p.get(token.ReservedWord.HasKeyword("IMPLEMENTATION")); err != nil {
 		return nil, err
 	}
 	impl, err := p.ParseImplementationSection()

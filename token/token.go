@@ -2,6 +2,7 @@ package token
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/akm/opparser/runes"
 )
@@ -21,18 +22,24 @@ func (t *Token) Raw() []rune {
 	return (*t.text)[t.Start.Index:t.End.Index]
 }
 
-func (t *Token) Text() string {
-	return string(t.Raw())
+func (t *Token) Value() string {
+	res := string(t.Raw())
+	switch t.Type {
+	case ReservedWord, Directive, PortabilityDirective:
+		return strings.ToUpper(res)
+	default:
+		return res
+	}
 }
 
 func (t *Token) Len() int {
 	return t.End.Index - t.Start.Index
 }
 
-func (t *Token) TextAbbr(n int) string {
+func (t *Token) ValueAbbr(n int) string {
 	l := t.Len()
 	if l < n {
-		return t.Text()
+		return t.Value()
 	} else {
 		st := t.Start.Index
 		return string((*t.text)[st:(st+n)]) + "..."
@@ -40,9 +47,9 @@ func (t *Token) TextAbbr(n int) string {
 }
 
 func (t *Token) String() string {
-	return fmt.Sprintf("%s %q at %d:%d", t.Type, t.TextAbbr(20), t.Start.Line, t.Start.Col)
+	return fmt.Sprintf("%s %q at %d:%d", t.Type, t.ValueAbbr(20), t.Start.Line, t.Start.Col)
 }
 
-func (t *Token) Is(pred TokenPredicate) bool {
+func (t *Token) Is(pred Predicate) bool {
 	return pred.Predicate(t)
 }

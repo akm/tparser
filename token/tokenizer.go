@@ -52,7 +52,7 @@ func (t *Tokenizer) Next() *Token {
 	return nil
 }
 
-func (t *Tokenizer) Get(pred TokenPredicate) (*Token, error) {
+func (t *Tokenizer) Get(pred Predicate) (*Token, error) {
 	token := t.Next()
 	if token == nil {
 		return nil, errors.Errorf("something wrong, token is nil")

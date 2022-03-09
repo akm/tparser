@@ -1,6 +1,8 @@
 package token
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type Type uint8
 
@@ -50,9 +52,17 @@ func (typ Type) Predicate(t *Token) bool {
 	return t.Type == typ
 }
 
-func (typ Type) HasText(s string) TokenPredicate {
+func (typ Type) HasText(s string) Predicate {
 	return &TokenPredicateImpl{
 		name:      fmt.Sprintf("%s has %q", typ.String(), s),
-		predicate: func(t *Token) bool { return t.Type == typ && t.Text() == s },
+		predicate: func(t *Token) bool { return t.Type == typ && t.Value() == s },
+	}
+}
+
+// kw must be upper case
+func (typ Type) HasKeyword(kw string) Predicate {
+	return &TokenPredicateImpl{
+		name:      fmt.Sprintf("%s has %q", typ.String(), kw),
+		predicate: func(t *Token) bool { return t.Type == typ && t.Value() == kw },
 	}
 }
