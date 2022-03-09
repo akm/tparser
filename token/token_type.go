@@ -2,7 +2,6 @@ package token
 
 import (
 	"fmt"
-	"strings"
 )
 
 type Type uint8
@@ -60,10 +59,10 @@ func (typ Type) HasText(s string) TokenPredicate {
 	}
 }
 
+// kw must be upper case
 func (typ Type) HasKeyword(kw string) TokenPredicate {
-	s := strings.ToUpper(kw)
 	return &TokenPredicateImpl{
-		name:      fmt.Sprintf("%s has %q", typ.String(), s),
-		predicate: func(t *Token) bool { return t.Type == typ && t.Text() == s },
+		name:      fmt.Sprintf("%s has %q", typ.String(), kw),
+		predicate: func(t *Token) bool { return t.Type == typ && t.Text() == kw },
 	}
 }
