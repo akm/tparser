@@ -2,7 +2,6 @@ package token
 
 import (
 	"github.com/akm/opparser/runes"
-	"github.com/pkg/errors"
 )
 
 type TokeninzerFlag uint
@@ -50,15 +49,4 @@ func (t *Tokenizer) GetNext() *Token {
 		}
 	}
 	return nil
-}
-
-func (t *Tokenizer) Get(pred Predicate) (*Token, error) {
-	token := t.GetNext()
-	if token == nil {
-		return nil, errors.Errorf("something wrong, token is nil")
-	}
-	if !pred.Predicate(token) {
-		return nil, errors.Errorf("expects %s but was %s", pred.Name(), token.String())
-	}
-	return token, nil
 }
