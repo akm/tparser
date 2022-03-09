@@ -7,7 +7,7 @@ import (
 
 func (p *Parser) ParseUnit() (*ast.Unit, error) {
 	// startToken := p.curr
-	ident, err := p.get(token.Identifier)
+	ident, err := p.Next(token.Identifier)
 	if err != nil {
 		return nil, err
 	}
@@ -23,14 +23,14 @@ func (p *Parser) ParseUnit() (*ast.Unit, error) {
 	if !t.Is(token.Symbol(';')) {
 		return nil, err
 	}
-	if _, err := p.get(token.ReservedWord.HasKeyword("INTERFACE")); err != nil {
+	if _, err := p.Next(token.ReservedWord.HasKeyword("INTERFACE")); err != nil {
 		return nil, err
 	}
 	intf, err := p.ParseInterfaceSection()
 	if err != nil {
 		return nil, err
 	}
-	if _, err := p.get(token.ReservedWord.HasKeyword("IMPLEMENTATION")); err != nil {
+	if _, err := p.Next(token.ReservedWord.HasKeyword("IMPLEMENTATION")); err != nil {
 		return nil, err
 	}
 	impl, err := p.ParseImplementationSection()

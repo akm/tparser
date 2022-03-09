@@ -22,7 +22,7 @@ func (p *Parser) NextToken() *token.Token {
 	return p.curr
 }
 
-func (p *Parser) get(pred token.Predicate) (*token.Token, error) {
+func (p *Parser) Next(pred token.Predicate) (*token.Token, error) {
 	token, err := p.tokenizer.Get(pred)
 	if err != nil {
 		return nil, err
