@@ -131,7 +131,7 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
 - TypeSection
   ```
-  TYPE (TypeDecl ';')
+  TYPE (TypeDecl ';')...
   ```
 - TypeDecl
   ```
