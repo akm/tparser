@@ -1,7 +1,7 @@
 package token
 
 import (
-	"github.com/akm/opparser/runes"
+	"github.com/akm/tparser/runes"
 )
 
 func ProcessNumeral(c *runes.Cursor) *Token {

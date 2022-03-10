@@ -3,7 +3,7 @@ package parser
 import (
 	"testing"
 
-	"github.com/akm/opparser/ast"
+	"github.com/akm/tparser/ast"
 	"github.com/stretchr/testify/assert"
 )
 

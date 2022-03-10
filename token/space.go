@@ -3,7 +3,7 @@ package token
 import (
 	"unicode"
 
-	"github.com/akm/opparser/runes"
+	"github.com/akm/tparser/runes"
 )
 
 func ProcessSpace(c *runes.Cursor) *Token {

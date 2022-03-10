@@ -1,4 +1,4 @@
-module github.com/akm/opparser
+module github.com/akm/tparser
 
 go 1.16
 

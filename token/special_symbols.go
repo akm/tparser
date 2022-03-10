@@ -1,6 +1,6 @@
 package token
 
-import "github.com/akm/opparser/runes"
+import "github.com/akm/tparser/runes"
 
 var SingleSpecialSymbols = map[rune]bool{
 	'#':  true,

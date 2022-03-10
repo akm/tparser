@@ -3,7 +3,7 @@ package token_test
 import (
 	"testing"
 
-	"github.com/akm/opparser/token"
+	"github.com/akm/tparser/token"
 )
 
 func TestComment(t *testing.T) {
