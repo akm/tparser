@@ -43,7 +43,16 @@ func (p *Parser) ParseUnit() (*ast.Unit, error) {
 }
 
 func (p *Parser) ParseInterfaceSection() (*ast.InterfaceSection, error) {
-	return &ast.InterfaceSection{}, nil
+	res := &ast.InterfaceSection{}
+	t := p.NextToken()
+	if t.Is(token.ReservedWord.HasKeyword("USES")) {
+		usesClause, err := p.ParseIdentClause()
+		if err != nil {
+			return nil, err
+		}
+		res.UsesClause = usesClause
+	}
+	return res, nil
 }
 
 func (p *Parser) ParseImplementationSection() (*ast.ImplementationSection, error) {
