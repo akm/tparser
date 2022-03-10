@@ -199,7 +199,7 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
   (OrdinalType | RealType)
   ```
-  RealType
+- RealType
   ```
   REAL48
   ```
