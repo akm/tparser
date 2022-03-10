@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/akm/opparser/runes"
+	"github.com/akm/tparser/runes"
 )
 
 type Token struct {

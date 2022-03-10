@@ -1,6 +1,6 @@
 package ast
 
-import "github.com/akm/opparser/ext"
+import "github.com/akm/tparser/ext"
 
 type Ident string
 

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/akm/opparser/ext"
+	"github.com/akm/tparser/ext"
 )
 
 type Predicate interface {

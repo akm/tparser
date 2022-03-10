@@ -1,8 +1,8 @@
 package parser
 
 import (
-	"github.com/akm/opparser/ast"
-	"github.com/akm/opparser/token"
+	"github.com/akm/tparser/ast"
+	"github.com/akm/tparser/token"
 )
 
 func (p *Parser) ParseUnit() (*ast.Unit, error) {

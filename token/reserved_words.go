@@ -3,7 +3,7 @@ package token
 import (
 	"strings"
 
-	"github.com/akm/opparser/ext"
+	"github.com/akm/tparser/ext"
 )
 
 func isReservedWord(w string) bool {

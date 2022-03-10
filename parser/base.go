@@ -1,7 +1,7 @@
 package parser
 
 import (
-	"github.com/akm/opparser/token"
+	"github.com/akm/tparser/token"
 	"github.com/pkg/errors"
 )
 
