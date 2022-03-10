@@ -2,6 +2,8 @@ package token
 
 import (
 	"fmt"
+
+	"github.com/pkg/errors"
 )
 
 type Type uint8
@@ -61,6 +63,9 @@ func (typ Type) HasText(s string) Predicate {
 
 // kw must be upper case
 func (typ Type) HasKeyword(kw string) Predicate {
+	if !isReservedWord(kw) {
+		panic(errors.Errorf("%q is not a reserved word", kw))
+	}
 	return &TokenPredicateImpl{
 		name:      fmt.Sprintf("%s has %q", typ.String(), kw),
 		predicate: func(t *Token) bool { return t.Type == typ && t.Value() == kw },

@@ -11,6 +11,7 @@ type Unit struct {
 }
 
 type InterfaceSection struct {
+	UsesClause *UsesClause // optional
 }
 
 type InterfaceDecl interface {

@@ -2,7 +2,6 @@ package token
 
 import (
 	"github.com/akm/opparser/runes"
-	"github.com/pkg/errors"
 )
 
 type TokeninzerFlag uint
@@ -36,29 +35,18 @@ var processors = []func(*runes.Cursor) *Token{
 	ProcessSpace,
 }
 
-func (t *Tokenizer) Next() *Token {
+func (t *Tokenizer) GetNext() *Token {
 	for _, proc := range processors {
 		token := proc(t.Cursor)
 		if token != nil {
 			if !t.loadSpace && token.Type == Space {
-				return t.Next()
+				return t.GetNext()
 			} else if !t.loadComment && token.Type == Comment {
-				return t.Next()
+				return t.GetNext()
 			} else {
 				return token
 			}
 		}
 	}
 	return nil
-}
-
-func (t *Tokenizer) Get(pred Predicate) (*Token, error) {
-	token := t.Next()
-	if token == nil {
-		return nil, errors.Errorf("something wrong, token is nil")
-	}
-	if !pred.Predicate(token) {
-		return nil, errors.Errorf("expects %s but was %s", pred.Name(), token.String())
-	}
-	return token, nil
 }
