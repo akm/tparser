@@ -3,6 +3,7 @@ package parser
 import (
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/token"
+	"github.com/pkg/errors"
 )
 
 func (p *Parser) ParseUnit() (*ast.Unit, error) {
@@ -51,6 +52,34 @@ func (p *Parser) ParseInterfaceSection() (*ast.InterfaceSection, error) {
 			return nil, err
 		}
 		res.UsesClause = usesClause
+		t = p.NextToken()
+	}
+
+	res.InterfaceDecls = []ast.InterfaceDecl{}
+	defer func() {
+		if len(res.InterfaceDecls) == 0 {
+			res.InterfaceDecls = nil
+		}
+	}()
+
+	for {
+		t := p.CurrentToken()
+		if t.Is(token.EOF) {
+			return res, nil
+		}
+		if !t.Is(token.ReservedWord) {
+			return nil, errors.Errorf("expects reserved word but got %s", t.String())
+		}
+		switch t.Value() {
+		case "TYPE":
+			section, err := p.ParseTypeSection()
+			if err != nil {
+				return nil, err
+			}
+			res.InterfaceDecls = append(res.InterfaceDecls, section)
+			continue
+		}
+		break
 	}
 	return res, nil
 }

@@ -131,7 +131,7 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
 - TypeSection
   ```
-  TYPE (TypeDecl ';')
+  TYPE (TypeDecl ';')...
   ```
 - TypeDecl
   ```
@@ -199,7 +199,7 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
   (OrdinalType | RealType)
   ```
-  RealType
+- RealType
   ```
   REAL48
   ```
