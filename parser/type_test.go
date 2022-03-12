@@ -19,33 +19,53 @@ func TestUnitWithTypeSection(t *testing.T) {
 		})
 	}
 
-	u2 := ast.UnitId("U2")
-	u4 := ast.UnitId("U4")
+	unit2 := ast.UnitId("Unit2")
 	run(
 		"2 type declarations",
 		[]rune(`
-		UNIT U1;
+		UNIT Unit1;
 		INTERFACE
+		USES Unit2;
 		TYPE
 			TTypeId1 = TType1;
-			TTypeId2 = U2.TType2;
-		TYPE TTypeId3 = TType3;
-		TYPE TTypeId4 = U4.TType4;
+			TTypeId2 = Unit2.TType2;
 		IMPLEMENTATION
 		END.`),
 		&ast.Unit{
-			Ident: ast.Ident("U1"),
+			Ident: ast.Ident("Unit1"),
+			InterfaceSection: &ast.InterfaceSection{
+				UsesClause: &ast.UsesClause{"Unit2"},
+				InterfaceDecls: []ast.InterfaceDecl{
+					ast.TypeSection{
+						{Ident: ast.Ident("TTypeId1"), Type: &ast.TypeId{Ident: ast.Ident("TType1")}},
+						{Ident: ast.Ident("TTypeId2"), Type: &ast.TypeId{UnitId: &unit2, Ident: ast.Ident("TType2")}},
+					},
+				},
+			},
+			ImplementationSection: &ast.ImplementationSection{},
+		},
+	)
+	run(
+		"2 type sections",
+		[]rune(`
+		UNIT Unit1;
+		INTERFACE
+		TYPE
+			TTypeId1 = TType1;
+			TTypeId2 = Unit2.TType2;
+		TYPE TTypeId3 = TType3;
+		IMPLEMENTATION
+		END.`),
+		&ast.Unit{
+			Ident: ast.Ident("Unit1"),
 			InterfaceSection: &ast.InterfaceSection{
 				InterfaceDecls: []ast.InterfaceDecl{
 					ast.TypeSection{
 						{Ident: ast.Ident("TTypeId1"), Type: &ast.TypeId{Ident: ast.Ident("TType1")}},
-						{Ident: ast.Ident("TTypeId2"), Type: &ast.TypeId{UnitId: &u2, Ident: ast.Ident("TType2")}},
+						{Ident: ast.Ident("TTypeId2"), Type: &ast.TypeId{UnitId: &unit2, Ident: ast.Ident("TType2")}},
 					},
 					ast.TypeSection{
 						{Ident: ast.Ident("TTypeId3"), Type: &ast.TypeId{Ident: ast.Ident("TType3")}},
-					},
-					ast.TypeSection{
-						{Ident: ast.Ident("TTypeId4"), Type: &ast.TypeId{UnitId: &u4, Ident: ast.Ident("TType4")}},
 					},
 				},
 			},
