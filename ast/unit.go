@@ -23,3 +23,6 @@ type ImplementationSection struct {
 
 type InitSection struct {
 }
+
+// UnitId: <unit-identifier>
+type UnitId Ident
