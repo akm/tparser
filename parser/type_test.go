@@ -56,12 +56,50 @@ func TestTypeDecl(t *testing.T) {
 			Type:  &ast.TypeId{Ident: ast.Ident("TType1")},
 		},
 	)
+	u1 := ast.UnitId("U1")
+	run(
+		"simple type with unit",
+		[]rune(`TTypeId1 = U1.TType1`),
+		&ast.TypeDecl{
+			Ident: ast.Ident("TTypeId1"),
+			Type:  &ast.TypeId{UnitId: &u1, Ident: ast.Ident("TType1")},
+		},
+	)
 	run(
 		"type declaration with TYPE reserved word",
 		[]rune(`TTypeId1 = TYPE TType1`),
 		&ast.TypeDecl{
 			Ident: ast.Ident("TTypeId1"),
 			Type:  &ast.TypeId{Ident: ast.Ident("TType1")},
+		},
+	)
+}
+
+func TestTypeId(t *testing.T) {
+	run := func(name string, text []rune, expected *ast.TypeId) {
+		t.Run(name, func(t *testing.T) {
+			parser := NewParser(&text)
+			parser.NextToken()
+			res, err := parser.ParseTypeId()
+			if assert.NoError(t, err) {
+				assert.Equal(t, expected, res)
+			}
+		})
+	}
+
+	run(
+		"simple type",
+		[]rune(`TType1`),
+		&ast.TypeId{Ident: ast.Ident("TType1")},
+	)
+
+	u1 := ast.UnitId("U1")
+	run(
+		"type with unit",
+		[]rune(`U1.TType1`),
+		&ast.TypeId{
+			UnitId: &u1,
+			Ident:  ast.Ident("TType1"),
 		},
 	)
 }
