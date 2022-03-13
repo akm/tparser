@@ -46,3 +46,10 @@ func Symbol(r rune) Predicate {
 		predicate: func(t *Token) bool { return t.Type == SpecialSymbol && t.Raw()[0] == r },
 	}
 }
+
+func Value(v string) Predicate {
+	return &TokenPredicateImpl{
+		name:      fmt.Sprintf("Value %q", v),
+		predicate: func(t *Token) bool { return t.Value() == v },
+	}
+}
