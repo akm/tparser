@@ -151,7 +151,7 @@ func TestTypeId(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			parser := NewParser(&text)
 			parser.NextToken()
-			res, err := parser.ParseTypeId()
+			res, err := parser.ParseTypeIdOrSubrangeType()
 			if assert.NoError(t, err) {
 				assert.Equal(t, expected, res)
 			}
@@ -231,5 +231,34 @@ func TestEnumeratedType(t *testing.T) {
 			{Ident: ast.Ident("Heart")},
 			{Ident: ast.Ident("Spade")},
 		},
+	)
+}
+
+func TestSubrangeType(t *testing.T) {
+	run := func(name string, text []rune, expected ast.Type) {
+		t.Run(name, func(t *testing.T) {
+			parser := NewParser(&text)
+			parser.NextToken()
+			res, err := parser.ParseType()
+			if assert.NoError(t, err) {
+				assert.Equal(t, expected, res)
+			}
+		})
+	}
+
+	run(
+		"subrange type of enumerated type",
+		[]rune(`Green..White`),
+		&ast.SubrangeType{Low: "Green", High: "White"},
+	)
+	run(
+		"subrange type of number",
+		[]rune(`-128..127`),
+		&ast.SubrangeType{Low: "-128", High: "127"},
+	)
+	run(
+		"subrange type of character",
+		[]rune(`'A'..'Z'`),
+		&ast.SubrangeType{Low: "'A'", High: "'Z'"},
 	)
 }

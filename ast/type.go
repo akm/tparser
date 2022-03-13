@@ -92,3 +92,10 @@ type EnumeratedTypeElement struct {
 	Ident Ident
 	// TODO Add `ConstExpr`
 }
+
+func (*SubrangeType) isRestrictedType() bool { return false }
+
+type SubrangeType struct {
+	Low  string // TODO Use `ConstExpr` instead of string
+	High string // TODO Use `ConstExpr` instead of string
+}

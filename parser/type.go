@@ -77,7 +77,9 @@ func (p *Parser) ParseType() (ast.Type, error) {
 		} else if typ != nil {
 			return typ, nil
 		}
-		return p.ParseTypeId()
+		return p.ParseTypeIdOrSubrangeType()
+	case token.NumeralInt, token.NumeralReal, token.CharacterString:
+		return p.ParseConstSubrageType()
 	}
 	return nil, errors.Errorf("Unsupported Type token %+v", t1)
 }
@@ -94,11 +96,20 @@ func (p *Parser) ParseNamedType() (ast.Type, error) {
 	}
 }
 
-func (p *Parser) ParseTypeId() (ast.Type, error) {
+func (p *Parser) ParseTypeIdOrSubrangeType() (ast.Type, error) {
 	t1 := p.CurrentToken()
 	part1 := t1.Value()
 	t2 := p.NextToken()
-	if t2.Is(token.Symbol('.')) {
+	if t2.Is(token.Value("..")) {
+		t3, err := p.Next(token.Identifier)
+		if err != nil {
+			return nil, err
+		}
+		return &ast.SubrangeType{
+			Low:  part1,
+			High: t3.Value(),
+		}, nil
+	} else if t2.Is(token.Symbol('.')) {
 		t3, err := p.Next(token.Identifier)
 		if err != nil {
 			return nil, err
@@ -142,4 +153,16 @@ func (p *Parser) ParseEnumeratedTypeElement() (*ast.EnumeratedTypeElement, error
 	}
 	// TODO parse ConstExpr if exists
 	return &ast.EnumeratedTypeElement{Ident: ast.Ident(ident.Value())}, nil
+}
+
+func (p *Parser) ParseConstSubrageType() (*ast.SubrangeType, error) {
+	t1 := p.CurrentToken()
+	if _, err := p.Next(token.Value("..")); err != nil {
+		return nil, err
+	}
+	t2 := p.NextToken()
+	return &ast.SubrangeType{
+		Low:  t1.Value(),
+		High: t2.Value(),
+	}, nil
 }
