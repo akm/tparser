@@ -83,3 +83,12 @@ func (*OrdIdent) isRestrictedType() bool { return false }
 type OrdIdent struct {
 	Name Ident
 }
+
+func (EnumeratedType) isRestrictedType() bool { return false }
+
+type EnumeratedType []*EnumeratedTypeElement
+
+type EnumeratedTypeElement struct {
+	Ident Ident
+	// TODO Add `ConstExpr`
+}

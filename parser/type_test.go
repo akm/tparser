@@ -95,10 +95,14 @@ func TestTypeSection(t *testing.T) {
 	run(
 		"2 type declarations",
 		[]rune(`TYPE TTypeId1 = TType1;
-			TTypeId2 = TType2;`),
+			TTypeId2 = (tsClick, tsClack, tsClock);`),
 		ast.TypeSection{
 			{Ident: ast.Ident("TTypeId1"), Type: &ast.TypeId{Ident: ast.Ident("TType1")}},
-			{Ident: ast.Ident("TTypeId2"), Type: &ast.TypeId{Ident: ast.Ident("TType2")}},
+			{Ident: ast.Ident("TTypeId2"), Type: ast.EnumeratedType{
+				{Ident: ast.Ident("tsClick")},
+				{Ident: ast.Ident("tsClack")},
+				{Ident: ast.Ident("tsClock")},
+			}},
 		},
 	)
 }
@@ -204,4 +208,28 @@ func TestNamedType(t *testing.T) {
 	run([]rune(`EXTENDED`), &ast.RealType{Name: ast.Ident("EXTENDED")})
 	run([]rune(`CURRENCY`), &ast.RealType{Name: ast.Ident("CURRENCY")})
 	run([]rune(`COMP`), &ast.RealType{Name: ast.Ident("COMP")})
+}
+
+func TestEnumeratedType(t *testing.T) {
+	run := func(name string, text []rune, expected ast.Type) {
+		t.Run(name, func(t *testing.T) {
+			parser := NewParser(&text)
+			parser.NextToken()
+			res, err := parser.ParseType()
+			if assert.NoError(t, err) {
+				assert.Equal(t, expected, res)
+			}
+		})
+	}
+
+	run(
+		"card",
+		[]rune(`(Club, Diamond, Heart, Spade)`),
+		ast.EnumeratedType{
+			{Ident: ast.Ident("Club")},
+			{Ident: ast.Ident("Diamond")},
+			{Ident: ast.Ident("Heart")},
+			{Ident: ast.Ident("Spade")},
+		},
+	)
 }

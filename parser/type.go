@@ -67,6 +67,10 @@ func (p *Parser) ParseTypeDecl() (*ast.TypeDecl, error) {
 func (p *Parser) ParseType() (ast.Type, error) {
 	t1 := p.CurrentToken()
 	switch t1.Type {
+	case token.SpecialSymbol:
+		if t1.Is(token.Symbol('(')) {
+			return p.ParseEnumeratedType()
+		}
 	case token.Identifier:
 		if typ, err := p.ParseNamedType(); err != nil {
 			return nil, err
@@ -109,4 +113,33 @@ func (p *Parser) ParseTypeId() (ast.Type, error) {
 			Ident: ast.Ident(part1),
 		}, nil
 	}
+}
+
+func (p *Parser) ParseEnumeratedType() (ast.EnumeratedType, error) {
+	res := ast.EnumeratedType{}
+	for {
+		element, err := p.ParseEnumeratedTypeElement()
+		if err != nil {
+			return nil, err
+		}
+		res = append(res, element)
+		t := p.NextToken()
+		if t.Is(token.Symbol(')')) {
+			break
+		} else if t.Is(token.Symbol(',')) {
+			continue
+		} else {
+			return nil, errors.Errorf("Unsupported token %+v for EnumeratedType", t)
+		}
+	}
+	return res, nil
+}
+
+func (p *Parser) ParseEnumeratedTypeElement() (*ast.EnumeratedTypeElement, error) {
+	ident, err := p.Next(token.Identifier)
+	if err != nil {
+		return nil, err
+	}
+	// TODO parse ConstExpr if exists
+	return &ast.EnumeratedTypeElement{Ident: ast.Ident(ident.Value())}, nil
 }
