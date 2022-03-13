@@ -68,9 +68,26 @@ func (p *Parser) ParseType() (ast.Type, error) {
 	t1 := p.CurrentToken()
 	switch t1.Type {
 	case token.Identifier:
+		if typ, err := p.ParseNamedType(); err != nil {
+			return nil, err
+		} else if typ != nil {
+			return typ, nil
+		}
 		return p.ParseTypeId()
 	}
 	return nil, errors.Errorf("Unsupported Type token %+v", t1)
+}
+
+func (p *Parser) ParseNamedType() (ast.Type, error) {
+	t1 := p.CurrentToken()
+	name := t1.Value()
+	if ast.IsRealTypeName(name) {
+		return &ast.RealType{Name: ast.Ident(name)}, nil
+	} else if ast.IsOrdIdentName(name) {
+		return &ast.OrdIdent{Name: ast.Ident(name)}, nil
+	} else {
+		return nil, nil
+	}
 }
 
 func (p *Parser) ParseTypeId() (ast.Type, error) {

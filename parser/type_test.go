@@ -170,3 +170,38 @@ func TestTypeId(t *testing.T) {
 		},
 	)
 }
+
+func TestNamedType(t *testing.T) {
+	run := func(text []rune, expected ast.Type) {
+		t.Run(string(text), func(t *testing.T) {
+			parser := NewParser(&text)
+			parser.NextToken()
+			res, err := parser.ParseType()
+			if assert.NoError(t, err) {
+				assert.Equal(t, expected, res)
+			}
+		})
+	}
+
+	run([]rune(`INTEGER`), &ast.OrdIdent{Name: ast.Ident("INTEGER")})
+	run([]rune(`CARDINAL`), &ast.OrdIdent{Name: ast.Ident("CARDINAL")})
+	run([]rune(`SHORTINT`), &ast.OrdIdent{Name: ast.Ident("SHORTINT")})
+	run([]rune(`SMALLINT`), &ast.OrdIdent{Name: ast.Ident("SMALLINT")})
+	run([]rune(`LONGINT`), &ast.OrdIdent{Name: ast.Ident("LONGINT")})
+	run([]rune(`INT64`), &ast.OrdIdent{Name: ast.Ident("INT64")})
+	run([]rune(`BYTE`), &ast.OrdIdent{Name: ast.Ident("BYTE")})
+	run([]rune(`WORD`), &ast.OrdIdent{Name: ast.Ident("WORD")})
+	run([]rune(`LONGWORD`), &ast.OrdIdent{Name: ast.Ident("LONGWORD")})
+	run([]rune(`CHAR`), &ast.OrdIdent{Name: ast.Ident("CHAR")})
+	run([]rune(`ANSICHAR`), &ast.OrdIdent{Name: ast.Ident("ANSICHAR")})
+	run([]rune(`WIDECHAR`), &ast.OrdIdent{Name: ast.Ident("WIDECHAR")})
+	run([]rune(`BOOLEAN`), &ast.OrdIdent{Name: ast.Ident("BOOLEAN")})
+
+	run([]rune(`REAL48`), &ast.RealType{Name: ast.Ident("REAL48")})
+	run([]rune(`REAL`), &ast.RealType{Name: ast.Ident("REAL")})
+	run([]rune(`SINGLE`), &ast.RealType{Name: ast.Ident("SINGLE")})
+	run([]rune(`DOUBLE`), &ast.RealType{Name: ast.Ident("DOUBLE")})
+	run([]rune(`EXTENDED`), &ast.RealType{Name: ast.Ident("EXTENDED")})
+	run([]rune(`CURRENCY`), &ast.RealType{Name: ast.Ident("CURRENCY")})
+	run([]rune(`COMP`), &ast.RealType{Name: ast.Ident("COMP")})
+}
