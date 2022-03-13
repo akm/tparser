@@ -81,23 +81,7 @@ func (p *Parser) ParseType() (ast.Type, error) {
 	case token.NumeralInt, token.NumeralReal, token.CharacterString:
 		return p.ParseConstSubrageType()
 	case token.ReservedWord:
-		if t1.Is(token.Value("STRING")) {
-			t2 := p.NextToken()
-			if t2.Is(token.Symbol(';')) || t2.Is(token.EOF) {
-				return &ast.StringType{Name: t1.Value()}, nil
-			} else if t2.Is(token.Symbol('[')) {
-				// TODO parse ConstExpr
-				t3 := p.NextToken()
-				if _, err := p.Next(token.Symbol(']')); err != nil {
-					return nil, err
-				}
-
-				l := t3.Value()
-				return &ast.StringType{Name: "STRING", Length: &l}, nil
-			} else {
-				return nil, errors.Errorf("unexpected token %s", t2)
-			}
-		}
+		return p.ParseStringOfStringType()
 	}
 	return nil, errors.Errorf("Unsupported Type token %+v", t1)
 }
@@ -185,4 +169,27 @@ func (p *Parser) ParseConstSubrageType() (*ast.SubrangeType, error) {
 		Low:  t1.Value(),
 		High: t2.Value(),
 	}, nil
+}
+
+// This method parses just STRING not ANSISTRING nor WIDESTRING
+func (p *Parser) ParseStringOfStringType() (*ast.StringType, error) {
+	t1 := p.CurrentToken()
+	if !t1.Is(token.Value("STRING")) {
+		return nil, nil
+	}
+	t2 := p.NextToken()
+	if t2.Is(token.Symbol(';')) || t2.Is(token.EOF) {
+		return &ast.StringType{Name: t1.Value()}, nil
+	} else if t2.Is(token.Symbol('[')) {
+		// TODO parse ConstExpr
+		t3 := p.NextToken()
+		if _, err := p.Next(token.Symbol(']')); err != nil {
+			return nil, err
+		}
+
+		l := t3.Value()
+		return &ast.StringType{Name: "STRING", Length: &l}, nil
+	} else {
+		return nil, errors.Errorf("unexpected token %s", t2)
+	}
 }
