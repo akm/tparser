@@ -80,6 +80,24 @@ func (p *Parser) ParseType() (ast.Type, error) {
 		return p.ParseTypeIdOrSubrangeType()
 	case token.NumeralInt, token.NumeralReal, token.CharacterString:
 		return p.ParseConstSubrageType()
+	case token.ReservedWord:
+		if t1.Is(token.Value("STRING")) {
+			t2 := p.NextToken()
+			if t2.Is(token.Symbol('[')) {
+				// TODO parse ConstExpr
+				t3 := p.NextToken()
+				if _, err := p.Next(token.Symbol(']')); err != nil {
+					return nil, err
+				}
+				l := t3.Value()
+				return &ast.StringType{Name: "STRING", Length: &l}, nil
+			} else {
+				if err := p.Back(); err != nil {
+					return nil, err
+				}
+				return &ast.StringType{Name: t1.Value()}, nil
+			}
+		}
 	}
 	return nil, errors.Errorf("Unsupported Type token %+v", t1)
 }
@@ -91,6 +109,8 @@ func (p *Parser) ParseNamedType() (ast.Type, error) {
 		return &ast.RealType{Name: ast.Ident(name)}, nil
 	} else if ast.IsOrdIdentName(name) {
 		return &ast.OrdIdent{Name: ast.Ident(name)}, nil
+	} else if ast.IsStringTypeName(name) {
+		return &ast.StringType{Name: name}, nil
 	} else {
 		return nil, nil
 	}

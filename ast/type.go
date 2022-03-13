@@ -99,3 +99,20 @@ type SubrangeType struct {
 	Low  string // TODO Use `ConstExpr` instead of string
 	High string // TODO Use `ConstExpr` instead of string
 }
+
+func IsStringTypeName(w string) bool {
+	return stringTypeNames.Include(strings.ToUpper(w))
+}
+
+var stringTypeNames = ext.Strings{
+	"STRING",
+	"ANSISTRING",
+	"WIDESTRING",
+}.Set()
+
+func (*StringType) isRestrictedType() bool { return false }
+
+type StringType struct {
+	Name   string
+	Length *string
+}

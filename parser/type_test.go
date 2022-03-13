@@ -105,6 +105,16 @@ func TestTypeSection(t *testing.T) {
 			}},
 		},
 	)
+	run(
+		"type declaration with RealType",
+		[]rune(`TYPE TRealType1 = REAL;`),
+		ast.TypeSection{
+			&ast.TypeDecl{
+				Ident: ast.Ident("TRealType1"),
+				Type:  &ast.RealType{Name: "REAL"},
+			},
+		},
+	)
 }
 
 func TestTypeDecl(t *testing.T) {
@@ -261,4 +271,23 @@ func TestSubrangeType(t *testing.T) {
 		[]rune(`'A'..'Z'`),
 		&ast.SubrangeType{Low: "'A'", High: "'Z'"},
 	)
+}
+
+func TestStringType(t *testing.T) {
+	run := func(name string, text []rune, expected ast.Type) {
+		t.Run(name, func(t *testing.T) {
+			parser := NewParser(&text)
+			parser.NextToken()
+			res, err := parser.ParseType()
+			if assert.NoError(t, err) {
+				assert.Equal(t, expected, res)
+			}
+		})
+	}
+
+	run("String", []rune(`STRING`), &ast.StringType{Name: "STRING"})
+	run("ANSI String", []rune(`ANSISTRING`), &ast.StringType{Name: "ANSISTRING"})
+	run("Wide String", []rune(`WIDESTRING`), &ast.StringType{Name: "WIDESTRING"})
+	l := "100"
+	run("Short String", []rune(`STRING[100]`), &ast.StringType{Name: "STRING", Length: &l})
 }
