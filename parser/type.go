@@ -83,19 +83,19 @@ func (p *Parser) ParseType() (ast.Type, error) {
 	case token.ReservedWord:
 		if t1.Is(token.Value("STRING")) {
 			t2 := p.NextToken()
-			if t2.Is(token.Symbol('[')) {
+			if t2.Is(token.Symbol(';')) || t2.Is(token.EOF) {
+				return &ast.StringType{Name: t1.Value()}, nil
+			} else if t2.Is(token.Symbol('[')) {
 				// TODO parse ConstExpr
 				t3 := p.NextToken()
 				if _, err := p.Next(token.Symbol(']')); err != nil {
 					return nil, err
 				}
+
 				l := t3.Value()
 				return &ast.StringType{Name: "STRING", Length: &l}, nil
 			} else {
-				if err := p.Back(); err != nil {
-					return nil, err
-				}
-				return &ast.StringType{Name: t1.Value()}, nil
+				return nil, errors.Errorf("unexpected token %s", t2)
 			}
 		}
 	}
