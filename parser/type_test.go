@@ -53,7 +53,15 @@ func TestUnitWithTypeSection(t *testing.T) {
 		TYPE
 			TTypeId1 = TType1;
 			TTypeId2 = Unit2.TType2;
-		TYPE TTypeId3 = TType3;
+		TYPE
+			TMyInteger1 = INTEGER;
+			TMyReal1 = REAL;
+			TMyString1 = STRING;
+			TMyString2 = ANSISTRING;
+			TMyEnumerated1 = (tsClick, tsClack, tsClock);
+			TMySubrange1 = tsClick..tsClack;
+			TMySubrange2 = -128..127;
+			TMySubrange3 = 'A'..'Z';
 		IMPLEMENTATION
 		END.`),
 		&ast.Unit{
@@ -65,7 +73,18 @@ func TestUnitWithTypeSection(t *testing.T) {
 						{Ident: ast.Ident("TTypeId2"), Type: &ast.TypeId{UnitId: &unit2, Ident: ast.Ident("TType2")}},
 					},
 					ast.TypeSection{
-						{Ident: ast.Ident("TTypeId3"), Type: &ast.TypeId{Ident: ast.Ident("TType3")}},
+						{Ident: ast.Ident("TMyInteger1"), Type: &ast.OrdIdent{Name: ast.Ident("INTEGER")}},
+						{Ident: ast.Ident("TMyReal1"), Type: &ast.RealType{Name: ast.Ident("REAL")}},
+						{Ident: ast.Ident("TMyString1"), Type: &ast.StringType{Name: "STRING"}},
+						{Ident: ast.Ident("TMyString2"), Type: &ast.StringType{Name: "ANSISTRING"}},
+						{Ident: ast.Ident("TMyEnumerated1"), Type: ast.EnumeratedType{
+							{Ident: ast.Ident("tsClick")},
+							{Ident: ast.Ident("tsClack")},
+							{Ident: ast.Ident("tsClock")},
+						}},
+						{Ident: ast.Ident("TMySubrange1"), Type: &ast.SubrangeType{Low: "tsClick", High: "tsClack"}},
+						{Ident: ast.Ident("TMySubrange2"), Type: &ast.SubrangeType{Low: "-128", High: "127"}},
+						{Ident: ast.Ident("TMySubrange3"), Type: &ast.SubrangeType{Low: "'A'", High: "'Z'"}},
 					},
 				},
 			},
@@ -113,6 +132,18 @@ func TestTypeSection(t *testing.T) {
 				Ident: ast.Ident("TRealType1"),
 				Type:  &ast.RealType{Name: "REAL"},
 			},
+		},
+	)
+	run(
+		"several type declaration",
+		[]rune(`TYPE
+			TMyInteger1 = INTEGER;
+			TMyString1 = STRING;
+			TMyReal1 = REAL;`),
+		ast.TypeSection{
+			{Ident: ast.Ident("TMyInteger1"), Type: &ast.OrdIdent{Name: ast.Ident("INTEGER")}},
+			{Ident: ast.Ident("TMyString1"), Type: &ast.StringType{Name: "STRING"}},
+			{Ident: ast.Ident("TMyReal1"), Type: &ast.RealType{Name: ast.Ident("REAL")}},
 		},
 	)
 }
