@@ -23,13 +23,6 @@ func (p *Parser) NextToken() *token.Token {
 	return p.curr
 }
 
-func (p *Parser) Back() error {
-	if p.prior == nil {
-		return errors.Errorf("back to the first token")
-	}
-	p.curr, p.prior = p.prior, nil
-	return nil
-}
 
 func (p *Parser) CurrentToken() *token.Token {
 	return p.curr
