@@ -297,8 +297,14 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
 - StringType
   ```
   STRING
+  ```
+  ```
   ANSISTRING
+  ```
+  ```
   WIDESTRING
+  ```
+  ```
   STRING '[' ConstExpr ']'
   ```
 - StrucType

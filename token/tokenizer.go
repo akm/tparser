@@ -30,6 +30,7 @@ var processors = []func(*runes.Cursor) *Token{
 	ProcessComment,
 	ProcessString,
 	ProcessNumeral,
+	ProcessDoubleSpecialSymbol,
 	ProcessSingleSpecialSymbol,
 	ProcessWord,
 	ProcessSpace,

@@ -23,6 +23,7 @@ func (p *Parser) NextToken() *token.Token {
 	return p.curr
 }
 
+
 func (p *Parser) CurrentToken() *token.Token {
 	return p.curr
 }

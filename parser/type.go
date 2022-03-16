@@ -67,17 +67,53 @@ func (p *Parser) ParseTypeDecl() (*ast.TypeDecl, error) {
 func (p *Parser) ParseType() (ast.Type, error) {
 	t1 := p.CurrentToken()
 	switch t1.Type {
+	case token.SpecialSymbol:
+		if t1.Is(token.Symbol('(')) {
+			return p.ParseEnumeratedType()
+		}
 	case token.Identifier:
-		return p.ParseTypeId()
+		if typ, err := p.ParseNamedType(); err != nil {
+			return nil, err
+		} else if typ != nil {
+			return typ, nil
+		}
+		return p.ParseTypeIdOrSubrangeType()
+	case token.NumeralInt, token.NumeralReal, token.CharacterString:
+		return p.ParseConstSubrageType()
+	case token.ReservedWord:
+		return p.ParseStringOfStringType()
 	}
 	return nil, errors.Errorf("Unsupported Type token %+v", t1)
 }
 
-func (p *Parser) ParseTypeId() (ast.Type, error) {
+func (p *Parser) ParseNamedType() (ast.Type, error) {
+	t1 := p.CurrentToken()
+	name := t1.Value()
+	if ast.IsRealTypeName(name) {
+		return &ast.RealType{Name: ast.Ident(name)}, nil
+	} else if ast.IsOrdIdentName(name) {
+		return &ast.OrdIdent{Name: ast.Ident(name)}, nil
+	} else if ast.IsStringTypeName(name) {
+		return &ast.StringType{Name: name}, nil
+	} else {
+		return nil, nil
+	}
+}
+
+func (p *Parser) ParseTypeIdOrSubrangeType() (ast.Type, error) {
 	t1 := p.CurrentToken()
 	part1 := t1.Value()
 	t2 := p.NextToken()
-	if t2.Is(token.Symbol('.')) {
+	if t2.Is(token.Value("..")) {
+		t3, err := p.Next(token.Identifier)
+		if err != nil {
+			return nil, err
+		}
+		return &ast.SubrangeType{
+			Low:  part1,
+			High: t3.Value(),
+		}, nil
+	} else if t2.Is(token.Symbol('.')) {
 		t3, err := p.Next(token.Identifier)
 		if err != nil {
 			return nil, err
@@ -91,5 +127,69 @@ func (p *Parser) ParseTypeId() (ast.Type, error) {
 		return &ast.TypeId{
 			Ident: ast.Ident(part1),
 		}, nil
+	}
+}
+
+func (p *Parser) ParseEnumeratedType() (ast.EnumeratedType, error) {
+	res := ast.EnumeratedType{}
+	for {
+		element, err := p.ParseEnumeratedTypeElement()
+		if err != nil {
+			return nil, err
+		}
+		res = append(res, element)
+		t := p.NextToken()
+		if t.Is(token.Symbol(')')) {
+			break
+		} else if t.Is(token.Symbol(',')) {
+			continue
+		} else {
+			return nil, errors.Errorf("Unsupported token %+v for EnumeratedType", t)
+		}
+	}
+	return res, nil
+}
+
+func (p *Parser) ParseEnumeratedTypeElement() (*ast.EnumeratedTypeElement, error) {
+	ident, err := p.Next(token.Identifier)
+	if err != nil {
+		return nil, err
+	}
+	// TODO parse ConstExpr if exists
+	return &ast.EnumeratedTypeElement{Ident: ast.Ident(ident.Value())}, nil
+}
+
+func (p *Parser) ParseConstSubrageType() (*ast.SubrangeType, error) {
+	t1 := p.CurrentToken()
+	if _, err := p.Next(token.Value("..")); err != nil {
+		return nil, err
+	}
+	t2 := p.NextToken()
+	return &ast.SubrangeType{
+		Low:  t1.Value(),
+		High: t2.Value(),
+	}, nil
+}
+
+// This method parses just STRING not ANSISTRING nor WIDESTRING
+func (p *Parser) ParseStringOfStringType() (*ast.StringType, error) {
+	t1 := p.CurrentToken()
+	if !t1.Is(token.Value("STRING")) {
+		return nil, nil
+	}
+	t2 := p.NextToken()
+	if t2.Is(token.Symbol(';')) || t2.Is(token.EOF) {
+		return &ast.StringType{Name: t1.Value()}, nil
+	} else if t2.Is(token.Symbol('[')) {
+		// TODO parse ConstExpr
+		t3 := p.NextToken()
+		if _, err := p.Next(token.Symbol(']')); err != nil {
+			return nil, err
+		}
+
+		l := t3.Value()
+		return &ast.StringType{Name: "STRING", Length: &l}, nil
+	} else {
+		return nil, errors.Errorf("unexpected token %s", t2)
 	}
 }
