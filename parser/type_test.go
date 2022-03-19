@@ -319,6 +319,5 @@ func TestStringType(t *testing.T) {
 	run("String", []rune(`STRING`), &ast.StringType{Name: "STRING"})
 	run("ANSI String", []rune(`ANSISTRING`), &ast.StringType{Name: "ANSISTRING"})
 	run("Wide String", []rune(`WIDESTRING`), &ast.StringType{Name: "WIDESTRING"})
-	l := "100"
-	run("Short String", []rune(`STRING[100]`), &ast.StringType{Name: "STRING", Length: &l})
+	run("Short String", []rune(`STRING[100]`), ast.NewStringType("STRING", "100"))
 }

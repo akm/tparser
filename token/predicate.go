@@ -53,3 +53,10 @@ func Value(v string) Predicate {
 		predicate: func(t *Token) bool { return t.Value() == v },
 	}
 }
+
+func UpperCase(v string) Predicate {
+	return &TokenPredicateImpl{
+		name:      fmt.Sprintf("Value %q", v),
+		predicate: func(t *Token) bool { return strings.ToUpper(t.Value()) == v },
+	}
+}

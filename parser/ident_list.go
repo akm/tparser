@@ -5,10 +5,10 @@ import (
 	"github.com/akm/tparser/token"
 )
 
-func (p *Parser) ParseIdentClause() (*ast.IdentList, error) {
+func (p *Parser) ParseIdentList(terminator rune) (*ast.IdentList, error) {
 	res := ast.IdentList{}
-	err := p.Until(token.Symbol(';'), token.Symbol(','), func() error {
-		t, err := p.Next(token.Identifier)
+	err := p.Until(token.Symbol(terminator), token.Symbol(','), func() error {
+		t, err := p.Current(token.Identifier)
 		if err != nil {
 			return err
 		}
@@ -16,6 +16,9 @@ func (p *Parser) ParseIdentClause() (*ast.IdentList, error) {
 		return nil
 	})
 	if err != nil {
+		return nil, err
+	}
+	if _, err := p.Current(token.Symbol(terminator)); err != nil {
 		return nil, err
 	}
 	return &res, nil
