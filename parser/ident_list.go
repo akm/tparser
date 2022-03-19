@@ -18,5 +18,8 @@ func (p *Parser) ParseIdentList(terminator rune) (*ast.IdentList, error) {
 	if err != nil {
 		return nil, err
 	}
+	if _, err := p.Current(token.Symbol(terminator)); err != nil {
+		return nil, err
+	}
 	return &res, nil
 }
