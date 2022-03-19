@@ -54,6 +54,7 @@ func (p *Parser) ParseInterfaceSection() (*ast.InterfaceSection, error) {
 	res := &ast.InterfaceSection{}
 	t := p.NextToken()
 	if t.Is(token.ReservedWord.HasKeyword("USES")) {
+		p.NextToken()
 		usesClause, err := p.ParseIdentList(';')
 		if err != nil {
 			return nil, err

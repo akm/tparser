@@ -67,9 +67,10 @@ func (p *Parser) Until(terminator token.Predicate, separator token.Predicate, fn
 			break
 		}
 		if separator != nil {
-			if p.Validate(token, separator) != nil {
-				return errors.Errorf("expects %s but was %s", separator.Name(), token.String())
+			if err := p.Validate(token, separator); err != nil {
+				return err
 			}
+			p.NextToken()
 		}
 	}
 	return nil

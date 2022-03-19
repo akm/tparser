@@ -11,6 +11,7 @@ func TestIdentClausee(t *testing.T) {
 	text := []rune(`U1,U2,U3;`)
 
 	parser := NewParser(&text)
+	parser.NextToken()
 	res, err := parser.ParseIdentList(';')
 	if assert.NoError(t, err) {
 		assert.Equal(t, &ast.UsesClause{

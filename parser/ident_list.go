@@ -8,7 +8,7 @@ import (
 func (p *Parser) ParseIdentList(terminator rune) (*ast.IdentList, error) {
 	res := ast.IdentList{}
 	err := p.Until(token.Symbol(terminator), token.Symbol(','), func() error {
-		t, err := p.Next(token.Identifier)
+		t, err := p.Current(token.Identifier)
 		if err != nil {
 			return err
 		}
