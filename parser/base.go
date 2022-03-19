@@ -27,7 +27,7 @@ func (p *Parser) CurrentToken() *token.Token {
 	return p.curr
 }
 
-func (p *Parser) Next(pred token.Predicate) (*token.Token, error) {
+func (p *Parser) Next(pred token.Predicator) (*token.Token, error) {
 	token := p.NextToken()
 	if err := p.Validate(token, pred); err != nil {
 		return nil, err
@@ -35,14 +35,14 @@ func (p *Parser) Next(pred token.Predicate) (*token.Token, error) {
 	return p.curr, nil
 }
 
-func (p *Parser) Current(pred token.Predicate) (*token.Token, error) {
+func (p *Parser) Current(pred token.Predicator) (*token.Token, error) {
 	if err := p.Validate(p.CurrentToken(), pred); err != nil {
 		return nil, err
 	}
 	return p.curr, nil
 }
 
-func (p *Parser) Validate(token *token.Token, predicates ...token.Predicate) error {
+func (p *Parser) Validate(token *token.Token, predicates ...token.Predicator) error {
 	if token == nil {
 		return errors.Errorf("something wrong, token is nil")
 	}
@@ -54,7 +54,7 @@ func (p *Parser) Validate(token *token.Token, predicates ...token.Predicate) err
 	return nil
 }
 
-func (p *Parser) Until(terminator token.Predicate, separator token.Predicate, fn func() error) error {
+func (p *Parser) Until(terminator token.Predicator, separator token.Predicator, fn func() error) error {
 	for {
 		if err := fn(); err != nil {
 			return err
