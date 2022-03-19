@@ -116,3 +116,13 @@ type StringType struct {
 	Name   string
 	Length *string
 }
+
+func NewStringType(name string, length string) *StringType {
+	var l *string
+	if length == "" {
+		l = nil
+	} else {
+		l = &length
+	}
+	return &StringType{Name: name, Length: l}
+}
