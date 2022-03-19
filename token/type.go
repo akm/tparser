@@ -55,7 +55,7 @@ func (typ Type) Predicate(t *Token) bool {
 }
 
 func (typ Type) HasText(s string) Predicator {
-	return &TokenPredicateImpl{
+	return &PredicatorImpl{
 		name:      fmt.Sprintf("%s has %q", typ.String(), s),
 		predicate: func(t *Token) bool { return t.Type == typ && t.Value() == s },
 	}
@@ -66,7 +66,7 @@ func (typ Type) HasKeyword(kw string) Predicator {
 	if !isReservedWord(kw) {
 		panic(errors.Errorf("%q is not a reserved word", kw))
 	}
-	return &TokenPredicateImpl{
+	return &PredicatorImpl{
 		name:      fmt.Sprintf("%s has %q", typ.String(), kw),
 		predicate: func(t *Token) bool { return t.Type == typ && t.Value() == kw },
 	}
