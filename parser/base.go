@@ -59,7 +59,7 @@ func (p *Parser) Until(terminator token.Predicator, separator token.Predicator, 
 		if err := fn(); err != nil {
 			return err
 		}
-		token := p.NextToken()
+		token := p.CurrentToken()
 		if token == nil {
 			return errors.Errorf("something wrong, token is nil")
 		}

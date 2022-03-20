@@ -13,6 +13,7 @@ func (p *Parser) ParseIdentList(terminator rune) (*ast.IdentList, error) {
 			return err
 		}
 		res = append(res, t.Value())
+		p.NextToken()
 		return nil
 	})
 	if err != nil {
