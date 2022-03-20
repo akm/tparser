@@ -7,31 +7,14 @@ import (
 )
 
 func TestNumerical(t *testing.T) {
-	patterns := TestPatterns{
-		{
-			text:   `0`,
-			tokens: TestTokens{{Type: token.NumeralInt, Content: "0"}},
-		},
-		{
-			text:   `1`,
-			tokens: TestTokens{{Type: token.NumeralInt, Content: "1"}},
-		},
-		{
-			text:   `123`,
-			tokens: TestTokens{{Type: token.NumeralInt, Content: "123"}},
-		},
-		{
-			text:   `123.456`,
-			tokens: TestTokens{{Type: token.NumeralReal, Content: "123.456"}},
-		},
-		{
-			text:   `-2`,
-			tokens: TestTokens{{Type: token.NumeralInt, Content: "-2"}},
-		},
-		{
-			text:   `-9.9876`,
-			tokens: TestTokens{{Type: token.NumeralReal, Content: "-9.9876"}},
-		},
+	run := func(text string, tk *TestToken) {
+		ptn := &TestPattern{text: text, tokens: TestTokens{tk}}
+		ptn.check(t)
 	}
-	patterns.check(t)
+	run(`0`, &TestToken{Type: token.NumeralInt, Content: "0"})
+	run(`1`, &TestToken{Type: token.NumeralInt, Content: "1"})
+	run(`123`, &TestToken{Type: token.NumeralInt, Content: "123"})
+	run(`123.456`, &TestToken{Type: token.NumeralReal, Content: "123.456"})
+	run(`-2`, &TestToken{Type: token.NumeralInt, Content: "-2"})
+	run(`-9.9876`, &TestToken{Type: token.NumeralReal, Content: "-9.9876"})
 }
