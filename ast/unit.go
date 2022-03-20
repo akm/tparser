@@ -27,3 +27,8 @@ type InitSection struct {
 
 // UnitId: <unit-identifier>
 type UnitId Ident
+
+type QualId struct {
+	UnitId *UnitId
+	Ident  Ident
+}
