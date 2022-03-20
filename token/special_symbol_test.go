@@ -40,6 +40,22 @@ func TestSpecialSymbolDots(t *testing.T) {
 				{Type: token.Identifier, Content: "White"},
 			},
 		},
+		{
+			text: `S + T`,
+			tokens: TestTokens{
+				{Type: token.Identifier, Content: "S"},
+				{Type: token.SpecialSymbol, Content: "+"},
+				{Type: token.Identifier, Content: "T"},
+			},
+		},
+		{
+			text: `S - T`,
+			tokens: TestTokens{
+				{Type: token.Identifier, Content: "S"},
+				{Type: token.SpecialSymbol, Content: "-"},
+				{Type: token.Identifier, Content: "T"},
+			},
+		},
 	}
 	patterns.check(t)
 }
