@@ -7,3 +7,7 @@ func IsDigit(r rune) bool {
 func IsNumericHead(r rune) bool {
 	return IsDigit(r) || r == '-' // || r == '+' // Don't allow + for now
 }
+
+func IsUnaryOp(r rune) bool {
+	return r == '-'
+}

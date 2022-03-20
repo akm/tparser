@@ -5,7 +5,7 @@ import (
 )
 
 func ProcessNumeral(c *runes.Cursor) *Token {
-	if runes.IsNumericHead(c.Current()) {
+	if runes.IsDigit(c.Current()) || (runes.IsUnaryOp(c.Current()) && runes.IsDigit(c.Seek(1))) {
 		start := c.Position.Clone()
 		tokenType := NumeralInt
 		for {
