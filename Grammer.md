@@ -415,6 +415,9 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   '>='
   ```
   ```
+  '='
+  ```
+  ```
   '<>'
   ```
   ```
@@ -422,9 +425,6 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
   ```
   IS
-  ```
-  ```
-  AS
   ```
 - AddOp
   ```
@@ -440,35 +440,30 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   XOR
   ```
 - MulOp
-
   ```
   '*'
   ```
-
   ```
   '/'
   ```
-
   ```
   DIV
   ```
-
   ```
   MOD
   ```
-
   ```
   AND
   ```
-
   ```
   SHL
   ```
-
   ```
   SHR
   ```
-
+  ```
+  AS
+  ```
 - Designator
   ```
   QualId ['.' Ident | '[' ExprList ']' | '^']...
