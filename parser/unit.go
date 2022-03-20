@@ -100,6 +100,13 @@ func (p *Parser) ParseInterfaceSection() (*ast.InterfaceSection, error) {
 			}
 			res.InterfaceDecls = append(res.InterfaceDecls, section)
 			continue
+		case "CONST":
+			section, err := p.ParseConstSection()
+			if err != nil {
+				return nil, err
+			}
+			res.InterfaceDecls = append(res.InterfaceDecls, section)
+			continue
 		}
 		break
 	}

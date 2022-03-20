@@ -44,7 +44,7 @@ func (t Type) String() string {
 	return TypeNames[t]
 }
 
-// As TokenPredicate
+// As Predicator
 
 func (typ Type) Name() string {
 	return TypeNames[typ]
@@ -54,19 +54,19 @@ func (typ Type) Predicate(t *Token) bool {
 	return t.Type == typ
 }
 
-func (typ Type) HasText(s string) Predicate {
-	return &TokenPredicateImpl{
+func (typ Type) HasText(s string) Predicator {
+	return &PredicatorImpl{
 		name:      fmt.Sprintf("%s has %q", typ.String(), s),
 		predicate: func(t *Token) bool { return t.Type == typ && t.Value() == s },
 	}
 }
 
 // kw must be upper case
-func (typ Type) HasKeyword(kw string) Predicate {
+func (typ Type) HasKeyword(kw string) Predicator {
 	if !isReservedWord(kw) {
 		panic(errors.Errorf("%q is not a reserved word", kw))
 	}
-	return &TokenPredicateImpl{
+	return &PredicatorImpl{
 		name:      fmt.Sprintf("%s has %q", typ.String(), kw),
 		predicate: func(t *Token) bool { return t.Type == typ && t.Value() == kw },
 	}

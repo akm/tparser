@@ -3,59 +3,93 @@ package token
 import (
 	"fmt"
 	"strings"
-
-	"github.com/akm/tparser/ext"
 )
 
-type Predicate interface {
+type Predicator interface {
 	Name() string
 	Predicate(*Token) bool
 }
 
-type TokenPredicateImpl struct {
+type Predicators []Predicator
+
+func (s Predicators) Names() []string {
+	names := make([]string, len(s))
+	for i, p := range s {
+		names[i] = p.Name()
+	}
+	return names
+}
+
+func (s Predicators) Some(t *Token) bool {
+	for _, p := range s {
+		if p.Predicate(t) {
+			return true
+		}
+	}
+	return false
+}
+
+func (s Predicators) Every(t *Token) bool {
+	for _, p := range s {
+		if !p.Predicate(t) {
+			return false
+		}
+	}
+	return true
+}
+
+type PredicatorImpl struct {
 	name      string
 	predicate func(*Token) bool
 }
 
-func (p *TokenPredicateImpl) Name() string {
+func (p *PredicatorImpl) Name() string {
 	return p.name
 }
 
-func (p *TokenPredicateImpl) Predicate(token *Token) bool {
+func (p *PredicatorImpl) Predicate(token *Token) bool {
 	return p.predicate(token)
 }
 
-func OneOf(values ...string) Predicate {
-	texts := ext.Strings(values).ToUpper().Set()
-	return &TokenPredicateImpl{
-		name:      fmt.Sprintf("One of %v", values),
-		predicate: func(t *Token) bool { return texts.Include(strings.ToUpper(t.Value())) },
+func Some(predicators ...Predicator) Predicator {
+	s := Predicators(predicators)
+	return &PredicatorImpl{
+		name:      fmt.Sprintf("Some of %v", s.Names()),
+		predicate: s.Some,
 	}
 }
 
-func TokenType(typ Type) Predicate {
-	return &TokenPredicateImpl{
+func Every(predicators ...Predicator) Predicator {
+	s := Predicators(predicators)
+	return &PredicatorImpl{
+		name:      fmt.Sprintf("Every of %v", s.Names()),
+		predicate: s.Every,
+	}
+}
+
+func TokenType(typ Type) Predicator {
+	return &PredicatorImpl{
 		name:      typ.String(),
 		predicate: func(t *Token) bool { return t.Type == typ },
 	}
 }
 
-func Symbol(r rune) Predicate {
-	return &TokenPredicateImpl{
+func Symbol(r rune) Predicator {
+	return &PredicatorImpl{
 		name:      fmt.Sprintf("Symbol %q", r),
 		predicate: func(t *Token) bool { return t.Type == SpecialSymbol && t.Raw()[0] == r },
 	}
 }
 
-func Value(v string) Predicate {
-	return &TokenPredicateImpl{
+func Value(v string) Predicator {
+	return &PredicatorImpl{
 		name:      fmt.Sprintf("Value %q", v),
 		predicate: func(t *Token) bool { return t.Value() == v },
 	}
 }
 
-func UpperCase(v string) Predicate {
-	return &TokenPredicateImpl{
+func UpperCase(v string) Predicator {
+	return &PredicatorImpl{
 		name:      fmt.Sprintf("Value %q", v),
 		predicate: func(t *Token) bool { return strings.ToUpper(t.Value()) == v },
 	}
