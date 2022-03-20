@@ -72,12 +72,11 @@ func TestConstSectionl(t *testing.T) {
 			{Ident: ast.Ident("Max"), ConstExpr: ast.ConstExpr{Value: "100"}, Type: &ast.OrdIdent{Name: "Integer"}},
 		},
 	)
-	// TODO allow directive as identifier
-	// run(
-	// 	"message as identifier",
-	// 	[]rune(`CONST Message = 'Out of memory';`),
-	// 	ast.ConstSection{
-	// 		{Ident: ast.Ident("Message"), ConstExpr: ast.ConstExpr{Value: "'Out of memory'"}},
-	// 	},
-	// )
+	run(
+		"message as identifier",
+		[]rune(`CONST Message = 'Out of memory';`),
+		ast.ConstSection{
+			{Ident: ast.Ident("Message"), ConstExpr: ast.ConstExpr{Value: "'Out of memory'"}},
+		},
+	)
 }

@@ -30,11 +30,11 @@ func (p *Parser) ParseConstSection() (ast.ConstSection, error) {
 
 func (p *Parser) ParseConstantDecl() (*ast.ConstantDecl, error) {
 	res := &ast.ConstantDecl{}
-	ident, err := p.Current(token.Identifier)
+	ident, err := p.Current(token.Some(token.Identifier, token.Directive))
 	if err != nil {
 		return nil, err
 	}
-	res.Ident = ast.Ident(ident.Value())
+	res.Ident = ast.Ident(ident.Raw())
 
 	p.NextToken()
 	if p.CurrentToken().Is(token.Symbol(':')) {
