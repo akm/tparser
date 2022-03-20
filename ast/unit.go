@@ -28,6 +28,11 @@ type InitSection struct {
 // UnitId: <unit-identifier>
 type UnitId Ident
 
+func NewUnitId(name string) *UnitId {
+	r := UnitId(name)
+	return &r
+}
+
 type QualId struct {
 	UnitId *UnitId
 	Ident  Ident
