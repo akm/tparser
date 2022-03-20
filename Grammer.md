@@ -378,7 +378,10 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
 - Factor
   ```
-  Designator ['(' ExprList ')'] -> '@' Designator
+  Designator ['(' ExprList ')']
+  ```
+  ```
+  '@' Designator
   ```
   ```
   Number
