@@ -35,7 +35,7 @@ func NewVarDeclAbsoluteIdent(ident Ident) *VarDeclAbsoluteIdent {
 	return &r
 }
 
-func (VarDeclAbsoluteConstExpr) isVarDeclAbsolute() {}
+func (*VarDeclAbsoluteConstExpr) isVarDeclAbsolute() {}
 
 type VarDeclAbsoluteConstExpr ConstExpr
 
