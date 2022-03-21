@@ -142,7 +142,7 @@ func (p *Parser) ParseEnumeratedType() (ast.EnumeratedType, error) {
 			return nil, err
 		}
 		res = append(res, element)
-		t := p.NextToken()
+		t := p.CurrentToken()
 		if t.Is(token.Symbol(')')) {
 			break
 		} else if t.Is(token.Symbol(',')) {
@@ -159,8 +159,18 @@ func (p *Parser) ParseEnumeratedTypeElement() (*ast.EnumeratedTypeElement, error
 	if err != nil {
 		return nil, err
 	}
-	// TODO parse ConstExpr if exists
-	return &ast.EnumeratedTypeElement{Ident: ast.Ident(ident.Value())}, nil
+	res := &ast.EnumeratedTypeElement{Ident: ast.Ident(ident.Value())}
+	p.NextToken()
+	if p.CurrentToken().Is(token.Symbol('=')) {
+		p.NextToken()
+		expr, err := p.ParseConstExpr()
+		if err != nil {
+			return nil, err
+		}
+		res.ConstExpr = expr
+	}
+
+	return res, nil
 }
 
 func (p *Parser) ParseConstSubrageType() (*ast.SubrangeType, error) {
