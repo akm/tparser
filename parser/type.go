@@ -42,7 +42,7 @@ func (p *Parser) ParseTypeDecl() (*ast.TypeDecl, error) {
 	t := p.NextToken()
 	if t.Is(token.ReservedWord.HasKeyword("TYPE")) {
 		// ignore
-		t = p.NextToken()
+		p.NextToken()
 	}
 	typ, err := p.ParseType()
 	if err != nil {
@@ -90,10 +90,13 @@ func (p *Parser) ParseNamedType() (ast.Type, error) {
 	t1 := p.CurrentToken()
 	name := t1.Value()
 	if ast.IsRealTypeName(name) {
+		p.NextToken()
 		return &ast.RealType{Name: ast.Ident(name)}, nil
 	} else if ast.IsOrdIdentName(name) {
+		p.NextToken()
 		return &ast.OrdIdent{Name: ast.Ident(name)}, nil
 	} else if ast.IsStringTypeName(name) {
+		p.NextToken()
 		return &ast.StringType{Name: name}, nil
 	} else {
 		return nil, nil
@@ -196,6 +199,7 @@ func (p *Parser) ParseStringOfStringType() (*ast.StringType, error) {
 		}
 
 		l := t3.Value()
+		p.NextToken()
 		return &ast.StringType{Name: "STRING", Length: &l}, nil
 	} else {
 		return nil, errors.Errorf("unexpected token %s", t2)

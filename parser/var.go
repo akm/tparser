@@ -44,7 +44,6 @@ func (p *Parser) ParseVarDecl() (*ast.VarDecl, error) {
 	}
 	res.Type = typ
 
-	p.NextToken()
 	if p.CurrentToken().Is(token.UpperCase("ABSOLUTE")) {
 		// TODO Support ConstExpr for absolute
 		t, err := p.Next(token.Identifier)
@@ -105,6 +104,6 @@ func (p *Parser) ParseThreadVarDecl() (*ast.ThreadVarDecl, error) {
 	}
 	res.Type = typ
 
-	p.NextToken()
+	// p.NextToken()
 	return res, nil
 }

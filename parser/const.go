@@ -44,7 +44,6 @@ func (p *Parser) ParseConstantDecl() (*ast.ConstantDecl, error) {
 			return nil, err
 		}
 		res.Type = typ
-		p.NextToken()
 	}
 	if _, err := p.Current(token.Symbol('=')); err != nil {
 		return nil, err
