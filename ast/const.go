@@ -12,3 +12,7 @@ type ConstantDecl struct {
 }
 
 type ConstExpr = Expression
+
+func NewConstExpr(arg interface{}) *ConstExpr {
+	return NewExpression(arg)
+}
