@@ -87,21 +87,24 @@ func (p *Parser) ParseType() (ast.Type, error) {
 }
 
 func (p *Parser) ParseNamedType() (ast.Type, error) {
-	t1 := p.CurrentToken()
-	name := t1.Value()
-	if ast.IsRealTypeName(name) {
+	t := p.CurrentToken()
+	if t.Is(realType) {
 		p.NextToken()
-		return &ast.RealType{Name: ast.Ident(name)}, nil
-	} else if ast.IsOrdIdentName(name) {
+		return &ast.RealType{Name: ast.Ident(t.Value())}, nil
+	} else if t.Is(ordIdent) {
 		p.NextToken()
-		return &ast.OrdIdent{Name: ast.Ident(name)}, nil
-	} else if ast.IsStringTypeName(name) {
+		return &ast.OrdIdent{Name: ast.Ident(t.Value())}, nil
+	} else if t.Is(stringType) {
 		p.NextToken()
-		return &ast.StringType{Name: name}, nil
+		return &ast.StringType{Name: t.Value()}, nil
 	} else {
 		return nil, nil
 	}
 }
+
+var realType = token.PredicatorBy("RealType", ast.IsRealTypeName)
+var ordIdent = token.PredicatorBy("OrdIdent", ast.IsOrdIdentName)
+var stringType = token.PredicatorBy("StringType", ast.IsStringTypeName)
 
 func (p *Parser) ParseTypeIdOrSubrangeType() (ast.Type, error) {
 	t1 := p.CurrentToken()

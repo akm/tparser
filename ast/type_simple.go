@@ -24,6 +24,7 @@ type RealType struct {
 	Name Ident
 }
 
+// (SubrangeType | EnumeratedType | OrdIdent)
 type OrdinalType interface {
 	isOrdinalType()
 }

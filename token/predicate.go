@@ -94,3 +94,12 @@ func UpperCase(v string) Predicator {
 		predicate: func(t *Token) bool { return strings.ToUpper(t.Value()) == v },
 	}
 }
+
+func PredicatorBy(name string, fn func(string) bool) Predicator {
+	return &PredicatorImpl{
+		name: name,
+		predicate: func(t *Token) bool {
+			return fn(strings.ToUpper(t.Value()))
+		},
+	}
+}
