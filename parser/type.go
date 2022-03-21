@@ -202,15 +202,16 @@ func (p *Parser) ParseStringOfStringType() (*ast.StringType, error) {
 	if t2.Is(token.Symbol(';')) || t2.Is(token.EOF) {
 		return &ast.StringType{Name: t1.Value()}, nil
 	} else if t2.Is(token.Symbol('[')) {
-		// TODO parse ConstExpr
-		t3 := p.NextToken()
-		if _, err := p.Next(token.Symbol(']')); err != nil {
+		p.NextToken()
+		expr, err := p.ParseConstExpr()
+		if err != nil {
 			return nil, err
 		}
-
-		l := t3.Value()
+		if _, err := p.Current(token.Symbol(']')); err != nil {
+			return nil, err
+		}
 		p.NextToken()
-		return &ast.StringType{Name: "STRING", Length: &l}, nil
+		return &ast.StringType{Name: "STRING", Length: expr}, nil
 	} else {
 		return nil, errors.Errorf("unexpected token %s", t2)
 	}
