@@ -45,7 +45,7 @@ func (p *Parser) ParseVarDecl() (*ast.VarDecl, error) {
 	res.Type = typ
 
 	if p.CurrentToken().Is(token.UpperCase("ABSOLUTE")) {
-		// TODO Support ConstExpr for absolute
+		// TODO Support ConstExpr for absolute but no example found for this
 		t, err := p.Next(token.Identifier)
 		if err != nil {
 			return nil, err
