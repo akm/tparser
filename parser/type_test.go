@@ -82,9 +82,9 @@ func TestUnitWithTypeSection(t *testing.T) {
 							{Ident: ast.Ident("tsClack")},
 							{Ident: ast.Ident("tsClock")},
 						}},
-						{Ident: ast.Ident("TMySubrange1"), Type: &ast.SubrangeType{Low: "tsClick", High: "tsClack"}},
-						{Ident: ast.Ident("TMySubrange2"), Type: &ast.SubrangeType{Low: "-128", High: "127"}},
-						{Ident: ast.Ident("TMySubrange3"), Type: &ast.SubrangeType{Low: "'A'", High: "'Z'"}},
+						{Ident: ast.Ident("TMySubrange1"), Type: &ast.SubrangeType{Low: *ast.NewConstExpr("tsClick"), High: *ast.NewConstExpr("tsClack")}},
+						{Ident: ast.Ident("TMySubrange2"), Type: &ast.SubrangeType{Low: *ast.NewConstExpr(ast.NewNumber("-128")), High: *ast.NewConstExpr(ast.NewNumber("127"))}},
+						{Ident: ast.Ident("TMySubrange3"), Type: &ast.SubrangeType{Low: *ast.NewConstExpr(ast.NewString("'A'")), High: *ast.NewConstExpr(ast.NewString("'Z'"))}},
 					},
 				},
 			},
@@ -290,17 +290,17 @@ func TestSubrangeType(t *testing.T) {
 	run(
 		"subrange type of enumerated type",
 		[]rune(`Green..White`),
-		&ast.SubrangeType{Low: "Green", High: "White"},
+		&ast.SubrangeType{Low: *ast.NewConstExpr("Green"), High: *ast.NewConstExpr("White")},
 	)
 	run(
 		"subrange type of number",
 		[]rune(`-128..127`),
-		&ast.SubrangeType{Low: "-128", High: "127"},
+		&ast.SubrangeType{Low: *ast.NewConstExpr(ast.NewNumber("-128")), High: *ast.NewConstExpr(ast.NewNumber("127"))},
 	)
 	run(
 		"subrange type of character",
 		[]rune(`'A'..'Z'`),
-		&ast.SubrangeType{Low: "'A'", High: "'Z'"},
+		&ast.SubrangeType{Low: *ast.NewConstExpr(ast.NewString("'A'")), High: *ast.NewConstExpr(ast.NewString("'Z'"))},
 	)
 }
 

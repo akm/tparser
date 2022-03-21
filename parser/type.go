@@ -105,13 +105,14 @@ func (p *Parser) ParseTypeIdOrSubrangeType() (ast.Type, error) {
 	part1 := t1.Value()
 	t2 := p.NextToken()
 	if t2.Is(token.Value("..")) {
-		t3, err := p.Next(token.Identifier)
+		p.NextToken()
+		expr, err := p.ParseConstExpr()
 		if err != nil {
 			return nil, err
 		}
 		return &ast.SubrangeType{
-			Low:  part1,
-			High: t3.Value(),
+			Low:  *ast.NewConstExpr(part1),
+			High: *expr,
 		}, nil
 	} else if t2.Is(token.Symbol('.')) {
 		t3, err := p.Next(token.Identifier)
@@ -160,14 +161,21 @@ func (p *Parser) ParseEnumeratedTypeElement() (*ast.EnumeratedTypeElement, error
 }
 
 func (p *Parser) ParseConstSubrageType() (*ast.SubrangeType, error) {
-	t1 := p.CurrentToken()
-	if _, err := p.Next(token.Value("..")); err != nil {
+	lowExpr, err := p.ParseConstExpr()
+	if err != nil {
 		return nil, err
 	}
-	t2 := p.NextToken()
+	if _, err := p.Current(token.Value("..")); err != nil {
+		return nil, err
+	}
+	p.NextToken()
+	highExpr, err := p.ParseConstExpr()
+	if err != nil {
+		return nil, err
+	}
 	return &ast.SubrangeType{
-		Low:  t1.Value(),
-		High: t2.Value(),
+		Low:  *lowExpr,
+		High: *highExpr,
 	}, nil
 }
 

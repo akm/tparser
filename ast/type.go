@@ -96,8 +96,8 @@ type EnumeratedTypeElement struct {
 func (*SubrangeType) isRestrictedType() bool { return false }
 
 type SubrangeType struct {
-	Low  string // TODO Use `ConstExpr` instead of string
-	High string // TODO Use `ConstExpr` instead of string
+	Low  ConstExpr
+	High ConstExpr
 }
 
 func IsStringTypeName(w string) bool {
