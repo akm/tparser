@@ -89,8 +89,8 @@ func (EnumeratedType) isRestrictedType() bool { return false }
 type EnumeratedType []*EnumeratedTypeElement
 
 type EnumeratedTypeElement struct {
-	Ident Ident
-	// TODO Add `ConstExpr`
+	Ident     Ident
+	ConstExpr *ConstExpr
 }
 
 func (*SubrangeType) isRestrictedType() bool { return false }

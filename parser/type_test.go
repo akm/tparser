@@ -273,6 +273,24 @@ func TestEnumeratedType(t *testing.T) {
 			{Ident: ast.Ident("Spade")},
 		},
 	)
+
+	run(
+		"Enumerated types with explicitly assigned ordinality",
+		[]rune(`(Small = 5, Medium = 10, Large = Small + Medium)`),
+		ast.EnumeratedType{
+			{Ident: ast.Ident("Small"), ConstExpr: ast.NewConstExpr(ast.NewNumber("5"))},
+			{Ident: ast.Ident("Medium"), ConstExpr: ast.NewConstExpr(ast.NewNumber("10"))},
+			{Ident: ast.Ident("Large"), ConstExpr: ast.NewConstExpr(
+				&ast.SimpleExpression{
+					Term: *ast.NewTerm("Small"),
+					AddOpTerms: []*ast.AddOpTerm{
+						{AddOp: "+", Term: *ast.NewTerm("Medium")},
+					},
+				},
+			)},
+		},
+	)
+
 }
 
 func TestSubrangeType(t *testing.T) {
