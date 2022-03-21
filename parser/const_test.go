@@ -35,9 +35,9 @@ func TestUnitWithConstSection(t *testing.T) {
 			InterfaceSection: &ast.InterfaceSection{
 				InterfaceDecls: []ast.InterfaceDecl{
 					ast.ConstSection{
-						{Ident: ast.Ident("MaxValue"), ConstExpr: ast.ConstExpr{Value: "237"}},
-						{Ident: ast.Ident("Message1"), ConstExpr: ast.ConstExpr{Value: "'Out of memory'"}},
-						{Ident: ast.Ident("Max"), ConstExpr: ast.ConstExpr{Value: "100"}, Type: &ast.OrdIdent{Name: "Integer"}},
+						{Ident: ast.Ident("MaxValue"), ConstExpr: *ast.NewExpression(ast.NewNumber("237"))},
+						{Ident: ast.Ident("Message1"), ConstExpr: *ast.NewExpression(ast.NewString("'Out of memory'"))},
+						{Ident: ast.Ident("Max"), ConstExpr: *ast.NewExpression(ast.NewNumber("100")), Type: &ast.OrdIdent{Name: "Integer"}},
 					},
 				},
 			},
@@ -62,21 +62,21 @@ func TestConstSectionl(t *testing.T) {
 		"number const",
 		[]rune(`CONST MaxValue = 237;`),
 		ast.ConstSection{
-			{Ident: ast.Ident("MaxValue"), ConstExpr: ast.ConstExpr{Value: "237"}},
+			{Ident: ast.Ident("MaxValue"), ConstExpr: *ast.NewExpression(ast.NewNumber("237"))},
 		},
 	)
 	run(
 		"number const",
 		[]rune(`CONST Max: Integer = 100;`),
 		ast.ConstSection{
-			{Ident: ast.Ident("Max"), ConstExpr: ast.ConstExpr{Value: "100"}, Type: &ast.OrdIdent{Name: "Integer"}},
+			{Ident: ast.Ident("Max"), ConstExpr: *ast.NewExpression(ast.NewNumber("100")), Type: &ast.OrdIdent{Name: "Integer"}},
 		},
 	)
 	run(
 		"message as identifier",
 		[]rune(`CONST Message = 'Out of memory';`),
 		ast.ConstSection{
-			{Ident: ast.Ident("Message"), ConstExpr: ast.ConstExpr{Value: "'Out of memory'"}},
+			{Ident: ast.Ident("Message"), ConstExpr: *ast.NewExpression(ast.NewString("'Out of memory'"))},
 		},
 	)
 }

@@ -11,7 +11,4 @@ type ConstantDecl struct {
 	PortabilityDirective *PortabilityDirective
 }
 
-// TODO implement ConstExpr
-type ConstExpr struct {
-	Value string
-}
+type ConstExpr = Expression

@@ -56,9 +56,12 @@ func (p *Parser) ParseVarDecl() (*ast.VarDecl, error) {
 	}
 
 	if p.CurrentToken().Is(token.Symbol('=')) {
-		t := p.NextToken()
-		res.ConstExpr = &ast.ConstExpr{Value: t.Value()}
 		p.NextToken()
+		expr, err := p.ParseConstExpr()
+		if err != nil {
+			return nil, err
+		}
+		res.ConstExpr = expr
 	}
 	return res, nil
 }
