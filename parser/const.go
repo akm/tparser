@@ -44,14 +44,22 @@ func (p *Parser) ParseConstantDecl() (*ast.ConstantDecl, error) {
 			return nil, err
 		}
 		res.Type = typ
-		p.NextToken()
 	}
 	if _, err := p.Current(token.Symbol('=')); err != nil {
 		return nil, err
 	}
-	t := p.NextToken()
-	res.ConstExpr.Value = t.Value()
+
 	p.NextToken()
+	expr, err := p.ParseConstExpr()
+	if err != nil {
+		return nil, err
+	}
+	res.ConstExpr = *expr
 
 	return res, nil
+}
+
+func (p *Parser) ParseConstExpr() (*ast.ConstExpr, error) {
+	// TODO Allow ConstExpr only
+	return p.ParseExpression()
 }

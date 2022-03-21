@@ -65,9 +65,9 @@ func TestUnitWithVarSection(t *testing.T) {
 						{IdentList: ast.IdentList{"I", "J", "K"}, Type: &ast.OrdIdent{Name: ast.Ident("Integer")}},
 					},
 					ast.VarSection{
-						{IdentList: ast.IdentList{"Digit"}, Type: &ast.SubrangeType{Low: "0", High: "9"}},
+						{IdentList: ast.IdentList{"Digit"}, Type: &ast.SubrangeType{Low: *ast.NewConstExpr(ast.NewNumber("0")), High: *ast.NewConstExpr(ast.NewNumber("9"))}},
 						{IdentList: ast.IdentList{"Okay"}, Type: &ast.OrdIdent{Name: ast.Ident("Boolean")}},
-						{IdentList: ast.IdentList{"A"}, Type: &ast.OrdIdent{Name: ast.Ident("Integer")}, ConstExpr: &ast.ConstExpr{Value: "7"}},
+						{IdentList: ast.IdentList{"A"}, Type: &ast.OrdIdent{Name: ast.Ident("Integer")}, ConstExpr: ast.NewExpression(ast.NewNumber("7"))},
 					},
 				},
 			},
@@ -118,7 +118,7 @@ func TestVarSectionl(t *testing.T) {
 		ast.VarSection{
 			&ast.VarDecl{
 				IdentList: ast.IdentList{"Str"},
-				Type:      ast.NewStringType("STRING", "32"),
+				Type:      &ast.StringType{Name: "STRING", Length: ast.NewConstExpr(ast.NewNumber("32"))},
 			},
 			&ast.VarDecl{
 				IdentList: ast.IdentList{"StrLen"},
@@ -131,7 +131,20 @@ func TestVarSectionl(t *testing.T) {
 		"With simple ConstExpr",
 		[]rune(`VAR A: Integer = 7;`),
 		ast.VarSection{
-			{IdentList: ast.IdentList{"A"}, Type: &ast.OrdIdent{Name: ast.Ident("Integer")}, ConstExpr: &ast.ConstExpr{Value: "7"}},
+			{IdentList: ast.IdentList{"A"}, Type: &ast.OrdIdent{Name: ast.Ident("Integer")}, ConstExpr: ast.NewExpression(ast.NewNumber("7"))},
+		},
+	)
+
+	run(
+		"var after subrange",
+		[]rune(`
+		VAR
+			Digit: 0..9;
+			Okay: Boolean;
+		`),
+		ast.VarSection{
+			{IdentList: ast.IdentList{"Digit"}, Type: &ast.SubrangeType{Low: *ast.NewConstExpr(ast.NewNumber("0")), High: *ast.NewConstExpr(ast.NewNumber("9"))}},
+			{IdentList: ast.IdentList{"Okay"}, Type: &ast.OrdIdent{Name: ast.Ident("Boolean")}},
 		},
 	)
 }

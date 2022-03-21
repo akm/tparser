@@ -193,7 +193,7 @@ func (p *Parser) ParseFactor() (ast.Factor, error) {
 	} else if t0.Is(token.Some(token.NumeralInt, token.NumeralReal)) {
 		p.NextToken()
 		return &ast.Number{ValueFactor: ast.ValueFactor{Value: t0Value}}, nil
-	} else if t0.Is(token.Identifier) {
+	} else if t0.Is(token.Some(token.Identifier, token.Directive)) {
 		// TODO Distinguish between DesignatorFactor or TypeCast. How?
 		d, err := p.ParseDesignator()
 		if err != nil {
@@ -218,7 +218,7 @@ func (p *Parser) ParseFactor() (ast.Factor, error) {
 }
 
 func (p *Parser) ParseDesignator() (*ast.Designator, error) {
-	if _, err := p.Current(token.Identifier); err != nil {
+	if _, err := p.Current(token.Some(token.Identifier, token.Directive)); err != nil {
 		return nil, err
 	}
 	res := &ast.Designator{}

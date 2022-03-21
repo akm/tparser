@@ -89,15 +89,15 @@ func (EnumeratedType) isRestrictedType() bool { return false }
 type EnumeratedType []*EnumeratedTypeElement
 
 type EnumeratedTypeElement struct {
-	Ident Ident
-	// TODO Add `ConstExpr`
+	Ident     Ident
+	ConstExpr *ConstExpr
 }
 
 func (*SubrangeType) isRestrictedType() bool { return false }
 
 type SubrangeType struct {
-	Low  string // TODO Use `ConstExpr` instead of string
-	High string // TODO Use `ConstExpr` instead of string
+	Low  ConstExpr
+	High ConstExpr
 }
 
 func IsStringTypeName(w string) bool {
@@ -114,15 +114,5 @@ func (*StringType) isRestrictedType() bool { return false }
 
 type StringType struct {
 	Name   string
-	Length *string
-}
-
-func NewStringType(name string, length string) *StringType {
-	var l *string
-	if length == "" {
-		l = nil
-	} else {
-		l = &length
-	}
-	return &StringType{Name: name, Length: l}
+	Length *ConstExpr
 }

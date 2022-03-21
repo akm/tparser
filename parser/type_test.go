@@ -82,9 +82,9 @@ func TestUnitWithTypeSection(t *testing.T) {
 							{Ident: ast.Ident("tsClack")},
 							{Ident: ast.Ident("tsClock")},
 						}},
-						{Ident: ast.Ident("TMySubrange1"), Type: &ast.SubrangeType{Low: "tsClick", High: "tsClack"}},
-						{Ident: ast.Ident("TMySubrange2"), Type: &ast.SubrangeType{Low: "-128", High: "127"}},
-						{Ident: ast.Ident("TMySubrange3"), Type: &ast.SubrangeType{Low: "'A'", High: "'Z'"}},
+						{Ident: ast.Ident("TMySubrange1"), Type: &ast.SubrangeType{Low: *ast.NewConstExpr("tsClick"), High: *ast.NewConstExpr("tsClack")}},
+						{Ident: ast.Ident("TMySubrange2"), Type: &ast.SubrangeType{Low: *ast.NewConstExpr(ast.NewNumber("-128")), High: *ast.NewConstExpr(ast.NewNumber("127"))}},
+						{Ident: ast.Ident("TMySubrange3"), Type: &ast.SubrangeType{Low: *ast.NewConstExpr(ast.NewString("'A'")), High: *ast.NewConstExpr(ast.NewString("'Z'"))}},
 					},
 				},
 			},
@@ -273,6 +273,24 @@ func TestEnumeratedType(t *testing.T) {
 			{Ident: ast.Ident("Spade")},
 		},
 	)
+
+	run(
+		"Enumerated types with explicitly assigned ordinality",
+		[]rune(`(Small = 5, Medium = 10, Large = Small + Medium)`),
+		ast.EnumeratedType{
+			{Ident: ast.Ident("Small"), ConstExpr: ast.NewConstExpr(ast.NewNumber("5"))},
+			{Ident: ast.Ident("Medium"), ConstExpr: ast.NewConstExpr(ast.NewNumber("10"))},
+			{Ident: ast.Ident("Large"), ConstExpr: ast.NewConstExpr(
+				&ast.SimpleExpression{
+					Term: *ast.NewTerm("Small"),
+					AddOpTerms: []*ast.AddOpTerm{
+						{AddOp: "+", Term: *ast.NewTerm("Medium")},
+					},
+				},
+			)},
+		},
+	)
+
 }
 
 func TestSubrangeType(t *testing.T) {
@@ -290,17 +308,17 @@ func TestSubrangeType(t *testing.T) {
 	run(
 		"subrange type of enumerated type",
 		[]rune(`Green..White`),
-		&ast.SubrangeType{Low: "Green", High: "White"},
+		&ast.SubrangeType{Low: *ast.NewConstExpr("Green"), High: *ast.NewConstExpr("White")},
 	)
 	run(
 		"subrange type of number",
 		[]rune(`-128..127`),
-		&ast.SubrangeType{Low: "-128", High: "127"},
+		&ast.SubrangeType{Low: *ast.NewConstExpr(ast.NewNumber("-128")), High: *ast.NewConstExpr(ast.NewNumber("127"))},
 	)
 	run(
 		"subrange type of character",
 		[]rune(`'A'..'Z'`),
-		&ast.SubrangeType{Low: "'A'", High: "'Z'"},
+		&ast.SubrangeType{Low: *ast.NewConstExpr(ast.NewString("'A'")), High: *ast.NewConstExpr(ast.NewString("'Z'"))},
 	)
 }
 
@@ -319,5 +337,20 @@ func TestStringType(t *testing.T) {
 	run("String", []rune(`STRING`), &ast.StringType{Name: "STRING"})
 	run("ANSI String", []rune(`ANSISTRING`), &ast.StringType{Name: "ANSISTRING"})
 	run("Wide String", []rune(`WIDESTRING`), &ast.StringType{Name: "WIDESTRING"})
-	run("Short String", []rune(`STRING[100]`), ast.NewStringType("STRING", "100"))
+	run("Short String", []rune(`STRING[100]`), &ast.StringType{Name: "STRING", Length: ast.NewConstExpr(ast.NewNumber("100"))})
+	run(
+		"Short String",
+		[]rune(`STRING[ALen + BLen]`),
+		&ast.StringType{
+			Name: "STRING",
+			Length: ast.NewConstExpr(
+				&ast.SimpleExpression{
+					Term: *ast.NewTerm("ALen"),
+					AddOpTerms: []*ast.AddOpTerm{
+						{AddOp: "+", Term: *ast.NewTerm("BLen")},
+					},
+				},
+			),
+		},
+	)
 }

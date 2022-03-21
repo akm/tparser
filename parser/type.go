@@ -42,7 +42,7 @@ func (p *Parser) ParseTypeDecl() (*ast.TypeDecl, error) {
 	t := p.NextToken()
 	if t.Is(token.ReservedWord.HasKeyword("TYPE")) {
 		// ignore
-		t = p.NextToken()
+		p.NextToken()
 	}
 	typ, err := p.ParseType()
 	if err != nil {
@@ -90,10 +90,13 @@ func (p *Parser) ParseNamedType() (ast.Type, error) {
 	t1 := p.CurrentToken()
 	name := t1.Value()
 	if ast.IsRealTypeName(name) {
+		p.NextToken()
 		return &ast.RealType{Name: ast.Ident(name)}, nil
 	} else if ast.IsOrdIdentName(name) {
+		p.NextToken()
 		return &ast.OrdIdent{Name: ast.Ident(name)}, nil
 	} else if ast.IsStringTypeName(name) {
+		p.NextToken()
 		return &ast.StringType{Name: name}, nil
 	} else {
 		return nil, nil
@@ -105,13 +108,14 @@ func (p *Parser) ParseTypeIdOrSubrangeType() (ast.Type, error) {
 	part1 := t1.Value()
 	t2 := p.NextToken()
 	if t2.Is(token.Value("..")) {
-		t3, err := p.Next(token.Identifier)
+		p.NextToken()
+		expr, err := p.ParseConstExpr()
 		if err != nil {
 			return nil, err
 		}
 		return &ast.SubrangeType{
-			Low:  part1,
-			High: t3.Value(),
+			Low:  *ast.NewConstExpr(part1),
+			High: *expr,
 		}, nil
 	} else if t2.Is(token.Symbol('.')) {
 		t3, err := p.Next(token.Identifier)
@@ -138,7 +142,7 @@ func (p *Parser) ParseEnumeratedType() (ast.EnumeratedType, error) {
 			return nil, err
 		}
 		res = append(res, element)
-		t := p.NextToken()
+		t := p.CurrentToken()
 		if t.Is(token.Symbol(')')) {
 			break
 		} else if t.Is(token.Symbol(',')) {
@@ -155,19 +159,36 @@ func (p *Parser) ParseEnumeratedTypeElement() (*ast.EnumeratedTypeElement, error
 	if err != nil {
 		return nil, err
 	}
-	// TODO parse ConstExpr if exists
-	return &ast.EnumeratedTypeElement{Ident: ast.Ident(ident.Value())}, nil
+	res := &ast.EnumeratedTypeElement{Ident: ast.Ident(ident.Value())}
+	p.NextToken()
+	if p.CurrentToken().Is(token.Symbol('=')) {
+		p.NextToken()
+		expr, err := p.ParseConstExpr()
+		if err != nil {
+			return nil, err
+		}
+		res.ConstExpr = expr
+	}
+
+	return res, nil
 }
 
 func (p *Parser) ParseConstSubrageType() (*ast.SubrangeType, error) {
-	t1 := p.CurrentToken()
-	if _, err := p.Next(token.Value("..")); err != nil {
+	lowExpr, err := p.ParseConstExpr()
+	if err != nil {
 		return nil, err
 	}
-	t2 := p.NextToken()
+	if _, err := p.Current(token.Value("..")); err != nil {
+		return nil, err
+	}
+	p.NextToken()
+	highExpr, err := p.ParseConstExpr()
+	if err != nil {
+		return nil, err
+	}
 	return &ast.SubrangeType{
-		Low:  t1.Value(),
-		High: t2.Value(),
+		Low:  *lowExpr,
+		High: *highExpr,
 	}, nil
 }
 
@@ -181,14 +202,16 @@ func (p *Parser) ParseStringOfStringType() (*ast.StringType, error) {
 	if t2.Is(token.Symbol(';')) || t2.Is(token.EOF) {
 		return &ast.StringType{Name: t1.Value()}, nil
 	} else if t2.Is(token.Symbol('[')) {
-		// TODO parse ConstExpr
-		t3 := p.NextToken()
-		if _, err := p.Next(token.Symbol(']')); err != nil {
+		p.NextToken()
+		expr, err := p.ParseConstExpr()
+		if err != nil {
 			return nil, err
 		}
-
-		l := t3.Value()
-		return &ast.StringType{Name: "STRING", Length: &l}, nil
+		if _, err := p.Current(token.Symbol(']')); err != nil {
+			return nil, err
+		}
+		p.NextToken()
+		return &ast.StringType{Name: "STRING", Length: expr}, nil
 	} else {
 		return nil, errors.Errorf("unexpected token %s", t2)
 	}
