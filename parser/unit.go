@@ -129,3 +129,27 @@ func (p *Parser) ParseImplementationSection() (*ast.ImplementationSection, error
 	}
 	return res, nil
 }
+
+func (p *Parser) ParseQualId() (*ast.QualId, error) {
+	if _, err := p.Current(token.Identifier); err != nil {
+		return nil, err
+	}
+	name1 := p.CurrentToken().Value()
+	p.NextToken()
+	if p.CurrentToken().Is(token.Symbol('.')) {
+		p.NextToken()
+		if _, err := p.Current(token.Identifier); err != nil {
+			return nil, err
+		}
+		name2 := p.CurrentToken().Raw()
+		p.NextToken()
+		return &ast.QualId{
+			UnitId: ast.NewUnitId(name1),
+			Ident:  ast.Ident(name2),
+		}, nil
+	} else {
+		return &ast.QualId{
+			Ident: ast.Ident(name1),
+		}, nil
+	}
+}
