@@ -131,10 +131,10 @@ func (p *Parser) ParseImplementationSection() (*ast.ImplementationSection, error
 }
 
 func (p *Parser) ParseQualId() (*ast.QualId, error) {
-	if _, err := p.Current(token.Identifier); err != nil {
+	if _, err := p.Current(token.Some(token.Identifier, token.Directive)); err != nil {
 		return nil, err
 	}
-	name1 := p.CurrentToken().Value()
+	name1 := string(p.CurrentToken().Raw())
 	p.NextToken()
 	if p.CurrentToken().Is(token.Symbol('.')) {
 		p.NextToken()
