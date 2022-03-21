@@ -16,8 +16,6 @@ var stringTypeNames = ext.Strings{
 	"WIDESTRING",
 }.Set()
 
-func (*StringType) isRestrictedType() bool { return false }
-
 type StringType struct {
 	Name   string
 	Length *ConstExpr

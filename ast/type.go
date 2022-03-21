@@ -11,10 +11,7 @@ type TypeDecl struct {
 }
 
 type Type interface {
-	isRestrictedType() bool
 }
-
-func (*TypeId) isRestrictedType() bool { return false }
 
 // TypeId: [UnitId '.'] <type-identifier>
 type TypeId struct {

@@ -20,10 +20,12 @@ var realTypeNames = ext.Strings{
 	"COMP",
 }.Set()
 
-func (*RealType) isRestrictedType() bool { return false }
-
 type RealType struct {
 	Name Ident
+}
+
+type OrdinalType interface {
+	isOrdinalType()
 }
 
 func IsOrdIdentName(w string) bool {
@@ -56,13 +58,13 @@ var ordIdentNames = ext.Strings{
 	// "PWIDECHAR",
 }.Set()
 
-func (*OrdIdent) isRestrictedType() bool { return false }
+func (*OrdIdent) isOrdinalType() {}
 
 type OrdIdent struct {
 	Name Ident
 }
 
-func (EnumeratedType) isRestrictedType() bool { return false }
+func (EnumeratedType) isOrdinalType() {}
 
 type EnumeratedType []*EnumeratedTypeElement
 
@@ -71,7 +73,7 @@ type EnumeratedTypeElement struct {
 	ConstExpr *ConstExpr
 }
 
-func (*SubrangeType) isRestrictedType() bool { return false }
+func (*SubrangeType) isOrdinalType() {}
 
 type SubrangeType struct {
 	Low  ConstExpr
