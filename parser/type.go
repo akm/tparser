@@ -72,12 +72,7 @@ func (p *Parser) ParseType() (ast.Type, error) {
 			return p.ParseEnumeratedType()
 		}
 	case token.Identifier:
-		if typ, err := p.ParseNamedType(); err != nil {
-			return nil, err
-		} else if typ != nil {
-			return typ, nil
-		}
-		return p.ParseTypeIdOrSubrangeType()
+		return p.ParseTypeForIdentifier()
 	case token.NumeralInt, token.NumeralReal, token.CharacterString:
 		return p.ParseConstSubrageType()
 	case token.ReservedWord:
@@ -86,7 +81,7 @@ func (p *Parser) ParseType() (ast.Type, error) {
 	return nil, errors.Errorf("Unsupported Type token %+v", t1)
 }
 
-func (p *Parser) ParseNamedType() (ast.Type, error) {
+func (p *Parser) ParseTypeForIdentifier() (ast.Type, error) {
 	if res, err := p.ParseRealType(false); err != nil {
 		return nil, err
 	} else if res != nil {
@@ -100,7 +95,7 @@ func (p *Parser) ParseNamedType() (ast.Type, error) {
 	} else if res != nil {
 		return res, nil
 	} else {
-		return nil, nil
+		return p.ParseTypeIdOrSubrangeType()
 	}
 }
 
