@@ -161,6 +161,7 @@ func (p *Parser) ParseTypeIdOrSubrangeType() (ast.Type, error) {
 			return nil, err
 		}
 		unitId := ast.UnitId(part1)
+		p.NextToken()
 		return &ast.TypeId{
 			UnitId: &unitId,
 			Ident:  ast.Ident(t3.Value()),
