@@ -143,8 +143,21 @@ func (p *Parser) ParseStringType(required bool) (*ast.StringType, error) {
 
 func (p *Parser) ParseTypeIdOrSubrangeType() (ast.Type, error) {
 	t1 := p.CurrentToken()
-	part1 := t1.Value()
 	t2 := p.NextToken()
+	if res, err := p.parseSubrangeTypeForIdentifier(t1, t2, false); err != nil {
+		return nil, err
+	} else if res != nil {
+		return res, nil
+	} else if res, err := p.parseTypeId(t1, t2); err != nil {
+		return nil, err
+	} else {
+		return res, nil
+	}
+}
+
+// t1 must be identifier token
+// t2 can be ".." or others
+func (p *Parser) parseSubrangeTypeForIdentifier(t1, t2 *token.Token, required bool) (*ast.SubrangeType, error) {
 	if t2.Is(token.Value("..")) {
 		p.NextToken()
 		expr, err := p.ParseConstExpr()
@@ -152,15 +165,25 @@ func (p *Parser) ParseTypeIdOrSubrangeType() (ast.Type, error) {
 			return nil, err
 		}
 		return &ast.SubrangeType{
-			Low:  *ast.NewConstExpr(part1),
+			Low:  *ast.NewConstExpr(t1.Value()),
 			High: *expr,
 		}, nil
-	} else if t2.Is(token.Symbol('.')) {
+	} else if required {
+		return nil, errors.Errorf("Unsupported token %+v, %+v for SubrangeType", t1, t2)
+	} else {
+		return nil, nil
+	}
+}
+
+// t1 must be identifier token
+// t2 can be "." or others
+func (p *Parser) parseTypeId(t1, t2 *token.Token) (*ast.TypeId, error) {
+	if t2.Is(token.Symbol('.')) {
 		t3, err := p.Next(token.Identifier)
 		if err != nil {
 			return nil, err
 		}
-		unitId := ast.UnitId(part1)
+		unitId := ast.UnitId(t1.Value())
 		p.NextToken()
 		return &ast.TypeId{
 			UnitId: &unitId,
@@ -168,7 +191,7 @@ func (p *Parser) ParseTypeIdOrSubrangeType() (ast.Type, error) {
 		}, nil
 	} else {
 		return &ast.TypeId{
-			Ident: ast.Ident(part1),
+			Ident: ast.Ident(t1.Value()),
 		}, nil
 	}
 }
