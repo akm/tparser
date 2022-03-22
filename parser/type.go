@@ -87,24 +87,64 @@ func (p *Parser) ParseType() (ast.Type, error) {
 }
 
 func (p *Parser) ParseNamedType() (ast.Type, error) {
-	t := p.CurrentToken()
-	if t.Is(realType) {
-		p.NextToken()
-		return &ast.RealType{Name: ast.Ident(t.Value())}, nil
-	} else if t.Is(ordIdent) {
-		p.NextToken()
-		return &ast.OrdIdent{Name: ast.Ident(t.Value())}, nil
-	} else if t.Is(stringType) {
-		p.NextToken()
-		return &ast.StringType{Name: t.Value()}, nil
+	if res, err := p.ParseRealType(false); err != nil {
+		return nil, err
+	} else if res != nil {
+		return res, nil
+	} else if res, err := p.ParseOrdIdent(false); err != nil {
+		return nil, err
+	} else if res != nil {
+		return res, nil
+	} else if res, err := p.ParseStringType(false); err != nil {
+		return nil, err
+	} else if res != nil {
+		return res, nil
 	} else {
 		return nil, nil
 	}
 }
 
 var realType = token.PredicatorBy("RealType", ast.IsRealTypeName)
+
+func (p *Parser) ParseRealType(required bool) (*ast.RealType, error) {
+	t := p.CurrentToken()
+	if t.Is(realType) {
+		p.NextToken()
+		return &ast.RealType{Name: ast.Ident(t.Value())}, nil
+	} else if required {
+		return nil, errors.Errorf("Unsupported token %+v for RealType", t)
+	} else {
+		return nil, nil
+	}
+}
+
 var ordIdent = token.PredicatorBy("OrdIdent", ast.IsOrdIdentName)
+
+func (p *Parser) ParseOrdIdent(required bool) (*ast.OrdIdent, error) {
+	t := p.CurrentToken()
+	if t.Is(ordIdent) {
+		p.NextToken()
+		return &ast.OrdIdent{Name: ast.Ident(t.Value())}, nil
+	} else if required {
+		return nil, errors.Errorf("Unsupported token %+v for OrdIdent", t)
+	} else {
+		return nil, nil
+	}
+}
+
 var stringType = token.PredicatorBy("StringType", ast.IsStringTypeName)
+
+func (p *Parser) ParseStringType(required bool) (*ast.StringType, error) {
+	t := p.CurrentToken()
+	if t.Is(stringType) {
+		p.NextToken()
+		return &ast.StringType{Name: t.Value()}, nil
+	} else if required {
+		return nil, errors.Errorf("Unsupported token %+v for StringType", t)
+	} else {
+		return nil, nil
+	}
+}
 
 func (p *Parser) ParseTypeIdOrSubrangeType() (ast.Type, error) {
 	t1 := p.CurrentToken()
