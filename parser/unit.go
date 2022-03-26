@@ -60,7 +60,7 @@ func (p *Parser) ParseInterfaceSection() (*ast.InterfaceSection, error) {
 			return nil, err
 		}
 		res.UsesClause = usesClause
-		t = p.NextToken()
+		p.NextToken()
 	}
 
 	res.InterfaceDecls = []ast.InterfaceDecl{}
