@@ -8,8 +8,7 @@ import (
 type Parser struct {
 	tokenizer *token.Tokenizer
 
-	curr  *token.Token
-	prior *token.Token
+	curr *token.Token
 }
 
 func NewParser(text *[]rune) *Parser {
@@ -19,7 +18,7 @@ func NewParser(text *[]rune) *Parser {
 }
 
 func (p *Parser) NextToken() *token.Token {
-	p.prior, p.curr = p.curr, p.tokenizer.GetNext()
+	p.curr = p.tokenizer.GetNext()
 	return p.curr
 }
 
