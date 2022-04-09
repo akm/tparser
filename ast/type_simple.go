@@ -6,6 +6,36 @@ import (
 	"github.com/akm/tparser/ext"
 )
 
+// - SimpleType
+//   ```
+//   (OrdinalType | RealType)
+//   ```
+type SimpleType interface {
+	isSimpleType()
+}
+
+// - RealType
+//   ```
+//   REAL48
+//   ```
+//   ```
+//   REAL
+//   ```
+//   ```
+//   SINGLE
+//   ```
+//   ```
+//   DOUBLE
+//   ```
+//   ```
+//   EXTENDED
+//   ```
+//   ```
+//   CURRENCY
+//   ```
+//   ```
+//   COMP
+//   ```
 func IsRealTypeName(w string) bool {
 	return realTypeNames.Include(strings.ToUpper(w))
 }
@@ -24,11 +54,51 @@ type RealType struct {
 	Name Ident
 }
 
-// (SubrangeType | EnumeratedType | OrdIdent)
+// - OrdinalType
+//   ```
+//   (SubrangeType | EnumeratedType | OrdIdent)
+//   ```
 type OrdinalType interface {
 	isOrdinalType()
 }
 
+// - OrdIdent
+//   ```
+//   SHORTINT
+//   ```
+//   ```
+//   SMALLINT
+//   ```
+//   ```
+//   INTEGER
+//   ```
+//   ```
+//   BYTE
+//   ```
+//   ```
+//   LONGINT
+//   ```
+//   ```
+//   INT64
+//   ```
+//   ```
+//   WORD
+//   ```
+//   ```
+//   BOOLEAN
+//   ```
+//   ```
+//   CHAR
+//   ```
+//   ```
+//   WIDECHAR
+//   ```
+//   ```
+//   LONGWORD
+//   ```
+//   ```
+//   PCHAR
+//   ```
 func IsOrdIdentName(w string) bool {
 	return ordIdentNames.Include(strings.ToUpper(w))
 }
@@ -65,6 +135,14 @@ type OrdIdent struct {
 	Name Ident
 }
 
+// - EnumeratedType
+//   ```
+//   '(' EnumeratedTypeElement ','... ')'
+//   ```
+// - EnumeratedTypeElement
+//   ```
+//   Ident [ '=' ConstExpr ]
+//   ```
 func (EnumeratedType) isOrdinalType() {}
 
 type EnumeratedType []*EnumeratedTypeElement
@@ -74,6 +152,10 @@ type EnumeratedTypeElement struct {
 	ConstExpr *ConstExpr
 }
 
+// - SubrangeType
+//   ```
+//   ConstExpr '..' ConstExpr
+//   ```
 func (*SubrangeType) isOrdinalType() {}
 
 type SubrangeType struct {
