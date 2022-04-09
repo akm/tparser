@@ -36,7 +36,11 @@ func (p *Parser) ParseOrdIdent(required bool) (*ast.OrdIdent, error) {
 
 // t1 must be identifier token
 // t2 can be ".." or others
-func (p *Parser) parseSubrangeTypeForIdentifier(t1, t2 *token.Token, required bool) (*ast.SubrangeType, error) {
+func (p *Parser) parseSubrangeTypeForIdentifier(required bool) (*ast.SubrangeType, error) {
+	rollback := p.RollbackPoint()
+	t1 := p.CurrentToken()
+	t2 := p.NextToken()
+
 	if t2.Is(token.Value("..")) {
 		p.NextToken()
 		expr, err := p.ParseConstExpr()
@@ -47,10 +51,13 @@ func (p *Parser) parseSubrangeTypeForIdentifier(t1, t2 *token.Token, required bo
 			Low:  *ast.NewConstExpr(t1.Value()),
 			High: *expr,
 		}, nil
-	} else if required {
-		return nil, errors.Errorf("Unsupported token %+v, %+v for SubrangeType", t1, t2)
 	} else {
-		return nil, nil
+		defer rollback()
+		if required {
+			return nil, errors.Errorf("Unsupported token %+v, %+v for SubrangeType", t1, t2)
+		} else {
+			return nil, nil
+		}
 	}
 }
 

@@ -25,6 +25,14 @@ func NewTokenizer(text *[]rune, flags TokeninzerFlag) *Tokenizer {
 	}
 }
 
+func (t *Tokenizer) Clone() *Tokenizer {
+	return &Tokenizer{
+		Cursor:      t.Cursor.Clone(),
+		loadSpace:   t.loadSpace,
+		loadComment: t.loadComment,
+	}
+}
+
 var processors = []func(*runes.Cursor) *Token{
 	ProcessEof,
 	ProcessComment,

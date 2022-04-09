@@ -16,6 +16,14 @@ func NewCuror(text *[]rune) *Cursor {
 	}
 }
 
+func (c *Cursor) Clone() *Cursor {
+	return &Cursor{
+		Text:     c.Text,
+		Len:      c.Len,
+		Position: c.Position.Clone(),
+	}
+}
+
 func (c *Cursor) Current() rune {
 	return c.Seek(0)
 }

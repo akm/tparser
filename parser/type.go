@@ -82,54 +82,38 @@ func (p *Parser) ParseType() (ast.Type, error) {
 }
 
 func (p *Parser) ParseTypeForIdentifier() (ast.Type, error) {
-	if res, err := p.ParseRealType(false); err != nil {
-		return nil, err
-	} else if res != nil {
-		return res, nil
-	} else if res, err := p.ParseOrdIdent(false); err != nil {
-		return nil, err
-	} else if res != nil {
-		return res, nil
-	} else if res, err := p.ParseStringType(false); err != nil {
-		return nil, err
-	} else if res != nil {
-		return res, nil
+	if res, err := p.parseTypeIdWithUnit(); res != nil || err != nil {
+		return res, err
+	} else if res, err := p.ParseRealType(false); res != nil || err != nil {
+		return res, err
+	} else if res, err := p.ParseOrdIdent(false); res != nil || err != nil {
+		return res, err
+	} else if res, err := p.ParseStringType(false); res != nil || err != nil {
+		return res, err
+	} else if res, err := p.parseSubrangeTypeForIdentifier(false); res != nil || err != nil {
+		return res, err
 	} else {
-		return p.ParseTypeIdOrSubrangeType()
+		return p.parseTypeIdWithoutUnit()
 	}
 }
 
-func (p *Parser) ParseTypeIdOrSubrangeType() (ast.Type, error) {
-	t1 := p.CurrentToken()
-	t2 := p.NextToken()
-	if res, err := p.parseSubrangeTypeForIdentifier(t1, t2, false); err != nil {
-		return nil, err
-	} else if res != nil {
-		return res, nil
-	} else if res, err := p.parseTypeId(t1, t2); err != nil {
-		return nil, err
-	} else {
-		return res, nil
+func (p *Parser) parseTypeIdWithUnit() (*ast.TypeId, error) {
+	if !p.IsUnitIdentifier() {
+		return nil, nil
 	}
+	unitId := ast.UnitId(p.CurrentToken().Value())
+	if _, err := p.Next(token.Symbol('.')); err != nil {
+		return nil, err
+	}
+	t, err := p.Next(token.Identifier)
+	if err != nil {
+		return nil, err
+	}
+	return &ast.TypeId{UnitId: &unitId, Ident: ast.Ident(t.Value())}, nil
 }
 
-// t1 must be identifier token
-// t2 can be "." or others
-func (p *Parser) parseTypeId(t1, t2 *token.Token) (*ast.TypeId, error) {
-	if t2.Is(token.Symbol('.')) {
-		t3, err := p.Next(token.Identifier)
-		if err != nil {
-			return nil, err
-		}
-		unitId := ast.UnitId(t1.Value())
-		p.NextToken()
-		return &ast.TypeId{
-			UnitId: &unitId,
-			Ident:  ast.Ident(t3.Value()),
-		}, nil
-	} else {
-		return &ast.TypeId{
-			Ident: ast.Ident(t1.Value()),
-		}, nil
-	}
+func (p *Parser) parseTypeIdWithoutUnit() (*ast.TypeId, error) {
+	return &ast.TypeId{
+		Ident: ast.Ident(p.CurrentToken().Value()),
+	}, nil
 }

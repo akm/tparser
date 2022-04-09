@@ -18,6 +18,15 @@ func NewToken(typ Type, text *[]rune, start, end *runes.Position) *Token {
 	return &Token{Type: typ, text: text, Start: start, End: end}
 }
 
+func (t *Token) Clone() *Token {
+	return &Token{
+		Type:  t.Type,
+		text:  t.text,
+		Start: t.Start.Clone(),
+		End:   t.End.Clone(),
+	}
+}
+
 func (t *Token) Raw() []rune {
 	return (*t.text)[t.Start.Index:t.End.Index]
 }

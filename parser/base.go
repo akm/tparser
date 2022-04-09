@@ -7,19 +7,40 @@ import (
 
 type Parser struct {
 	tokenizer *token.Tokenizer
-
-	curr  *token.Token
-	prior *token.Token
+	curr      *token.Token
+	context   *Context
 }
 
-func NewParser(text *[]rune) *Parser {
+func NewParser(text *[]rune, args ...interface{}) *Parser {
+	var ctx *Context
+	for _, arg := range args {
+		switch v := arg.(type) {
+		case *Context:
+			ctx = v
+		default:
+			panic(errors.Errorf("unexpected type %T (%v)", arg, arg))
+		}
+	}
+	if ctx == nil {
+		ctx = NewContext()
+	}
 	return &Parser{
 		tokenizer: token.NewTokenizer(text, 0),
+		context:   ctx,
+	}
+}
+
+func (p *Parser) RollbackPoint() func() {
+	tokenizer := p.tokenizer.Clone()
+	curr := p.curr.Clone()
+	return func() {
+		p.tokenizer = tokenizer
+		p.curr = curr
 	}
 }
 
 func (p *Parser) NextToken() *token.Token {
-	p.prior, p.curr = p.curr, p.tokenizer.GetNext()
+	p.curr = p.tokenizer.GetNext()
 	return p.curr
 }
 
