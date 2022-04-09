@@ -17,6 +17,15 @@ func NewParser(text *[]rune) *Parser {
 	}
 }
 
+func (p *Parser) RollbackPoint() func() {
+	tokenizer := p.tokenizer.Clone()
+	curr := p.curr.Clone()
+	return func() {
+		p.tokenizer = tokenizer
+		p.curr = curr
+	}
+}
+
 func (p *Parser) NextToken() *token.Token {
 	p.curr = p.tokenizer.GetNext()
 	return p.curr
