@@ -33,6 +33,14 @@ func NewUnitId(name string) *UnitId {
 	return &r
 }
 
+func (u *UnitId) String() string {
+	if u == nil {
+		return ""
+	} else {
+		return string(*u)
+	}
+}
+
 type QualId struct {
 	UnitId *UnitId
 	Ident  Ident
