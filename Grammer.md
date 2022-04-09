@@ -680,7 +680,10 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   FORWARD
   ```
   ```
-  MESSAGE ConstExpr -> OVERRIDE
+  MESSAGE ConstExpr
+  ```
+  ```
+  OVERRIDE
   ```
   ```
   OVERLOAD
