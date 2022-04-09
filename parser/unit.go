@@ -6,6 +6,10 @@ import (
 	"github.com/pkg/errors"
 )
 
+func (p *Parser) IsUnitIdentifier() bool {
+	return p.context.IsUnitIdentifier(p.CurrentToken())
+}
+
 func (p *Parser) ParseUnit() (*ast.Unit, error) {
 	if _, err := p.Current(token.ReservedWord.HasKeyword("UNIT")); err != nil {
 		return nil, err
@@ -60,6 +64,7 @@ func (p *Parser) ParseInterfaceSection() (*ast.InterfaceSection, error) {
 			return nil, err
 		}
 		res.UsesClause = usesClause
+		p.context.unitIdentifiers = append(p.context.unitIdentifiers, (*usesClause)...)
 		p.NextToken()
 	}
 
