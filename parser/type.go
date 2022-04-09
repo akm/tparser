@@ -100,13 +100,11 @@ func (p *Parser) ParseTypeForIdentifier() (ast.Type, error) {
 }
 
 func (p *Parser) ParseTypeIdOrSubrangeType() (ast.Type, error) {
-	t1 := p.CurrentToken()
-	t2 := p.NextToken()
-	if res, err := p.parseSubrangeTypeForIdentifier(t1, t2, false); err != nil {
+	if res, err := p.parseSubrangeTypeForIdentifier(false); err != nil {
 		return nil, err
 	} else if res != nil {
 		return res, nil
-	} else if res, err := p.parseTypeId(t1, t2); err != nil {
+	} else if res, err := p.parseTypeId(); err != nil {
 		return nil, err
 	} else {
 		return res, nil
@@ -115,7 +113,11 @@ func (p *Parser) ParseTypeIdOrSubrangeType() (ast.Type, error) {
 
 // t1 must be identifier token
 // t2 can be "." or others
-func (p *Parser) parseTypeId(t1, t2 *token.Token) (*ast.TypeId, error) {
+func (p *Parser) parseTypeId() (*ast.TypeId, error) {
+	rollback := p.RollbackPoint()
+	t1 := p.CurrentToken()
+	t2 := p.NextToken()
+
 	if t2.Is(token.Symbol('.')) {
 		t3, err := p.Next(token.Identifier)
 		if err != nil {
@@ -128,6 +130,7 @@ func (p *Parser) parseTypeId(t1, t2 *token.Token) (*ast.TypeId, error) {
 			Ident:  ast.Ident(t3.Value()),
 		}, nil
 	} else {
+		defer rollback()
 		return &ast.TypeId{
 			Ident: ast.Ident(t1.Value()),
 		}, nil
