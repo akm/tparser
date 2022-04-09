@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/akm/tparser/ast"
+	"github.com/akm/tparser/ext"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -50,6 +51,7 @@ func TestUnitWithTypeSection(t *testing.T) {
 		[]rune(`
 		UNIT Unit1;
 		INTERFACE
+		USES Unit2;
 		TYPE
 			TTypeId1 = TType1;
 			TTypeId2 = Unit2.TType2;
@@ -67,6 +69,7 @@ func TestUnitWithTypeSection(t *testing.T) {
 		&ast.Unit{
 			Ident: ast.Ident("Unit1"),
 			InterfaceSection: &ast.InterfaceSection{
+				UsesClause: &ast.UsesClause{"Unit2"},
 				InterfaceDecls: []ast.InterfaceDecl{
 					ast.TypeSection{
 						{Ident: ast.Ident("TTypeId1"), Type: &ast.TypeId{Ident: ast.Ident("TType1")}},
@@ -149,9 +152,11 @@ func TestTypeSection(t *testing.T) {
 }
 
 func TestTypeDecl(t *testing.T) {
+	u1 := ast.UnitId("U1")
+
 	run := func(name string, text []rune, expected *ast.TypeDecl) {
 		t.Run(name, func(t *testing.T) {
-			parser := NewParser(&text)
+			parser := NewParser(&text, NewContext(ext.Strings{u1.String()}))
 			parser.NextToken()
 			res, err := parser.ParseTypeDecl()
 			if assert.NoError(t, err) {
@@ -168,7 +173,7 @@ func TestTypeDecl(t *testing.T) {
 			Type:  &ast.TypeId{Ident: ast.Ident("TType1")},
 		},
 	)
-	u1 := ast.UnitId("U1")
+
 	run(
 		"simple type with unit",
 		[]rune(`TTypeId1 = U1.TType1`),
@@ -188,11 +193,13 @@ func TestTypeDecl(t *testing.T) {
 }
 
 func TestTypeId(t *testing.T) {
+	u1 := ast.UnitId("U1")
+
 	run := func(name string, text []rune, expected *ast.TypeId) {
 		t.Run(name, func(t *testing.T) {
-			parser := NewParser(&text)
+			parser := NewParser(&text, NewContext(ext.Strings{u1.String()}))
 			parser.NextToken()
-			res, err := parser.ParseTypeIdOrSubrangeType()
+			res, err := parser.ParseTypeForIdentifier()
 			if assert.NoError(t, err) {
 				assert.Equal(t, expected, res)
 			}
@@ -205,7 +212,6 @@ func TestTypeId(t *testing.T) {
 		&ast.TypeId{Ident: ast.Ident("TType1")},
 	)
 
-	u1 := ast.UnitId("U1")
 	run(
 		"type with unit",
 		[]rune(`U1.TType1`),
