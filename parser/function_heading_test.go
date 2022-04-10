@@ -1,64 +1,13 @@
 package parser
 
 import (
+	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/akm/tparser/ast"
 	"github.com/stretchr/testify/assert"
 )
-
-func TestUnitWithFunctionHeading(t *testing.T) {
-	run := func(name string, text []rune, expected *ast.Unit) {
-		t.Run(name, func(t *testing.T) {
-			parser := NewParser(&text)
-			parser.NextToken()
-			res, err := parser.ParseUnit()
-			if assert.NoError(t, err) {
-				assert.Equal(t, expected, res)
-			}
-		})
-	}
-
-	unit2 := ast.UnitId("Unit2")
-	run(
-		"function headings",
-		[]rune(`
-		UNIT Unit1;
-		INTERFACE
-		USES Unit2;
-		TYPE TTypeId1 = INTEGER;
-
-		PROCEDURE Proc0;
-		PROCEDURE Proc1(Param1: INTEGER);
-		PROCEDURE Proc2(Param1: STRING; Param2: TTypeId1);
-		PROCEDURE Proc3(Param1, Param2, Param3: Unit2.TType2);
-		PROCEDURE Proc4(VAR Param1, Param2: REAL; CONST Param3: DOUBLE; OUT Param4: FILE);
-		PROCEDURE Proc5(Param1, Param2: Array of Unit2.TType2, Param3: BOOLEAN);
-
-		TYPE TTypeId2 = INTEGER;
-
-		FUNCTION Func0: INTEGER;
-		FUNCTION Func1(Param1: INTEGER): STRING;
-		FUNCTION Func2(Param1: STRING; Param2: Unit2.TType2): TTypeId2;
-		FUNCTION Func3(Param1: STRING; Param2: TTypeId2): Unit2.TType2;
-
-		IMPLEMENTATION
-		END.`),
-		&ast.Unit{
-			Ident: ast.Ident("Unit1"),
-			InterfaceSection: &ast.InterfaceSection{
-				UsesClause: &ast.UsesClause{"Unit2"},
-				InterfaceDecls: []ast.InterfaceDecl{
-					ast.TypeSection{
-						{Ident: ast.Ident("TTypeId1"), Type: &ast.TypeId{Ident: ast.Ident("INTEGER")}},
-						{Ident: ast.Ident("TTypeId2"), Type: &ast.TypeId{UnitId: &unit2, Ident: ast.Ident("TType2")}},
-					},
-				},
-			},
-			ImplementationSection: &ast.ImplementationSection{},
-		},
-	)
-}
 
 func TestExportHeading(t *testing.T) {
 	run := func(text string, expected *ast.ExportedHeading) {
@@ -234,6 +183,37 @@ func TestExportHeading(t *testing.T) {
 	for _, ptn := range patterns {
 		run(ptn.text, ptn.expected)
 	}
+
+	t.Run("FunctionHeadings in unit", func(t *testing.T) {
+		headings := make([]string, len(patterns))
+		decls := make([]ast.InterfaceDecl, len(patterns))
+		for i, ptn := range patterns {
+			headings[i] = ptn.text
+			decls[i] = ptn.expected
+		}
+
+		unitText := []rune(fmt.Sprintf(`UNIT Unit1;
+		INTERFACE
+		%s
+		IMPLEMENTATION
+		END.`, strings.Join(headings, "\n")))
+
+		parser := NewParser(&unitText)
+		parser.NextToken()
+		res, err := parser.ParseUnit()
+		if assert.NoError(t, err) {
+			assert.Equal(t,
+				&ast.Unit{
+					Ident: ast.Ident("Unit1"),
+					InterfaceSection: &ast.InterfaceSection{
+						InterfaceDecls: decls,
+					},
+					ImplementationSection: &ast.ImplementationSection{},
+				},
+				res,
+			)
+		}
+	})
 }
 
 func TestFormalParameters(t *testing.T) {
