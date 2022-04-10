@@ -632,6 +632,8 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
   FUNCTION Ident [FormalParameters] ':' (SimpleType | STRING)
   ```
+  (Actually ReturnType is not only SimpleType or STRING.
+  TypeId also can be also.)
 - ProcedureHeading
   ```
   PROCEDURE Ident [FormalParameters]
@@ -648,6 +650,8 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
   IdentList [':' ([ARRAY OF] SimpleType | STRING | FILE)]
   ```
+  (Parameter type is not only SimpleType, STRING or FILE.
+  TypeId also can be also.)
   ```
   Ident ':' SimpleType '=' ConstExpr
   ```
