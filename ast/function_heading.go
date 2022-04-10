@@ -11,6 +11,7 @@ import "github.com/pkg/errors"
 //   ```
 //
 //
+func (*ExportedHeading) canBeInterfaceDecl() {}
 
 type ExportedHeading struct {
 	FunctionHeading FunctionHeading
