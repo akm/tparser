@@ -1,5 +1,7 @@
 package ast
 
+import "github.com/pkg/errors"
+
 // - ExportedHeading
 //   ```
 //   ProcedureHeading ';' [Directive]
@@ -65,6 +67,35 @@ type FormalParm struct {
 	Parameter
 }
 
+func NewFormalParm(name interface{}, typ interface{}, args ...interface{}) *FormalParm {
+	var opt *FormalParmOption
+	if len(args) > 1 {
+		panic(errors.Errorf("too many arguments for NewFormalParm: %v, %v", name, args))
+	} else if len(args) == 1 {
+		switch v := args[0].(type) {
+		case FormalParmOption:
+			opt = &v
+		case *FormalParmOption:
+			opt = v
+		case string:
+			switch v {
+			case "VAR":
+				opt = &FpoVar
+			case "CONST":
+				opt = &FpoConst
+			case "OUT":
+				opt = &FpoOut
+			default:
+				panic(errors.Errorf("invalid FormalParam option %q for NewFormalParm", v))
+			}
+		}
+	}
+	return &FormalParm{
+		Opt:       opt,
+		Parameter: *NewParameter(name, typ),
+	}
+}
+
 // - Parameter
 //   ```
 //   IdentList [':' ([ARRAY OF] SimpleType | STRING | FILE)]
@@ -79,8 +110,41 @@ type ParameterType struct {
 	IsArray bool
 }
 
+func NewParameterType(arg interface{}) *ParameterType {
+	switch v := arg.(type) {
+	case *ParameterType:
+		return v
+	case ParameterType:
+		return &v
+	case Type:
+		return &ParameterType{Type: v}
+	default:
+		return &ParameterType{Type: NewTypeId(arg)}
+	}
+}
+func NewArrayParameterType(arg interface{}) *ParameterType {
+	r := NewParameterType(arg)
+	r.IsArray = true
+	return r
+}
+
 type Parameter struct {
 	IdentList IdentList
 	Type      *ParameterType
 	ConstExpr *ConstExpr
+}
+
+func NewParameter(name interface{}, typArg interface{}) *Parameter {
+	var typ *ParameterType
+	if typArg != nil {
+		switch v := typArg.(type) {
+		case ParameterType:
+			typ = &v
+		case *ParameterType:
+			typ = v
+		default:
+			typ = NewParameterType(typArg)
+		}
+	}
+	return &Parameter{IdentList: NewIdentList(name), Type: typ}
 }
