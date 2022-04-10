@@ -11,6 +11,7 @@ import (
 //   (OrdinalType | RealType)
 //   ```
 type SimpleType interface {
+	Type
 	isSimpleType()
 }
 
@@ -50,6 +51,7 @@ var realTypeNames = ext.Strings{
 	"COMP",
 }.Set()
 
+func (*RealType) isType()       {}
 func (*RealType) isSimpleType() {}
 
 type RealType struct {
@@ -133,6 +135,7 @@ var ordIdentNames = ext.Strings{
 	// "PWIDECHAR",
 }.Set()
 
+func (*OrdIdent) isType()        {}
 func (*OrdIdent) isSimpleType()  {}
 func (*OrdIdent) isOrdinalType() {}
 
@@ -148,6 +151,7 @@ type OrdIdent struct {
 //   ```
 //   Ident [ '=' ConstExpr ]
 //   ```
+func (EnumeratedType) isType()        {}
 func (EnumeratedType) isSimpleType()  {}
 func (EnumeratedType) isOrdinalType() {}
 
@@ -162,6 +166,7 @@ type EnumeratedTypeElement struct {
 //   ```
 //   ConstExpr '..' ConstExpr
 //   ```
+func (*SubrangeType) isType()        {}
 func (*SubrangeType) isSimpleType()  {}
 func (*SubrangeType) isOrdinalType() {}
 
