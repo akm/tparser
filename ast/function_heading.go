@@ -26,6 +26,8 @@ const (
 //   ```
 //   FUNCTION Ident [FormalParameters] ':' (SimpleType | STRING)
 //   ```
+//   (Actually ReturnType is not only SimpleType or STRING.
+//   TypeId also can be ReturnType.)
 // - ProcedureHeading
 //   ```
 //   PROCEDURE Ident [FormalParameters]
@@ -37,12 +39,7 @@ type FunctionHeading struct {
 	Type             FunctionType
 	Ident            Ident
 	FormalParameters FormalParameters
-	ReturnType       *FunctionHeadingReturnType
-}
-
-type FunctionHeadingReturnType struct {
-	SimpleType SimpleType // allow nil
-	TypeName   *string    // STRING or nil
+	ReturnType       Type
 }
 
 // - FormalParameters
@@ -57,7 +54,7 @@ type FormalParameters []*FormalParm
 //   ```
 type FormalParmOption string
 
-const (
+var (
 	FpoVar   FormalParmOption = "VAR"
 	FpoConst FormalParmOption = "CONST"
 	FpoOut   FormalParmOption = "OUT"
@@ -72,13 +69,14 @@ type FormalParm struct {
 //   ```
 //   IdentList [':' ([ARRAY OF] SimpleType | STRING | FILE)]
 //   ```
+//   (Parameter type is not only SimpleType, STRING or FILE.
+//   TypeId also can be also.)
 //   ```
 //   Ident ':' SimpleType '=' ConstExpr
 //   ```
 type ParameterType struct {
-	IsArray    bool
-	SimpleType SimpleType // allow nil
-	TypeName   *string    // STRING, FILE or nil
+	Type
+	IsArray bool
 }
 
 type Parameter struct {
