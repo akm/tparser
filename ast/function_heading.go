@@ -16,6 +16,7 @@ func (*ExportedHeading) canBeInterfaceDecl() {}
 type ExportedHeading struct {
 	FunctionHeading FunctionHeading
 	Directive       []Directive
+	ExternalOptions *ExternalOptions
 }
 
 type FunctionType uint
