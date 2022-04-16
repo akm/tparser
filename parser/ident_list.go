@@ -6,8 +6,12 @@ import (
 )
 
 func (p *Parser) ParseIdentList(terminator rune) (*ast.IdentList, error) {
+	return p.ParseIdentListBy(token.Symbol(terminator))
+}
+
+func (p *Parser) ParseIdentListBy(terminatorPredicate token.Predicator) (*ast.IdentList, error) {
 	res := ast.IdentList{}
-	err := p.Until(token.Symbol(terminator), token.Symbol(','), func() error {
+	err := p.Until(terminatorPredicate, token.Symbol(','), func() error {
 		t, err := p.Current(token.Identifier)
 		if err != nil {
 			return err
@@ -19,7 +23,7 @@ func (p *Parser) ParseIdentList(terminator rune) (*ast.IdentList, error) {
 	if err != nil {
 		return nil, err
 	}
-	if _, err := p.Current(token.Symbol(terminator)); err != nil {
+	if _, err := p.Current(terminatorPredicate); err != nil {
 		return nil, err
 	}
 	return &res, nil
