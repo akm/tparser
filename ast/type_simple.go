@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/akm/tparser/ext"
+	"github.com/pkg/errors"
 )
 
 // - SimpleType
@@ -56,6 +57,19 @@ func (*RealType) isSimpleType() {}
 
 type RealType struct {
 	Name Ident
+}
+
+func NewRealType(name interface{}) *RealType {
+	switch v := name.(type) {
+	case *RealType:
+		return v
+	case Ident:
+		return &RealType{Name: v}
+	case string:
+		return &RealType{Name: Ident(v)}
+	default:
+		panic(errors.Errorf("invalid type %T for NewRealType %+v", name, name))
+	}
 }
 
 // - OrdinalType
@@ -141,6 +155,19 @@ func (*OrdIdent) isOrdinalType() {}
 
 type OrdIdent struct {
 	Name Ident
+}
+
+func NewOrdIdent(name interface{}) *OrdIdent {
+	switch v := name.(type) {
+	case *OrdIdent:
+		return v
+	case Ident:
+		return &OrdIdent{Name: v}
+	case string:
+		return &OrdIdent{Name: Ident(v)}
+	default:
+		panic(errors.Errorf("invalid type %T for NewOrdIndent %+v", name, name))
+	}
 }
 
 // - EnumeratedType
