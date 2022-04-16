@@ -188,11 +188,9 @@ func (p *Parser) ParseFactor() (ast.Factor, error) {
 			return &ast.Not{Factor: f}, nil
 		}
 	} else if t0.Is(token.CharacterString) {
-		p.NextToken()
-		return &ast.String{ValueFactor: ast.ValueFactor{Value: t0Value}}, nil
+		return p.ParseStringFactor(t0, true)
 	} else if t0.Is(token.Some(token.NumeralInt, token.NumeralReal)) {
-		p.NextToken()
-		return &ast.Number{ValueFactor: ast.ValueFactor{Value: t0Value}}, nil
+		return p.ParseNumberFactor(t0, true)
 	} else if t0.Is(token.Some(token.Identifier, token.Directive)) {
 		// TODO Distinguish between DesignatorFactor or TypeCast. How?
 		d, err := p.ParseDesignator()
@@ -215,6 +213,24 @@ func (p *Parser) ParseFactor() (ast.Factor, error) {
 	}
 
 	return nil, errors.Errorf("unexpected token %s", t0)
+}
+
+func (p *Parser) ParseStringFactor(t *token.Token, skipTypeCheck bool) (*ast.String, error) {
+	if skipTypeCheck || t.Is(token.CharacterString) {
+		p.NextToken()
+		return &ast.String{ValueFactor: ast.ValueFactor{Value: t.Value()}}, nil
+	} else {
+		return nil, errors.Errorf("unexpected token %s for StringFactor", t)
+	}
+}
+
+func (p *Parser) ParseNumberFactor(t *token.Token, skipTypeCheck bool) (*ast.Number, error) {
+	if skipTypeCheck || t.Is(token.CharacterString) {
+		p.NextToken()
+		return &ast.Number{ValueFactor: ast.ValueFactor{Value: t.Value()}}, nil
+	} else {
+		return nil, errors.Errorf("unexpected token %s for NumberFactor", t)
+	}
 }
 
 func (p *Parser) ParseDesignator() (*ast.Designator, error) {
