@@ -113,7 +113,7 @@ func (p *Parser) parseTypeIdWithUnit() (*ast.TypeId, error) {
 }
 
 func (p *Parser) parseTypeIdWithoutUnit() (*ast.TypeId, error) {
-	return &ast.TypeId{
-		Ident: ast.Ident(p.CurrentToken().Value()),
-	}, nil
+	ident := ast.Ident(p.CurrentToken().Value())
+	p.NextToken()
+	return &ast.TypeId{Ident: ident}, nil
 }
