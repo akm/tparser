@@ -122,6 +122,9 @@ type ParameterType struct {
 }
 
 func NewParameterType(arg interface{}) *ParameterType {
+	if arg == nil {
+		return &ParameterType{}
+	}
 	switch v := arg.(type) {
 	case *ParameterType:
 		return v
