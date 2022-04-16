@@ -63,8 +63,10 @@ func (typ Type) HasText(s string) Predicator {
 
 // kw must be upper case
 func (typ Type) HasKeyword(kw string) Predicator {
-	if !isReservedWord(kw) {
+	if typ == ReservedWord && !isReservedWord(kw) {
 		panic(errors.Errorf("%q is not a reserved word", kw))
+	} else if typ == Directive && !isDirective(kw) {
+		panic(errors.Errorf("%q is not a directive", kw))
 	}
 	return &PredicatorImpl{
 		name:      fmt.Sprintf("%s has %q", typ.String(), kw),
