@@ -112,7 +112,7 @@ func TestExportHeading(t *testing.T) {
 	run(
 		"function MyFunction(X, Y: Real): Real; cdecl;",
 		&ast.ExportedHeading{
-			Directive: []ast.Directive{ast.DrCdecl},
+			Directives: []ast.Directive{ast.DrCdecl},
 			FunctionHeading: ast.FunctionHeading{
 				Type:  ast.FtFunction,
 				Ident: ast.Ident("MyFunction"),
@@ -127,7 +127,7 @@ func TestExportHeading(t *testing.T) {
 	run(
 		"function Calculate(X, Y: Integer): Real; forward;",
 		&ast.ExportedHeading{
-			Directive: []ast.Directive{ast.DrForward},
+			Directives: []ast.Directive{ast.DrForward},
 			FunctionHeading: ast.FunctionHeading{
 				Type:  ast.FtFunction,
 				Ident: ast.Ident("Calculate"),
@@ -142,7 +142,7 @@ func TestExportHeading(t *testing.T) {
 	run(
 		"function printf(Format: PChar): Integer; cdecl; varargs;",
 		&ast.ExportedHeading{
-			Directive: []ast.Directive{ast.DrCdecl, ast.DrVarArgs},
+			Directives: []ast.Directive{ast.DrCdecl, ast.DrVarArgs},
 			FunctionHeading: ast.FunctionHeading{
 				Type:  ast.FtFunction,
 				Ident: ast.Ident("printf"),
@@ -165,7 +165,7 @@ func TestExportHeading(t *testing.T) {
 					ast.NewFormalParm("Count", ast.NewOrdIdent("Integer")),
 				},
 			},
-			Directive: []ast.Directive{ast.DrExternal},
+			Directives: []ast.Directive{ast.DrExternal},
 		},
 	)
 
@@ -180,7 +180,7 @@ func TestExportHeading(t *testing.T) {
 				},
 				ReturnType: ast.NewStringType("STRING"),
 			},
-			Directive:       []ast.Directive{ast.DrExternal},
+			Directives:      []ast.Directive{ast.DrExternal},
 			ExternalOptions: &ast.ExternalOptions{LibraryName: "'strlib.dll'"},
 		},
 	)
@@ -198,7 +198,7 @@ func TestExportHeading(t *testing.T) {
 				},
 				ReturnType: ast.NewOrdIdent("Integer"),
 			},
-			Directive:       []ast.Directive{ast.DrStdcall, ast.DrExternal},
+			Directives:      []ast.Directive{ast.DrStdcall, ast.DrExternal},
 			ExternalOptions: &ast.ExternalOptions{LibraryName: "'user32.dll'", Name: ext.StringPtr("'MessageBoxA'")},
 		},
 	)
@@ -214,7 +214,7 @@ func TestExportHeading(t *testing.T) {
 				},
 				ReturnType: ast.NewRealType("Real"),
 			},
-			Directive: []ast.Directive{ast.DrOverload},
+			Directives: []ast.Directive{ast.DrOverload},
 		},
 	)
 

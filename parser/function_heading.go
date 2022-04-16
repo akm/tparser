@@ -31,14 +31,14 @@ func (p *Parser) ParseExportedHeading() (*ast.ExportedHeading, error) {
 	r := &ast.ExportedHeading{FunctionHeading: *functionHeading}
 	p.NextToken()
 	if p.CurrentToken().Is(token.Directive) {
-		r.Directive = []ast.Directive{}
+		r.Directives = []ast.Directive{}
 		for {
 			t := p.CurrentToken()
 			if !t.Is(token.Directive) {
 				break
 			}
 			dir := ast.Directive(strings.ToUpper(t.Value()))
-			r.Directive = append(r.Directive, dir)
+			r.Directives = append(r.Directives, dir)
 			switch dir {
 			case ast.DrExternal:
 				extOpts, err := p.ParseExternalOptions()
