@@ -162,7 +162,7 @@ func TestExportHeading(t *testing.T) {
 				Ident: ast.Ident("MoveWord"),
 				FormalParameters: ast.FormalParameters{
 					ast.NewFormalParm([]string{"Source", "Dest"}, nil, &ast.FpoVar),
-					ast.NewFormalParm("Count", ast.NewOrdIdent("Integer"), &ast.FpoVar),
+					ast.NewFormalParm("Count", ast.NewOrdIdent("Integer")),
 				},
 			},
 			Directive: []ast.Directive{ast.DrExternal},
@@ -194,7 +194,7 @@ func TestExportHeading(t *testing.T) {
 				FormalParameters: ast.FormalParameters{
 					ast.NewFormalParm("HWnd", ast.NewOrdIdent("Integer")),
 					ast.NewFormalParm([]string{"Text", "Caption"}, "PChar"),
-					ast.NewFormalParm("PChar", ast.NewOrdIdent("Integer")),
+					ast.NewFormalParm("Flags", ast.NewOrdIdent("Integer")),
 				},
 				ReturnType: ast.NewOrdIdent("Integer"),
 			},
@@ -340,9 +340,9 @@ func TestExportHeading(t *testing.T) {
 				Type:  ast.FtFunction,
 				Ident: ast.Ident("MakeStr"),
 				FormalParameters: ast.FormalParameters{
-					ast.NewFormalParm([]string{"Args"}, nil, &ast.FpoConst),
+					ast.NewFormalParm([]string{"Args"}, ast.NewArrayParameterType(nil), &ast.FpoConst),
 				},
-				ReturnType: ast.NewStringType("string"),
+				ReturnType: ast.NewStringType("STRING"),
 			},
 		},
 	)
