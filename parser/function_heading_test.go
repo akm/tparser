@@ -229,43 +229,32 @@ func TestFormalParameters(t *testing.T) {
 		})
 	}
 
-	type pattern struct {
-		text     string
-		expected ast.FormalParameters
-	}
-
-	patterns := []pattern{
-		{text: "", expected: nil},
-		{
-			text: "(X, Y: Real)",
-			expected: ast.FormalParameters{
-				ast.NewFormalParm([]string{"X", "Y"}, "Real"),
-			},
+	run(
+		"(X, Y: Real)",
+		ast.FormalParameters{
+			ast.NewFormalParm([]string{"X", "Y"}, ast.NewRealType("Real")),
 		},
-		{
-			text: "(var S: string; X: Integer)",
-			expected: ast.FormalParameters{
-				ast.NewFormalParm("S", "string", &ast.FpoVar),
-				ast.NewFormalParm("X", "Integer"),
-			},
+	)
+	run(
+		"(var S: string; X: Integer)",
+		ast.FormalParameters{
+			ast.NewFormalParm("S", ast.NewStringType("STRING"), &ast.FpoVar),
+			ast.NewFormalParm("X", ast.NewOrdIdent("Integer")),
 		},
-		{
-			text: "(HWnd: Integer; Text, Caption: PChar; PChar: Integer)",
-			expected: ast.FormalParameters{
-				ast.NewFormalParm("HWnd", "Integer"),
-				ast.NewFormalParm([]string{"Text", "Caption"}, "PChar"),
-				ast.NewFormalParm("PChar", "Integer"),
-			},
+	)
+	run(
+		"(HWnd: Integer; Text, Caption: PChar; PChar: Integer)",
+		ast.FormalParameters{
+			ast.NewFormalParm("HWnd", ast.NewOrdIdent("Integer")),
+			ast.NewFormalParm([]string{"Text", "Caption"}, "PChar"),
+			ast.NewFormalParm("PChar", ast.NewOrdIdent("Integer")),
 		},
-		{
-			text: "(const P; I: Integer)",
-			expected: ast.FormalParameters{
-				ast.NewFormalParm([]string{"P", "I"}, "Integer", &ast.FpoConst),
-			},
+	)
+	run(
+		"(const P; I: Integer)",
+		ast.FormalParameters{
+			ast.NewFormalParm([]string{"P"}, nil, &ast.FpoConst),
+			ast.NewFormalParm([]string{"I"}, ast.NewOrdIdent("Integer")),
 		},
-	}
-
-	for _, ptn := range patterns {
-		run(ptn.text, ptn.expected)
-	}
+	)
 }
