@@ -144,6 +144,8 @@ func NewParameter(name interface{}, typArg interface{}) *Parameter {
 			typ = &v
 		case *ParameterType:
 			typ = v
+		case Type:
+			typ = &ParameterType{Type: v}
 		default:
 			typ = NewParameterType(typArg)
 		}
