@@ -112,6 +112,20 @@ func (p *Parser) ParseInterfaceSection() (*ast.InterfaceSection, error) {
 			}
 			res.InterfaceDecls = append(res.InterfaceDecls, section)
 			continue
+		case "FUNCTION":
+			section, err := p.ParseExportedHeading()
+			if err != nil {
+				return nil, err
+			}
+			res.InterfaceDecls = append(res.InterfaceDecls, section)
+			continue
+		case "PROCEDURE":
+			section, err := p.ParseExportedHeading()
+			if err != nil {
+				return nil, err
+			}
+			res.InterfaceDecls = append(res.InterfaceDecls, section)
+			continue
 		}
 		break
 	}

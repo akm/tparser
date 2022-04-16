@@ -27,6 +27,39 @@ func TestExpression(t *testing.T) {
 	)
 
 	run(
+		"true constant of integer #1",
+		[]rune(`7`),
+		&ast.Expression{
+			SimpleExpression: ast.SimpleExpression{
+				Term: ast.Term{
+					Factor: &ast.Number{
+						ValueFactor: ast.ValueFactor{Value: "7"},
+					},
+				},
+			},
+		},
+	)
+	run(
+		"true constant of integer #2",
+		[]rune(`7`),
+		ast.NewExpression(ast.NewNumber("7")),
+	)
+
+	run(
+		"true constant of string",
+		[]rune(`'abc'`),
+		&ast.Expression{
+			SimpleExpression: ast.SimpleExpression{
+				Term: ast.Term{
+					Factor: &ast.String{
+						ValueFactor: ast.ValueFactor{Value: "'abc'"},
+					},
+				},
+			},
+		},
+	)
+
+	run(
 		"address of variable",
 		[]rune(`@X`),
 		ast.NewExpression(

@@ -34,8 +34,6 @@ func (p *Parser) ParseOrdIdent(required bool) (*ast.OrdIdent, error) {
 	}
 }
 
-// t1 must be identifier token
-// t2 can be ".." or others
 func (p *Parser) parseSubrangeTypeForIdentifier(required bool) (*ast.SubrangeType, error) {
 	rollback := p.RollbackPoint()
 	t1 := p.CurrentToken()

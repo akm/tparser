@@ -26,11 +26,11 @@ var directives = ext.Strings{
 	"FAR",
 	"FORWARD",
 	// "IMPLEMENTS", // Used in PropertySpecifiers
-	// "INDEX", // Used in ExportsItem or PropertySpecifiers
+	"INDEX", // Used in ExportsItem or PropertySpecifiers. Or in EXTERNAL Options
 	// "LIBRARY", // Used in library / ==> PortabilityDirective
 	"LOCAL",
 	"MESSAGE",
-	// "NAME", // Used in ExportsItem
+	"NAME", // Used in ExportsItem. . Or in EXTERNAL Options
 	"NEAR",
 	// "NODEFAULT", // Used in PropertySpecifiers
 	"OVERLOAD",
