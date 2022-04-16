@@ -27,9 +27,7 @@ func (p *Parser) ParseStringOfStringType() (*ast.StringType, error) {
 		return nil, nil
 	}
 	t2 := p.NextToken()
-	if t2.Is(token.Symbol(';')) || t2.Is(token.EOF) {
-		return &ast.StringType{Name: t1.Value()}, nil
-	} else if t2.Is(token.Symbol('[')) {
+	if t2.Is(token.Symbol('[')) {
 		p.NextToken()
 		expr, err := p.ParseConstExpr()
 		if err != nil {
@@ -41,6 +39,6 @@ func (p *Parser) ParseStringOfStringType() (*ast.StringType, error) {
 		p.NextToken()
 		return &ast.StringType{Name: "STRING", Length: expr}, nil
 	} else {
-		return nil, errors.Errorf("unexpected token %s", t2)
+		return &ast.StringType{Name: t1.Value()}, nil
 	}
 }
