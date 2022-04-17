@@ -8,9 +8,9 @@ import (
 
 func TestVar(t *testing.T) {
 	t.Run("VarSection implements InterfaceDecl", func(t *testing.T) {
-		var decl InterfaceDecl
-		decl = VarSection{}
-		assert.Implements(t, (*InterfaceDecl)(nil), decl)
+		assert.Implements(t, (*InterfaceDecl)(nil), VarSection{})
+		assert.Implements(t, (*DeclSection)(nil), VarSection{})
+		assert.Implements(t, (*InterfaceDecl)(nil), VarSection{})
 	})
 	t.Run("VarDeclAbsoluteConstExpr implements VarDeclAbsolute", func(t *testing.T) {
 		var abs VarDeclAbsolute

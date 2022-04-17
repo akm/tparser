@@ -9,6 +9,8 @@ import (
 func TestType(t *testing.T) {
 	t.Run("Node", func(t *testing.T) {
 		assert.Implements(t, (*Node)(nil), TypeSection{})
+		assert.Implements(t, (*DeclSection)(nil), TypeSection{})
+		assert.Implements(t, (*InterfaceDecl)(nil), TypeSection{})
 		assert.Implements(t, (*Node)(nil), &TypeDecl{})
 		assert.Implements(t, (*Node)(nil), &TypeId{})
 	})
