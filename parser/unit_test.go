@@ -52,7 +52,11 @@ func TestInterfaceSection(t *testing.T) {
 		"Uses only",
 		[]rune(`INTERFACE USES U1,U2,U3;`),
 		&ast.InterfaceSection{
-			UsesClause: &ast.UsesClause{"U1", "U2", "U3"},
+			UsesClause: &ast.UsesClause{
+				ast.NewUnitRef("U1"),
+				ast.NewUnitRef("U2"),
+				ast.NewUnitRef("U3"),
+			},
 		},
 	)
 }
