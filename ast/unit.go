@@ -10,11 +10,16 @@ func (*Unit) isGoal() {}
 //   InitSection '.'
 //   ```
 type Unit struct {
+	Path                  string
 	Ident                 Ident
 	PortabilityDirective  *PortabilityDirective // optional
 	InterfaceSection      *InterfaceSection
 	ImplementationSection *ImplementationSection
 	InitSection           *InitSection // optional
+}
+
+func (m *Unit) GetPath() string {
+	return m.Path
 }
 
 // - InterfaceSection
