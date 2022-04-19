@@ -7,6 +7,12 @@ import (
 )
 
 func TestVar(t *testing.T) {
+	t.Run("VarDecl", func(t *testing.T) {
+		assert.Implements(t, (*CodeBlock)(nil), &VarDecl{})
+	})
+	t.Run("ThreadVarDecl", func(t *testing.T) {
+		assert.Implements(t, (*CodeBlock)(nil), &ThreadVarDecl{})
+	})
 	t.Run("VarSection implements InterfaceDecl", func(t *testing.T) {
 		var decl InterfaceDecl
 		decl = VarSection{}

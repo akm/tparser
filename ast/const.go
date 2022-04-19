@@ -5,6 +5,7 @@ func (ConstSection) canBeInterfaceDecl() {}
 type ConstSection []*ConstantDecl
 
 type ConstantDecl struct {
+	CodeBlockNode
 	Ident                Ident
 	Type                 Type
 	ConstExpr            ConstExpr

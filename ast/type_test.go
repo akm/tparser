@@ -7,6 +7,9 @@ import (
 )
 
 func TestType(t *testing.T) {
+	t.Run("TypeDecl", func(t *testing.T) {
+		assert.Implements(t, (*CodeBlock)(nil), &TypeDecl{})
+	})
 	t.Run("Type", func(t *testing.T) {
 		assert.Implements(t, (*Type)(nil), &TypeId{})
 		// assert.Implements(t, (*Type)(nil), &SimpleType{}) // this check is in type_simple_test.go

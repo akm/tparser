@@ -18,6 +18,7 @@ type TypeSection []*TypeDecl
 //   Ident '=' [TYPE] RestrictedType [PortabilityDirective]
 //   ```
 type TypeDecl struct {
+	CodeBlockNode
 	Ident                Ident
 	Type                 Type
 	PortabilityDirective *PortabilityDirective

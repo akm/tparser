@@ -15,6 +15,7 @@ type VarSection []*VarDecl
 //     ```
 
 type VarDecl struct {
+	CodeBlockNode
 	IdentList            IdentList
 	Type                 Type
 	Absolute             VarDeclAbsolute
@@ -49,6 +50,7 @@ func (ThreadVarSection) canBeInterfaceDecl() {}
 type ThreadVarSection []*ThreadVarDecl
 
 type ThreadVarDecl struct {
+	CodeBlockNode
 	IdentList IdentList
 	Type      Type
 }

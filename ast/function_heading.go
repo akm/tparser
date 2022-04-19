@@ -40,6 +40,7 @@ const (
 func (*FunctionHeading) isExportedHeading() {}
 
 type FunctionHeading struct {
+	CodeBlockNode
 	Type             FunctionType
 	Ident            Ident
 	FormalParameters FormalParameters
