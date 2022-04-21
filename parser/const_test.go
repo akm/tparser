@@ -59,14 +59,14 @@ func TestConstSectionl(t *testing.T) {
 	}
 
 	run(
-		"number const",
+		"number const1",
 		[]rune(`CONST MaxValue = 237;`),
 		ast.ConstSection{
 			{Ident: ast.Ident("MaxValue"), ConstExpr: *ast.NewConstExpr(ast.NewNumber("237"))},
 		},
 	)
 	run(
-		"number const",
+		"number const2",
 		[]rune(`CONST Max: Integer = 100;`),
 		ast.ConstSection{
 			{Ident: ast.Ident("Max"), ConstExpr: *ast.NewConstExpr(ast.NewNumber("100")), Type: &ast.OrdIdent{Name: "Integer"}},
