@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/akm/tparser/ast"
+	"github.com/akm/tparser/ast/asttest"
 	"github.com/akm/tparser/ext"
 	"github.com/stretchr/testify/assert"
 )
@@ -36,7 +37,7 @@ func TestExportHeading(t *testing.T) {
 		&ast.ExportedHeading{
 			FunctionHeading: ast.FunctionHeading{
 				Type:  ast.FtProcedure,
-				Ident: *ast.NewIdent("Proc0"),
+				Ident: *asttest.NewIdent("Proc0"),
 			},
 		},
 	)
@@ -46,9 +47,9 @@ func TestExportHeading(t *testing.T) {
 		&ast.ExportedHeading{
 			FunctionHeading: ast.FunctionHeading{
 				Type:  ast.FtProcedure,
-				Ident: *ast.NewIdent("Proc1"),
+				Ident: *asttest.NewIdent("Proc1"),
 				FormalParameters: ast.FormalParameters{
-					ast.NewFormalParm("Param1", ast.NewOrdIdent("INTEGER")),
+					asttest.NewFormalParm("Param1", asttest.NewOrdIdent("INTEGER")),
 				},
 			},
 		},
@@ -59,10 +60,10 @@ func TestExportHeading(t *testing.T) {
 		&ast.ExportedHeading{
 			FunctionHeading: ast.FunctionHeading{
 				Type:  ast.FtProcedure,
-				Ident: *ast.NewIdent("NumString"),
+				Ident: *asttest.NewIdent("NumString"),
 				FormalParameters: ast.FormalParameters{
-					ast.NewFormalParm("N", ast.NewOrdIdent("Integer")),
-					ast.NewFormalParm("S", ast.NewStringType("STRING"), &ast.FpoVar),
+					asttest.NewFormalParm("N", asttest.NewOrdIdent("Integer")),
+					asttest.NewFormalParm("S", asttest.NewStringType("STRING"), &ast.FpoVar),
 				},
 			},
 		},
@@ -73,8 +74,8 @@ func TestExportHeading(t *testing.T) {
 		&ast.ExportedHeading{
 			FunctionHeading: ast.FunctionHeading{
 				Type:       ast.FtFunction,
-				Ident:      *ast.NewIdent("WF"),
-				ReturnType: ast.NewOrdIdent("Integer"),
+				Ident:      *asttest.NewIdent("WF"),
+				ReturnType: asttest.NewOrdIdent("Integer"),
 			},
 		},
 	)
@@ -84,12 +85,12 @@ func TestExportHeading(t *testing.T) {
 		&ast.ExportedHeading{
 			FunctionHeading: ast.FunctionHeading{
 				Type:  ast.FtFunction,
-				Ident: *ast.NewIdent("Max"),
+				Ident: *asttest.NewIdent("Max"),
 				FormalParameters: ast.FormalParameters{
-					ast.NewFormalParm("A", ast.NewArrayParameterType(ast.NewRealType("Real"))),
-					ast.NewFormalParm("N", ast.NewOrdIdent("Integer")),
+					asttest.NewFormalParm("A", asttest.NewArrayParameterType(asttest.NewRealType("Real"))),
+					asttest.NewFormalParm("N", asttest.NewOrdIdent("Integer")),
 				},
-				ReturnType: ast.NewRealType("Real"),
+				ReturnType: asttest.NewRealType("Real"),
 			},
 		},
 	)
@@ -99,12 +100,12 @@ func TestExportHeading(t *testing.T) {
 		&ast.ExportedHeading{
 			FunctionHeading: ast.FunctionHeading{
 				Type:  ast.FtFunction,
-				Ident: *ast.NewIdent("Power"),
+				Ident: *asttest.NewIdent("Power"),
 				FormalParameters: ast.FormalParameters{
-					ast.NewFormalParm("X", ast.NewRealType("Real")),
-					ast.NewFormalParm("Y", ast.NewOrdIdent("Integer")),
+					asttest.NewFormalParm("X", asttest.NewRealType("Real")),
+					asttest.NewFormalParm("Y", asttest.NewOrdIdent("Integer")),
 				},
-				ReturnType: ast.NewRealType("Real"),
+				ReturnType: asttest.NewRealType("Real"),
 			},
 		},
 	)
@@ -115,11 +116,11 @@ func TestExportHeading(t *testing.T) {
 			Directives: []ast.Directive{ast.DrCdecl},
 			FunctionHeading: ast.FunctionHeading{
 				Type:  ast.FtFunction,
-				Ident: *ast.NewIdent("MyFunction"),
+				Ident: *asttest.NewIdent("MyFunction"),
 				FormalParameters: ast.FormalParameters{
-					ast.NewFormalParm([]string{"X", "Y"}, ast.NewRealType("Real")),
+					asttest.NewFormalParm([]string{"X", "Y"}, asttest.NewRealType("Real")),
 				},
-				ReturnType: ast.NewRealType("Real"),
+				ReturnType: asttest.NewRealType("Real"),
 			},
 		},
 	)
@@ -130,11 +131,11 @@ func TestExportHeading(t *testing.T) {
 			Directives: []ast.Directive{ast.DrForward},
 			FunctionHeading: ast.FunctionHeading{
 				Type:  ast.FtFunction,
-				Ident: *ast.NewIdent("Calculate"),
+				Ident: *asttest.NewIdent("Calculate"),
 				FormalParameters: ast.FormalParameters{
-					ast.NewFormalParm([]string{"X", "Y"}, ast.NewOrdIdent("Integer")),
+					asttest.NewFormalParm([]string{"X", "Y"}, asttest.NewOrdIdent("Integer")),
 				},
-				ReturnType: ast.NewRealType("Real"),
+				ReturnType: asttest.NewRealType("Real"),
 			},
 		},
 	)
@@ -145,11 +146,11 @@ func TestExportHeading(t *testing.T) {
 			Directives: []ast.Directive{ast.DrCdecl, ast.DrVarArgs},
 			FunctionHeading: ast.FunctionHeading{
 				Type:  ast.FtFunction,
-				Ident: *ast.NewIdent("printf"),
+				Ident: *asttest.NewIdent("printf"),
 				FormalParameters: ast.FormalParameters{
-					ast.NewFormalParm("Format", "PChar"),
+					asttest.NewFormalParm("Format", "PChar"),
 				},
-				ReturnType: ast.NewOrdIdent("Integer"),
+				ReturnType: asttest.NewOrdIdent("Integer"),
 			},
 		},
 	)
@@ -159,10 +160,10 @@ func TestExportHeading(t *testing.T) {
 		&ast.ExportedHeading{
 			FunctionHeading: ast.FunctionHeading{
 				Type:  ast.FtProcedure,
-				Ident: *ast.NewIdent("MoveWord"),
+				Ident: *asttest.NewIdent("MoveWord"),
 				FormalParameters: ast.FormalParameters{
-					ast.NewFormalParm([]string{"Source", "Dest"}, nil, &ast.FpoVar),
-					ast.NewFormalParm("Count", ast.NewOrdIdent("Integer")),
+					asttest.NewFormalParm([]string{"Source", "Dest"}, nil, &ast.FpoVar),
+					asttest.NewFormalParm("Count", asttest.NewOrdIdent("Integer")),
 				},
 			},
 			Directives: []ast.Directive{ast.DrExternal},
@@ -174,11 +175,11 @@ func TestExportHeading(t *testing.T) {
 		&ast.ExportedHeading{
 			FunctionHeading: ast.FunctionHeading{
 				Type:  ast.FtFunction,
-				Ident: *ast.NewIdent("SomeFunction"),
+				Ident: *asttest.NewIdent("SomeFunction"),
 				FormalParameters: ast.FormalParameters{
-					ast.NewFormalParm("S", ast.NewStringType("STRING")),
+					asttest.NewFormalParm("S", asttest.NewStringType("STRING")),
 				},
-				ReturnType: ast.NewStringType("STRING"),
+				ReturnType: asttest.NewStringType("STRING"),
 			},
 			Directives:      []ast.Directive{ast.DrExternal},
 			ExternalOptions: &ast.ExternalOptions{LibraryName: "'strlib.dll'"},
@@ -190,13 +191,13 @@ func TestExportHeading(t *testing.T) {
 		&ast.ExportedHeading{
 			FunctionHeading: ast.FunctionHeading{
 				Type:  ast.FtFunction,
-				Ident: *ast.NewIdent("MessageBox"),
+				Ident: *asttest.NewIdent("MessageBox"),
 				FormalParameters: ast.FormalParameters{
-					ast.NewFormalParm("HWnd", ast.NewOrdIdent("Integer")),
-					ast.NewFormalParm([]string{"Text", "Caption"}, "PChar"),
-					ast.NewFormalParm("Flags", ast.NewOrdIdent("Integer")),
+					asttest.NewFormalParm("HWnd", asttest.NewOrdIdent("Integer")),
+					asttest.NewFormalParm([]string{"Text", "Caption"}, "PChar"),
+					asttest.NewFormalParm("Flags", asttest.NewOrdIdent("Integer")),
 				},
-				ReturnType: ast.NewOrdIdent("Integer"),
+				ReturnType: asttest.NewOrdIdent("Integer"),
 			},
 			Directives:      []ast.Directive{ast.DrStdcall, ast.DrExternal},
 			ExternalOptions: &ast.ExternalOptions{LibraryName: "'user32.dll'", Name: ext.StringPtr("'MessageBoxA'")},
@@ -208,11 +209,11 @@ func TestExportHeading(t *testing.T) {
 		&ast.ExportedHeading{
 			FunctionHeading: ast.FunctionHeading{
 				Type:  ast.FtFunction,
-				Ident: *ast.NewIdent("Divide"),
+				Ident: *asttest.NewIdent("Divide"),
 				FormalParameters: ast.FormalParameters{
-					ast.NewFormalParm([]string{"X", "Y"}, ast.NewRealType("Real")),
+					asttest.NewFormalParm([]string{"X", "Y"}, asttest.NewRealType("Real")),
 				},
-				ReturnType: ast.NewRealType("Real"),
+				ReturnType: asttest.NewRealType("Real"),
 			},
 			Directives: []ast.Directive{ast.DrOverload},
 		},
@@ -226,11 +227,11 @@ func TestExportHeading(t *testing.T) {
 		&ast.ExportedHeading{
 			FunctionHeading: ast.FunctionHeading{
 				Type:  ast.FtFunction,
-				Ident: *ast.NewIdent("DoubleByValue"),
+				Ident: *asttest.NewIdent("DoubleByValue"),
 				FormalParameters: ast.FormalParameters{
-					ast.NewFormalParm([]string{"X"}, ast.NewOrdIdent("Integer")),
+					asttest.NewFormalParm([]string{"X"}, asttest.NewOrdIdent("Integer")),
 				},
-				ReturnType: ast.NewOrdIdent("Integer"),
+				ReturnType: asttest.NewOrdIdent("Integer"),
 			},
 		},
 	)
@@ -240,11 +241,11 @@ func TestExportHeading(t *testing.T) {
 		&ast.ExportedHeading{
 			FunctionHeading: ast.FunctionHeading{
 				Type:  ast.FtFunction,
-				Ident: *ast.NewIdent("DoubleByRef"),
+				Ident: *asttest.NewIdent("DoubleByRef"),
 				FormalParameters: ast.FormalParameters{
-					ast.NewFormalParm([]string{"X"}, ast.NewOrdIdent("Integer"), &ast.FpoVar),
+					asttest.NewFormalParm([]string{"X"}, asttest.NewOrdIdent("Integer"), &ast.FpoVar),
 				},
-				ReturnType: ast.NewOrdIdent("Integer"),
+				ReturnType: asttest.NewOrdIdent("Integer"),
 			},
 		},
 	)
@@ -254,11 +255,11 @@ func TestExportHeading(t *testing.T) {
 		&ast.ExportedHeading{
 			FunctionHeading: ast.FunctionHeading{
 				Type:  ast.FtFunction,
-				Ident: *ast.NewIdent("CompareStr"),
+				Ident: *asttest.NewIdent("CompareStr"),
 				FormalParameters: ast.FormalParameters{
-					ast.NewFormalParm([]string{"S1", "S2"}, ast.NewStringType("STRING"), &ast.FpoConst),
+					asttest.NewFormalParm([]string{"S1", "S2"}, asttest.NewStringType("STRING"), &ast.FpoConst),
 				},
-				ReturnType: ast.NewOrdIdent("Integer"),
+				ReturnType: asttest.NewOrdIdent("Integer"),
 			},
 		},
 	)
@@ -268,9 +269,9 @@ func TestExportHeading(t *testing.T) {
 		&ast.ExportedHeading{
 			FunctionHeading: ast.FunctionHeading{
 				Type:  ast.FtProcedure,
-				Ident: *ast.NewIdent("GetInfo"),
+				Ident: *asttest.NewIdent("GetInfo"),
 				FormalParameters: ast.FormalParameters{
-					ast.NewFormalParm([]string{"Info"}, "SomeRecordType", &ast.FpoOut),
+					asttest.NewFormalParm([]string{"Info"}, "SomeRecordType", &ast.FpoOut),
 				},
 			},
 		},
@@ -281,12 +282,12 @@ func TestExportHeading(t *testing.T) {
 		&ast.ExportedHeading{
 			FunctionHeading: ast.FunctionHeading{
 				Type:  ast.FtFunction,
-				Ident: *ast.NewIdent("Equal"),
+				Ident: *asttest.NewIdent("Equal"),
 				FormalParameters: ast.FormalParameters{
-					ast.NewFormalParm([]string{"Source", "Dest"}, nil, &ast.FpoVar),
-					ast.NewFormalParm([]string{"Size"}, ast.NewOrdIdent("Integer")),
+					asttest.NewFormalParm([]string{"Source", "Dest"}, nil, &ast.FpoVar),
+					asttest.NewFormalParm([]string{"Size"}, asttest.NewOrdIdent("Integer")),
 				},
-				ReturnType: ast.NewOrdIdent("Boolean"),
+				ReturnType: asttest.NewOrdIdent("Boolean"),
 			},
 		},
 	)
@@ -297,9 +298,9 @@ func TestExportHeading(t *testing.T) {
 		&ast.ExportedHeading{
 			FunctionHeading: ast.FunctionHeading{
 				Type:  ast.FtProcedure,
-				Ident: *ast.NewIdent("Check"),
+				Ident: *asttest.NewIdent("Check"),
 				FormalParameters: ast.FormalParameters{
-					ast.NewFormalParm([]string{"S"}, "OpenString"),
+					asttest.NewFormalParm([]string{"S"}, "OpenString"),
 				},
 			},
 		},
@@ -311,11 +312,11 @@ func TestExportHeading(t *testing.T) {
 		&ast.ExportedHeading{
 			FunctionHeading: ast.FunctionHeading{
 				Type:  ast.FtFunction,
-				Ident: *ast.NewIdent("Find"),
+				Ident: *asttest.NewIdent("Find"),
 				FormalParameters: ast.FormalParameters{
-					ast.NewFormalParm([]string{"A"}, ast.NewArrayParameterType(ast.NewOrdIdent("Char"))),
+					asttest.NewFormalParm([]string{"A"}, asttest.NewArrayParameterType(asttest.NewOrdIdent("Char"))),
 				},
-				ReturnType: ast.NewOrdIdent("Integer"),
+				ReturnType: asttest.NewOrdIdent("Integer"),
 			},
 		},
 	)
@@ -325,9 +326,9 @@ func TestExportHeading(t *testing.T) {
 		&ast.ExportedHeading{
 			FunctionHeading: ast.FunctionHeading{
 				Type:  ast.FtProcedure,
-				Ident: *ast.NewIdent("Clear"),
+				Ident: *asttest.NewIdent("Clear"),
 				FormalParameters: ast.FormalParameters{
-					ast.NewFormalParm([]string{"A"}, ast.NewArrayParameterType(ast.NewRealType("Real")), &ast.FpoVar),
+					asttest.NewFormalParm([]string{"A"}, asttest.NewArrayParameterType(asttest.NewRealType("Real")), &ast.FpoVar),
 				},
 			},
 		},
@@ -338,11 +339,11 @@ func TestExportHeading(t *testing.T) {
 		&ast.ExportedHeading{
 			FunctionHeading: ast.FunctionHeading{
 				Type:  ast.FtFunction,
-				Ident: *ast.NewIdent("MakeStr"),
+				Ident: *asttest.NewIdent("MakeStr"),
 				FormalParameters: ast.FormalParameters{
-					ast.NewFormalParm([]string{"Args"}, ast.NewArrayParameterType(nil), &ast.FpoConst),
+					asttest.NewFormalParm([]string{"Args"}, asttest.NewArrayParameterType(nil), &ast.FpoConst),
 				},
-				ReturnType: ast.NewStringType("STRING"),
+				ReturnType: asttest.NewStringType("STRING"),
 			},
 		},
 	)
@@ -352,11 +353,11 @@ func TestExportHeading(t *testing.T) {
 		&ast.ExportedHeading{
 			FunctionHeading: ast.FunctionHeading{
 				Type:  ast.FtProcedure,
-				Ident: *ast.NewIdent("FillArray"),
+				Ident: *asttest.NewIdent("FillArray"),
 				FormalParameters: ast.FormalParameters{
-					ast.NewFormalParm([]string{"A"}, ast.NewArrayParameterType(ast.NewOrdIdent("Integer"))),
-					ast.NewFormalParm(
-						ast.NewParameter([]string{"Value"}, ast.NewOrdIdent("Integer"), ast.NewNumber("0")),
+					asttest.NewFormalParm([]string{"A"}, asttest.NewArrayParameterType(asttest.NewOrdIdent("Integer"))),
+					asttest.NewFormalParm(
+						asttest.NewParameter([]string{"Value"}, asttest.NewOrdIdent("Integer"), asttest.NewNumber("0")),
 					),
 				},
 			},
@@ -368,16 +369,16 @@ func TestExportHeading(t *testing.T) {
 		&ast.ExportedHeading{
 			FunctionHeading: ast.FunctionHeading{
 				Type:  ast.FtFunction,
-				Ident: *ast.NewIdent("MyFunction"),
+				Ident: *asttest.NewIdent("MyFunction"),
 				FormalParameters: ast.FormalParameters{
-					ast.NewFormalParm(
-						ast.NewParameter([]string{"X"}, ast.NewRealType("Real"), ast.NewNumber("3.5")),
+					asttest.NewFormalParm(
+						asttest.NewParameter([]string{"X"}, asttest.NewRealType("Real"), asttest.NewNumber("3.5")),
 					),
-					ast.NewFormalParm(
-						ast.NewParameter([]string{"Y"}, ast.NewRealType("Real"), ast.NewNumber("3.5")),
+					asttest.NewFormalParm(
+						asttest.NewParameter([]string{"Y"}, asttest.NewRealType("Real"), asttest.NewNumber("3.5")),
 					),
 				},
-				ReturnType: ast.NewRealType("Real"),
+				ReturnType: asttest.NewRealType("Real"),
 			},
 		},
 	)
@@ -387,16 +388,16 @@ func TestExportHeading(t *testing.T) {
 		&ast.ExportedHeading{
 			FunctionHeading: ast.FunctionHeading{
 				Type:  ast.FtProcedure,
-				Ident: *ast.NewIdent("DoSomething"),
+				Ident: *asttest.NewIdent("DoSomething"),
 				FormalParameters: ast.FormalParameters{
-					ast.NewFormalParm(
-						ast.NewParameter([]string{"X"}, ast.NewRealType("Real"), ast.NewNumber("1.0")),
+					asttest.NewFormalParm(
+						asttest.NewParameter([]string{"X"}, asttest.NewRealType("Real"), asttest.NewNumber("1.0")),
 					),
-					ast.NewFormalParm(
-						ast.NewParameter([]string{"I"}, ast.NewOrdIdent("Integer"), ast.NewNumber("0")),
+					asttest.NewFormalParm(
+						asttest.NewParameter([]string{"I"}, asttest.NewOrdIdent("Integer"), asttest.NewNumber("0")),
 					),
-					ast.NewFormalParm(
-						ast.NewParameter([]string{"S"}, ast.NewStringType("STRING"), ast.NewString("''")),
+					asttest.NewFormalParm(
+						asttest.NewParameter([]string{"S"}, asttest.NewStringType("STRING"), asttest.NewString("''")),
 					),
 				},
 			},
@@ -425,7 +426,7 @@ func TestExportHeading(t *testing.T) {
 		if assert.NoError(t, err) {
 			assert.Equal(t,
 				&ast.Unit{
-					Ident: *ast.NewIdent("Unit1"),
+					Ident: *asttest.NewIdent("Unit1"),
 					InterfaceSection: &ast.InterfaceSection{
 						InterfaceDecls: decls,
 					},
@@ -453,29 +454,29 @@ func TestFormalParameters(t *testing.T) {
 	run(
 		"(X, Y: Real)",
 		ast.FormalParameters{
-			ast.NewFormalParm([]string{"X", "Y"}, ast.NewRealType("Real")),
+			asttest.NewFormalParm([]string{"X", "Y"}, asttest.NewRealType("Real")),
 		},
 	)
 	run(
 		"(var S: string; X: Integer)",
 		ast.FormalParameters{
-			ast.NewFormalParm("S", ast.NewStringType("STRING"), &ast.FpoVar),
-			ast.NewFormalParm("X", ast.NewOrdIdent("Integer")),
+			asttest.NewFormalParm("S", asttest.NewStringType("STRING"), &ast.FpoVar),
+			asttest.NewFormalParm("X", asttest.NewOrdIdent("Integer")),
 		},
 	)
 	run(
 		"(HWnd: Integer; Text, Caption: PChar; PChar: Integer)",
 		ast.FormalParameters{
-			ast.NewFormalParm("HWnd", ast.NewOrdIdent("Integer")),
-			ast.NewFormalParm([]string{"Text", "Caption"}, "PChar"),
-			ast.NewFormalParm("PChar", ast.NewOrdIdent("Integer")),
+			asttest.NewFormalParm("HWnd", asttest.NewOrdIdent("Integer")),
+			asttest.NewFormalParm([]string{"Text", "Caption"}, "PChar"),
+			asttest.NewFormalParm("PChar", asttest.NewOrdIdent("Integer")),
 		},
 	)
 	run(
 		"(const P; I: Integer)",
 		ast.FormalParameters{
-			ast.NewFormalParm([]string{"P"}, nil, &ast.FpoConst),
-			ast.NewFormalParm([]string{"I"}, ast.NewOrdIdent("Integer")),
+			asttest.NewFormalParm([]string{"P"}, nil, &ast.FpoConst),
+			asttest.NewFormalParm([]string{"I"}, asttest.NewOrdIdent("Integer")),
 		},
 	)
 }

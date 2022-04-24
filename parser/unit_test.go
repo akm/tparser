@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/akm/tparser/ast"
+	"github.com/akm/tparser/ast/asttest"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -27,7 +28,7 @@ func TestUnit(t *testing.T) {
 			implementation
 			end.`),
 		&ast.Unit{
-			Ident:                 *ast.NewIdent("U1"),
+			Ident:                 *asttest.NewIdent("U1"),
 			InterfaceSection:      &ast.InterfaceSection{},
 			ImplementationSection: &ast.ImplementationSection{},
 		},
@@ -53,9 +54,9 @@ func TestInterfaceSection(t *testing.T) {
 		[]rune(`INTERFACE USES U1,U2,U3;`),
 		&ast.InterfaceSection{
 			UsesClause: &ast.UsesClause{
-				ast.NewUnitRef("U1"),
-				ast.NewUnitRef("U2"),
-				ast.NewUnitRef("U3"),
+				asttest.NewUnitRef("U1"),
+				asttest.NewUnitRef("U2"),
+				asttest.NewUnitRef("U3"),
 			},
 		},
 	)
