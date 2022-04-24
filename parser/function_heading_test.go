@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/akm/tparser/ast"
-	"github.com/akm/tparser/ast/asttest"
 	"github.com/akm/tparser/ext"
 	"github.com/stretchr/testify/assert"
 )
@@ -27,7 +26,6 @@ func TestExportHeading(t *testing.T) {
 			parser.NextToken()
 			res, err := parser.ParseExportedHeading()
 			if assert.NoError(t, err) {
-				asttest.ClearAllRange(res)
 				assert.Equal(t, expected, res)
 			}
 		})
@@ -425,7 +423,6 @@ func TestExportHeading(t *testing.T) {
 		parser.NextToken()
 		res, err := parser.ParseUnit()
 		if assert.NoError(t, err) {
-			asttest.ClearAllRange(res)
 			assert.Equal(t,
 				&ast.Unit{
 					Ident: ast.Ident("Unit1"),
@@ -438,51 +435,6 @@ func TestExportHeading(t *testing.T) {
 			)
 		}
 	})
-}
-
-func TestExportHeadingWithCodePosition(t *testing.T) {
-	run := func(text string, expected *ast.Unit) {
-		t.Run(text, func(t *testing.T) {
-			runes := []rune(text)
-			parser := NewParser(&runes, NewContext())
-			parser.NextToken()
-			res, err := parser.ParseUnit()
-			if assert.NoError(t, err) {
-				assert.Equal(t, expected, res)
-			}
-		})
-	}
-
-	run(
-		`UNIT Unit1;
-		INTERFACE
-		function Max(A: array of Real; N: Integer): Real;
-		IMPLEMENTATION
-		END.`,
-		&ast.Unit{
-			Ident: ast.Ident("Unit1"),
-			InterfaceSection: &ast.InterfaceSection{
-				InterfaceDecls: ast.InterfaceDecls{
-					&ast.ExportedHeading{
-						FunctionHeading: ast.FunctionHeading{
-							Type:  ast.FtFunction,
-							Ident: ast.Ident("Max"),
-							FormalParameters: ast.FormalParameters{
-								ast.NewFormalParm("A", ast.NewArrayParameterType(ast.NewRealType("Real"))),
-								ast.NewFormalParm("N", ast.NewOrdIdent("Integer")),
-							},
-							ReturnType: ast.NewRealType("Real"),
-						},
-						CodeBlockNode: *asttest.NewCodeBlockNode(
-							asttest.CodePosition(26, 3, 4),
-							asttest.CodePosition(78, 4, 4),
-						),
-					},
-				},
-			},
-			ImplementationSection: &ast.ImplementationSection{},
-		},
-	)
 }
 
 func TestFormalParameters(t *testing.T) {

@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/akm/tparser/ast"
-	"github.com/akm/tparser/ast/asttest"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -15,7 +14,6 @@ func TestUnitWithConstSection(t *testing.T) {
 			parser.NextToken()
 			res, err := parser.ParseUnit()
 			if assert.NoError(t, err) {
-				asttest.ClearAllRange(res)
 				assert.Equal(t, expected, res)
 			}
 		})
@@ -49,69 +47,41 @@ func TestUnitWithConstSection(t *testing.T) {
 }
 
 func TestConstSectionl(t *testing.T) {
-	run := func(name string, withRange bool, text []rune, expected ast.ConstSection) {
+	run := func(name string, text []rune, expected ast.ConstSection) {
 		t.Run(name, func(t *testing.T) {
 			parser := NewParser(&text)
 			parser.NextToken()
 			res, err := parser.ParseConstSection()
 			if assert.NoError(t, err) {
-				if !withRange {
-					asttest.ClearAllRange(res)
-				}
 				assert.Equal(t, expected, res)
 			}
 		})
 	}
 
 	run(
-		"number const1",
-		true,
+		"number const",
 		[]rune(`CONST MaxValue = 237;`),
 		ast.ConstSection{
-			{
-				Ident:     ast.Ident("MaxValue"),
-				ConstExpr: *ast.NewConstExpr(ast.NewNumber("237")),
-				CodeBlockNode: *asttest.NewCodeBlockNode(
-					asttest.CodePosition(6, 1, 7),
-					asttest.CodePosition(20, 1, 21),
-				),
-			},
+			{Ident: ast.Ident("MaxValue"), ConstExpr: *ast.NewConstExpr(ast.NewNumber("237"))},
 		},
 	)
 	run(
-		"number const2",
-		true,
+		"number const",
 		[]rune(`CONST Max: Integer = 100;`),
 		ast.ConstSection{
-			{
-				Ident:     ast.Ident("Max"),
-				ConstExpr: *ast.NewConstExpr(ast.NewNumber("100")), Type: &ast.OrdIdent{Name: "Integer"},
-				CodeBlockNode: *asttest.NewCodeBlockNode(
-					asttest.CodePosition(6, 1, 7),
-					asttest.CodePosition(24, 1, 25),
-				),
-			},
+			{Ident: ast.Ident("Max"), ConstExpr: *ast.NewConstExpr(ast.NewNumber("100")), Type: &ast.OrdIdent{Name: "Integer"}},
 		},
 	)
 	run(
 		"message as identifier",
-		true,
 		[]rune(`CONST Message = 'Out of memory';`),
 		ast.ConstSection{
-			{
-				Ident:     ast.Ident("Message"),
-				ConstExpr: *ast.NewConstExpr(ast.NewString("'Out of memory'")),
-				CodeBlockNode: *asttest.NewCodeBlockNode(
-					asttest.CodePosition(6, 1, 7),
-					asttest.CodePosition(31, 1, 32),
-				),
-			},
+			{Ident: ast.Ident("Message"), ConstExpr: *ast.NewConstExpr(ast.NewString("'Out of memory'"))},
 		},
 	)
 
 	run(
 		"examples in Language Guide",
-		false,
 		[]rune(`
 		const
 			Min = 0;

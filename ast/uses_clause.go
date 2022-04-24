@@ -2,11 +2,6 @@ package ast
 
 import "github.com/pkg/errors"
 
-// - UsesClause
-//   ```
-//   USES IdentList ';'
-//   ```
-// Actually USES has not only IdentList.
 type UsesClause []*UnitRef
 
 func (s UsesClause) IdentList() IdentList {

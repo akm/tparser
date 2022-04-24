@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/akm/tparser/ast"
-	"github.com/akm/tparser/ast/asttest"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -15,7 +14,6 @@ func TestUnitWithVarSection(t *testing.T) {
 			parser.NextToken()
 			res, err := parser.ParseUnit()
 			if assert.NoError(t, err) {
-				asttest.ClearAllRange(res)
 				assert.Equal(t, expected, res)
 			}
 		})
@@ -121,19 +119,11 @@ func TestVarSectionl(t *testing.T) {
 			&ast.VarDecl{
 				IdentList: ast.IdentList{"Str"},
 				Type:      &ast.StringType{Name: "STRING", Length: ast.NewConstExpr(ast.NewNumber("32"))},
-				CodeBlockNode: *asttest.NewCodeBlockNode(
-					asttest.CodePosition(6, 2, 4),
-					asttest.CodePosition(21, 2, 19),
-				),
 			},
 			&ast.VarDecl{
 				IdentList: ast.IdentList{"StrLen"},
 				Type:      &ast.OrdIdent{Name: ast.Ident("Byte")},
 				Absolute:  ast.NewVarDeclAbsoluteIdent("Str"),
-				CodeBlockNode: *asttest.NewCodeBlockNode(
-					asttest.CodePosition(25, 3, 4),
-					asttest.CodePosition(50, 3, 29),
-				),
 			},
 		},
 	)
@@ -141,14 +131,7 @@ func TestVarSectionl(t *testing.T) {
 		"With simple ConstExpr",
 		[]rune(`VAR A: Integer = 7;`),
 		ast.VarSection{
-			{
-				IdentList: ast.IdentList{"A"},
-				Type:      &ast.OrdIdent{Name: ast.Ident("Integer")}, ConstExpr: ast.NewExpression(ast.NewNumber("7")),
-				CodeBlockNode: *asttest.NewCodeBlockNode(
-					asttest.CodePosition(4, 1, 5),
-					asttest.CodePosition(18, 1, 19),
-				),
-			},
+			{IdentList: ast.IdentList{"A"}, Type: &ast.OrdIdent{Name: ast.Ident("Integer")}, ConstExpr: ast.NewExpression(ast.NewNumber("7"))},
 		},
 	)
 
@@ -160,50 +143,8 @@ func TestVarSectionl(t *testing.T) {
 			Okay: Boolean;
 		`),
 		ast.VarSection{
-			{
-				IdentList: ast.IdentList{"Digit"},
-				Type:      &ast.SubrangeType{Low: *ast.NewConstExpr(ast.NewNumber("0")), High: *ast.NewConstExpr(ast.NewNumber("9"))},
-				CodeBlockNode: *asttest.NewCodeBlockNode(
-					asttest.CodePosition(10, 2, 5),
-					asttest.CodePosition(21, 2, 16),
-				),
-			},
-			{
-				IdentList: ast.IdentList{"Okay"},
-				Type:      &ast.OrdIdent{Name: ast.Ident("Boolean")},
-				CodeBlockNode: *asttest.NewCodeBlockNode(
-					asttest.CodePosition(26, 3, 5),
-					asttest.CodePosition(39, 3, 18),
-				),
-			},
-		},
-	)
-
-}
-
-func TestThreadVarSectionl(t *testing.T) {
-	run := func(name string, text []rune, expected ast.ThreadVarSection) {
-		t.Run(name, func(t *testing.T) {
-			parser := NewParser(&text)
-			parser.NextToken()
-			res, err := parser.ParseThreadVarSection()
-			if assert.NoError(t, err) {
-				assert.Equal(t, expected, res)
-			}
-		})
-	}
-	run(
-		"With simple ConstExpr",
-		[]rune(`THREADVAR X: Integer;`),
-		ast.ThreadVarSection{
-			{
-				IdentList: ast.IdentList{"X"},
-				Type:      &ast.OrdIdent{Name: ast.Ident("Integer")},
-				CodeBlockNode: *asttest.NewCodeBlockNode(
-					asttest.CodePosition(10, 1, 11),
-					asttest.CodePosition(20, 1, 21),
-				),
-			},
+			{IdentList: ast.IdentList{"Digit"}, Type: &ast.SubrangeType{Low: *ast.NewConstExpr(ast.NewNumber("0")), High: *ast.NewConstExpr(ast.NewNumber("9"))}},
+			{IdentList: ast.IdentList{"Okay"}, Type: &ast.OrdIdent{Name: ast.Ident("Boolean")}},
 		},
 	)
 }
