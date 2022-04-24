@@ -31,8 +31,12 @@ func (t *Token) Raw() []rune {
 	return (*t.text)[t.Start.Index:t.End.Index]
 }
 
+func (t *Token) RawString() string {
+	return string(t.Raw())
+}
+
 func (t *Token) Value() string {
-	res := string(t.Raw())
+	res := t.RawString()
 	switch t.Type {
 	case ReservedWord, Directive, PortabilityDirective:
 		return strings.ToUpper(res)
