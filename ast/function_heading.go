@@ -151,30 +151,24 @@ type Parameter struct {
 func NewParameter(name interface{}, typArg interface{}, args ...interface{}) *Parameter {
 	var typ *ParameterType
 	if typArg != nil {
-		switch v := typArg.(type) {
-		case ParameterType:
-			typ = &v
-		case *ParameterType:
-			typ = v
-		case Type:
-			typ = &ParameterType{Type: v}
-		default:
-			typ = NewParameterType(typArg)
-		}
+		typ = NewParameterType(typArg)
 	}
 	r := &Parameter{IdentList: NewIdentList(name), Type: typ}
 	if len(args) > 1 {
 		panic(errors.Errorf("too many arguments for NewParameter: %v, %v", name, args))
-	}
-	if len(args) == 1 {
-		switch v := args[0].(type) {
-		case *ConstExpr:
-			r.ConstExpr = v
-		case ConstExpr:
-			r.ConstExpr = &v
-		default:
-			r.ConstExpr = NewConstExpr(args[0])
-		}
+	} else if len(args) == 1 {
+		r.SetConstExpr(args[0])
 	}
 	return r
+}
+
+func (m *Parameter) SetConstExpr(arg interface{}) {
+	switch v := arg.(type) {
+	case *ConstExpr:
+		m.ConstExpr = v
+	case ConstExpr:
+		m.ConstExpr = &v
+	default:
+		m.ConstExpr = NewConstExpr(arg)
+	}
 }
