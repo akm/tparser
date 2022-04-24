@@ -12,14 +12,14 @@ type UsesClause []*UnitRef
 func (s UsesClause) IdentList() IdentList {
 	var ids IdentList
 	for _, u := range s {
-		ids = append(ids, u.Name.Name)
+		ids = append(ids, u.Ident.Name)
 	}
 	return ids
 }
 
 type UnitRef struct {
-	Name Ident
-	Path *string
+	Ident Ident
+	Path  *string
 }
 
 func NewUnitRef(name interface{}, paths ...string) *UnitRef {
@@ -34,7 +34,7 @@ func NewUnitRef(name interface{}, paths ...string) *UnitRef {
 	default:
 		panic(errors.Errorf("invalid type %T", name))
 	}
-	r := &UnitRef{Name: nameIdent}
+	r := &UnitRef{Ident: nameIdent}
 	if len(paths) > 1 {
 		panic(errors.Errorf("too many paths: %v for NewUnitPath", paths))
 	}
