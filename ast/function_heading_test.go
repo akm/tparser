@@ -7,7 +7,7 @@ import (
 )
 
 func TestFunctionHeading(t *testing.T) {
-	t.Run("FunctionHeading", func(t *testing.T) {
-		assert.Implements(t, (*CodeBlock)(nil), &FunctionHeading{})
+	t.Run("ExportedHeading", func(t *testing.T) {
+		assert.Implements(t, (*CodeBlock)(nil), &ExportedHeading{})
 	})
 }

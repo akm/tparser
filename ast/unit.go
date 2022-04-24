@@ -23,7 +23,9 @@ func (m *Unit) GetPath() string {
 }
 
 func (m *Unit) Children() []Node {
-	return nil
+	return []Node{
+		m.InterfaceSection,
+	}
 }
 
 // - InterfaceSection
@@ -34,7 +36,21 @@ func (m *Unit) Children() []Node {
 //   ```
 type InterfaceSection struct {
 	UsesClause     *UsesClause // optional
-	InterfaceDecls []InterfaceDecl
+	InterfaceDecls InterfaceDecls
+}
+
+func (m *InterfaceSection) Children() []Node {
+	return m.InterfaceDecls.Nodes()
+}
+
+type InterfaceDecls []InterfaceDecl
+
+func (s InterfaceDecls) Nodes() []Node {
+	r := make([]Node, len(s))
+	for i, v := range s {
+		r[i] = v
+	}
+	return r
 }
 
 // - InterfaceDecl
@@ -51,6 +67,7 @@ type InterfaceSection struct {
 //   ExportedHeading
 //   ```
 type InterfaceDecl interface {
+	Node
 	canBeInterfaceDecl()
 }
 

@@ -7,8 +7,14 @@ import (
 )
 
 func TestVar(t *testing.T) {
+	t.Run("VarSection", func(t *testing.T) {
+		assert.Implements(t, (*Node)(nil), &VarSection{})
+	})
 	t.Run("VarDecl", func(t *testing.T) {
 		assert.Implements(t, (*CodeBlock)(nil), &VarDecl{})
+	})
+	t.Run("ThreadVarSection", func(t *testing.T) {
+		assert.Implements(t, (*Node)(nil), &ThreadVarSection{})
 	})
 	t.Run("ThreadVarDecl", func(t *testing.T) {
 		assert.Implements(t, (*CodeBlock)(nil), &ThreadVarDecl{})

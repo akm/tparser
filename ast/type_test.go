@@ -7,6 +7,9 @@ import (
 )
 
 func TestType(t *testing.T) {
+	t.Run("TypeSection", func(t *testing.T) {
+		assert.Implements(t, (*Node)(nil), &TypeSection{})
+	})
 	t.Run("TypeDecl", func(t *testing.T) {
 		assert.Implements(t, (*CodeBlock)(nil), &TypeDecl{})
 	})

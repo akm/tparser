@@ -10,6 +10,14 @@ func (TypeSection) canBeInterfaceDecl() {}
 
 type TypeSection []*TypeDecl
 
+func (s TypeSection) Children() []Node {
+	r := make([]Node, len(s))
+	for i, v := range s {
+		r[i] = v
+	}
+	return r
+}
+
 // - TypeDecl
 //   ```
 //   Ident '=' [TYPE] Type [PortabilityDirective]
