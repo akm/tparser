@@ -15,10 +15,6 @@ func NewIdent(arg interface{}) *Ident {
 		return &v
 	case *Ident:
 		return v
-	case string:
-		return &Ident{Name: v}
-	case *string:
-		return &Ident{Name: *v}
 	case token.Token:
 		return NewIdent(v.Value())
 	case *token.Token:
@@ -39,10 +35,6 @@ func NewIdentList(args ...interface{}) IdentList {
 		switch v := arg.(type) {
 		case IdentList:
 			return v
-		case string:
-			return IdentList{NewIdent(v)}
-		case *string:
-			return IdentList{NewIdent(v)}
 		case []string:
 			r := make(IdentList, len(v))
 			for idx, i := range v {
