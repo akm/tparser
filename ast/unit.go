@@ -88,7 +88,7 @@ func (u *UnitId) String() string {
 	if u == nil {
 		return ""
 	} else {
-		return string(*u)
+		return u.Name
 	}
 }
 

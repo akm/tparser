@@ -5,7 +5,9 @@ import (
 	"github.com/pkg/errors"
 )
 
-type Ident string
+type Ident struct {
+	Name string
+}
 
 func NewIdent(arg interface{}) Ident {
 	switch v := arg.(type) {
@@ -14,9 +16,9 @@ func NewIdent(arg interface{}) Ident {
 	case *Ident:
 		return *v
 	case string:
-		return Ident(v)
+		return Ident{Name: v}
 	case *string:
-		return Ident(*v)
+		return Ident{Name: *v}
 	default:
 		panic(errors.Errorf("unexpected type %T (%v) is given for NewIdent", arg, arg))
 	}

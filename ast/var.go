@@ -30,9 +30,17 @@ func (VarDeclAbsoluteIdent) isVarDeclAbsolute() {}
 
 type VarDeclAbsoluteIdent Ident
 
-func NewVarDeclAbsoluteIdent(ident Ident) *VarDeclAbsoluteIdent {
-	r := VarDeclAbsoluteIdent(ident)
-	return &r
+func NewVarDeclAbsoluteIdent(arg interface{}) *VarDeclAbsoluteIdent {
+	switch v := arg.(type) {
+	case Ident:
+		r := VarDeclAbsoluteIdent(v)
+		return &r
+	case *Ident:
+		r := VarDeclAbsoluteIdent(*v)
+		return &r
+	default:
+		return NewVarDeclAbsoluteIdent(NewIdent(arg))
+	}
 }
 
 func (*VarDeclAbsoluteConstExpr) isVarDeclAbsolute() {}

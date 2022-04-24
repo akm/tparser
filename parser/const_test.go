@@ -37,7 +37,7 @@ func TestUnitWithConstSection(t *testing.T) {
 					ast.ConstSection{
 						{Ident: ast.NewIdent("MaxValue"), ConstExpr: *ast.NewConstExpr(ast.NewNumber("237"))},
 						{Ident: ast.NewIdent("Message1"), ConstExpr: *ast.NewConstExpr(ast.NewString("'Out of memory'"))},
-						{Ident: ast.NewIdent("Max"), ConstExpr: *ast.NewConstExpr(ast.NewNumber("100")), Type: &ast.OrdIdent{Name: "Integer"}},
+						{Ident: ast.NewIdent("Max"), ConstExpr: *ast.NewConstExpr(ast.NewNumber("100")), Type: ast.NewOrdIdent("Integer")},
 					},
 				},
 			},
@@ -69,7 +69,7 @@ func TestConstSectionl(t *testing.T) {
 		"number const",
 		[]rune(`CONST Max: Integer = 100;`),
 		ast.ConstSection{
-			{Ident: ast.NewIdent("Max"), ConstExpr: *ast.NewConstExpr(ast.NewNumber("100")), Type: &ast.OrdIdent{Name: "Integer"}},
+			{Ident: ast.NewIdent("Max"), ConstExpr: *ast.NewConstExpr(ast.NewNumber("100")), Type: ast.NewOrdIdent("Integer")},
 		},
 	)
 	run(

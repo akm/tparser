@@ -232,6 +232,11 @@ func (DesignatorItemIdent) isDesignatorItem() {}
 
 type DesignatorItemIdent Ident
 
+func NewDesignatorItemIdent(v interface{}) *DesignatorItemIdent {
+	r := DesignatorItemIdent(NewIdent(v))
+	return &r
+}
+
 func (DesignatorItemExprList) isDesignatorItem() {}
 
 type DesignatorItemExprList ExprList

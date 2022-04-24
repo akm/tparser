@@ -20,7 +20,7 @@ func TestUnitWithTypeSection(t *testing.T) {
 		})
 	}
 
-	unit2 := ast.UnitId("Unit2")
+	unit2 := ast.NewUnitId("Unit2")
 	run(
 		"2 type declarations",
 		[]rune(`
@@ -39,7 +39,7 @@ func TestUnitWithTypeSection(t *testing.T) {
 				InterfaceDecls: []ast.InterfaceDecl{
 					ast.TypeSection{
 						{Ident: ast.NewIdent("TTypeId1"), Type: &ast.TypeId{Ident: ast.NewIdent("TType1")}},
-						{Ident: ast.NewIdent("TTypeId2"), Type: &ast.TypeId{UnitId: &unit2, Ident: ast.NewIdent("TType2")}},
+						{Ident: ast.NewIdent("TTypeId2"), Type: &ast.TypeId{UnitId: unit2, Ident: ast.NewIdent("TType2")}},
 					},
 				},
 			},
@@ -73,7 +73,7 @@ func TestUnitWithTypeSection(t *testing.T) {
 				InterfaceDecls: []ast.InterfaceDecl{
 					ast.TypeSection{
 						{Ident: ast.NewIdent("TTypeId1"), Type: &ast.TypeId{Ident: ast.NewIdent("TType1")}},
-						{Ident: ast.NewIdent("TTypeId2"), Type: &ast.TypeId{UnitId: &unit2, Ident: ast.NewIdent("TType2")}},
+						{Ident: ast.NewIdent("TTypeId2"), Type: &ast.TypeId{UnitId: unit2, Ident: ast.NewIdent("TType2")}},
 					},
 					ast.TypeSection{
 						{Ident: ast.NewIdent("TMyInteger1"), Type: &ast.OrdIdent{Name: ast.NewIdent("INTEGER")}},
@@ -133,7 +133,7 @@ func TestTypeSection(t *testing.T) {
 		ast.TypeSection{
 			&ast.TypeDecl{
 				Ident: ast.NewIdent("TRealType1"),
-				Type:  &ast.RealType{Name: "REAL"},
+				Type:  ast.NewRealType("REAL"),
 			},
 		},
 	)
@@ -152,7 +152,7 @@ func TestTypeSection(t *testing.T) {
 }
 
 func TestTypeDecl(t *testing.T) {
-	u1 := ast.UnitId("U1")
+	u1 := ast.NewUnitId("U1")
 
 	run := func(name string, text []rune, expected *ast.TypeDecl) {
 		t.Run(name, func(t *testing.T) {
@@ -179,7 +179,7 @@ func TestTypeDecl(t *testing.T) {
 		[]rune(`TTypeId1 = U1.TType1`),
 		&ast.TypeDecl{
 			Ident: ast.NewIdent("TTypeId1"),
-			Type:  &ast.TypeId{UnitId: &u1, Ident: ast.NewIdent("TType1")},
+			Type:  &ast.TypeId{UnitId: u1, Ident: ast.NewIdent("TType1")},
 		},
 	)
 	run(
@@ -193,7 +193,7 @@ func TestTypeDecl(t *testing.T) {
 }
 
 func TestTypeId(t *testing.T) {
-	u1 := ast.UnitId("U1")
+	u1 := ast.NewUnitId("U1")
 
 	run := func(name string, text []rune, expected *ast.TypeId) {
 		t.Run(name, func(t *testing.T) {
@@ -216,7 +216,7 @@ func TestTypeId(t *testing.T) {
 		"type with unit",
 		[]rune(`U1.TType1`),
 		&ast.TypeId{
-			UnitId: &u1,
+			UnitId: u1,
 			Ident:  ast.NewIdent("TType1"),
 		},
 	)
