@@ -12,7 +12,7 @@ type UsesClause []*UnitRef
 func (s UsesClause) IdentList() IdentList {
 	var ids IdentList
 	for _, u := range s {
-		ids = append(ids, u.Ident.Name)
+		ids = append(ids, &u.Ident)
 	}
 	return ids
 }

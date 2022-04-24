@@ -14,8 +14,7 @@ func TestIdentClausee(t *testing.T) {
 	parser.NextToken()
 	res, err := parser.ParseIdentList(';')
 	if assert.NoError(t, err) {
-		assert.Equal(t, &ast.IdentList{
-			"U1", "U2", "U3",
-		}, res)
+		expect := ast.NewIdentList("U1", "U2", "U3")
+		assert.Equal(t, &expect, res)
 	}
 }

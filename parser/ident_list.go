@@ -16,7 +16,7 @@ func (p *Parser) ParseIdentListBy(terminatorPredicate token.Predicator) (*ast.Id
 		if err != nil {
 			return err
 		}
-		res = append(res, t.Value())
+		res = append(res, ast.NewIdent(t.Value()))
 		p.NextToken()
 		return nil
 	})
