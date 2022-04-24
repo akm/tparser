@@ -31,13 +31,13 @@ func TestUnitWithConstSection(t *testing.T) {
 		IMPLEMENTATION
 		END.`),
 		&ast.Unit{
-			Ident: ast.Ident("Unit1"),
+			Ident: ast.NewIdent("Unit1"),
 			InterfaceSection: &ast.InterfaceSection{
 				InterfaceDecls: []ast.InterfaceDecl{
 					ast.ConstSection{
-						{Ident: ast.Ident("MaxValue"), ConstExpr: *ast.NewConstExpr(ast.NewNumber("237"))},
-						{Ident: ast.Ident("Message1"), ConstExpr: *ast.NewConstExpr(ast.NewString("'Out of memory'"))},
-						{Ident: ast.Ident("Max"), ConstExpr: *ast.NewConstExpr(ast.NewNumber("100")), Type: &ast.OrdIdent{Name: "Integer"}},
+						{Ident: ast.NewIdent("MaxValue"), ConstExpr: *ast.NewConstExpr(ast.NewNumber("237"))},
+						{Ident: ast.NewIdent("Message1"), ConstExpr: *ast.NewConstExpr(ast.NewString("'Out of memory'"))},
+						{Ident: ast.NewIdent("Max"), ConstExpr: *ast.NewConstExpr(ast.NewNumber("100")), Type: &ast.OrdIdent{Name: "Integer"}},
 					},
 				},
 			},
@@ -62,21 +62,21 @@ func TestConstSectionl(t *testing.T) {
 		"number const",
 		[]rune(`CONST MaxValue = 237;`),
 		ast.ConstSection{
-			{Ident: ast.Ident("MaxValue"), ConstExpr: *ast.NewConstExpr(ast.NewNumber("237"))},
+			{Ident: ast.NewIdent("MaxValue"), ConstExpr: *ast.NewConstExpr(ast.NewNumber("237"))},
 		},
 	)
 	run(
 		"number const",
 		[]rune(`CONST Max: Integer = 100;`),
 		ast.ConstSection{
-			{Ident: ast.Ident("Max"), ConstExpr: *ast.NewConstExpr(ast.NewNumber("100")), Type: &ast.OrdIdent{Name: "Integer"}},
+			{Ident: ast.NewIdent("Max"), ConstExpr: *ast.NewConstExpr(ast.NewNumber("100")), Type: &ast.OrdIdent{Name: "Integer"}},
 		},
 	)
 	run(
 		"message as identifier",
 		[]rune(`CONST Message = 'Out of memory';`),
 		ast.ConstSection{
-			{Ident: ast.Ident("Message"), ConstExpr: *ast.NewConstExpr(ast.NewString("'Out of memory'"))},
+			{Ident: ast.NewIdent("Message"), ConstExpr: *ast.NewConstExpr(ast.NewString("'Out of memory'"))},
 		},
 	)
 
@@ -99,10 +99,10 @@ func TestConstSectionl(t *testing.T) {
 			AlphaNum = Alpha + Numeric;
 		`),
 		ast.ConstSection{
-			{Ident: ast.Ident("Min"), ConstExpr: *ast.NewConstExpr(ast.NewNumber("0"))},
-			{Ident: ast.Ident("Max"), ConstExpr: *ast.NewConstExpr(ast.NewNumber("100"))},
+			{Ident: ast.NewIdent("Min"), ConstExpr: *ast.NewConstExpr(ast.NewNumber("0"))},
+			{Ident: ast.NewIdent("Max"), ConstExpr: *ast.NewConstExpr(ast.NewNumber("100"))},
 			// Center = (Max - Min) div 2;
-			{Ident: ast.Ident("Center"), ConstExpr: *ast.NewConstExpr(
+			{Ident: ast.NewIdent("Center"), ConstExpr: *ast.NewConstExpr(
 				&ast.Term{
 					Factor: &ast.Parentheses{
 						Expression: ast.Expression{
@@ -120,10 +120,10 @@ func TestConstSectionl(t *testing.T) {
 				},
 			)},
 			// Beta = Chr(225);
-			{Ident: ast.Ident("Beta"), ConstExpr: *ast.NewConstExpr(
+			{Ident: ast.NewIdent("Beta"), ConstExpr: *ast.NewConstExpr(
 				&ast.DesignatorFactor{
 					Designator: ast.Designator{
-						QualId: ast.QualId{Ident: ast.Ident("Chr")},
+						QualId: ast.QualId{Ident: ast.NewIdent("Chr")},
 					},
 					ExprList: ast.ExprList{
 						ast.NewConstExpr(ast.NewNumber("225")),
@@ -131,12 +131,12 @@ func TestConstSectionl(t *testing.T) {
 				},
 			)},
 			// NumChars = Ord('Z') - Ord('A') + 1;
-			{Ident: ast.Ident("NumChars"), ConstExpr: *ast.NewConstExpr(
+			{Ident: ast.NewIdent("NumChars"), ConstExpr: *ast.NewConstExpr(
 				&ast.SimpleExpression{
 					Term: *ast.NewTerm(
 						&ast.DesignatorFactor{
 							Designator: ast.Designator{
-								QualId: ast.QualId{Ident: ast.Ident("Ord")},
+								QualId: ast.QualId{Ident: ast.NewIdent("Ord")},
 							},
 							ExprList: ast.ExprList{
 								ast.NewConstExpr(ast.NewString("'Z'")),
@@ -149,7 +149,7 @@ func TestConstSectionl(t *testing.T) {
 							Term: *ast.NewTerm(
 								&ast.DesignatorFactor{
 									Designator: ast.Designator{
-										QualId: ast.QualId{Ident: ast.Ident("Ord")},
+										QualId: ast.QualId{Ident: ast.NewIdent("Ord")},
 									},
 									ExprList: ast.ExprList{
 										ast.NewConstExpr(ast.NewString("'A'")),
@@ -165,9 +165,9 @@ func TestConstSectionl(t *testing.T) {
 				},
 			)},
 			// Message = 'Out of memory';
-			{Ident: ast.Ident("Message"), ConstExpr: *ast.NewConstExpr(ast.NewString("'Out of memory'"))},
+			{Ident: ast.NewIdent("Message"), ConstExpr: *ast.NewConstExpr(ast.NewString("'Out of memory'"))},
 			// ErrStr = ' Error: ' + Message + '. ';
-			{Ident: ast.Ident("ErrStr"), ConstExpr: *ast.NewConstExpr(
+			{Ident: ast.NewIdent("ErrStr"), ConstExpr: *ast.NewConstExpr(
 				&ast.SimpleExpression{
 					Term: *ast.NewTerm(ast.NewString("' Error: '")),
 					AddOpTerms: []*ast.AddOpTerm{
@@ -183,7 +183,7 @@ func TestConstSectionl(t *testing.T) {
 				},
 			)},
 			// ErrPos = 80 - Length(ErrStr) div 2;
-			{Ident: ast.Ident("ErrPos"), ConstExpr: *ast.NewConstExpr(
+			{Ident: ast.NewIdent("ErrPos"), ConstExpr: *ast.NewConstExpr(
 				&ast.SimpleExpression{
 					Term: *ast.NewTerm(ast.NewNumber("80")),
 					AddOpTerms: []*ast.AddOpTerm{
@@ -192,7 +192,7 @@ func TestConstSectionl(t *testing.T) {
 							Term: ast.Term{
 								Factor: &ast.DesignatorFactor{
 									Designator: ast.Designator{
-										QualId: ast.QualId{Ident: ast.Ident("Length")},
+										QualId: ast.QualId{Ident: ast.NewIdent("Length")},
 									},
 									ExprList: ast.ExprList{
 										ast.NewConstExpr("ErrStr"),
@@ -207,9 +207,9 @@ func TestConstSectionl(t *testing.T) {
 				},
 			)},
 			// Ln10 = 2.302585092994045684;
-			{Ident: ast.Ident("Ln10"), ConstExpr: *ast.NewConstExpr(ast.NewNumber("2.302585092994045684"))},
+			{Ident: ast.NewIdent("Ln10"), ConstExpr: *ast.NewConstExpr(ast.NewNumber("2.302585092994045684"))},
 			// Ln10R = 1 / Ln10;
-			{Ident: ast.Ident("Ln10R"), ConstExpr: *ast.NewConstExpr(
+			{Ident: ast.NewIdent("Ln10R"), ConstExpr: *ast.NewConstExpr(
 				&ast.Term{
 					Factor: ast.NewNumber("1"),
 					MulOpFactors: []*ast.MulOpFactor{
@@ -218,7 +218,7 @@ func TestConstSectionl(t *testing.T) {
 				},
 			)},
 			// Numeric = ['0'..'9'];
-			{Ident: ast.Ident("Numeric"), ConstExpr: *ast.NewConstExpr(
+			{Ident: ast.NewIdent("Numeric"), ConstExpr: *ast.NewConstExpr(
 				&ast.SetConstructor{
 					SetElements: []*ast.SetElement{
 						{
@@ -229,7 +229,7 @@ func TestConstSectionl(t *testing.T) {
 				},
 			)},
 			// Alpha = ['A'..'Z', 'a'..'z'];
-			{Ident: ast.Ident("Alpha"), ConstExpr: *ast.NewConstExpr(
+			{Ident: ast.NewIdent("Alpha"), ConstExpr: *ast.NewConstExpr(
 				&ast.SetConstructor{
 					SetElements: []*ast.SetElement{
 						{
@@ -244,7 +244,7 @@ func TestConstSectionl(t *testing.T) {
 				},
 			)},
 			// AlphaNum = Alpha + Numeric;
-			{Ident: ast.Ident("AlphaNum"), ConstExpr: *ast.NewConstExpr(
+			{Ident: ast.NewIdent("AlphaNum"), ConstExpr: *ast.NewConstExpr(
 				&ast.SimpleExpression{
 					Term: *ast.NewTerm("Alpha"),
 					AddOpTerms: []*ast.AddOpTerm{

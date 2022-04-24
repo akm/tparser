@@ -30,7 +30,7 @@ func NewUnitRef(name interface{}, paths ...string) *UnitRef {
 	case *Ident:
 		nameIdent = *v
 	case string:
-		nameIdent = Ident(v)
+		nameIdent = NewIdent(v)
 	default:
 		panic(errors.Errorf("invalid type %T", name))
 	}

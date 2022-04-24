@@ -23,7 +23,7 @@ func TestExpression(t *testing.T) {
 	run(
 		"variable",
 		[]rune(`X`),
-		ast.NewExpression(&ast.QualId{Ident: ast.Ident("X")}),
+		ast.NewExpression(&ast.QualId{Ident: ast.NewIdent("X")}),
 	)
 
 	run(
@@ -65,7 +65,7 @@ func TestExpression(t *testing.T) {
 		ast.NewExpression(
 			&ast.Address{
 				Designator: ast.Designator{
-					QualId: ast.QualId{Ident: ast.Ident("X")},
+					QualId: ast.QualId{Ident: ast.NewIdent("X")},
 				},
 			},
 		),
@@ -80,7 +80,7 @@ func TestExpression(t *testing.T) {
 	run(
 		"variable#2",
 		[]rune(`InterestRate`),
-		ast.NewExpression(&ast.QualId{Ident: ast.Ident("InterestRate")}),
+		ast.NewExpression(&ast.QualId{Ident: ast.NewIdent("InterestRate")}),
 	)
 
 	run(
@@ -89,11 +89,11 @@ func TestExpression(t *testing.T) {
 		ast.NewExpression(
 			&ast.DesignatorFactor{
 				Designator: ast.Designator{
-					QualId: ast.QualId{Ident: ast.Ident("Calc")},
+					QualId: ast.QualId{Ident: ast.NewIdent("Calc")},
 				},
 				ExprList: ast.ExprList{
-					ast.NewExpression(&ast.QualId{Ident: ast.Ident("X")}),
-					ast.NewExpression(&ast.QualId{Ident: ast.Ident("Y")}),
+					ast.NewExpression(&ast.QualId{Ident: ast.NewIdent("X")}),
+					ast.NewExpression(&ast.QualId{Ident: ast.NewIdent("Y")}),
 				},
 			},
 		),
@@ -192,7 +192,7 @@ func TestExpression(t *testing.T) {
 		ast.NewExpression(
 			&ast.DesignatorFactor{
 				Designator: ast.Designator{
-					QualId: ast.QualId{Ident: ast.Ident("Char")},
+					QualId: ast.QualId{Ident: ast.NewIdent("Char")},
 				},
 				ExprList: ast.ExprList{
 					ast.NewExpression(ast.NewNumber("48")),
@@ -497,7 +497,7 @@ func TestExpression(t *testing.T) {
 		[]rune(`P^`),
 		ast.NewExpression(
 			&ast.Designator{
-				QualId: ast.QualId{Ident: ast.Ident("P")},
+				QualId: ast.QualId{Ident: ast.NewIdent("P")},
 				Items: []ast.DesignatorItem{
 					&ast.DesignatorItemDereference{},
 				},
@@ -796,11 +796,11 @@ func TestFactor(t *testing.T) {
 		[]rune(`Calc(X,Y)`),
 		&ast.DesignatorFactor{
 			Designator: ast.Designator{
-				QualId: ast.QualId{Ident: ast.Ident("Calc")},
+				QualId: ast.QualId{Ident: ast.NewIdent("Calc")},
 			},
 			ExprList: ast.ExprList{
-				ast.NewExpression(&ast.QualId{Ident: ast.Ident("X")}),
-				ast.NewExpression(&ast.QualId{Ident: ast.Ident("Y")}),
+				ast.NewExpression(&ast.QualId{Ident: ast.NewIdent("X")}),
+				ast.NewExpression(&ast.QualId{Ident: ast.NewIdent("Y")}),
 			},
 		},
 	)

@@ -20,7 +20,7 @@ func TestExpression(t *testing.T) {
 		assert.Implements(t, (*Factor)(nil), &TypeCast{})
 	})
 	t.Run("DesignatorItem", func(t *testing.T) {
-		assert.Implements(t, (*DesignatorItem)(nil), DesignatorItemIdent(Ident("foo")))
+		assert.Implements(t, (*DesignatorItem)(nil), DesignatorItemIdent(NewIdent("foo")))
 		assert.Implements(t, (*DesignatorItem)(nil), DesignatorItemExprList{})
 		assert.Implements(t, (*DesignatorItem)(nil), &DesignatorItemDereference{})
 	})

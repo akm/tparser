@@ -50,7 +50,7 @@ func (p *Parser) ParseVarDecl() (*ast.VarDecl, error) {
 		if err != nil {
 			return nil, err
 		}
-		res.Absolute = ast.NewVarDeclAbsoluteIdent(ast.Ident(t.Value()))
+		res.Absolute = ast.NewVarDeclAbsoluteIdent(ast.NewIdent(t.Value()))
 		p.NextToken()
 	}
 

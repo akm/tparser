@@ -12,7 +12,7 @@ func (p *Parser) ParseRealType(required bool) (*ast.RealType, error) {
 	t := p.CurrentToken()
 	if t.Is(realType) {
 		p.NextToken()
-		return &ast.RealType{Name: ast.Ident(t.Value())}, nil
+		return &ast.RealType{Name: ast.NewIdent(t.Value())}, nil
 	} else if required {
 		return nil, errors.Errorf("Unsupported token %+v for RealType", t)
 	} else {
@@ -26,7 +26,7 @@ func (p *Parser) ParseOrdIdent(required bool) (*ast.OrdIdent, error) {
 	t := p.CurrentToken()
 	if t.Is(ordIdent) {
 		p.NextToken()
-		return &ast.OrdIdent{Name: ast.Ident(t.Value())}, nil
+		return &ast.OrdIdent{Name: ast.NewIdent(t.Value())}, nil
 	} else if required {
 		return nil, errors.Errorf("Unsupported token %+v for OrdIdent", t)
 	} else {
@@ -103,7 +103,7 @@ func (p *Parser) ParseEnumeratedTypeElement() (*ast.EnumeratedTypeElement, error
 	if err != nil {
 		return nil, err
 	}
-	res := &ast.EnumeratedTypeElement{Ident: ast.Ident(ident.Value())}
+	res := &ast.EnumeratedTypeElement{Ident: ast.NewIdent(ident.Value())}
 	p.NextToken()
 	if p.CurrentToken().Is(token.Symbol('=')) {
 		p.NextToken()

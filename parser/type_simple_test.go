@@ -23,10 +23,10 @@ func TestEnumeratedType(t *testing.T) {
 		"card",
 		[]rune(`(Club, Diamond, Heart, Spade)`),
 		ast.EnumeratedType{
-			{Ident: ast.Ident("Club")},
-			{Ident: ast.Ident("Diamond")},
-			{Ident: ast.Ident("Heart")},
-			{Ident: ast.Ident("Spade")},
+			{Ident: ast.NewIdent("Club")},
+			{Ident: ast.NewIdent("Diamond")},
+			{Ident: ast.NewIdent("Heart")},
+			{Ident: ast.NewIdent("Spade")},
 		},
 	)
 
@@ -34,9 +34,9 @@ func TestEnumeratedType(t *testing.T) {
 		"Enumerated types with explicitly assigned ordinality",
 		[]rune(`(Small = 5, Medium = 10, Large = Small + Medium)`),
 		ast.EnumeratedType{
-			{Ident: ast.Ident("Small"), ConstExpr: ast.NewConstExpr(ast.NewNumber("5"))},
-			{Ident: ast.Ident("Medium"), ConstExpr: ast.NewConstExpr(ast.NewNumber("10"))},
-			{Ident: ast.Ident("Large"), ConstExpr: ast.NewConstExpr(
+			{Ident: ast.NewIdent("Small"), ConstExpr: ast.NewConstExpr(ast.NewNumber("5"))},
+			{Ident: ast.NewIdent("Medium"), ConstExpr: ast.NewConstExpr(ast.NewNumber("10"))},
+			{Ident: ast.NewIdent("Large"), ConstExpr: ast.NewConstExpr(
 				&ast.SimpleExpression{
 					Term: *ast.NewTerm("Small"),
 					AddOpTerms: []*ast.AddOpTerm{

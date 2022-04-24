@@ -218,7 +218,7 @@ func NewDesignator(arg interface{}) *Designator {
 	case Ident:
 		return &Designator{QualId: QualId{Ident: v}}
 	case string:
-		return &Designator{QualId: QualId{Ident: Ident(v)}}
+		return &Designator{QualId: QualId{Ident: NewIdent(v)}}
 	default:
 		panic(errors.Errorf("Unsupported type %T for NewDesignator", arg))
 	}
