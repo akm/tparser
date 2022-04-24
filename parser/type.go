@@ -35,7 +35,7 @@ func (p *Parser) ParseTypeDecl() (*ast.TypeDecl, error) {
 	if err != nil {
 		return nil, err
 	}
-	res.Ident = ast.NewIdent(ident.Value())
+	res.Ident = *ast.NewIdent(ident.Value())
 	if _, err := p.Next(token.Symbol('=')); err != nil {
 		return nil, err
 	}
@@ -109,11 +109,11 @@ func (p *Parser) parseTypeIdWithUnit() (*ast.TypeId, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &ast.TypeId{UnitId: unitId, Ident: ast.NewIdent(t.Value())}, nil
+	return &ast.TypeId{UnitId: unitId, Ident: *ast.NewIdent(t.Value())}, nil
 }
 
 func (p *Parser) parseTypeIdWithoutUnit() (*ast.TypeId, error) {
-	ident := ast.NewIdent(p.CurrentToken().Value())
+	ident := *ast.NewIdent(p.CurrentToken().Value())
 	p.NextToken()
 	return &ast.TypeId{Ident: ident}, nil
 }

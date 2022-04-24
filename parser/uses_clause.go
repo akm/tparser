@@ -16,7 +16,7 @@ func (p *Parser) ParseUsesClause() (ast.UsesClause, error) {
 		if err != nil {
 			return err
 		}
-		ref := &ast.UnitRef{Name: ast.NewIdent(t.Value())}
+		ref := &ast.UnitRef{Ident: *ast.NewIdent(t.Value())}
 		t2 := p.NextToken()
 		if t2.Is(token.ReservedWord.HasKeyword("IN")) {
 			t := p.NextToken()

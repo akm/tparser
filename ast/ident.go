@@ -9,16 +9,16 @@ type Ident struct {
 	Name string
 }
 
-func NewIdent(arg interface{}) Ident {
+func NewIdent(arg interface{}) *Ident {
 	switch v := arg.(type) {
 	case Ident:
-		return v
+		return &v
 	case *Ident:
-		return *v
+		return v
 	case string:
-		return Ident{Name: v}
+		return &Ident{Name: v}
 	case *string:
-		return Ident{Name: *v}
+		return &Ident{Name: *v}
 	default:
 		panic(errors.Errorf("unexpected type %T (%v) is given for NewIdent", arg, arg))
 	}

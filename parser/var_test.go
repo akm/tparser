@@ -30,12 +30,12 @@ func TestUnitWithVarSection(t *testing.T) {
 		IMPLEMENTATION
 		END.`),
 		&ast.Unit{
-			Ident: ast.NewIdent("Unit1"),
+			Ident: *ast.NewIdent("Unit1"),
 			InterfaceSection: &ast.InterfaceSection{
 				InterfaceDecls: []ast.InterfaceDecl{
 					ast.VarSection{
-						{IdentList: ast.IdentList{"I"}, Type: &ast.OrdIdent{Name: ast.NewIdent("Integer")}},
-						{IdentList: ast.IdentList{"X", "Y"}, Type: &ast.RealType{Name: ast.NewIdent("Real")}},
+						{IdentList: ast.IdentList{"I"}, Type: &ast.OrdIdent{Name: *ast.NewIdent("Integer")}},
+						{IdentList: ast.IdentList{"X", "Y"}, Type: &ast.RealType{Name: *ast.NewIdent("Real")}},
 					},
 				},
 			},
@@ -57,17 +57,17 @@ func TestUnitWithVarSection(t *testing.T) {
 		IMPLEMENTATION
 		END.`),
 		&ast.Unit{
-			Ident: ast.NewIdent("Unit1"),
+			Ident: *ast.NewIdent("Unit1"),
 			InterfaceSection: &ast.InterfaceSection{
 				InterfaceDecls: []ast.InterfaceDecl{
 					ast.VarSection{
-						{IdentList: ast.IdentList{"X", "Y", "Z"}, Type: &ast.RealType{Name: ast.NewIdent("Double")}},
-						{IdentList: ast.IdentList{"I", "J", "K"}, Type: &ast.OrdIdent{Name: ast.NewIdent("Integer")}},
+						{IdentList: ast.IdentList{"X", "Y", "Z"}, Type: &ast.RealType{Name: *ast.NewIdent("Double")}},
+						{IdentList: ast.IdentList{"I", "J", "K"}, Type: &ast.OrdIdent{Name: *ast.NewIdent("Integer")}},
 					},
 					ast.VarSection{
 						{IdentList: ast.IdentList{"Digit"}, Type: &ast.SubrangeType{Low: *ast.NewConstExpr(ast.NewNumber("0")), High: *ast.NewConstExpr(ast.NewNumber("9"))}},
-						{IdentList: ast.IdentList{"Okay"}, Type: &ast.OrdIdent{Name: ast.NewIdent("Boolean")}},
-						{IdentList: ast.IdentList{"A"}, Type: &ast.OrdIdent{Name: ast.NewIdent("Integer")}, ConstExpr: ast.NewExpression(ast.NewNumber("7"))},
+						{IdentList: ast.IdentList{"Okay"}, Type: &ast.OrdIdent{Name: *ast.NewIdent("Boolean")}},
+						{IdentList: ast.IdentList{"A"}, Type: &ast.OrdIdent{Name: *ast.NewIdent("Integer")}, ConstExpr: ast.NewExpression(ast.NewNumber("7"))},
 					},
 				},
 			},
@@ -84,11 +84,11 @@ func TestUnitWithVarSection(t *testing.T) {
 		IMPLEMENTATION
 		END.`),
 		&ast.Unit{
-			Ident: ast.NewIdent("Unit1"),
+			Ident: *ast.NewIdent("Unit1"),
 			InterfaceSection: &ast.InterfaceSection{
 				InterfaceDecls: []ast.InterfaceDecl{
 					ast.ThreadVarSection{
-						{IdentList: ast.IdentList{"X"}, Type: &ast.OrdIdent{Name: ast.NewIdent("Integer")}},
+						{IdentList: ast.IdentList{"X"}, Type: &ast.OrdIdent{Name: *ast.NewIdent("Integer")}},
 					},
 				},
 			},
@@ -122,7 +122,7 @@ func TestVarSectionl(t *testing.T) {
 			},
 			&ast.VarDecl{
 				IdentList: ast.IdentList{"StrLen"},
-				Type:      &ast.OrdIdent{Name: ast.NewIdent("Byte")},
+				Type:      &ast.OrdIdent{Name: *ast.NewIdent("Byte")},
 				Absolute:  ast.NewVarDeclAbsoluteIdent("Str"),
 			},
 		},
@@ -131,7 +131,7 @@ func TestVarSectionl(t *testing.T) {
 		"With simple ConstExpr",
 		[]rune(`VAR A: Integer = 7;`),
 		ast.VarSection{
-			{IdentList: ast.IdentList{"A"}, Type: &ast.OrdIdent{Name: ast.NewIdent("Integer")}, ConstExpr: ast.NewExpression(ast.NewNumber("7"))},
+			{IdentList: ast.IdentList{"A"}, Type: &ast.OrdIdent{Name: *ast.NewIdent("Integer")}, ConstExpr: ast.NewExpression(ast.NewNumber("7"))},
 		},
 	)
 
@@ -144,7 +144,7 @@ func TestVarSectionl(t *testing.T) {
 		`),
 		ast.VarSection{
 			{IdentList: ast.IdentList{"Digit"}, Type: &ast.SubrangeType{Low: *ast.NewConstExpr(ast.NewNumber("0")), High: *ast.NewConstExpr(ast.NewNumber("9"))}},
-			{IdentList: ast.IdentList{"Okay"}, Type: &ast.OrdIdent{Name: ast.NewIdent("Boolean")}},
+			{IdentList: ast.IdentList{"Okay"}, Type: &ast.OrdIdent{Name: *ast.NewIdent("Boolean")}},
 		},
 	)
 }

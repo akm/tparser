@@ -66,7 +66,7 @@ func NewRealType(name interface{}) *RealType {
 	case Ident:
 		return &RealType{Name: v}
 	case string:
-		return &RealType{Name: NewIdent(v)}
+		return &RealType{Name: *NewIdent(v)}
 	default:
 		panic(errors.Errorf("invalid type %T for NewRealType %+v", name, name))
 	}
@@ -164,7 +164,7 @@ func NewOrdIdent(name interface{}) *OrdIdent {
 	case Ident:
 		return &OrdIdent{Name: v}
 	case string:
-		return &OrdIdent{Name: NewIdent(v)}
+		return &OrdIdent{Name: *NewIdent(v)}
 	default:
 		panic(errors.Errorf("invalid type %T for NewOrdIndent %+v", name, name))
 	}

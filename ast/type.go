@@ -65,11 +65,11 @@ type TypeId struct {
 
 func NewTypeId(unitIdOrIdent interface{}, args ...interface{}) *TypeId {
 	if len(args) == 0 {
-		return &TypeId{Ident: NewIdent(unitIdOrIdent)}
+		return &TypeId{Ident: *NewIdent(unitIdOrIdent)}
 	} else if len(args) == 1 {
 		return &TypeId{
 			UnitId: NewUnitId(unitIdOrIdent),
-			Ident:  NewIdent(args[0]),
+			Ident:  *NewIdent(args[0]),
 		}
 	} else {
 		panic(errors.Errorf("too many arguments for NewTypeId: %v, %v", unitIdOrIdent, args))
