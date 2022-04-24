@@ -22,6 +22,10 @@ func (m *Unit) GetPath() string {
 	return m.Path
 }
 
+func (m *Unit) Children() []Node {
+	return nil
+}
+
 // - InterfaceSection
 //   ```
 //   INTERFACE

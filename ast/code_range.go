@@ -9,20 +9,3 @@ type CodeRange struct {
 	Start CodePosition
 	End   CodePosition
 }
-
-type CodeBlock interface {
-	GetRange() *CodeRange
-	Children() []CodeBlock
-}
-
-type CodeBlockNode struct {
-	Range *CodeRange
-}
-
-func (n *CodeBlockNode) GetRange() *CodeRange {
-	return n.Range
-}
-
-func (n *CodeBlockNode) Children() []CodeBlock {
-	return nil
-}
