@@ -30,6 +30,7 @@ func (p *Parser) ParseVarSection() (ast.VarSection, error) {
 
 func (p *Parser) ParseVarDecl() (*ast.VarDecl, error) {
 	res := &ast.VarDecl{}
+	firstToken := p.CurrentToken()
 	identList, err := p.ParseIdentList(':')
 	if err != nil {
 		return nil, err
@@ -62,6 +63,12 @@ func (p *Parser) ParseVarDecl() (*ast.VarDecl, error) {
 		}
 		res.ConstExpr = expr
 	}
+
+	res.CodeBlockNode.Range = &ast.CodeRange{
+		Start: *firstToken.Start,
+		End:   *p.CurrentToken().Start,
+	}
+
 	return res, nil
 }
 
@@ -90,6 +97,7 @@ func (p *Parser) ParseThreadVarSection() (ast.ThreadVarSection, error) {
 
 func (p *Parser) ParseThreadVarDecl() (*ast.ThreadVarDecl, error) {
 	res := &ast.ThreadVarDecl{}
+	firstToken := p.CurrentToken()
 	identList, err := p.ParseIdentList(':')
 	if err != nil {
 		return nil, err
@@ -103,6 +111,11 @@ func (p *Parser) ParseThreadVarDecl() (*ast.ThreadVarDecl, error) {
 		return nil, err
 	}
 	res.Type = typ
+
+	res.CodeBlockNode.Range = &ast.CodeRange{
+		Start: *firstToken.Start,
+		End:   *p.CurrentToken().Start,
+	}
 
 	// p.NextToken()
 	return res, nil

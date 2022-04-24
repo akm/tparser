@@ -54,8 +54,12 @@ func (p *Parser) ParseConstantDecl() (*ast.ConstantDecl, error) {
 	if err != nil {
 		return nil, err
 	}
+	curr := p.CurrentToken()
 	res.ConstExpr = *expr
-
+	res.CodeBlockNode.Range = &ast.CodeRange{
+		Start: *ident.Start,
+		End:   *curr.Start,
+	}
 	return res, nil
 }
 

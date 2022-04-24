@@ -2,21 +2,69 @@ package ast
 
 import "github.com/pkg/errors"
 
+// - TypeSection
+//   ```
+//   TYPE (TypeDecl ';')...
+//   ```
 func (TypeSection) canBeInterfaceDecl() {}
 
 type TypeSection []*TypeDecl
 
+func (s TypeSection) Children() []Node {
+	r := make([]Node, len(s))
+	for i, v := range s {
+		r[i] = v
+	}
+	return r
+}
+
+// - TypeDecl
+//   ```
+//   Ident '=' [TYPE] Type [PortabilityDirective]
+//   ```
+//   ```
+//   Ident '=' [TYPE] RestrictedType [PortabilityDirective]
+//   ```
 type TypeDecl struct {
+	CodeBlockNode
 	Ident                Ident
 	Type                 Type
 	PortabilityDirective *PortabilityDirective
 }
 
+// - Type
+//   ```
+//   TypeId
+//   ```
+//   ```
+//   SimpleType
+//   ```
+//   ```
+//   StrucType
+//   ```
+//   ```
+//   PointerType
+//   ```
+//   ```
+//   StringType
+//   ```
+//   ```
+//   ProcedureType
+//   ```
+//   ```
+//   VariantType
+//   ```
+//   ```
+//   ClassRefType
+//   ```
 type Type interface {
 	isType()
 }
 
-// TypeId: [UnitId '.'] <type-identifier>
+// - TypeId
+//   ```
+//   [UnitId '.'] <type-identifier>
+//   ```
 func (*TypeId) isType() {}
 
 type TypeId struct {

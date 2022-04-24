@@ -49,6 +49,12 @@ func (p *Parser) ParseTypeDecl() (*ast.TypeDecl, error) {
 		return nil, err
 	}
 	res.Type = typ
+	defer func() {
+		res.CodeBlockNode.Range = &ast.CodeRange{
+			Start: *ident.Start,
+			End:   *p.CurrentToken().Start,
+		}
+	}()
 
 	{
 		t := p.CurrentToken()
