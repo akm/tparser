@@ -4,14 +4,6 @@ func (VarSection) canBeInterfaceDecl() {}
 
 type VarSection []*VarDecl
 
-func (s VarSection) Children() []Node {
-	r := make([]Node, len(s))
-	for i, v := range s {
-		r[i] = v
-	}
-	return r
-}
-
 // - VarDecl
 //   - (On Windows)
 //     ```
@@ -23,7 +15,6 @@ func (s VarSection) Children() []Node {
 //     ```
 
 type VarDecl struct {
-	CodeBlockNode
 	IdentList            IdentList
 	Type                 Type
 	Absolute             VarDeclAbsolute
@@ -57,16 +48,7 @@ func (ThreadVarSection) canBeInterfaceDecl() {}
 
 type ThreadVarSection []*ThreadVarDecl
 
-func (s ThreadVarSection) Children() []Node {
-	r := make([]Node, len(s))
-	for i, v := range s {
-		r[i] = v
-	}
-	return r
-}
-
 type ThreadVarDecl struct {
-	CodeBlockNode
 	IdentList IdentList
 	Type      Type
 }

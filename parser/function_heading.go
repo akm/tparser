@@ -11,8 +11,7 @@ import (
 
 func (p *Parser) ParseExportedHeading() (*ast.ExportedHeading, error) {
 	var functionHeading *ast.FunctionHeading
-	firstToken := p.CurrentToken()
-	switch firstToken.Value() {
+	switch p.CurrentToken().Value() {
 	case "PROCEDURE":
 		var err error
 		functionHeading, err = p.ParseProcedureHeading()
@@ -55,10 +54,6 @@ func (p *Parser) ParseExportedHeading() (*ast.ExportedHeading, error) {
 			}
 			p.NextToken()
 		}
-	}
-	r.CodeBlockNode.Range = &ast.CodeRange{
-		Start: *firstToken.Start,
-		End:   *p.CurrentToken().Start,
 	}
 	return r, nil
 }

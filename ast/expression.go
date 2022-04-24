@@ -2,10 +2,6 @@ package ast
 
 import "github.com/pkg/errors"
 
-// - Expression
-//   ```
-//   SimpleExpression [RelOp SimpleExpression]...
-//   ```
 type Expression struct {
 	SimpleExpression
 	RelOpSimpleExpressions []*RelOpSimpleExpression
@@ -24,40 +20,11 @@ func NewExpression(arg interface{}) *Expression {
 
 type ExprList []*Expression
 
-// - RelOp
-//   ```
-//   '>'
-//   ```
-//   ```
-//   '<'
-//   ```
-//   ```
-//   '<='
-//   ```
-//   ```
-//   '>='
-//   ```
-//   ```
-//   '='
-//   ```
-//   ```
-//   '<>'
-//   ```
-//   ```
-//   IN
-//   ```
-//   ```
-//   IS
-//   ```
 type RelOpSimpleExpression struct {
 	RelOp string // '>' | '<' | '<=' | '>=' | '=' | '<>' | "IN" | "IS" | "AS"
 	SimpleExpression
 }
 
-// - SimpleExpression
-//   ```
-//   ['+' | '-'] Term [AddOp Term]...
-//   ```
 type SimpleExpression struct {
 	UnaryOp *string //  '+' | '-' or nil
 	Term
@@ -75,28 +42,11 @@ func NewSimpleExpression(arg interface{}) *SimpleExpression {
 	}
 }
 
-// - AddOp
-//   ```
-//   '+'
-//   ```
-//   ```
-//   '-'
-//   ```
-//   ```
-//   OR
-//   ```
-//   ```
-//   XOR
-//   ```
 type AddOpTerm struct {
 	AddOp string // '+' | '-' | "OR" | "XOR"
 	Term
 }
 
-// - Term
-//   ```
-//   Factor [MulOp Factor]...
-//   ```
 type Term struct {
 	Factor
 	MulOpFactors []*MulOpFactor
@@ -113,65 +63,11 @@ func NewTerm(arg interface{}) *Term {
 	}
 }
 
-// - MulOp
-//   ```
-//   '*'
-//   ```
-//   ```
-//   '/'
-//   ```
-//   ```
-//   DIV
-//   ```
-//   ```
-//   MOD
-//   ```
-//   ```
-//   AND
-//   ```
-//   ```
-//   SHL
-//   ```
-//   ```
-//   SHR
-//   ```
-//   ```
-//   AS
-//   ```
-//
 type MulOpFactor struct {
 	MulOp string // '*' | '/' | "DIV" | "MOD", "AND", "SHL", "SHR"
 	Factor
 }
 
-// - Factor
-//   ```
-//   Designator ['(' ExprList ')']
-//   ```
-//   ```
-//   '@' Designator
-//   ```
-//   ```
-//   Number
-//   ```
-//   ```
-//   String
-//   ```
-//   ```
-//   NIL
-//   ```
-//   ```
-//   '(' Expression ')'
-//   ```
-//   ```
-//   NOT Factor
-//   ```
-//   ```
-//   SetConstructor
-//   ```
-//   ```
-//   TypeId '(' Expression ')'
-//   ```
 type Factor interface {
 	isFactor()
 }
@@ -200,10 +96,7 @@ type Address struct {
 	Designator
 }
 
-// - Designator
-//   ```
-//   QualId ['.' Ident | '[' ExprList ']' | '^']...
-//   ```
+// QualId ['.' Ident | '[' ExprList ']' | '^']...
 type Designator struct {
 	QualId
 	Items []DesignatorItem
@@ -273,20 +166,12 @@ type Not struct {
 	Factor Factor
 }
 
-func (SetConstructor) isFactor() {}
+func (*SetConstructor) isFactor() {}
 
-// - SetConstructor
-//   ```
-//   '[' [SetElement ','...] ']'
-//   ```
 type SetConstructor struct {
 	SetElements []*SetElement
 }
 
-// - SetElement
-//   ```
-//   Expression ['..' Expression]
-//   ```
 type SetElement struct {
 	Expression
 	SubRangeEnd *Expression

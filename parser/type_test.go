@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/akm/tparser/ast"
-	"github.com/akm/tparser/ast/asttest"
 	"github.com/akm/tparser/ext"
 	"github.com/stretchr/testify/assert"
 )
@@ -16,7 +15,6 @@ func TestUnitWithTypeSection(t *testing.T) {
 			parser.NextToken()
 			res, err := parser.ParseUnit()
 			if assert.NoError(t, err) {
-				asttest.ClearAllRange(res)
 				assert.Equal(t, expected, res)
 			}
 		})
@@ -113,14 +111,7 @@ func TestTypeSection(t *testing.T) {
 	run("simple type declaration",
 		[]rune(`TYPE TTypeId1 = TType1;`),
 		ast.TypeSection{
-			{
-				Ident: ast.Ident("TTypeId1"),
-				Type:  &ast.TypeId{Ident: ast.Ident("TType1")},
-				CodeBlockNode: *asttest.NewCodeBlockNode(
-					asttest.CodePosition(5, 1, 6),
-					asttest.CodePosition(22, 1, 23),
-				),
-			},
+			{Ident: ast.Ident("TTypeId1"), Type: &ast.TypeId{Ident: ast.Ident("TType1")}},
 		},
 	)
 	run(
@@ -128,26 +119,12 @@ func TestTypeSection(t *testing.T) {
 		[]rune(`TYPE TTypeId1 = TType1;
 			TTypeId2 = (tsClick, tsClack, tsClock);`),
 		ast.TypeSection{
-			{
-				Ident: ast.Ident("TTypeId1"),
-				Type:  &ast.TypeId{Ident: ast.Ident("TType1")},
-				CodeBlockNode: *asttest.NewCodeBlockNode(
-					asttest.CodePosition(5, 1, 6),
-					asttest.CodePosition(22, 1, 23),
-				),
-			},
-			{
-				Ident: ast.Ident("TTypeId2"),
-				Type: ast.EnumeratedType{
-					{Ident: ast.Ident("tsClick")},
-					{Ident: ast.Ident("tsClack")},
-					{Ident: ast.Ident("tsClock")},
-				},
-				CodeBlockNode: *asttest.NewCodeBlockNode(
-					asttest.CodePosition(27, 2, 5),
-					asttest.CodePosition(65, 2, 43),
-				),
-			},
+			{Ident: ast.Ident("TTypeId1"), Type: &ast.TypeId{Ident: ast.Ident("TType1")}},
+			{Ident: ast.Ident("TTypeId2"), Type: ast.EnumeratedType{
+				{Ident: ast.Ident("tsClick")},
+				{Ident: ast.Ident("tsClack")},
+				{Ident: ast.Ident("tsClock")},
+			}},
 		},
 	)
 	run(
@@ -157,10 +134,6 @@ func TestTypeSection(t *testing.T) {
 			&ast.TypeDecl{
 				Ident: ast.Ident("TRealType1"),
 				Type:  &ast.RealType{Name: "REAL"},
-				CodeBlockNode: *asttest.NewCodeBlockNode(
-					asttest.CodePosition(5, 1, 6),
-					asttest.CodePosition(22, 1, 23),
-				),
 			},
 		},
 	)
@@ -171,30 +144,9 @@ func TestTypeSection(t *testing.T) {
 			TMyString1 = STRING;
 			TMyReal1 = REAL;`),
 		ast.TypeSection{
-			{
-				Ident: ast.Ident("TMyInteger1"),
-				Type:  &ast.OrdIdent{Name: ast.Ident("INTEGER")},
-				CodeBlockNode: *asttest.NewCodeBlockNode(
-					asttest.CodePosition(8, 2, 5),
-					asttest.CodePosition(29, 2, 26),
-				),
-			},
-			{
-				Ident: ast.Ident("TMyString1"),
-				Type:  &ast.StringType{Name: "STRING"},
-				CodeBlockNode: *asttest.NewCodeBlockNode(
-					asttest.CodePosition(34, 3, 5),
-					asttest.CodePosition(53, 3, 24),
-				),
-			},
-			{
-				Ident: ast.Ident("TMyReal1"),
-				Type:  &ast.RealType{Name: ast.Ident("REAL")},
-				CodeBlockNode: *asttest.NewCodeBlockNode(
-					asttest.CodePosition(58, 4, 5),
-					asttest.CodePosition(73, 4, 20),
-				),
-			},
+			{Ident: ast.Ident("TMyInteger1"), Type: &ast.OrdIdent{Name: ast.Ident("INTEGER")}},
+			{Ident: ast.Ident("TMyString1"), Type: &ast.StringType{Name: "STRING"}},
+			{Ident: ast.Ident("TMyReal1"), Type: &ast.RealType{Name: ast.Ident("REAL")}},
 		},
 	)
 }
@@ -219,10 +171,6 @@ func TestTypeDecl(t *testing.T) {
 		&ast.TypeDecl{
 			Ident: ast.Ident("TTypeId1"),
 			Type:  &ast.TypeId{Ident: ast.Ident("TType1")},
-			CodeBlockNode: *asttest.NewCodeBlockNode(
-				asttest.CodePosition(0, 1, 1),
-				asttest.CodePosition(17, 1, 17),
-			),
 		},
 	)
 
@@ -232,10 +180,6 @@ func TestTypeDecl(t *testing.T) {
 		&ast.TypeDecl{
 			Ident: ast.Ident("TTypeId1"),
 			Type:  &ast.TypeId{UnitId: &u1, Ident: ast.Ident("TType1")},
-			CodeBlockNode: *asttest.NewCodeBlockNode(
-				asttest.CodePosition(0, 1, 1),
-				asttest.CodePosition(20, 1, 20),
-			),
 		},
 	)
 	run(
@@ -244,10 +188,6 @@ func TestTypeDecl(t *testing.T) {
 		&ast.TypeDecl{
 			Ident: ast.Ident("TTypeId1"),
 			Type:  &ast.TypeId{Ident: ast.Ident("TType1")},
-			CodeBlockNode: *asttest.NewCodeBlockNode(
-				asttest.CodePosition(0, 1, 1),
-				asttest.CodePosition(22, 1, 22),
-			),
 		},
 	)
 }
