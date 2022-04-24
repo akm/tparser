@@ -250,6 +250,7 @@ func (ValueFactor) isFactor() {}
 type ValueFactor struct {
 	Value string
 }
+
 type Number struct{ ValueFactor }
 
 func NewNumber(v string) *Number { return &Number{ValueFactor: ValueFactor{Value: v}} }
