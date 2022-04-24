@@ -16,9 +16,9 @@ func NewIdent(arg interface{}) *Ident {
 	case *Ident:
 		return v
 	case token.Token:
-		return NewIdent(v.Value())
+		return &Ident{Name: v.RawString()}
 	case *token.Token:
-		return NewIdent(v.Value())
+		return &Ident{Name: v.RawString()}
 	default:
 		panic(errors.Errorf("unexpected type %T (%v) is given for NewIdent", arg, arg))
 	}
