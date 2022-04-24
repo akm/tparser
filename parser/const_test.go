@@ -71,13 +71,10 @@ func TestConstSectionl(t *testing.T) {
 			{
 				Ident:     ast.Ident("MaxValue"),
 				ConstExpr: *ast.NewConstExpr(ast.NewNumber("237")),
-				CodeBlockNode: ast.CodeBlockNode{
-					Range: &ast.CodeRange{
-						Path:  "",
-						Start: ast.CodePosition{Index: 6, Line: 1, Col: 7},
-						End:   ast.CodePosition{Index: 20, Line: 1, Col: 21},
-					},
-				},
+				CodeBlockNode: *asttest.NewCodeBlockNode(
+					asttest.CodePosition(6, 1, 7),
+					asttest.CodePosition(20, 1, 21),
+				),
 			},
 		},
 	)
@@ -89,13 +86,10 @@ func TestConstSectionl(t *testing.T) {
 			{
 				Ident:     ast.Ident("Max"),
 				ConstExpr: *ast.NewConstExpr(ast.NewNumber("100")), Type: &ast.OrdIdent{Name: "Integer"},
-				CodeBlockNode: ast.CodeBlockNode{
-					Range: &ast.CodeRange{
-						Path:  "",
-						Start: ast.CodePosition{Index: 6, Line: 1, Col: 7},
-						End:   ast.CodePosition{Index: 24, Line: 1, Col: 25},
-					},
-				},
+				CodeBlockNode: *asttest.NewCodeBlockNode(
+					asttest.CodePosition(6, 1, 7),
+					asttest.CodePosition(24, 1, 25),
+				),
 			},
 		},
 	)
@@ -107,13 +101,10 @@ func TestConstSectionl(t *testing.T) {
 			{
 				Ident:     ast.Ident("Message"),
 				ConstExpr: *ast.NewConstExpr(ast.NewString("'Out of memory'")),
-				CodeBlockNode: ast.CodeBlockNode{
-					Range: &ast.CodeRange{
-						Path:  "",
-						Start: ast.CodePosition{Index: 6, Line: 1, Col: 7},
-						End:   ast.CodePosition{Index: 31, Line: 1, Col: 32},
-					},
-				},
+				CodeBlockNode: *asttest.NewCodeBlockNode(
+					asttest.CodePosition(6, 1, 7),
+					asttest.CodePosition(31, 1, 32),
+				),
 			},
 		},
 	)
