@@ -163,8 +163,8 @@ func NewOrdIdent(name interface{}) *OrdIdent {
 		return v
 	case Ident:
 		return &OrdIdent{Name: v}
-	case string:
-		return &OrdIdent{Name: *NewIdent(v)}
+	case *Ident:
+		return &OrdIdent{Name: *v}
 	default:
 		panic(errors.Errorf("invalid type %T for NewOrdIndent %+v", name, name))
 	}

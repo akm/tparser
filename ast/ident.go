@@ -35,6 +35,18 @@ func NewIdentList(args ...interface{}) IdentList {
 		switch v := arg.(type) {
 		case IdentList:
 			return v
+		case []*Ident:
+			return IdentList(v)
+		case []interface{}:
+			r := make(IdentList, len(v))
+			for idx, i := range v {
+				r[idx] = NewIdent(i)
+			}
+			return r
+		case Ident:
+			return IdentList{&v}
+		case *Ident:
+			return IdentList{v}
 		case []string:
 			r := make(IdentList, len(v))
 			for idx, i := range v {

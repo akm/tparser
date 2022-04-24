@@ -7,6 +7,12 @@ import (
 func NewFormalParm(name interface{}, args ...interface{}) *ast.FormalParm {
 	if sname, ok := name.(string); ok {
 		name = NewIdent(sname)
+	} else if nameslice, ok := name.([]string); ok {
+		v := make([]interface{}, len(nameslice))
+		for idx, i := range nameslice {
+			v[idx] = NewIdent(i)
+		}
+		name = v
 	}
 	if len(args) > 0 {
 		if arg0, ok := args[0].(string); ok {
@@ -40,6 +46,12 @@ func NewArrayParameterType(arg interface{}) *ast.ParameterType {
 func NewParameter(name interface{}, typArg interface{}, args ...interface{}) *ast.Parameter {
 	if sname, ok := name.(string); ok {
 		name = NewIdent(sname)
+	} else if nameslice, ok := name.([]string); ok {
+		v := make([]interface{}, len(nameslice))
+		for idx, i := range nameslice {
+			v[idx] = NewIdent(i)
+		}
+		name = v
 	}
 	if styp, ok := typArg.(string); ok {
 		typArg = NewTypeId(styp)

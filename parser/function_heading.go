@@ -114,7 +114,7 @@ func (p *Parser) ParseProcedureHeading() (*ast.FunctionHeading, error) {
 	}
 	res := &ast.FunctionHeading{
 		Type:       ast.FtProcedure,
-		Ident:      *ast.NewIdent(ident.Value()),
+		Ident:      *ast.NewIdent(ident),
 		ReturnType: nil,
 	}
 	t := p.NextToken()
@@ -138,7 +138,7 @@ func (p *Parser) ParseFunctionHeading() (*ast.FunctionHeading, error) {
 	}
 	res := &ast.FunctionHeading{
 		Type:  ast.FtFunction,
-		Ident: *ast.NewIdent(ident.Value()),
+		Ident: *ast.NewIdent(ident),
 	}
 	t := p.NextToken()
 	if t.Is(token.Symbol('(')) {

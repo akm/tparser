@@ -1,6 +1,9 @@
 package ast
 
-import "github.com/pkg/errors"
+import (
+	"github.com/akm/tparser/token"
+	"github.com/pkg/errors"
+)
 
 // - Expression
 //   ```
@@ -217,8 +220,12 @@ func NewDesignator(arg interface{}) *Designator {
 		return &Designator{QualId: *v}
 	case Ident:
 		return &Designator{QualId: QualId{Ident: v}}
-	case string:
-		return &Designator{QualId: QualId{Ident: *NewIdent(v)}}
+	case *Ident:
+		return &Designator{QualId: QualId{Ident: *v}}
+	case token.Token:
+		return NewDesignator(NewIdent(v))
+	case *token.Token:
+		return NewDesignator(NewIdent(v))
 	default:
 		panic(errors.Errorf("Unsupported type %T for NewDesignator", arg))
 	}
