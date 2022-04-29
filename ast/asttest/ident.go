@@ -12,7 +12,7 @@ func NewIdent(arg interface{}) *ast.Ident {
 	case *string:
 		return &ast.Ident{Name: *v}
 	default:
-		return ast.NewIdent(arg)
+		return ast.NewIdentFrom(arg)
 	}
 }
 

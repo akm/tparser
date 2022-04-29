@@ -80,7 +80,7 @@ type InitSection struct {
 type UnitId Ident
 
 func NewUnitId(name interface{}) *UnitId {
-	r := UnitId(*NewIdent(name))
+	r := UnitId(*NewIdentFrom(name))
 	return &r
 }
 

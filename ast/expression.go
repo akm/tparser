@@ -223,7 +223,7 @@ func NewDesignator(arg interface{}) *Designator {
 	case *Ident:
 		return &Designator{QualId: QualId{Ident: *v}}
 	case token.Token:
-		return NewDesignator(NewIdent(v))
+		return NewDesignator(NewIdent(&v))
 	case *token.Token:
 		return NewDesignator(NewIdent(v))
 	default:
@@ -240,7 +240,7 @@ func (DesignatorItemIdent) isDesignatorItem() {}
 type DesignatorItemIdent Ident
 
 func NewDesignatorItemIdent(v interface{}) *DesignatorItemIdent {
-	r := DesignatorItemIdent(*NewIdent(v))
+	r := DesignatorItemIdent(*NewIdentFrom(v))
 	return &r
 }
 

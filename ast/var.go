@@ -39,7 +39,7 @@ func NewVarDeclAbsoluteIdent(arg interface{}) *VarDeclAbsoluteIdent {
 		r := VarDeclAbsoluteIdent(*v)
 		return &r
 	default:
-		return NewVarDeclAbsoluteIdent(NewIdent(arg))
+		return NewVarDeclAbsoluteIdent(NewIdentFrom(arg))
 	}
 }
 

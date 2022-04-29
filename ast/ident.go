@@ -9,16 +9,19 @@ type Ident struct {
 	Name string
 }
 
-func NewIdent(arg interface{}) *Ident {
+func NewIdent(v *token.Token) *Ident {
+	return &Ident{Name: v.RawString()}
+}
+func NewIdentFrom(arg interface{}) *Ident {
 	switch v := arg.(type) {
 	case Ident:
 		return &v
 	case *Ident:
 		return v
 	case token.Token:
-		return &Ident{Name: v.RawString()}
+		return NewIdent(&v)
 	case *token.Token:
-		return &Ident{Name: v.RawString()}
+		return NewIdent(v)
 	default:
 		panic(errors.Errorf("unexpected type %T (%v) is given for NewIdent", arg, arg))
 	}
@@ -40,7 +43,7 @@ func NewIdentList(args ...interface{}) IdentList {
 		case []interface{}:
 			r := make(IdentList, len(v))
 			for idx, i := range v {
-				r[idx] = NewIdent(i)
+				r[idx] = NewIdentFrom(i)
 			}
 			return r
 		case Ident:
@@ -50,7 +53,7 @@ func NewIdentList(args ...interface{}) IdentList {
 		case []string:
 			r := make(IdentList, len(v))
 			for idx, i := range v {
-				r[idx] = NewIdent(i)
+				r[idx] = NewIdentFrom(i)
 			}
 			return r
 		default:
@@ -59,7 +62,7 @@ func NewIdentList(args ...interface{}) IdentList {
 	default:
 		r := make(IdentList, len(args))
 		for i, arg := range args {
-			r[i] = NewIdent(arg)
+			r[i] = NewIdentFrom(arg)
 		}
 		return r
 	}
