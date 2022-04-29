@@ -65,8 +65,6 @@ func NewRealType(name interface{}) *RealType {
 		return v
 	case Ident:
 		return &RealType{Name: v}
-	case string:
-		return &RealType{Name: *NewIdent(v)}
 	default:
 		panic(errors.Errorf("invalid type %T for NewRealType %+v", name, name))
 	}
