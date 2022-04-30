@@ -1,9 +1,12 @@
 package asttest
 
 import (
+	"testing"
+
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/token"
 	"github.com/pkg/errors"
+	"github.com/stretchr/testify/assert"
 )
 
 func NewIdent(arg interface{}, locations ...*ast.IdentLocation) *ast.Ident {
@@ -147,4 +150,15 @@ func NewIdentLocation(args ...interface{}) *ast.IdentLocation {
 
 func ClearLocation(ident *ast.Ident) {
 	ident.Location = nil
+}
+
+func ClearLocations(t *testing.T, node ast.Node) {
+	err := ast.WalkDown(node, func(n ast.Node) error {
+		switch v := n.(type) {
+		case *ast.Ident:
+			ClearLocation(v)
+		}
+		return nil
+	})
+	assert.NoError(t, err)
 }
