@@ -11,7 +11,7 @@ import (
 //   ```
 type Expression struct {
 	SimpleExpression
-	RelOpSimpleExpressions []*RelOpSimpleExpression
+	RelOpSimpleExpressions RelOpSimpleExpressions
 }
 
 func NewExpression(arg interface{}) *Expression {
@@ -25,7 +25,19 @@ func NewExpression(arg interface{}) *Expression {
 	}
 }
 
+func (m *Expression) Children() Nodes {
+	return Nodes{&m.SimpleExpression, m.RelOpSimpleExpressions}
+}
+
 type ExprList []*Expression
+
+func (s ExprList) Children() Nodes {
+	r := make(Nodes, len(s))
+	for i, v := range s {
+		r[i] = v
+	}
+	return r
+}
 
 // - RelOp
 //   ```
@@ -57,6 +69,20 @@ type RelOpSimpleExpression struct {
 	SimpleExpression
 }
 
+func (m *RelOpSimpleExpression) Children() Nodes {
+	return Nodes{&m.SimpleExpression}
+}
+
+type RelOpSimpleExpressions []*RelOpSimpleExpression
+
+func (s RelOpSimpleExpressions) Children() Nodes {
+	r := make(Nodes, len(s))
+	for i, v := range s {
+		r[i] = v
+	}
+	return r
+}
+
 // - SimpleExpression
 //   ```
 //   ['+' | '-'] Term [AddOp Term]...
@@ -64,7 +90,7 @@ type RelOpSimpleExpression struct {
 type SimpleExpression struct {
 	UnaryOp *string //  '+' | '-' or nil
 	Term
-	AddOpTerms []*AddOpTerm
+	AddOpTerms AddOpTerms
 }
 
 func NewSimpleExpression(arg interface{}) *SimpleExpression {
@@ -76,6 +102,10 @@ func NewSimpleExpression(arg interface{}) *SimpleExpression {
 	default:
 		return &SimpleExpression{Term: *NewTerm(arg)}
 	}
+}
+
+func (m *SimpleExpression) Children() Nodes {
+	return Nodes{&m.Term, m.AddOpTerms}
 }
 
 // - AddOp
@@ -96,13 +126,27 @@ type AddOpTerm struct {
 	Term
 }
 
+func (m *AddOpTerm) Children() Nodes {
+	return Nodes{&m.Term}
+}
+
+type AddOpTerms []*AddOpTerm
+
+func (s AddOpTerms) Children() Nodes {
+	r := make(Nodes, len(s))
+	for i, v := range s {
+		r[i] = v
+	}
+	return r
+}
+
 // - Term
 //   ```
 //   Factor [MulOp Factor]...
 //   ```
 type Term struct {
 	Factor
-	MulOpFactors []*MulOpFactor
+	MulOpFactors MulOpFactors
 }
 
 func NewTerm(arg interface{}) *Term {
@@ -114,6 +158,10 @@ func NewTerm(arg interface{}) *Term {
 	default:
 		return &Term{Factor: NewDesignatorFactor(arg)}
 	}
+}
+
+func (m *Term) Children() Nodes {
+	return Nodes{m.Factor, m.MulOpFactors}
 }
 
 // - MulOp
@@ -147,6 +195,20 @@ type MulOpFactor struct {
 	Factor
 }
 
+func (m *MulOpFactor) Children() Nodes {
+	return Nodes{m.Factor}
+}
+
+type MulOpFactors []*MulOpFactor
+
+func (s MulOpFactors) Children() Nodes {
+	r := make(Nodes, len(s))
+	for i, v := range s {
+		r[i] = v
+	}
+	return r
+}
+
 // - Factor
 //   ```
 //   Designator ['(' ExprList ')']
@@ -176,6 +238,7 @@ type MulOpFactor struct {
 //   TypeId '(' Expression ')'
 //   ```
 type Factor interface {
+	Node
 	isFactor()
 }
 
@@ -196,6 +259,10 @@ func NewDesignatorFactor(arg interface{}) *DesignatorFactor {
 	}
 }
 
+func (m *DesignatorFactor) Children() Nodes {
+	return Nodes{&m.Designator, m.ExprList}
+}
+
 // '@' Designator
 func (*Address) isFactor() {}
 
@@ -209,7 +276,7 @@ type Address struct {
 //   ```
 type Designator struct {
 	QualId
-	Items []DesignatorItem
+	Items DesignatorItems
 }
 
 func NewDesignator(arg interface{}) *Designator {
@@ -231,7 +298,22 @@ func NewDesignator(arg interface{}) *Designator {
 	}
 }
 
+func (m *Designator) Children() Nodes {
+	return Nodes{&m.QualId, m.Items}
+}
+
+type DesignatorItems []DesignatorItem
+
+func (s DesignatorItems) Children() Nodes {
+	r := make(Nodes, len(s))
+	for i, v := range s {
+		r[i] = v
+	}
+	return r
+}
+
 type DesignatorItem interface {
+	Node
 	isDesignatorItem()
 }
 
@@ -248,13 +330,24 @@ func (DesignatorItemExprList) isDesignatorItem() {}
 
 type DesignatorItemExprList ExprList
 
+func (s DesignatorItemExprList) Children() Nodes {
+	r := make(Nodes, len(s))
+	for i, v := range s {
+		r[i] = v
+	}
+	return r
+}
+
 func (*DesignatorItemDereference) isDesignatorItem() {}
 
-type DesignatorItemDereference struct{}
+type DesignatorItemDereference struct {
+	*LeafNode
+}
 
 func (ValueFactor) isFactor() {}
 
 type ValueFactor struct {
+	*LeafNode
 	Value string
 }
 
@@ -269,7 +362,9 @@ func NewString(v string) *String { return &String{ValueFactor: ValueFactor{Value
 // Ninl
 func (*Nil) isFactor() {}
 
-type Nil struct{}
+type Nil struct {
+	*LeafNode
+}
 
 func NewNil() *Nil { return &Nil{} }
 
@@ -280,10 +375,18 @@ type Parentheses struct { // Round brackets
 	Expression Expression
 }
 
+func (m *Parentheses) Children() Nodes {
+	return Nodes{&m.Expression}
+}
+
 func (*Not) isFactor() {}
 
 type Not struct {
 	Factor Factor
+}
+
+func (m *Not) Children() Nodes {
+	return Nodes{m.Factor}
 }
 
 func (SetConstructor) isFactor() {}
@@ -294,6 +397,14 @@ func (SetConstructor) isFactor() {}
 //   ```
 type SetConstructor struct {
 	SetElements []*SetElement
+}
+
+func (m *SetConstructor) Children() Nodes {
+	r := make(Nodes, len(m.SetElements))
+	for i, v := range m.SetElements {
+		r[i] = v
+	}
+	return r
 }
 
 // - SetElement
@@ -311,9 +422,17 @@ func NewSetElement(expr *Expression) *SetElement {
 	}
 }
 
+func (m *SetElement) Children() Nodes {
+	return Nodes{&m.Expression, m.SubRangeEnd}
+}
+
 func (*TypeCast) isFactor() {}
 
 type TypeCast struct {
 	TypeId     *TypeId
 	Expression Expression
+}
+
+func (m *TypeCast) Children() Nodes {
+	return Nodes{m.TypeId, &m.Expression}
 }

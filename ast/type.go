@@ -10,6 +10,14 @@ func (TypeSection) canBeInterfaceDecl() {}
 
 type TypeSection []*TypeDecl
 
+func (s TypeSection) Children() Nodes {
+	r := make(Nodes, len(s))
+	for i, m := range s {
+		r[i] = m
+	}
+	return r
+}
+
 // - TypeDecl
 //   ```
 //   Ident '=' [TYPE] Type [PortabilityDirective]
@@ -21,6 +29,10 @@ type TypeDecl struct {
 	Ident                Ident
 	Type                 Type
 	PortabilityDirective *PortabilityDirective
+}
+
+func (m *TypeDecl) Children() Nodes {
+	return Nodes{m.Ident, m.Type}
 }
 
 // - Type
@@ -49,6 +61,7 @@ type TypeDecl struct {
 //   ClassRefType
 //   ```
 type Type interface {
+	Node
 	isType()
 }
 
@@ -74,4 +87,8 @@ func NewTypeId(unitIdOrIdent interface{}, args ...interface{}) *TypeId {
 	} else {
 		panic(errors.Errorf("too many arguments for NewTypeId: %v, %v", unitIdOrIdent, args))
 	}
+}
+
+func (m *TypeId) Children() Nodes {
+	return Nodes{m.UnitId, m.Ident}
 }

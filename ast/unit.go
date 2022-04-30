@@ -22,6 +22,10 @@ func (m *Unit) GetPath() string {
 	return m.Path
 }
 
+func (m *Unit) Children() Nodes {
+	return Nodes{m.Ident, m.InterfaceSection, m.ImplementationSection, m.InitSection}
+}
+
 // - InterfaceSection
 //   ```
 //   INTERFACE
@@ -30,7 +34,11 @@ func (m *Unit) GetPath() string {
 //   ```
 type InterfaceSection struct {
 	UsesClause     *UsesClause // optional
-	InterfaceDecls []InterfaceDecl
+	InterfaceDecls InterfaceDecls
+}
+
+func (m *InterfaceSection) Children() Nodes {
+	return Nodes{m.UsesClause, m.InterfaceDecls}
 }
 
 // - InterfaceDecl
@@ -47,7 +55,18 @@ type InterfaceSection struct {
 //   ExportedHeading
 //   ```
 type InterfaceDecl interface {
+	Node
 	canBeInterfaceDecl()
+}
+
+type InterfaceDecls []InterfaceDecl
+
+func (s InterfaceDecls) Children() Nodes {
+	r := make(Nodes, len(s))
+	for i, m := range s {
+		r[i] = m
+	}
+	return r
 }
 
 // - ImplementationSection
@@ -58,6 +77,10 @@ type InterfaceDecl interface {
 //   [ExportsStmt]...
 //   ```
 type ImplementationSection struct {
+}
+
+func (m *ImplementationSection) Children() Nodes {
+	return Nodes{}
 }
 
 // - InitSection
@@ -71,6 +94,10 @@ type ImplementationSection struct {
 //   END
 //   ```
 type InitSection struct {
+}
+
+func (m *InitSection) Children() Nodes {
+	return Nodes{}
 }
 
 // - UnitId
@@ -99,4 +126,8 @@ func (u *UnitId) String() string {
 type QualId struct {
 	UnitId *UnitId
 	Ident  Ident
+}
+
+func (m *QualId) Children() Nodes {
+	return Nodes{m.UnitId, m.Ident}
 }

@@ -70,6 +70,10 @@ func NewRealType(name interface{}) *RealType {
 	}
 }
 
+func (m *RealType) Children() Nodes {
+	return Nodes{m.Name}
+}
+
 // - OrdinalType
 //   ```
 //   (SubrangeType | EnumeratedType | OrdIdent)
@@ -168,6 +172,10 @@ func NewOrdIdent(name interface{}) *OrdIdent {
 	}
 }
 
+func (m *OrdIdent) Children() Nodes {
+	return Nodes{m.Name}
+}
+
 // - EnumeratedType
 //   ```
 //   '(' EnumeratedTypeElement ','... ')'
@@ -182,9 +190,21 @@ func (EnumeratedType) isOrdinalType() {}
 
 type EnumeratedType []*EnumeratedTypeElement
 
+func (m EnumeratedType) Children() Nodes {
+	r := make(Nodes, len(m))
+	for i, e := range m {
+		r[i] = e
+	}
+	return r
+}
+
 type EnumeratedTypeElement struct {
 	Ident     Ident
 	ConstExpr *ConstExpr
+}
+
+func (m *EnumeratedTypeElement) Children() Nodes {
+	return Nodes{m.Ident, m.ConstExpr}
 }
 
 // - SubrangeType
@@ -198,4 +218,8 @@ func (*SubrangeType) isOrdinalType() {}
 type SubrangeType struct {
 	Low  ConstExpr
 	High ConstExpr
+}
+
+func (m *SubrangeType) Children() Nodes {
+	return Nodes{&m.Low, &m.High}
 }

@@ -19,6 +19,10 @@ type ExportedHeading struct {
 	ExternalOptions *ExternalOptions
 }
 
+func (m *ExportedHeading) Children() Nodes {
+	return Nodes{&m.FunctionHeading}
+}
+
 type FunctionType uint
 
 const (
@@ -46,11 +50,23 @@ type FunctionHeading struct {
 	ReturnType       Type
 }
 
+func (s FunctionHeading) Children() Nodes {
+	return Nodes{&s.Ident, s.FormalParameters, s.ReturnType}
+}
+
 // - FormalParameters
 //   ```
 //   '(' [FormalParm ';'...] ')'
 //   ```
 type FormalParameters []*FormalParm
+
+func (s FormalParameters) Children() Nodes {
+	r := make(Nodes, len(s))
+	for i, m := range s {
+		r[i] = m
+	}
+	return r
+}
 
 // - FormalParm
 //   ```
@@ -67,6 +83,10 @@ var (
 type FormalParm struct {
 	Opt *FormalParmOption
 	Parameter
+}
+
+func (m *FormalParm) Children() Nodes {
+	return Nodes{&m.Parameter}
 }
 
 func NewFormalParm(name interface{}, args ...interface{}) *FormalParm {
@@ -121,6 +141,10 @@ type ParameterType struct {
 	IsArray bool
 }
 
+func (m *ParameterType) Children() Nodes {
+	return Nodes{m.Type}
+}
+
 func NewParameterType(arg interface{}) *ParameterType {
 	if arg == nil {
 		return &ParameterType{}
@@ -146,6 +170,10 @@ type Parameter struct {
 	IdentList IdentList
 	Type      *ParameterType
 	ConstExpr *ConstExpr
+}
+
+func (m *Parameter) Children() Nodes {
+	return Nodes{&m.IdentList, m.Type, m.ConstExpr}
 }
 
 func NewParameter(name interface{}, typArg interface{}, args ...interface{}) *Parameter {

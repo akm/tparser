@@ -19,6 +19,7 @@ func NewIdentLocation(v *token.Token) *IdentLocation {
 }
 
 type Ident struct {
+	*LeafNode
 	Name     string
 	Location *IdentLocation
 }
@@ -90,6 +91,14 @@ func (s IdentList) Names() []string {
 	r := make([]string, len(s))
 	for idx, i := range s {
 		r[idx] = i.Name
+	}
+	return r
+}
+
+func (s IdentList) Children() Nodes {
+	r := make(Nodes, len(s))
+	for idx, i := range s {
+		r[idx] = i
 	}
 	return r
 }

@@ -42,3 +42,7 @@ func NewStringType(name string, args ...interface{}) *StringType {
 		Length: length,
 	}
 }
+
+func (m *StringType) Children() Nodes {
+	return Nodes{m.Length}
+}

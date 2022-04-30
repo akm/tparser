@@ -4,6 +4,14 @@ func (VarSection) canBeInterfaceDecl() {}
 
 type VarSection []*VarDecl
 
+func (s VarSection) Children() Nodes {
+	r := make(Nodes, len(s))
+	for idx, i := range s {
+		r[idx] = i
+	}
+	return r
+}
+
 // - VarDecl
 //   - (On Windows)
 //     ```
@@ -22,7 +30,12 @@ type VarDecl struct {
 	PortabilityDirective *PortabilityDirective
 }
 
+func (m *VarDecl) Children() Nodes {
+	return Nodes{m.IdentList, m.Type, m.Absolute, m.ConstExpr}
+}
+
 type VarDeclAbsolute interface {
+	Node
 	isVarDeclAbsolute()
 }
 
@@ -56,7 +69,19 @@ func (ThreadVarSection) canBeInterfaceDecl() {}
 
 type ThreadVarSection []*ThreadVarDecl
 
+func (s ThreadVarSection) Children() Nodes {
+	r := make(Nodes, len(s))
+	for idx, i := range s {
+		r[idx] = i
+	}
+	return r
+}
+
 type ThreadVarDecl struct {
 	IdentList IdentList
 	Type      Type
+}
+
+func (m *ThreadVarDecl) Children() Nodes {
+	return Nodes{m.IdentList, m.Type}
 }

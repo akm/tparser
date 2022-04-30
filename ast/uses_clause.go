@@ -17,6 +17,15 @@ func (s UsesClause) IdentList() IdentList {
 	return ids
 }
 
+func (s UsesClause) Children() Nodes {
+	r := make(Nodes, len(s))
+	for i, m := range s {
+		r[i] = m
+	}
+	return r
+
+}
+
 type UnitRef struct {
 	Ident Ident
 	Path  *string
@@ -43,4 +52,8 @@ func NewUnitRef(name interface{}, paths ...string) *UnitRef {
 		r.Path = &s
 	}
 	return r
+}
+
+func (m *UnitRef) Children() Nodes {
+	return Nodes{&m.Ident}
 }
