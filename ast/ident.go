@@ -1,17 +1,35 @@
 package ast
 
 import (
+	"github.com/akm/tparser/runes"
 	"github.com/akm/tparser/token"
 	"github.com/pkg/errors"
 )
 
+type Position = runes.Position
+
+type IdentLocation struct {
+	// Path string
+	Start *Position
+	End   *Position
+}
+
+func NewIdentLocation(v *token.Token) *IdentLocation {
+	return &IdentLocation{Start: v.Start, End: v.End}
+}
+
 type Ident struct {
-	Name string
+	Name     string
+	Location *IdentLocation
 }
 
 func NewIdent(v *token.Token) *Ident {
-	return &Ident{Name: v.RawString()}
+	return &Ident{
+		Name:     v.RawString(),
+		Location: NewIdentLocation(v),
+	}
 }
+
 func NewIdentFrom(arg interface{}) *Ident {
 	switch v := arg.(type) {
 	case Ident:
