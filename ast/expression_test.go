@@ -16,7 +16,7 @@ func TestExpression(t *testing.T) {
 		assert.Implements(t, (*Factor)(nil), &Nil{})
 		assert.Implements(t, (*Factor)(nil), &Parentheses{})
 		assert.Implements(t, (*Factor)(nil), &Not{})
-		assert.Implements(t, (*Factor)(nil), SetConstructor{})
+		assert.Implements(t, (*Factor)(nil), &SetConstructor{})
 		assert.Implements(t, (*Factor)(nil), &TypeCast{})
 	})
 	t.Run("DesignatorItem", func(t *testing.T) {
