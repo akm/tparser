@@ -204,7 +204,7 @@ type EnumeratedTypeElement struct {
 }
 
 func (m *EnumeratedTypeElement) Children() Nodes {
-	return Nodes{m.Ident, m.ConstExpr}
+	return Nodes{m.Ident, m.ConstExpr}.Compact()
 }
 
 // - SubrangeType

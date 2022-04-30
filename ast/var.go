@@ -31,7 +31,7 @@ type VarDecl struct {
 }
 
 func (m *VarDecl) Children() Nodes {
-	return Nodes{m.IdentList, m.Type, m.Absolute, m.ConstExpr}
+	return Nodes{m.IdentList, m.Type, m.Absolute, m.ConstExpr}.Compact()
 }
 
 type VarDeclAbsolute interface {
@@ -83,5 +83,5 @@ type ThreadVarDecl struct {
 }
 
 func (m *ThreadVarDecl) Children() Nodes {
-	return Nodes{m.IdentList, m.Type}
+	return Nodes{m.IdentList, m.Type}.Compact()
 }

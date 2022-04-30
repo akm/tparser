@@ -90,5 +90,5 @@ func NewTypeId(unitIdOrIdent interface{}, args ...interface{}) *TypeId {
 }
 
 func (m *TypeId) Children() Nodes {
-	return Nodes{m.UnitId, m.Ident}
+	return Nodes{m.UnitId, m.Ident}.Compact()
 }

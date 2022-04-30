@@ -20,7 +20,7 @@ type ConstantDecl struct {
 }
 
 func (m *ConstantDecl) Children() Nodes {
-	return Nodes{&m.Ident, m.Type, &m.ConstExpr}
+	return Nodes{&m.Ident, m.Type, &m.ConstExpr}.Compact()
 }
 
 type ConstExpr = Expression

@@ -26,7 +26,7 @@ func NewExpression(arg interface{}) *Expression {
 }
 
 func (m *Expression) Children() Nodes {
-	return Nodes{&m.SimpleExpression, m.RelOpSimpleExpressions}
+	return Nodes{&m.SimpleExpression, m.RelOpSimpleExpressions}.Compact()
 }
 
 type ExprList []*Expression
@@ -105,7 +105,7 @@ func NewSimpleExpression(arg interface{}) *SimpleExpression {
 }
 
 func (m *SimpleExpression) Children() Nodes {
-	return Nodes{&m.Term, m.AddOpTerms}
+	return Nodes{&m.Term, m.AddOpTerms}.Compact()
 }
 
 // - AddOp
@@ -161,7 +161,7 @@ func NewTerm(arg interface{}) *Term {
 }
 
 func (m *Term) Children() Nodes {
-	return Nodes{m.Factor, m.MulOpFactors}
+	return Nodes{m.Factor, m.MulOpFactors}.Compact()
 }
 
 // - MulOp
@@ -260,7 +260,7 @@ func NewDesignatorFactor(arg interface{}) *DesignatorFactor {
 }
 
 func (m *DesignatorFactor) Children() Nodes {
-	return Nodes{&m.Designator, m.ExprList}
+	return Nodes{&m.Designator, m.ExprList}.Compact()
 }
 
 // '@' Designator
@@ -299,7 +299,7 @@ func NewDesignator(arg interface{}) *Designator {
 }
 
 func (m *Designator) Children() Nodes {
-	return Nodes{&m.QualId, m.Items}
+	return Nodes{&m.QualId, m.Items}.Compact()
 }
 
 type DesignatorItems []DesignatorItem
@@ -423,7 +423,7 @@ func NewSetElement(expr *Expression) *SetElement {
 }
 
 func (m *SetElement) Children() Nodes {
-	return Nodes{&m.Expression, m.SubRangeEnd}
+	return Nodes{&m.Expression, m.SubRangeEnd}.Compact()
 }
 
 func (*TypeCast) isFactor() {}

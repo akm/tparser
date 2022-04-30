@@ -23,7 +23,7 @@ func (m *Unit) GetPath() string {
 }
 
 func (m *Unit) Children() Nodes {
-	return Nodes{m.Ident, m.InterfaceSection, m.ImplementationSection, m.InitSection}
+	return Nodes{m.Ident, m.InterfaceSection, m.ImplementationSection, m.InitSection}.Compact()
 }
 
 // - InterfaceSection
@@ -38,7 +38,7 @@ type InterfaceSection struct {
 }
 
 func (m *InterfaceSection) Children() Nodes {
-	return Nodes{m.UsesClause, m.InterfaceDecls}
+	return Nodes{m.UsesClause, m.InterfaceDecls}.Compact()
 }
 
 // - InterfaceDecl
@@ -129,5 +129,5 @@ type QualId struct {
 }
 
 func (m *QualId) Children() Nodes {
-	return Nodes{m.UnitId, m.Ident}
+	return Nodes{m.UnitId, m.Ident}.Compact()
 }
