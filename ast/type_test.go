@@ -17,4 +17,9 @@ func TestType(t *testing.T) {
 		// assert.Implements(t, (*Type)(nil), &VariantType{})
 		// assert.Implements(t, (*Type)(nil), &ClassRefType{})
 	})
+	t.Run("Node", func(t *testing.T) {
+		assert.Implements(t, (*Node)(nil), TypeSection{})
+		assert.Implements(t, (*Node)(nil), &TypeDecl{})
+		assert.Implements(t, (*Node)(nil), &TypeId{})
+	})
 }

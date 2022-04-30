@@ -18,4 +18,12 @@ func TestUnit(t *testing.T) {
 		assert.Implements(t, (*InterfaceDecl)(nil), &VarSection{})
 		assert.Implements(t, (*InterfaceDecl)(nil), &ExportedHeading{})
 	})
+	t.Run("Node", func(t *testing.T) {
+		assert.Implements(t, (*Node)(nil), &Unit{})
+		assert.Implements(t, (*Node)(nil), &InterfaceSection{})
+		assert.Implements(t, (*Node)(nil), &ImplementationSection{})
+		assert.Implements(t, (*Node)(nil), &InitSection{})
+		assert.Implements(t, (*Node)(nil), &UnitId{})
+		assert.Implements(t, (*Node)(nil), &QualId{})
+	})
 }

@@ -11,5 +11,6 @@ func TestStringType(t *testing.T) {
 		var typ Type
 		typ = &StringType{}
 		assert.Implements(t, (*Type)(nil), typ)
+		assert.Implements(t, (*Node)(nil), typ)
 	})
 }
