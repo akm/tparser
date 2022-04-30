@@ -32,7 +32,7 @@ type TypeDecl struct {
 }
 
 func (m *TypeDecl) Children() Nodes {
-	return Nodes{m.Ident, m.Type}
+	return Nodes{&m.Ident, m.Type}
 }
 
 // - Type
@@ -90,5 +90,10 @@ func NewTypeId(unitIdOrIdent interface{}, args ...interface{}) *TypeId {
 }
 
 func (m *TypeId) Children() Nodes {
-	return Nodes{m.UnitId, m.Ident}.Compact()
+	r := Nodes{}
+	if m.UnitId != nil {
+		r = append(r, m.UnitId)
+	}
+	r = append(r, &m.Ident)
+	return r
 }

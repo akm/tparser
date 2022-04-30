@@ -31,7 +31,17 @@ type VarDecl struct {
 }
 
 func (m *VarDecl) Children() Nodes {
-	return Nodes{m.IdentList, m.Type, m.Absolute, m.ConstExpr}.Compact()
+	r := Nodes{m.IdentList}
+	if m.Type != nil {
+		r = append(r, m.Type)
+	}
+	if m.Absolute != nil {
+		r = append(r, m.Absolute)
+	}
+	if m.ConstExpr != nil {
+		r = append(r, m.ConstExpr)
+	}
+	return r
 }
 
 type VarDeclAbsolute interface {
@@ -54,6 +64,10 @@ func NewVarDeclAbsoluteIdent(arg interface{}) *VarDeclAbsoluteIdent {
 	default:
 		return NewVarDeclAbsoluteIdent(NewIdentFrom(arg))
 	}
+}
+
+func (*VarDeclAbsoluteIdent) Children() Nodes {
+	return Nodes{}
 }
 
 func (*VarDeclAbsoluteConstExpr) isVarDeclAbsolute() {}
@@ -83,5 +97,9 @@ type ThreadVarDecl struct {
 }
 
 func (m *ThreadVarDecl) Children() Nodes {
-	return Nodes{m.IdentList, m.Type}.Compact()
+	r := Nodes{m.IdentList}
+	if m.Type != nil {
+		r = append(r, m.Type)
+	}
+	return r
 }

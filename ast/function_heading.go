@@ -51,7 +51,14 @@ type FunctionHeading struct {
 }
 
 func (s FunctionHeading) Children() Nodes {
-	return Nodes{&s.Ident, s.FormalParameters, s.ReturnType}.Compact()
+	r := Nodes{&s.Ident}
+	if s.FormalParameters != nil {
+		r = append(r, s.FormalParameters)
+	}
+	if s.ReturnType != nil {
+		r = append(r, s.ReturnType)
+	}
+	return r
 }
 
 // - FormalParameters
@@ -173,7 +180,14 @@ type Parameter struct {
 }
 
 func (m *Parameter) Children() Nodes {
-	return Nodes{&m.IdentList, m.Type, m.ConstExpr}.Compact()
+	r := Nodes{m.IdentList}
+	if m.Type != nil {
+		r = append(r, m.Type)
+	}
+	if m.ConstExpr != nil {
+		r = append(r, m.ConstExpr)
+	}
+	return r
 }
 
 func NewParameter(name interface{}, typArg interface{}, args ...interface{}) *Parameter {

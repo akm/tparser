@@ -53,7 +53,7 @@ func TestInterfaceSection(t *testing.T) {
 		"Uses only",
 		[]rune(`INTERFACE USES U1,U2,U3;`),
 		&ast.InterfaceSection{
-			UsesClause: &ast.UsesClause{
+			UsesClause: ast.UsesClause{
 				asttest.NewUnitRef("U1"),
 				asttest.NewUnitRef("U2"),
 				asttest.NewUnitRef("U3"),

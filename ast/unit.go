@@ -23,7 +23,17 @@ func (m *Unit) GetPath() string {
 }
 
 func (m *Unit) Children() Nodes {
-	return Nodes{m.Ident, m.InterfaceSection, m.ImplementationSection, m.InitSection}.Compact()
+	r := Nodes{&m.Ident}
+	if m.InterfaceSection != nil {
+		r = append(r, m.InterfaceSection)
+	}
+	if m.ImplementationSection != nil {
+		r = append(r, m.ImplementationSection)
+	}
+	if m.InitSection != nil {
+		r = append(r, m.InitSection)
+	}
+	return r
 }
 
 // - InterfaceSection
@@ -33,12 +43,19 @@ func (m *Unit) Children() Nodes {
 //   [InterfaceDecl]...
 //   ```
 type InterfaceSection struct {
-	UsesClause     *UsesClause // optional
+	UsesClause     UsesClause // optional
 	InterfaceDecls InterfaceDecls
 }
 
 func (m *InterfaceSection) Children() Nodes {
-	return Nodes{m.UsesClause, m.InterfaceDecls}.Compact()
+	r := Nodes{}
+	if m.UsesClause != nil {
+		r = append(r, m.UsesClause)
+	}
+	if m.InterfaceDecls != nil {
+		r = append(r, m.InterfaceDecls)
+	}
+	return r
 }
 
 // - InterfaceDecl
@@ -119,6 +136,10 @@ func (u *UnitId) String() string {
 	}
 }
 
+func (*UnitId) Children() Nodes {
+	return Nodes{}
+}
+
 // - QualId
 //   ```
 //   [UnitId '.'] Ident
@@ -129,5 +150,10 @@ type QualId struct {
 }
 
 func (m *QualId) Children() Nodes {
-	return Nodes{m.UnitId, m.Ident}.Compact()
+	r := Nodes{}
+	if m.UnitId != nil {
+		r = append(r, m.UnitId)
+	}
+	r = append(r, &m.Ident)
+	return r
 }

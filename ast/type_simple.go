@@ -71,7 +71,7 @@ func NewRealType(name interface{}) *RealType {
 }
 
 func (m *RealType) Children() Nodes {
-	return Nodes{m.Name}
+	return Nodes{&m.Name}
 }
 
 // - OrdinalType
@@ -173,7 +173,7 @@ func NewOrdIdent(name interface{}) *OrdIdent {
 }
 
 func (m *OrdIdent) Children() Nodes {
-	return Nodes{m.Name}
+	return Nodes{&m.Name}
 }
 
 // - EnumeratedType
@@ -204,7 +204,11 @@ type EnumeratedTypeElement struct {
 }
 
 func (m *EnumeratedTypeElement) Children() Nodes {
-	return Nodes{m.Ident, m.ConstExpr}.Compact()
+	r := Nodes{&m.Ident}
+	if m.ConstExpr != nil {
+		r = append(r, m.ConstExpr)
+	}
+	return r
 }
 
 // - SubrangeType

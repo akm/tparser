@@ -19,7 +19,6 @@ func NewIdentLocation(v *token.Token) *IdentLocation {
 }
 
 type Ident struct {
-	*LeafNode
 	Name     string
 	Location *IdentLocation
 }
@@ -44,6 +43,10 @@ func NewIdentFrom(arg interface{}) *Ident {
 	default:
 		panic(errors.Errorf("unexpected type %T (%v) is given for NewIdent", arg, arg))
 	}
+}
+
+func (m *Ident) Children() Nodes {
+	return Nodes{}
 }
 
 type IdentList []*Ident

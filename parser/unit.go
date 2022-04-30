@@ -62,7 +62,7 @@ func (p *Parser) ParseInterfaceSection() (*ast.InterfaceSection, error) {
 		if err != nil {
 			return nil, err
 		}
-		res.UsesClause = &usesClause
+		res.UsesClause = usesClause
 		p.context.unitIdentifiers = append(p.context.unitIdentifiers, usesClause.IdentList().Names()...)
 		p.NextToken()
 	}

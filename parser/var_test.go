@@ -33,7 +33,7 @@ func TestUnitWithVarSection(t *testing.T) {
 		&ast.Unit{
 			Ident: *asttest.NewIdent("Unit1"),
 			InterfaceSection: &ast.InterfaceSection{
-				InterfaceDecls: []ast.InterfaceDecl{
+				InterfaceDecls: ast.InterfaceDecls{
 					ast.VarSection{
 						{IdentList: asttest.NewIdentList("I"), Type: &ast.OrdIdent{Name: *asttest.NewIdent("Integer")}},
 						{IdentList: asttest.NewIdentList("X", "Y"), Type: &ast.RealType{Name: *asttest.NewIdent("Real")}},

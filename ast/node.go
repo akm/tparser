@@ -1,5 +1,7 @@
 package ast
 
+import "github.com/pkg/errors"
+
 type Node interface {
 	Children() Nodes
 }
@@ -10,30 +12,36 @@ func (s Nodes) Children() Nodes {
 	return s
 }
 
-func (s Nodes) Compact() Nodes {
-	r := Nodes{}
-	for _, m := range s {
-		if m != nil {
-			r = append(r, m)
-		}
-	}
-	return r
-}
-
-type LeafNode struct {
-}
-
-func (*LeafNode) Children() Nodes {
-	return nil
-}
+// This method doesn't work well and fails to distinguish whether i is really nil
+// Becasue i typed Node is nil with original Type.
+// func (s Nodes) Compact() Nodes {
+// 	if s == nil {
+// 		return Nodes{}
+// 	}
+// 	r := Nodes{}
+// 	for _, i := range s {
+// 		if i != nil {
+// 			r = append(r, i)
+// 		}
+// 	}
+// 	return r
+// }
 
 func WalkDown(n Node, f func(Node) error) error {
+	if n == nil {
+		return nil
+	}
 	if err := f(n); err != nil {
 		return err
 	}
+	if n == nil {
+		panic(errors.Errorf("WalkDown got nil"))
+	}
 	for _, m := range n.Children() {
-		if err := WalkDown(m, f); err != nil {
-			return err
+		if m != nil {
+			if err := WalkDown(m, f); err != nil {
+				return err
+			}
 		}
 	}
 	return nil

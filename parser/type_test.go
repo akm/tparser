@@ -36,7 +36,7 @@ func TestUnitWithTypeSection(t *testing.T) {
 		&ast.Unit{
 			Ident: *asttest.NewIdent("Unit1"),
 			InterfaceSection: &ast.InterfaceSection{
-				UsesClause: &ast.UsesClause{asttest.NewUnitRef("Unit2")},
+				UsesClause: ast.UsesClause{asttest.NewUnitRef("Unit2")},
 				InterfaceDecls: []ast.InterfaceDecl{
 					ast.TypeSection{
 						{Ident: *asttest.NewIdent("TTypeId1"), Type: &ast.TypeId{Ident: *asttest.NewIdent("TType1")}},
@@ -70,7 +70,7 @@ func TestUnitWithTypeSection(t *testing.T) {
 		&ast.Unit{
 			Ident: *asttest.NewIdent("Unit1"),
 			InterfaceSection: &ast.InterfaceSection{
-				UsesClause: &ast.UsesClause{asttest.NewUnitRef("Unit2")},
+				UsesClause: ast.UsesClause{asttest.NewUnitRef("Unit2")},
 				InterfaceDecls: []ast.InterfaceDecl{
 					ast.TypeSection{
 						{Ident: *asttest.NewIdent("TTypeId1"), Type: &ast.TypeId{Ident: *asttest.NewIdent("TType1")}},

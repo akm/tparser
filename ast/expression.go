@@ -26,7 +26,11 @@ func NewExpression(arg interface{}) *Expression {
 }
 
 func (m *Expression) Children() Nodes {
-	return Nodes{&m.SimpleExpression, m.RelOpSimpleExpressions}.Compact()
+	r := Nodes{&m.SimpleExpression}
+	if m.RelOpSimpleExpressions != nil {
+		r = append(r, m.RelOpSimpleExpressions)
+	}
+	return r
 }
 
 type ExprList []*Expression
@@ -105,7 +109,11 @@ func NewSimpleExpression(arg interface{}) *SimpleExpression {
 }
 
 func (m *SimpleExpression) Children() Nodes {
-	return Nodes{&m.Term, m.AddOpTerms}.Compact()
+	r := Nodes{&m.Term}
+	if m.AddOpTerms != nil {
+		r = append(r, m.AddOpTerms)
+	}
+	return r
 }
 
 // - AddOp
@@ -161,7 +169,11 @@ func NewTerm(arg interface{}) *Term {
 }
 
 func (m *Term) Children() Nodes {
-	return Nodes{m.Factor, m.MulOpFactors}.Compact()
+	r := Nodes{m.Factor}
+	if m.MulOpFactors != nil {
+		r = append(r, m.MulOpFactors)
+	}
+	return r
 }
 
 // - MulOp
@@ -260,7 +272,11 @@ func NewDesignatorFactor(arg interface{}) *DesignatorFactor {
 }
 
 func (m *DesignatorFactor) Children() Nodes {
-	return Nodes{&m.Designator, m.ExprList}.Compact()
+	r := Nodes{&m.Designator}
+	if m.ExprList != nil {
+		r = append(r, m.ExprList)
+	}
+	return r
 }
 
 // '@' Designator
@@ -268,6 +284,10 @@ func (*Address) isFactor() {}
 
 type Address struct {
 	Designator
+}
+
+func (m *Address) Children() Nodes {
+	return Nodes{&m.Designator}
 }
 
 // - Designator
@@ -299,7 +319,11 @@ func NewDesignator(arg interface{}) *Designator {
 }
 
 func (m *Designator) Children() Nodes {
-	return Nodes{&m.QualId, m.Items}.Compact()
+	r := Nodes{&m.QualId}
+	if m.Items != nil {
+		r = append(r, m.Items)
+	}
+	return r
 }
 
 type DesignatorItems []DesignatorItem
@@ -326,6 +350,10 @@ func NewDesignatorItemIdent(v interface{}) *DesignatorItemIdent {
 	return &r
 }
 
+func (m *DesignatorItemIdent) Children() Nodes {
+	return Nodes{}
+}
+
 func (DesignatorItemExprList) isDesignatorItem() {}
 
 type DesignatorItemExprList ExprList
@@ -341,14 +369,20 @@ func (s DesignatorItemExprList) Children() Nodes {
 func (*DesignatorItemDereference) isDesignatorItem() {}
 
 type DesignatorItemDereference struct {
-	*LeafNode
+}
+
+func (*DesignatorItemDereference) Children() Nodes {
+	return Nodes{}
 }
 
 func (ValueFactor) isFactor() {}
 
 type ValueFactor struct {
-	*LeafNode
 	Value string
+}
+
+func (*ValueFactor) Children() Nodes {
+	return Nodes{}
 }
 
 type Number struct{ ValueFactor }
@@ -363,10 +397,13 @@ func NewString(v string) *String { return &String{ValueFactor: ValueFactor{Value
 func (*Nil) isFactor() {}
 
 type Nil struct {
-	*LeafNode
 }
 
 func NewNil() *Nil { return &Nil{} }
+
+func (*Nil) Children() Nodes {
+	return Nodes{}
+}
 
 // Parentheses
 func (*Parentheses) isFactor() {}
@@ -423,7 +460,11 @@ func NewSetElement(expr *Expression) *SetElement {
 }
 
 func (m *SetElement) Children() Nodes {
-	return Nodes{&m.Expression, m.SubRangeEnd}.Compact()
+	r := Nodes{&m.Expression}
+	if m.SubRangeEnd != nil {
+		r = append(r, m.SubRangeEnd)
+	}
+	return r
 }
 
 func (*TypeCast) isFactor() {}

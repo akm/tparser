@@ -44,5 +44,9 @@ func NewStringType(name string, args ...interface{}) *StringType {
 }
 
 func (m *StringType) Children() Nodes {
-	return Nodes{m.Length}.Compact()
+	r := Nodes{}
+	if m.Length != nil {
+		r = append(r, m.Length)
+	}
+	return r
 }
