@@ -26,13 +26,13 @@ func (s TypeSection) Children() Nodes {
 //   Ident '=' [TYPE] RestrictedType [PortabilityDirective]
 //   ```
 type TypeDecl struct {
-	Ident                Ident
+	Ident                *Ident
 	Type                 Type
 	PortabilityDirective *PortabilityDirective
 }
 
 func (m *TypeDecl) Children() Nodes {
-	return Nodes{&m.Ident, m.Type}
+	return Nodes{m.Ident, m.Type}
 }
 
 // - Type
@@ -73,16 +73,16 @@ func (*TypeId) isType() {}
 
 type TypeId struct {
 	UnitId *UnitId
-	Ident  Ident
+	Ident  *Ident
 }
 
 func NewTypeId(unitIdOrIdent interface{}, args ...interface{}) *TypeId {
 	if len(args) == 0 {
-		return &TypeId{Ident: *NewIdentFrom(unitIdOrIdent)}
+		return &TypeId{Ident: NewIdentFrom(unitIdOrIdent)}
 	} else if len(args) == 1 {
 		return &TypeId{
 			UnitId: NewUnitId(unitIdOrIdent),
-			Ident:  *NewIdentFrom(args[0]),
+			Ident:  NewIdentFrom(args[0]),
 		}
 	} else {
 		panic(errors.Errorf("too many arguments for NewTypeId: %v, %v", unitIdOrIdent, args))
@@ -94,6 +94,6 @@ func (m *TypeId) Children() Nodes {
 	if m.UnitId != nil {
 		r = append(r, m.UnitId)
 	}
-	r = append(r, &m.Ident)
+	r = append(r, m.Ident)
 	return r
 }
