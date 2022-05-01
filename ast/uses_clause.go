@@ -12,7 +12,7 @@ type UsesClause []*UnitRef
 func (s UsesClause) IdentList() IdentList {
 	var ids IdentList
 	for _, u := range s {
-		ids = append(ids, &u.Ident)
+		ids = append(ids, u.Ident)
 	}
 	return ids
 }
@@ -27,19 +27,19 @@ func (s UsesClause) Children() Nodes {
 }
 
 type UnitRef struct {
-	Ident Ident
+	Ident *Ident
 	Path  *string
 }
 
 func NewUnitRef(name interface{}, paths ...string) *UnitRef {
-	var nameIdent Ident
+	var nameIdent *Ident
 	switch v := name.(type) {
 	case Ident:
-		nameIdent = v
+		nameIdent = &v
 	case *Ident:
-		nameIdent = *v
+		nameIdent = v
 	case string:
-		nameIdent = *NewIdentFrom(v)
+		nameIdent = NewIdentFrom(v)
 	default:
 		panic(errors.Errorf("invalid type %T", name))
 	}
@@ -55,5 +55,5 @@ func NewUnitRef(name interface{}, paths ...string) *UnitRef {
 }
 
 func (m *UnitRef) Children() Nodes {
-	return Nodes{&m.Ident}
+	return Nodes{m.Ident}
 }
