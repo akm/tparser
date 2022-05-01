@@ -14,13 +14,13 @@ import "github.com/pkg/errors"
 func (*ExportedHeading) canBeInterfaceDecl() {}
 
 type ExportedHeading struct {
-	FunctionHeading FunctionHeading
+	FunctionHeading *FunctionHeading
 	Directives      []Directive
 	ExternalOptions *ExternalOptions
 }
 
 func (m *ExportedHeading) Children() Nodes {
-	return Nodes{&m.FunctionHeading}
+	return Nodes{m.FunctionHeading}
 }
 
 type FunctionType uint
@@ -45,13 +45,13 @@ func (*FunctionHeading) isExportedHeading() {}
 
 type FunctionHeading struct {
 	Type             FunctionType
-	Ident            Ident
+	Ident            *Ident
 	FormalParameters FormalParameters
 	ReturnType       Type
 }
 
 func (s FunctionHeading) Children() Nodes {
-	r := Nodes{&s.Ident}
+	r := Nodes{s.Ident}
 	if s.FormalParameters != nil {
 		r = append(r, s.FormalParameters)
 	}
@@ -89,11 +89,11 @@ var (
 
 type FormalParm struct {
 	Opt *FormalParmOption
-	Parameter
+	*Parameter
 }
 
 func (m *FormalParm) Children() Nodes {
-	return Nodes{&m.Parameter}
+	return Nodes{m.Parameter}
 }
 
 func NewFormalParm(name interface{}, args ...interface{}) *FormalParm {
@@ -101,14 +101,14 @@ func NewFormalParm(name interface{}, args ...interface{}) *FormalParm {
 	case 0:
 		switch v := name.(type) {
 		case Parameter:
-			return &FormalParm{Parameter: v}
+			return &FormalParm{Parameter: &v}
 		case *Parameter:
-			return &FormalParm{Parameter: *v}
+			return &FormalParm{Parameter: v}
 		default:
 			panic(errors.Errorf("invalid argument for NewFormalParm: %v, %v", name, args))
 		}
 	case 1:
-		return &FormalParm{Parameter: *NewParameter(name, args[0])}
+		return &FormalParm{Parameter: NewParameter(name, args[0])}
 	case 2:
 		var opt *FormalParmOption
 		switch v := args[1].(type) {
@@ -128,7 +128,7 @@ func NewFormalParm(name interface{}, args ...interface{}) *FormalParm {
 				panic(errors.Errorf("invalid FormalParam option %q for NewFormalParm", v))
 			}
 		}
-		return &FormalParm{Opt: opt, Parameter: *NewParameter(name, args[0])}
+		return &FormalParm{Opt: opt, Parameter: NewParameter(name, args[0])}
 	default:
 		panic(errors.Errorf("too many arguments for NewFormalParm: %v, %v", name, args))
 	}

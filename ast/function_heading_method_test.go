@@ -12,9 +12,9 @@ func TestFunctionHeadingMethods(t *testing.T) {
 	t.Run("Manipulating", func(t *testing.T) {
 		ident := asttest.NewIdent("foo", asttest.NewIdentLocation(1, 10, 9, 13))
 		exHeading := &ast.ExportedHeading{
-			FunctionHeading: ast.FunctionHeading{Ident: *ident},
+			FunctionHeading: &ast.FunctionHeading{Ident: ident},
 		}
-		fnHeading := &exHeading.FunctionHeading
+		fnHeading := exHeading.FunctionHeading
 
 		assert.Equal(t, "foo", fnHeading.Ident.Name)
 		assert.Equal(t, asttest.NewIdentLocation(1, 10, 9, 13), fnHeading.Ident.Location)
@@ -26,7 +26,7 @@ func TestFunctionHeadingMethods(t *testing.T) {
 
 	t.Run("Children", func(t *testing.T) {
 		ident := asttest.NewIdent("foo", asttest.NewIdentLocation(1, 10, 9, 13))
-		fnHeadingOrig := &ast.FunctionHeading{Ident: *ident}
+		fnHeadingOrig := &ast.FunctionHeading{Ident: ident}
 		t.Run("*FunctionHeading", func(t *testing.T) {
 			fnHeadingBody := *fnHeadingOrig
 			fnHeading := &fnHeadingBody
@@ -35,7 +35,7 @@ func TestFunctionHeadingMethods(t *testing.T) {
 			assert.Equal(t, ident, children[0])
 		})
 		t.Run("*ExportedHeading", func(t *testing.T) {
-			exHeading := &ast.ExportedHeading{FunctionHeading: *fnHeadingOrig}
+			exHeading := &ast.ExportedHeading{FunctionHeading: fnHeadingOrig}
 			children := exHeading.Children()
 			assert.Equal(t, 1, len(children))
 			assert.Equal(t, fnHeadingOrig, children[0])
@@ -66,7 +66,7 @@ func TestFunctionHeadingMethods(t *testing.T) {
 
 		heading := &ast.FunctionHeading{
 			Type:             ast.FtProcedure,
-			Ident:            *ident1,
+			Ident:            ident1,
 			FormalParameters: parameters,
 		}
 		assert.Equal(t, ast.Nodes{ident1, parameters}, heading.Children())
@@ -93,7 +93,7 @@ func TestFunctionHeadingMethods(t *testing.T) {
 
 		assert.Equal(t, &ast.FunctionHeading{
 			Type:  ast.FtProcedure,
-			Ident: *asttest.NewIdent("Proc1"),
+			Ident: asttest.NewIdent("Proc1"),
 			FormalParameters: ast.FormalParameters{
 				asttest.NewFormalParm(
 					asttest.NewIdent("Param1"),
