@@ -1,5 +1,9 @@
 package ast
 
+// - VarSection
+//   ```
+//   VAR (VarDecl ';')...
+//   ```
 func (VarSection) canBeInterfaceDecl() {}
 
 type VarSection []*VarDecl
