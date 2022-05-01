@@ -24,7 +24,7 @@ func TestExpression(t *testing.T) {
 	run(
 		"variable",
 		[]rune(`X`),
-		asttest.NewExpression(&ast.QualId{Ident: *asttest.NewIdent("X")}),
+		asttest.NewExpression(&ast.QualId{Ident: asttest.NewIdent("X")}),
 	)
 
 	run(
@@ -66,7 +66,7 @@ func TestExpression(t *testing.T) {
 		asttest.NewExpression(
 			&ast.Address{
 				Designator: &ast.Designator{
-					QualId: &ast.QualId{Ident: *asttest.NewIdent("X")},
+					QualId: &ast.QualId{Ident: asttest.NewIdent("X")},
 				},
 			},
 		),
@@ -81,7 +81,7 @@ func TestExpression(t *testing.T) {
 	run(
 		"variable#2",
 		[]rune(`InterestRate`),
-		asttest.NewExpression(&ast.QualId{Ident: *asttest.NewIdent("InterestRate")}),
+		asttest.NewExpression(&ast.QualId{Ident: asttest.NewIdent("InterestRate")}),
 	)
 
 	run(
@@ -90,11 +90,11 @@ func TestExpression(t *testing.T) {
 		asttest.NewExpression(
 			&ast.DesignatorFactor{
 				Designator: &ast.Designator{
-					QualId: &ast.QualId{Ident: *asttest.NewIdent("Calc")},
+					QualId: &ast.QualId{Ident: asttest.NewIdent("Calc")},
 				},
 				ExprList: ast.ExprList{
-					asttest.NewExpression(&ast.QualId{Ident: *asttest.NewIdent("X")}),
-					asttest.NewExpression(&ast.QualId{Ident: *asttest.NewIdent("Y")}),
+					asttest.NewExpression(&ast.QualId{Ident: asttest.NewIdent("X")}),
+					asttest.NewExpression(&ast.QualId{Ident: asttest.NewIdent("Y")}),
 				},
 			},
 		),
@@ -193,7 +193,7 @@ func TestExpression(t *testing.T) {
 		asttest.NewExpression(
 			&ast.DesignatorFactor{
 				Designator: &ast.Designator{
-					QualId: &ast.QualId{Ident: *asttest.NewIdent("Char")},
+					QualId: &ast.QualId{Ident: asttest.NewIdent("Char")},
 				},
 				ExprList: ast.ExprList{
 					asttest.NewExpression(asttest.NewNumber("48")),
@@ -498,7 +498,7 @@ func TestExpression(t *testing.T) {
 		[]rune(`P^`),
 		asttest.NewExpression(
 			&ast.Designator{
-				QualId: &ast.QualId{Ident: *asttest.NewIdent("P")},
+				QualId: &ast.QualId{Ident: asttest.NewIdent("P")},
 				Items: []ast.DesignatorItem{
 					&ast.DesignatorItemDereference{},
 				},
@@ -797,11 +797,11 @@ func TestFactor(t *testing.T) {
 		[]rune(`Calc(X,Y)`),
 		&ast.DesignatorFactor{
 			Designator: &ast.Designator{
-				QualId: &ast.QualId{Ident: *asttest.NewIdent("Calc")},
+				QualId: &ast.QualId{Ident: asttest.NewIdent("Calc")},
 			},
 			ExprList: ast.ExprList{
-				asttest.NewExpression(&ast.QualId{Ident: *asttest.NewIdent("X")}),
-				asttest.NewExpression(&ast.QualId{Ident: *asttest.NewIdent("Y")}),
+				asttest.NewExpression(&ast.QualId{Ident: asttest.NewIdent("X")}),
+				asttest.NewExpression(&ast.QualId{Ident: asttest.NewIdent("Y")}),
 			},
 		},
 	)

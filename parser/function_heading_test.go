@@ -428,7 +428,7 @@ func TestExportHeading(t *testing.T) {
 			asttest.ClearLocations(t, res)
 			assert.Equal(t,
 				&ast.Unit{
-					Ident: *asttest.NewIdent("Unit1"),
+					Ident: asttest.NewIdent("Unit1"),
 					InterfaceSection: &ast.InterfaceSection{
 						InterfaceDecls: decls,
 					},

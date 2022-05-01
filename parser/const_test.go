@@ -32,7 +32,7 @@ func TestUnitWithConstSection(t *testing.T) {
 		IMPLEMENTATION
 		END.`),
 		&ast.Unit{
-			Ident: *asttest.NewIdent("Unit1"),
+			Ident: asttest.NewIdent("Unit1"),
 			InterfaceSection: &ast.InterfaceSection{
 				InterfaceDecls: []ast.InterfaceDecl{
 					ast.ConstSection{
@@ -124,7 +124,7 @@ func TestConstSectionl(t *testing.T) {
 			{Ident: asttest.NewIdent("Beta"), ConstExpr: asttest.NewConstExpr(
 				&ast.DesignatorFactor{
 					Designator: &ast.Designator{
-						QualId: &ast.QualId{Ident: *asttest.NewIdent("Chr")},
+						QualId: &ast.QualId{Ident: asttest.NewIdent("Chr")},
 					},
 					ExprList: ast.ExprList{
 						asttest.NewConstExpr(asttest.NewNumber("225")),
@@ -137,7 +137,7 @@ func TestConstSectionl(t *testing.T) {
 					Term: asttest.NewTerm(
 						&ast.DesignatorFactor{
 							Designator: &ast.Designator{
-								QualId: &ast.QualId{Ident: *asttest.NewIdent("Ord")},
+								QualId: &ast.QualId{Ident: asttest.NewIdent("Ord")},
 							},
 							ExprList: ast.ExprList{
 								asttest.NewConstExpr(asttest.NewString("'Z'")),
@@ -150,7 +150,7 @@ func TestConstSectionl(t *testing.T) {
 							Term: asttest.NewTerm(
 								&ast.DesignatorFactor{
 									Designator: &ast.Designator{
-										QualId: &ast.QualId{Ident: *asttest.NewIdent("Ord")},
+										QualId: &ast.QualId{Ident: asttest.NewIdent("Ord")},
 									},
 									ExprList: ast.ExprList{
 										asttest.NewConstExpr(asttest.NewString("'A'")),
@@ -193,7 +193,7 @@ func TestConstSectionl(t *testing.T) {
 							Term: &ast.Term{
 								Factor: &ast.DesignatorFactor{
 									Designator: &ast.Designator{
-										QualId: &ast.QualId{Ident: *asttest.NewIdent("Length")},
+										QualId: &ast.QualId{Ident: asttest.NewIdent("Length")},
 									},
 									ExprList: ast.ExprList{
 										asttest.NewConstExpr("ErrStr"),

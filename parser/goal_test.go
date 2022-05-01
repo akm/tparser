@@ -18,7 +18,7 @@ func TestGoal(t *testing.T) {
 	res, err := parser.ParseGoal()
 	if assert.NoError(t, err) {
 		assert.Equal(t, &ast.Unit{
-			Ident:                 *asttest.NewIdent("U1", asttest.NewIdentLocation(1, 6, 5, 8)),
+			Ident:                 asttest.NewIdent("U1", asttest.NewIdentLocation(1, 6, 5, 8)),
 			InterfaceSection:      &ast.InterfaceSection{},
 			ImplementationSection: &ast.ImplementationSection{},
 		}, res)

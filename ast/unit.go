@@ -11,7 +11,7 @@ func (*Unit) isGoal() {}
 //   ```
 type Unit struct {
 	Path                  string
-	Ident                 Ident
+	Ident                 *Ident
 	PortabilityDirective  *PortabilityDirective // optional
 	InterfaceSection      *InterfaceSection
 	ImplementationSection *ImplementationSection
@@ -23,7 +23,7 @@ func (m *Unit) GetPath() string {
 }
 
 func (m *Unit) Children() Nodes {
-	r := Nodes{&m.Ident}
+	r := Nodes{m.Ident}
 	if m.InterfaceSection != nil {
 		r = append(r, m.InterfaceSection)
 	}
@@ -146,7 +146,7 @@ func (m *UnitId) Children() Nodes {
 //   ```
 type QualId struct {
 	UnitId *UnitId
-	Ident  Ident
+	Ident  *Ident
 }
 
 func (m *QualId) Children() Nodes {
@@ -154,6 +154,6 @@ func (m *QualId) Children() Nodes {
 	if m.UnitId != nil {
 		r = append(r, m.UnitId)
 	}
-	r = append(r, &m.Ident)
+	r = append(r, m.Ident)
 	return r
 }

@@ -20,7 +20,7 @@ func (p *Parser) ParseUnit() (*ast.Unit, error) {
 		return nil, err
 	}
 	res := &ast.Unit{
-		Ident: *ast.NewIdent(ident),
+		Ident: ast.NewIdent(ident),
 	}
 	t := p.NextToken()
 	if t.Type == token.PortabilityDirective {
@@ -163,11 +163,11 @@ func (p *Parser) ParseQualId() (*ast.QualId, error) {
 		p.NextToken()
 		return &ast.QualId{
 			UnitId: ast.NewUnitId(name1),
-			Ident:  *ast.NewIdent(name2),
+			Ident:  ast.NewIdent(name2),
 		}, nil
 	} else {
 		return &ast.QualId{
-			Ident: *ast.NewIdent(name1),
+			Ident: ast.NewIdent(name1),
 		}, nil
 	}
 }

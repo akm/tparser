@@ -28,7 +28,7 @@ func TestUnit(t *testing.T) {
 			implementation
 			end.`),
 		&ast.Unit{
-			Ident:                 *asttest.NewIdent("U1", asttest.NewIdentLocation(1, 6, 5, 8)),
+			Ident:                 asttest.NewIdent("U1", asttest.NewIdentLocation(1, 6, 5, 8)),
 			InterfaceSection:      &ast.InterfaceSection{},
 			ImplementationSection: &ast.ImplementationSection{},
 		},

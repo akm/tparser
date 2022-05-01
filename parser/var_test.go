@@ -32,7 +32,7 @@ func TestUnitWithVarSection(t *testing.T) {
 		IMPLEMENTATION
 		END.`),
 		&ast.Unit{
-			Ident: *asttest.NewIdent("Unit1"),
+			Ident: asttest.NewIdent("Unit1"),
 			InterfaceSection: &ast.InterfaceSection{
 				InterfaceDecls: ast.InterfaceDecls{
 					ast.VarSection{
@@ -59,7 +59,7 @@ func TestUnitWithVarSection(t *testing.T) {
 		IMPLEMENTATION
 		END.`),
 		&ast.Unit{
-			Ident: *asttest.NewIdent("Unit1"),
+			Ident: asttest.NewIdent("Unit1"),
 			InterfaceSection: &ast.InterfaceSection{
 				InterfaceDecls: []ast.InterfaceDecl{
 					ast.VarSection{
@@ -86,7 +86,7 @@ func TestUnitWithVarSection(t *testing.T) {
 		IMPLEMENTATION
 		END.`),
 		&ast.Unit{
-			Ident: *asttest.NewIdent("Unit1"),
+			Ident: asttest.NewIdent("Unit1"),
 			InterfaceSection: &ast.InterfaceSection{
 				InterfaceDecls: []ast.InterfaceDecl{
 					ast.ThreadVarSection{
