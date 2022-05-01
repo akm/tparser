@@ -28,7 +28,7 @@ func (p *Parser) ParseExportedHeading() (*ast.ExportedHeading, error) {
 	if _, err := p.Current(token.Symbol(';')); err != nil {
 		return nil, err
 	}
-	r := &ast.ExportedHeading{FunctionHeading: *functionHeading}
+	r := &ast.ExportedHeading{FunctionHeading: functionHeading}
 	p.NextToken()
 	if p.CurrentToken().Is(token.Directive) {
 		r.Directives = []ast.Directive{}
@@ -114,7 +114,7 @@ func (p *Parser) ParseProcedureHeading() (*ast.FunctionHeading, error) {
 	}
 	res := &ast.FunctionHeading{
 		Type:       ast.FtProcedure,
-		Ident:      ast.Ident(ident.Value()),
+		Ident:      ast.NewIdent(ident),
 		ReturnType: nil,
 	}
 	t := p.NextToken()
@@ -138,7 +138,7 @@ func (p *Parser) ParseFunctionHeading() (*ast.FunctionHeading, error) {
 	}
 	res := &ast.FunctionHeading{
 		Type:  ast.FtFunction,
-		Ident: ast.Ident(ident.Value()),
+		Ident: ast.NewIdent(ident),
 	}
 	t := p.NextToken()
 	if t.Is(token.Symbol('(')) {
@@ -204,7 +204,7 @@ func (p *Parser) ParseFormalParm() (*ast.FormalParm, error) {
 	if err != nil {
 		return nil, err
 	}
-	r.Parameter = *parameter
+	r.Parameter = parameter
 	return r, nil
 }
 

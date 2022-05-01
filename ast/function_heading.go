@@ -14,9 +14,13 @@ import "github.com/pkg/errors"
 func (*ExportedHeading) canBeInterfaceDecl() {}
 
 type ExportedHeading struct {
-	FunctionHeading FunctionHeading
+	FunctionHeading *FunctionHeading
 	Directives      []Directive
 	ExternalOptions *ExternalOptions
+}
+
+func (m *ExportedHeading) Children() Nodes {
+	return Nodes{m.FunctionHeading}
 }
 
 type FunctionType uint
@@ -41,9 +45,20 @@ func (*FunctionHeading) isExportedHeading() {}
 
 type FunctionHeading struct {
 	Type             FunctionType
-	Ident            Ident
+	Ident            *Ident
 	FormalParameters FormalParameters
 	ReturnType       Type
+}
+
+func (s FunctionHeading) Children() Nodes {
+	r := Nodes{s.Ident}
+	if s.FormalParameters != nil {
+		r = append(r, s.FormalParameters)
+	}
+	if s.ReturnType != nil {
+		r = append(r, s.ReturnType)
+	}
+	return r
 }
 
 // - FormalParameters
@@ -51,6 +66,14 @@ type FunctionHeading struct {
 //   '(' [FormalParm ';'...] ')'
 //   ```
 type FormalParameters []*FormalParm
+
+func (s FormalParameters) Children() Nodes {
+	r := make(Nodes, len(s))
+	for i, m := range s {
+		r[i] = m
+	}
+	return r
+}
 
 // - FormalParm
 //   ```
@@ -66,7 +89,11 @@ var (
 
 type FormalParm struct {
 	Opt *FormalParmOption
-	Parameter
+	*Parameter
+}
+
+func (m *FormalParm) Children() Nodes {
+	return Nodes{m.Parameter}
 }
 
 func NewFormalParm(name interface{}, args ...interface{}) *FormalParm {
@@ -74,14 +101,14 @@ func NewFormalParm(name interface{}, args ...interface{}) *FormalParm {
 	case 0:
 		switch v := name.(type) {
 		case Parameter:
-			return &FormalParm{Parameter: v}
+			return &FormalParm{Parameter: &v}
 		case *Parameter:
-			return &FormalParm{Parameter: *v}
+			return &FormalParm{Parameter: v}
 		default:
 			panic(errors.Errorf("invalid argument for NewFormalParm: %v, %v", name, args))
 		}
 	case 1:
-		return &FormalParm{Parameter: *NewParameter(name, args[0])}
+		return &FormalParm{Parameter: NewParameter(name, args[0])}
 	case 2:
 		var opt *FormalParmOption
 		switch v := args[1].(type) {
@@ -101,7 +128,7 @@ func NewFormalParm(name interface{}, args ...interface{}) *FormalParm {
 				panic(errors.Errorf("invalid FormalParam option %q for NewFormalParm", v))
 			}
 		}
-		return &FormalParm{Opt: opt, Parameter: *NewParameter(name, args[0])}
+		return &FormalParm{Opt: opt, Parameter: NewParameter(name, args[0])}
 	default:
 		panic(errors.Errorf("too many arguments for NewFormalParm: %v, %v", name, args))
 	}
@@ -119,6 +146,10 @@ func NewFormalParm(name interface{}, args ...interface{}) *FormalParm {
 type ParameterType struct {
 	Type
 	IsArray bool
+}
+
+func (m *ParameterType) Children() Nodes {
+	return Nodes{m.Type}
 }
 
 func NewParameterType(arg interface{}) *ParameterType {
@@ -148,33 +179,38 @@ type Parameter struct {
 	ConstExpr *ConstExpr
 }
 
+func (m *Parameter) Children() Nodes {
+	r := Nodes{m.IdentList}
+	if m.Type != nil {
+		r = append(r, m.Type)
+	}
+	if m.ConstExpr != nil {
+		r = append(r, m.ConstExpr)
+	}
+	return r
+}
+
 func NewParameter(name interface{}, typArg interface{}, args ...interface{}) *Parameter {
 	var typ *ParameterType
 	if typArg != nil {
-		switch v := typArg.(type) {
-		case ParameterType:
-			typ = &v
-		case *ParameterType:
-			typ = v
-		case Type:
-			typ = &ParameterType{Type: v}
-		default:
-			typ = NewParameterType(typArg)
-		}
+		typ = NewParameterType(typArg)
 	}
 	r := &Parameter{IdentList: NewIdentList(name), Type: typ}
 	if len(args) > 1 {
 		panic(errors.Errorf("too many arguments for NewParameter: %v, %v", name, args))
-	}
-	if len(args) == 1 {
-		switch v := args[0].(type) {
-		case *ConstExpr:
-			r.ConstExpr = v
-		case ConstExpr:
-			r.ConstExpr = &v
-		default:
-			r.ConstExpr = NewConstExpr(args[0])
-		}
+	} else if len(args) == 1 {
+		r.SetConstExpr(args[0])
 	}
 	return r
+}
+
+func (m *Parameter) SetConstExpr(arg interface{}) {
+	switch v := arg.(type) {
+	case *ConstExpr:
+		m.ConstExpr = v
+	case ConstExpr:
+		m.ConstExpr = &v
+	default:
+		m.ConstExpr = NewConstExpr(arg)
+	}
 }

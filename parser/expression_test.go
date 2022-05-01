@@ -4,34 +4,38 @@ import (
 	"testing"
 
 	"github.com/akm/tparser/ast"
+	"github.com/akm/tparser/ast/asttest"
 	"github.com/akm/tparser/ext"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestExpression(t *testing.T) {
-	run := func(name string, text []rune, expected *ast.Expression) {
+	run := func(name string, clearLocations bool, text []rune, expected *ast.Expression) {
 		t.Run(name, func(t *testing.T) {
 			parser := NewParser(&text)
 			parser.NextToken()
 			res, err := parser.ParseExpression()
 			if assert.NoError(t, err) {
+				if clearLocations {
+					asttest.ClearLocations(t, res)
+				}
 				assert.Equal(t, expected, res)
 			}
 		})
 	}
 
 	run(
-		"variable",
+		"variable", false,
 		[]rune(`X`),
-		ast.NewExpression(&ast.QualId{Ident: ast.Ident("X")}),
+		asttest.NewExpression(&ast.QualId{Ident: asttest.NewIdent("X", asttest.NewIdentLocation(1, 1, 0, 1, 1, 1))}),
 	)
 
 	run(
-		"true constant of integer #1",
+		"true constant of integer #1", false,
 		[]rune(`7`),
 		&ast.Expression{
-			SimpleExpression: ast.SimpleExpression{
-				Term: ast.Term{
+			SimpleExpression: &ast.SimpleExpression{
+				Term: &ast.Term{
 					Factor: &ast.Number{
 						ValueFactor: ast.ValueFactor{Value: "7"},
 					},
@@ -40,17 +44,17 @@ func TestExpression(t *testing.T) {
 		},
 	)
 	run(
-		"true constant of integer #2",
+		"true constant of integer #2", false,
 		[]rune(`7`),
-		ast.NewExpression(ast.NewNumber("7")),
+		asttest.NewExpression(asttest.NewNumber("7")),
 	)
 
 	run(
-		"true constant of string",
+		"true constant of string", false,
 		[]rune(`'abc'`),
 		&ast.Expression{
-			SimpleExpression: ast.SimpleExpression{
-				Term: ast.Term{
+			SimpleExpression: &ast.SimpleExpression{
+				Term: &ast.Term{
 					Factor: &ast.String{
 						ValueFactor: ast.ValueFactor{Value: "'abc'"},
 					},
@@ -60,60 +64,60 @@ func TestExpression(t *testing.T) {
 	)
 
 	run(
-		"address of variable",
+		"address of variable", false,
 		[]rune(`@X`),
-		ast.NewExpression(
+		asttest.NewExpression(
 			&ast.Address{
-				Designator: ast.Designator{
-					QualId: ast.QualId{Ident: ast.Ident("X")},
+				Designator: &ast.Designator{
+					QualId: &ast.QualId{Ident: asttest.NewIdent("X", asttest.NewIdentLocation(1, 2, 1, 1, 2, 2))},
 				},
 			},
 		),
 	)
 
 	run(
-		"integer constant",
+		"integer constant", false,
 		[]rune(`15`),
-		ast.NewExpression(&ast.Number{ValueFactor: ast.ValueFactor{Value: "15"}}),
+		asttest.NewExpression(&ast.Number{ValueFactor: ast.ValueFactor{Value: "15"}}),
 	)
 
 	run(
-		"variable#2",
+		"variable#2", false,
 		[]rune(`InterestRate`),
-		ast.NewExpression(&ast.QualId{Ident: ast.Ident("InterestRate")}),
+		asttest.NewExpression(&ast.QualId{Ident: asttest.NewIdent("InterestRate", asttest.NewIdentLocation(1, 1, 0, 1, 12, 12))}),
 	)
 
 	run(
-		"function call",
+		"function call", false,
 		[]rune(`Calc(X,Y)`),
-		ast.NewExpression(
+		asttest.NewExpression(
 			&ast.DesignatorFactor{
-				Designator: ast.Designator{
-					QualId: ast.QualId{Ident: ast.Ident("Calc")},
+				Designator: &ast.Designator{
+					QualId: &ast.QualId{Ident: asttest.NewIdent("Calc", asttest.NewIdentLocation(1, 1, 0, 1, 5, 4))},
 				},
 				ExprList: ast.ExprList{
-					ast.NewExpression(&ast.QualId{Ident: ast.Ident("X")}),
-					ast.NewExpression(&ast.QualId{Ident: ast.Ident("Y")}),
+					asttest.NewExpression(&ast.QualId{Ident: asttest.NewIdent("X", asttest.NewIdentLocation(1, 6, 5, 7))}),
+					asttest.NewExpression(&ast.QualId{Ident: asttest.NewIdent("Y", asttest.NewIdentLocation(1, 8, 7, 9))}),
 				},
 			},
 		),
 	)
 
 	run(
-		"quotient of Z and ( 1 - Z )",
+		"quotient of Z and ( 1 - Z )", false,
 		[]rune(`Z / (1 - Z)`),
-		ast.NewExpression(
+		asttest.NewExpression(
 			&ast.Term{
-				Factor: ast.NewDesignatorFactor("Z"),
+				Factor: asttest.NewDesignatorFactor(asttest.NewIdent("Z", asttest.NewIdentLocation(1, 1, 0, 1, 2, 1))),
 				MulOpFactors: []*ast.MulOpFactor{
 					{
 						MulOp: "/",
 						Factor: &ast.Parentheses{
-							Expression: ast.Expression{
-								SimpleExpression: ast.SimpleExpression{
-									Term: ast.Term{Factor: ast.NewNumber("1")},
+							Expression: &ast.Expression{
+								SimpleExpression: &ast.SimpleExpression{
+									Term: &ast.Term{Factor: asttest.NewNumber("1")},
 									AddOpTerms: []*ast.AddOpTerm{
-										{AddOp: "-", Term: *ast.NewTerm("Z")},
+										{AddOp: "-", Term: asttest.NewTerm(asttest.NewIdent("Z", asttest.NewIdentLocation(1, 10, 9, 1, 11, 10)))},
 									},
 								},
 							},
@@ -125,52 +129,52 @@ func TestExpression(t *testing.T) {
 	)
 
 	run(
-		"Boolean #1",
+		"Boolean #1", false,
 		[]rune(`X = 1.5`),
 		&ast.Expression{
-			SimpleExpression: *ast.NewSimpleExpression("X"),
+			SimpleExpression: asttest.NewSimpleExpression(asttest.NewIdent("X", asttest.NewIdentLocation(1, 1, 0, 1, 2, 1))),
 			RelOpSimpleExpressions: []*ast.RelOpSimpleExpression{
 				{
 					RelOp:            "=",
-					SimpleExpression: *ast.NewSimpleExpression(ast.NewNumber("1.5")),
+					SimpleExpression: asttest.NewSimpleExpression(asttest.NewNumber("1.5")),
 				},
 			},
 		},
 	)
 
 	run(
-		"Boolean #2",
+		"Boolean #2", false,
 		[]rune(`C in Range1`),
 		&ast.Expression{
-			SimpleExpression: *ast.NewSimpleExpression("C"),
+			SimpleExpression: asttest.NewSimpleExpression(asttest.NewIdent("C", asttest.NewIdentLocation(1, 1, 0, 1, 2, 1))),
 			RelOpSimpleExpressions: []*ast.RelOpSimpleExpression{
 				{
 					RelOp:            "IN",
-					SimpleExpression: *ast.NewSimpleExpression("Range1"),
+					SimpleExpression: asttest.NewSimpleExpression(asttest.NewIdent("Range1", asttest.NewIdentLocation(1, 6, 5, 1, 11, 11))),
 				},
 			},
 		},
 	)
 
 	run(
-		"negation of a Boolean",
+		"negation of a Boolean", false,
 		[]rune(`not Done`),
-		ast.NewExpression(
+		asttest.NewExpression(
 			&ast.Not{
-				Factor: ast.NewDesignatorFactor("Done"),
+				Factor: asttest.NewDesignatorFactor(asttest.NewIdent("Done", asttest.NewIdentLocation(1, 5, 4, 1, 8, 8))),
 			},
 		),
 	)
 
 	run(
-		"set",
+		"set", false,
 		[]rune(`['a','b','c']`),
-		ast.NewExpression(
+		asttest.NewExpression(
 			&ast.SetConstructor{
 				SetElements: []*ast.SetElement{
-					ast.NewSetElement(ast.NewExpression(ast.NewString("'a'"))),
-					ast.NewSetElement(ast.NewExpression(ast.NewString("'b'"))),
-					ast.NewSetElement(ast.NewExpression(ast.NewString("'c'"))),
+					asttest.NewSetElement(asttest.NewExpression(asttest.NewString("'a'"))),
+					asttest.NewSetElement(asttest.NewExpression(asttest.NewString("'b'"))),
+					asttest.NewSetElement(asttest.NewExpression(asttest.NewString("'c'"))),
 				},
 			},
 		),
@@ -179,124 +183,124 @@ func TestExpression(t *testing.T) {
 	// run(
 	// 	"value typecast",
 	// 	[]rune(`Char(48)`),
-	// 	ast.NewExpression(
+	// 	asttest.NewExpression(
 	// 		&ast.TypeCast{
 	// 			TypeId:     &ast.TypeId{Ident: "Char"},
-	// 			Expression: *ast.NewExpression(ast.NewNumber("48")),
+	// 			Expression: *asttest.NewExpression(asttest.NewNumber("48")),
 	// 		},
 	// 	),
 	// )
 	run(
-		"value typecast",
+		"value typecast", false,
 		[]rune(`Char(48)`),
-		ast.NewExpression(
+		asttest.NewExpression(
 			&ast.DesignatorFactor{
-				Designator: ast.Designator{
-					QualId: ast.QualId{Ident: ast.Ident("Char")},
+				Designator: &ast.Designator{
+					QualId: &ast.QualId{Ident: asttest.NewIdent("Char", asttest.NewIdentLocation(1, 1, 0, 1, 5, 4))},
 				},
 				ExprList: ast.ExprList{
-					ast.NewExpression(ast.NewNumber("48")),
+					asttest.NewExpression(asttest.NewNumber("48")),
 				},
 			},
 		),
 	)
 
 	run(
-		"Binary arithmetic operators +",
+		"Binary arithmetic operators +", false,
 		[]rune(`X + Y`),
-		ast.NewExpression(
+		asttest.NewExpression(
 			&ast.SimpleExpression{
-				Term: ast.Term{Factor: ast.NewDesignatorFactor("X")},
+				Term: &ast.Term{Factor: asttest.NewDesignatorFactor(asttest.NewIdent("X", asttest.NewIdentLocation(1, 1, 0, 1, 2, 1)))},
 				AddOpTerms: []*ast.AddOpTerm{
-					{AddOp: "+", Term: *ast.NewTerm("Y")},
+					{AddOp: "+", Term: asttest.NewTerm(asttest.NewIdent("Y", asttest.NewIdentLocation(1, 5, 4, 1, 5, 5)))},
 				},
 			},
 		),
 	)
 
 	run(
-		"Binary arithmetic operators -",
+		"Binary arithmetic operators -", false,
 		[]rune(`Result - 1`),
-		ast.NewExpression(
+		asttest.NewExpression(
 			&ast.SimpleExpression{
-				Term: ast.Term{Factor: ast.NewDesignatorFactor("Result")},
+				Term: &ast.Term{Factor: asttest.NewDesignatorFactor(asttest.NewIdent("Result", asttest.NewIdentLocation(1, 1, 0, 1, 7, 6)))},
 				AddOpTerms: []*ast.AddOpTerm{
-					{AddOp: "-", Term: *ast.NewTerm(ast.NewNumber("1"))},
+					{AddOp: "-", Term: asttest.NewTerm(asttest.NewNumber("1"))},
 				},
 			},
 		),
 	)
 
 	run(
-		"Binary arithmetic operators *",
+		"Binary arithmetic operators *", false,
 		[]rune(`P * InterestRate`),
-		ast.NewExpression(
+		asttest.NewExpression(
 			&ast.Term{
-				Factor: ast.NewDesignatorFactor("P"),
+				Factor: asttest.NewDesignatorFactor(asttest.NewIdent("P", asttest.NewIdentLocation(1, 1, 0, 1, 2, 1))),
 				MulOpFactors: []*ast.MulOpFactor{
-					{MulOp: "*", Factor: ast.NewDesignatorFactor("InterestRate")},
+					{MulOp: "*", Factor: asttest.NewDesignatorFactor(asttest.NewIdent("InterestRate", asttest.NewIdentLocation(1, 5, 4, 1, 16, 16)))},
 				},
 			},
 		),
 	)
 
 	run(
-		"Binary arithmetic operators /",
+		"Binary arithmetic operators /", true,
 		[]rune(`X / 2`),
-		ast.NewExpression(
+		asttest.NewExpression(
 			&ast.Term{
-				Factor: ast.NewDesignatorFactor("X"),
+				Factor: asttest.NewDesignatorFactor("X"),
 				MulOpFactors: []*ast.MulOpFactor{
-					{MulOp: "/", Factor: ast.NewNumber("2")},
+					{MulOp: "/", Factor: asttest.NewNumber("2")},
 				},
 			},
 		),
 	)
 
 	run(
-		"Binary arithmetic operators div",
+		"Binary arithmetic operators div", true,
 		[]rune(`Total div UnitSize`),
-		ast.NewExpression(
+		asttest.NewExpression(
 			&ast.Term{
-				Factor: ast.NewDesignatorFactor("Total"),
+				Factor: asttest.NewDesignatorFactor("Total"),
 				MulOpFactors: []*ast.MulOpFactor{
-					{MulOp: "DIV", Factor: ast.NewDesignatorFactor("UnitSize")},
+					{MulOp: "DIV", Factor: asttest.NewDesignatorFactor("UnitSize")},
 				},
 			},
 		),
 	)
 
 	run(
-		"Binary arithmetic operators mod",
+		"Binary arithmetic operators mod", true,
 		[]rune(`Y mod 6`),
-		ast.NewExpression(
+		asttest.NewExpression(
 			&ast.Term{
-				Factor: ast.NewDesignatorFactor("Y"),
+				Factor: asttest.NewDesignatorFactor("Y"),
 				MulOpFactors: []*ast.MulOpFactor{
-					{MulOp: "MOD", Factor: ast.NewNumber("6")},
+					{MulOp: "MOD", Factor: asttest.NewNumber("6")},
 				},
 			},
 		),
 	)
 
 	run(
-		"Unary arithmetic operators +",
+		"Unary arithmetic operators +", false,
 		[]rune(`+7`),
-		ast.NewExpression(
+		asttest.NewExpression(
 			&ast.SimpleExpression{
 				UnaryOp: ext.StringPtr("+"),
-				Term:    *ast.NewTerm(ast.NewNumber("7")),
+				Term:    asttest.NewTerm(asttest.NewNumber("7")),
 			},
 		),
 	)
 
 	run(
-		"Unary arithmetic operators -",
+		"Unary arithmetic operators -", false,
 		[]rune(`-X`),
-		ast.NewExpression(
+		asttest.NewExpression(
 			&ast.SimpleExpression{
 				UnaryOp: ext.StringPtr("-"),
-				Term:    *ast.NewTerm("X"),
+				Term:    asttest.NewTerm(asttest.NewIdent("X", asttest.NewIdentLocation(1, 2, 1, 1, 2, 2))),
 			},
 		),
 	)
@@ -304,17 +308,17 @@ func TestExpression(t *testing.T) {
 	// Boolean operators
 
 	run(
-		"Boolean operators not",
+		"Boolean operators not", false,
 		[]rune(`not (C in MySet)`),
-		ast.NewExpression(
+		asttest.NewExpression(
 			&ast.Not{
 				Factor: &ast.Parentheses{
-					Expression: ast.Expression{
-						SimpleExpression: *ast.NewSimpleExpression("C"),
+					Expression: &ast.Expression{
+						SimpleExpression: asttest.NewSimpleExpression(asttest.NewIdent("C", asttest.NewIdentLocation(1, 6, 5, 1, 7, 6))),
 						RelOpSimpleExpressions: []*ast.RelOpSimpleExpression{
 							{
 								RelOp:            "IN",
-								SimpleExpression: *ast.NewSimpleExpression("MySet"),
+								SimpleExpression: asttest.NewSimpleExpression(asttest.NewIdent("MySet", asttest.NewIdentLocation(1, 11, 10, 1, 16, 15))),
 							},
 						},
 					},
@@ -324,19 +328,19 @@ func TestExpression(t *testing.T) {
 	)
 
 	run(
-		"Boolean operators and",
+		"Boolean operators and", true,
 		[]rune(`Done and (Total > 0)`),
-		ast.NewExpression(
+		asttest.NewExpression(
 			&ast.Term{
-				Factor: ast.NewDesignatorFactor("Done"),
+				Factor: asttest.NewDesignatorFactor("Done"),
 				MulOpFactors: []*ast.MulOpFactor{
 					{MulOp: "AND", Factor: &ast.Parentheses{
-						Expression: ast.Expression{
-							SimpleExpression: *ast.NewSimpleExpression("Total"),
+						Expression: &ast.Expression{
+							SimpleExpression: asttest.NewSimpleExpression("Total"),
 							RelOpSimpleExpressions: []*ast.RelOpSimpleExpression{
 								{
 									RelOp:            ">",
-									SimpleExpression: *ast.NewSimpleExpression(ast.NewNumber("0")),
+									SimpleExpression: asttest.NewSimpleExpression(asttest.NewNumber("0")),
 								},
 							},
 						},
@@ -347,26 +351,26 @@ func TestExpression(t *testing.T) {
 	)
 
 	run(
-		"Boolean operators or",
+		"Boolean operators or", true,
 		[]rune(`A or B`),
-		ast.NewExpression(
+		asttest.NewExpression(
 			&ast.SimpleExpression{
-				Term: ast.Term{Factor: ast.NewDesignatorFactor("A")},
+				Term: &ast.Term{Factor: asttest.NewDesignatorFactor("A")},
 				AddOpTerms: []*ast.AddOpTerm{
-					{AddOp: "OR", Term: *ast.NewTerm("B")},
+					{AddOp: "OR", Term: asttest.NewTerm("B")},
 				},
 			},
 		),
 	)
 
 	run(
-		"Boolean operators xor",
+		"Boolean operators xor", true,
 		[]rune(`A xor B`),
-		ast.NewExpression(
+		asttest.NewExpression(
 			&ast.SimpleExpression{
-				Term: ast.Term{Factor: ast.NewDesignatorFactor("A")},
+				Term: &ast.Term{Factor: asttest.NewDesignatorFactor("A")},
 				AddOpTerms: []*ast.AddOpTerm{
-					{AddOp: "XOR", Term: *ast.NewTerm("B")},
+					{AddOp: "XOR", Term: asttest.NewTerm("B")},
 				},
 			},
 		),
@@ -375,75 +379,75 @@ func TestExpression(t *testing.T) {
 	// Logical (bitwise) operators
 
 	run(
-		"Logical (bitwise) operators not",
+		"Logical (bitwise) operators not", true,
 		[]rune(`not X`),
-		ast.NewExpression(
+		asttest.NewExpression(
 			&ast.Not{
-				Factor: ast.NewDesignatorFactor("X"),
+				Factor: asttest.NewDesignatorFactor("X"),
 			},
 		),
 	)
 
 	run(
-		"Logical (bitwise) operators and",
+		"Logical (bitwise) operators and", true,
 		[]rune(`X and Y`),
-		ast.NewExpression(
+		asttest.NewExpression(
 			&ast.Term{
-				Factor: ast.NewDesignatorFactor("X"),
+				Factor: asttest.NewDesignatorFactor("X"),
 				MulOpFactors: []*ast.MulOpFactor{
-					{MulOp: "AND", Factor: ast.NewDesignatorFactor("Y")},
+					{MulOp: "AND", Factor: asttest.NewDesignatorFactor("Y")},
 				},
 			},
 		),
 	)
 
 	run(
-		"Logical (bitwise) operators or",
+		"Logical (bitwise) operators or", true,
 		[]rune(`X or Y`),
-		ast.NewExpression(
+		asttest.NewExpression(
 			&ast.SimpleExpression{
-				Term: ast.Term{Factor: ast.NewDesignatorFactor("X")},
+				Term: &ast.Term{Factor: asttest.NewDesignatorFactor("X")},
 				AddOpTerms: []*ast.AddOpTerm{
-					{AddOp: "OR", Term: *ast.NewTerm("Y")},
+					{AddOp: "OR", Term: asttest.NewTerm("Y")},
 				},
 			},
 		),
 	)
 
 	run(
-		"Logical (bitwise) operators xor",
+		"Logical (bitwise) operators xor", true,
 		[]rune(`X xor Y`),
-		ast.NewExpression(
+		asttest.NewExpression(
 			&ast.SimpleExpression{
-				Term: ast.Term{Factor: ast.NewDesignatorFactor("X")},
+				Term: &ast.Term{Factor: asttest.NewDesignatorFactor("X")},
 				AddOpTerms: []*ast.AddOpTerm{
-					{AddOp: "XOR", Term: *ast.NewTerm("Y")},
+					{AddOp: "XOR", Term: asttest.NewTerm("Y")},
 				},
 			},
 		),
 	)
 
 	run(
-		"Logical (bitwise) operators shl",
+		"Logical (bitwise) operators shl", true,
 		[]rune(`X shl 2`),
-		ast.NewExpression(
+		asttest.NewExpression(
 			&ast.Term{
-				Factor: ast.NewDesignatorFactor("X"),
+				Factor: asttest.NewDesignatorFactor("X"),
 				MulOpFactors: []*ast.MulOpFactor{
-					{MulOp: "SHL", Factor: ast.NewNumber("2")},
+					{MulOp: "SHL", Factor: asttest.NewNumber("2")},
 				},
 			},
 		),
 	)
 
 	run(
-		"Logical (bitwise) operators shr",
+		"Logical (bitwise) operators shr", false,
 		[]rune(`X shr I`),
-		ast.NewExpression(
+		asttest.NewExpression(
 			&ast.Term{
-				Factor: ast.NewDesignatorFactor("X"),
+				Factor: asttest.NewDesignatorFactor(asttest.NewIdent("X", asttest.NewIdentLocation(1, 1, 0, 2, 1))),
 				MulOpFactors: []*ast.MulOpFactor{
-					{MulOp: "SHR", Factor: ast.NewDesignatorFactor("I")},
+					{MulOp: "SHR", Factor: asttest.NewDesignatorFactor(asttest.NewIdent("I", asttest.NewIdentLocation(1, 7, 6, 1, 7, 7)))},
 				},
 			},
 		),
@@ -452,13 +456,13 @@ func TestExpression(t *testing.T) {
 	// String operators
 
 	run(
-		"String operators +",
+		"String operators +", true,
 		[]rune(`S + '. '`),
-		ast.NewExpression(
+		asttest.NewExpression(
 			&ast.SimpleExpression{
-				Term: ast.Term{Factor: ast.NewDesignatorFactor("S")},
+				Term: &ast.Term{Factor: asttest.NewDesignatorFactor("S")},
 				AddOpTerms: []*ast.AddOpTerm{
-					{AddOp: "+", Term: *ast.NewTerm(ast.NewString("'. '"))},
+					{AddOp: "+", Term: asttest.NewTerm(asttest.NewString("'. '"))},
 				},
 			},
 		),
@@ -467,37 +471,37 @@ func TestExpression(t *testing.T) {
 	// Character-pointer operators
 
 	run(
-		"Character-pointer operators +",
+		"Character-pointer operators +", false,
 		[]rune(`P + I`),
-		ast.NewExpression(
+		asttest.NewExpression(
 			&ast.SimpleExpression{
-				Term: ast.Term{Factor: ast.NewDesignatorFactor("P")},
+				Term: &ast.Term{Factor: asttest.NewDesignatorFactor(asttest.NewIdent("P", asttest.NewIdentLocation(1, 1, 0, 2, 1)))},
 				AddOpTerms: []*ast.AddOpTerm{
-					{AddOp: "+", Term: *ast.NewTerm("I")},
+					{AddOp: "+", Term: asttest.NewTerm(asttest.NewIdent("I", asttest.NewIdentLocation(1, 5, 4, 1, 5, 5)))},
 				},
 			},
 		),
 	)
 
 	run(
-		"Character-pointer operators -",
+		"Character-pointer operators -", true,
 		[]rune(`P - Q`),
-		ast.NewExpression(
+		asttest.NewExpression(
 			&ast.SimpleExpression{
-				Term: ast.Term{Factor: ast.NewDesignatorFactor("P")},
+				Term: &ast.Term{Factor: asttest.NewDesignatorFactor("P")},
 				AddOpTerms: []*ast.AddOpTerm{
-					{AddOp: "-", Term: *ast.NewTerm("Q")},
+					{AddOp: "-", Term: asttest.NewTerm("Q")},
 				},
 			},
 		),
 	)
 
 	run(
-		"Character-pointer operators ^",
+		"Character-pointer operators ^", false,
 		[]rune(`P^`),
-		ast.NewExpression(
+		asttest.NewExpression(
 			&ast.Designator{
-				QualId: ast.QualId{Ident: ast.Ident("P")},
+				QualId: &ast.QualId{Ident: asttest.NewIdent("P", asttest.NewIdentLocation(1, 1, 0, 2, 1))},
 				Items: []ast.DesignatorItem{
 					&ast.DesignatorItemDereference{},
 				},
@@ -506,28 +510,28 @@ func TestExpression(t *testing.T) {
 	)
 
 	run(
-		"Character-pointer operators =",
+		"Character-pointer operators =", true,
 		[]rune(`P = Q`),
 		&ast.Expression{
-			SimpleExpression: *ast.NewSimpleExpression("P"),
+			SimpleExpression: asttest.NewSimpleExpression("P"),
 			RelOpSimpleExpressions: []*ast.RelOpSimpleExpression{
 				{
 					RelOp:            "=",
-					SimpleExpression: *ast.NewSimpleExpression("Q"),
+					SimpleExpression: asttest.NewSimpleExpression("Q"),
 				},
 			},
 		},
 	)
 
 	run(
-		"Character-pointer operators <>",
+		"Character-pointer operators <>", false,
 		[]rune(`P <> Q`),
 		&ast.Expression{
-			SimpleExpression: *ast.NewSimpleExpression("P"),
+			SimpleExpression: asttest.NewSimpleExpression(asttest.NewIdent("P", asttest.NewIdentLocation(1, 1, 0, 2, 1))),
 			RelOpSimpleExpressions: []*ast.RelOpSimpleExpression{
 				{
 					RelOp:            "<>",
-					SimpleExpression: *ast.NewSimpleExpression("Q"),
+					SimpleExpression: asttest.NewSimpleExpression(asttest.NewIdent("Q", asttest.NewIdentLocation(1, 6, 5, 1, 6, 6))),
 				},
 			},
 		},
@@ -536,109 +540,109 @@ func TestExpression(t *testing.T) {
 	// Set operators
 
 	run(
-		"Set operators +",
+		"Set operators +", true,
 		[]rune(`Set1 + Set2`),
-		ast.NewExpression(
+		asttest.NewExpression(
 			&ast.SimpleExpression{
-				Term: ast.Term{Factor: ast.NewDesignatorFactor("Set1")},
+				Term: &ast.Term{Factor: asttest.NewDesignatorFactor("Set1")},
 				AddOpTerms: []*ast.AddOpTerm{
-					{AddOp: "+", Term: *ast.NewTerm("Set2")},
+					{AddOp: "+", Term: asttest.NewTerm("Set2")},
 				},
 			},
 		),
 	)
 
 	run(
-		"Set operators -",
+		"Set operators -", true,
 		[]rune(`S - T`),
-		ast.NewExpression(
+		asttest.NewExpression(
 			&ast.SimpleExpression{
-				Term: ast.Term{Factor: ast.NewDesignatorFactor("S")},
+				Term: &ast.Term{Factor: asttest.NewDesignatorFactor("S")},
 				AddOpTerms: []*ast.AddOpTerm{
-					{AddOp: "-", Term: *ast.NewTerm("T")},
+					{AddOp: "-", Term: asttest.NewTerm("T")},
 				},
 			},
 		),
 	)
 
 	run(
-		"Set operators *",
+		"Set operators *", false,
 		[]rune(`S * T`),
-		ast.NewExpression(
+		asttest.NewExpression(
 			&ast.Term{
-				Factor: ast.NewDesignatorFactor("S"),
+				Factor: asttest.NewDesignatorFactor(asttest.NewIdent("S", asttest.NewIdentLocation(1, 1, 0, 2, 1))),
 				MulOpFactors: []*ast.MulOpFactor{
-					{MulOp: "*", Factor: ast.NewDesignatorFactor("T")},
+					{MulOp: "*", Factor: asttest.NewDesignatorFactor(asttest.NewIdent("T", asttest.NewIdentLocation(1, 5, 4, 1, 5, 5)))},
 				},
 			},
 		),
 	)
 
 	run(
-		"Set operators <=",
+		"Set operators <=", true,
 		[]rune(`Q <= MySet`),
 		&ast.Expression{
-			SimpleExpression: *ast.NewSimpleExpression("Q"),
+			SimpleExpression: asttest.NewSimpleExpression("Q"),
 			RelOpSimpleExpressions: []*ast.RelOpSimpleExpression{
 				{
 					RelOp:            "<=",
-					SimpleExpression: *ast.NewSimpleExpression("MySet"),
+					SimpleExpression: asttest.NewSimpleExpression("MySet"),
 				},
 			},
 		},
 	)
 
 	run(
-		"Set operators >=",
+		"Set operators >=", true,
 		[]rune(`S1 >= S2`),
 		&ast.Expression{
-			SimpleExpression: *ast.NewSimpleExpression("S1"),
+			SimpleExpression: asttest.NewSimpleExpression("S1"),
 			RelOpSimpleExpressions: []*ast.RelOpSimpleExpression{
 				{
 					RelOp:            ">=",
-					SimpleExpression: *ast.NewSimpleExpression("S2"),
+					SimpleExpression: asttest.NewSimpleExpression("S2"),
 				},
 			},
 		},
 	)
 
 	run(
-		"Set operators =",
+		"Set operators =", true,
 		[]rune(`S2 = MySet`),
 		&ast.Expression{
-			SimpleExpression: *ast.NewSimpleExpression("S2"),
+			SimpleExpression: asttest.NewSimpleExpression("S2"),
 			RelOpSimpleExpressions: []*ast.RelOpSimpleExpression{
 				{
 					RelOp:            "=",
-					SimpleExpression: *ast.NewSimpleExpression("MySet"),
+					SimpleExpression: asttest.NewSimpleExpression("MySet"),
 				},
 			},
 		},
 	)
 
 	run(
-		"Set operators <>",
+		"Set operators <>", true,
 		[]rune(`MySet <> S1`),
 		&ast.Expression{
-			SimpleExpression: *ast.NewSimpleExpression("MySet"),
+			SimpleExpression: asttest.NewSimpleExpression("MySet"),
 			RelOpSimpleExpressions: []*ast.RelOpSimpleExpression{
 				{
 					RelOp:            "<>",
-					SimpleExpression: *ast.NewSimpleExpression("S1"),
+					SimpleExpression: asttest.NewSimpleExpression("S1"),
 				},
 			},
 		},
 	)
 
 	run(
-		"Set operators in",
+		"Set operators in", true,
 		[]rune(`A in Set1`),
 		&ast.Expression{
-			SimpleExpression: *ast.NewSimpleExpression("A"),
+			SimpleExpression: asttest.NewSimpleExpression("A"),
 			RelOpSimpleExpressions: []*ast.RelOpSimpleExpression{
 				{
 					RelOp:            "IN",
-					SimpleExpression: *ast.NewSimpleExpression("Set1"),
+					SimpleExpression: asttest.NewSimpleExpression("Set1"),
 				},
 			},
 		},
@@ -647,83 +651,83 @@ func TestExpression(t *testing.T) {
 	// Relational operators
 
 	run(
-		"Relational operators =",
+		"Relational operators =", true,
 		[]rune(`I = Max`),
 		&ast.Expression{
-			SimpleExpression: *ast.NewSimpleExpression("I"),
+			SimpleExpression: asttest.NewSimpleExpression("I"),
 			RelOpSimpleExpressions: []*ast.RelOpSimpleExpression{
 				{
 					RelOp:            "=",
-					SimpleExpression: *ast.NewSimpleExpression("Max"),
+					SimpleExpression: asttest.NewSimpleExpression("Max"),
 				},
 			},
 		},
 	)
 
 	run(
-		"Relational operators <>",
+		"Relational operators <>", true,
 		[]rune(`X <> Y`),
 		&ast.Expression{
-			SimpleExpression: *ast.NewSimpleExpression("X"),
+			SimpleExpression: asttest.NewSimpleExpression("X"),
 			RelOpSimpleExpressions: []*ast.RelOpSimpleExpression{
 				{
 					RelOp:            "<>",
-					SimpleExpression: *ast.NewSimpleExpression("Y"),
+					SimpleExpression: asttest.NewSimpleExpression("Y"),
 				},
 			},
 		},
 	)
 
 	run(
-		"Relational operators <",
+		"Relational operators <", true,
 		[]rune(`X < Y`),
 		&ast.Expression{
-			SimpleExpression: *ast.NewSimpleExpression("X"),
+			SimpleExpression: asttest.NewSimpleExpression("X"),
 			RelOpSimpleExpressions: []*ast.RelOpSimpleExpression{
 				{
 					RelOp:            "<",
-					SimpleExpression: *ast.NewSimpleExpression("Y"),
+					SimpleExpression: asttest.NewSimpleExpression("Y"),
 				},
 			},
 		},
 	)
 
 	run(
-		"Relational operators >",
+		"Relational operators >", false,
 		[]rune(`Len > 0`),
 		&ast.Expression{
-			SimpleExpression: *ast.NewSimpleExpression("Len"),
+			SimpleExpression: asttest.NewSimpleExpression(asttest.NewIdent("Len", asttest.NewIdentLocation(1, 1, 0, 1, 4, 3))),
 			RelOpSimpleExpressions: []*ast.RelOpSimpleExpression{
 				{
 					RelOp:            ">",
-					SimpleExpression: *ast.NewSimpleExpression(ast.NewNumber("0")),
+					SimpleExpression: asttest.NewSimpleExpression(asttest.NewNumber("0")),
 				},
 			},
 		},
 	)
 	run(
-		"Relational operators <=",
+		"Relational operators <=", false,
 		[]rune(`Cnt <= I`),
 		&ast.Expression{
-			SimpleExpression: *ast.NewSimpleExpression("Cnt"),
+			SimpleExpression: asttest.NewSimpleExpression(asttest.NewIdent("Cnt", asttest.NewIdentLocation(1, 1, 0, 1, 4, 3))),
 			RelOpSimpleExpressions: []*ast.RelOpSimpleExpression{
 				{
 					RelOp:            "<=",
-					SimpleExpression: *ast.NewSimpleExpression("I"),
+					SimpleExpression: asttest.NewSimpleExpression(asttest.NewIdent("I", asttest.NewIdentLocation(1, 8, 7, 1, 8, 8))),
 				},
 			},
 		},
 	)
 
 	run(
-		"Relational operators >=",
+		"Relational operators >=", false,
 		[]rune(`I >= 1`),
 		&ast.Expression{
-			SimpleExpression: *ast.NewSimpleExpression("I"),
+			SimpleExpression: asttest.NewSimpleExpression(asttest.NewIdent("I", asttest.NewIdentLocation(1, 1, 0, 2))),
 			RelOpSimpleExpressions: []*ast.RelOpSimpleExpression{
 				{
 					RelOp:            ">=",
-					SimpleExpression: *ast.NewSimpleExpression(ast.NewNumber("1")),
+					SimpleExpression: asttest.NewSimpleExpression(asttest.NewNumber("1")),
 				},
 			},
 		},
@@ -746,9 +750,9 @@ func TestSimpleExpression(t *testing.T) {
 		"Set operators -",
 		[]rune(`S - T`),
 		&ast.SimpleExpression{
-			Term: ast.Term{Factor: ast.NewDesignatorFactor("S")},
+			Term: &ast.Term{Factor: asttest.NewDesignatorFactor(asttest.NewIdent("S", asttest.NewIdentLocation(1, 1, 0, 2)))},
 			AddOpTerms: []*ast.AddOpTerm{
-				{AddOp: "-", Term: *ast.NewTerm("T")},
+				{AddOp: "-", Term: asttest.NewTerm(asttest.NewIdent("T", asttest.NewIdentLocation(1, 5, 4, 1, 5, 5)))},
 			},
 		},
 	)
@@ -771,9 +775,9 @@ func TestSetConstructor(t *testing.T) {
 		[]rune(`['a','b','c']`),
 		&ast.SetConstructor{
 			SetElements: []*ast.SetElement{
-				ast.NewSetElement(ast.NewExpression(ast.NewString("'a'"))),
-				ast.NewSetElement(ast.NewExpression(ast.NewString("'b'"))),
-				ast.NewSetElement(ast.NewExpression(ast.NewString("'c'"))),
+				asttest.NewSetElement(asttest.NewExpression(asttest.NewString("'a'"))),
+				asttest.NewSetElement(asttest.NewExpression(asttest.NewString("'b'"))),
+				asttest.NewSetElement(asttest.NewExpression(asttest.NewString("'c'"))),
 			},
 		},
 	)
@@ -795,12 +799,12 @@ func TestFactor(t *testing.T) {
 		"function call",
 		[]rune(`Calc(X,Y)`),
 		&ast.DesignatorFactor{
-			Designator: ast.Designator{
-				QualId: ast.QualId{Ident: ast.Ident("Calc")},
+			Designator: &ast.Designator{
+				QualId: &ast.QualId{Ident: asttest.NewIdent("Calc", asttest.NewIdentLocation(1, 1, 0, 5))},
 			},
 			ExprList: ast.ExprList{
-				ast.NewExpression(&ast.QualId{Ident: ast.Ident("X")}),
-				ast.NewExpression(&ast.QualId{Ident: ast.Ident("Y")}),
+				asttest.NewExpression(&ast.QualId{Ident: asttest.NewIdent("X", asttest.NewIdentLocation(1, 6, 5, 7))}),
+				asttest.NewExpression(&ast.QualId{Ident: asttest.NewIdent("Y", asttest.NewIdentLocation(1, 8, 7, 9))}),
 			},
 		},
 	)

@@ -1,10 +1,17 @@
 package ast
 
-import "github.com/pkg/errors"
+import (
+	"github.com/akm/tparser/token"
+	"github.com/pkg/errors"
+)
 
+// - Expression
+//   ```
+//   SimpleExpression [RelOp SimpleExpression]...
+//   ```
 type Expression struct {
-	SimpleExpression
-	RelOpSimpleExpressions []*RelOpSimpleExpression
+	*SimpleExpression
+	RelOpSimpleExpressions RelOpSimpleExpressions
 }
 
 func NewExpression(arg interface{}) *Expression {
@@ -12,23 +19,82 @@ func NewExpression(arg interface{}) *Expression {
 	case *Expression:
 		return v
 	case *SimpleExpression:
-		return &Expression{SimpleExpression: *v}
+		return &Expression{SimpleExpression: v}
 	default:
-		return &Expression{SimpleExpression: *NewSimpleExpression(arg)}
+		return &Expression{SimpleExpression: NewSimpleExpression(arg)}
 	}
+}
+
+func (m *Expression) Children() Nodes {
+	r := Nodes{m.SimpleExpression}
+	if m.RelOpSimpleExpressions != nil {
+		r = append(r, m.RelOpSimpleExpressions)
+	}
+	return r
 }
 
 type ExprList []*Expression
 
-type RelOpSimpleExpression struct {
-	RelOp string // '>' | '<' | '<=' | '>=' | '=' | '<>' | "IN" | "IS" | "AS"
-	SimpleExpression
+func (s ExprList) Children() Nodes {
+	r := make(Nodes, len(s))
+	for i, v := range s {
+		r[i] = v
+	}
+	return r
 }
 
+// - RelOp
+//   ```
+//   '>'
+//   ```
+//   ```
+//   '<'
+//   ```
+//   ```
+//   '<='
+//   ```
+//   ```
+//   '>='
+//   ```
+//   ```
+//   '='
+//   ```
+//   ```
+//   '<>'
+//   ```
+//   ```
+//   IN
+//   ```
+//   ```
+//   IS
+//   ```
+type RelOpSimpleExpression struct {
+	RelOp string // '>' | '<' | '<=' | '>=' | '=' | '<>' | "IN" | "IS" | "AS"
+	*SimpleExpression
+}
+
+func (m *RelOpSimpleExpression) Children() Nodes {
+	return Nodes{m.SimpleExpression}
+}
+
+type RelOpSimpleExpressions []*RelOpSimpleExpression
+
+func (s RelOpSimpleExpressions) Children() Nodes {
+	r := make(Nodes, len(s))
+	for i, v := range s {
+		r[i] = v
+	}
+	return r
+}
+
+// - SimpleExpression
+//   ```
+//   ['+' | '-'] Term [AddOp Term]...
+//   ```
 type SimpleExpression struct {
 	UnaryOp *string //  '+' | '-' or nil
-	Term
-	AddOpTerms []*AddOpTerm
+	*Term
+	AddOpTerms AddOpTerms
 }
 
 func NewSimpleExpression(arg interface{}) *SimpleExpression {
@@ -36,20 +102,59 @@ func NewSimpleExpression(arg interface{}) *SimpleExpression {
 	case *SimpleExpression:
 		return v
 	case *Term:
-		return &SimpleExpression{Term: *v}
+		return &SimpleExpression{Term: v}
 	default:
-		return &SimpleExpression{Term: *NewTerm(arg)}
+		return &SimpleExpression{Term: NewTerm(arg)}
 	}
 }
 
-type AddOpTerm struct {
-	AddOp string // '+' | '-' | "OR" | "XOR"
-	Term
+func (m *SimpleExpression) Children() Nodes {
+	r := Nodes{m.Term}
+	if m.AddOpTerms != nil {
+		r = append(r, m.AddOpTerms)
+	}
+	return r
 }
 
+// - AddOp
+//   ```
+//   '+'
+//   ```
+//   ```
+//   '-'
+//   ```
+//   ```
+//   OR
+//   ```
+//   ```
+//   XOR
+//   ```
+type AddOpTerm struct {
+	AddOp string // '+' | '-' | "OR" | "XOR"
+	*Term
+}
+
+func (m *AddOpTerm) Children() Nodes {
+	return Nodes{m.Term}
+}
+
+type AddOpTerms []*AddOpTerm
+
+func (s AddOpTerms) Children() Nodes {
+	r := make(Nodes, len(s))
+	for i, v := range s {
+		r[i] = v
+	}
+	return r
+}
+
+// - Term
+//   ```
+//   Factor [MulOp Factor]...
+//   ```
 type Term struct {
 	Factor
-	MulOpFactors []*MulOpFactor
+	MulOpFactors MulOpFactors
 }
 
 func NewTerm(arg interface{}) *Term {
@@ -63,12 +168,89 @@ func NewTerm(arg interface{}) *Term {
 	}
 }
 
+func (m *Term) Children() Nodes {
+	r := Nodes{m.Factor}
+	if m.MulOpFactors != nil {
+		r = append(r, m.MulOpFactors)
+	}
+	return r
+}
+
+// - MulOp
+//   ```
+//   '*'
+//   ```
+//   ```
+//   '/'
+//   ```
+//   ```
+//   DIV
+//   ```
+//   ```
+//   MOD
+//   ```
+//   ```
+//   AND
+//   ```
+//   ```
+//   SHL
+//   ```
+//   ```
+//   SHR
+//   ```
+//   ```
+//   AS
+//   ```
+//
 type MulOpFactor struct {
 	MulOp string // '*' | '/' | "DIV" | "MOD", "AND", "SHL", "SHR"
 	Factor
 }
 
+func (m *MulOpFactor) Children() Nodes {
+	return Nodes{m.Factor}
+}
+
+type MulOpFactors []*MulOpFactor
+
+func (s MulOpFactors) Children() Nodes {
+	r := make(Nodes, len(s))
+	for i, v := range s {
+		r[i] = v
+	}
+	return r
+}
+
+// - Factor
+//   ```
+//   Designator ['(' ExprList ')']
+//   ```
+//   ```
+//   '@' Designator
+//   ```
+//   ```
+//   Number
+//   ```
+//   ```
+//   String
+//   ```
+//   ```
+//   NIL
+//   ```
+//   ```
+//   '(' Expression ')'
+//   ```
+//   ```
+//   NOT Factor
+//   ```
+//   ```
+//   SetConstructor
+//   ```
+//   ```
+//   TypeId '(' Expression ')'
+//   ```
 type Factor interface {
+	Node
 	isFactor()
 }
 
@@ -76,7 +258,7 @@ type Factor interface {
 func (*DesignatorFactor) isFactor() {}
 
 type DesignatorFactor struct {
-	Designator
+	*Designator
 	ExprList ExprList
 }
 
@@ -85,21 +267,36 @@ func NewDesignatorFactor(arg interface{}) *DesignatorFactor {
 	case *DesignatorFactor:
 		return v
 	default:
-		return &DesignatorFactor{Designator: *NewDesignator(arg)}
+		return &DesignatorFactor{Designator: NewDesignator(arg)}
 	}
+}
+
+func (m *DesignatorFactor) Children() Nodes {
+	r := Nodes{m.Designator}
+	if m.ExprList != nil {
+		r = append(r, m.ExprList)
+	}
+	return r
 }
 
 // '@' Designator
 func (*Address) isFactor() {}
 
 type Address struct {
-	Designator
+	*Designator
 }
 
-// QualId ['.' Ident | '[' ExprList ']' | '^']...
+func (m *Address) Children() Nodes {
+	return Nodes{m.Designator}
+}
+
+// - Designator
+//   ```
+//   QualId ['.' Ident | '[' ExprList ']' | '^']...
+//   ```
 type Designator struct {
-	QualId
-	Items []DesignatorItem
+	*QualId
+	Items DesignatorItems
 }
 
 func NewDesignator(arg interface{}) *Designator {
@@ -107,17 +304,40 @@ func NewDesignator(arg interface{}) *Designator {
 	case *Designator:
 		return v
 	case *QualId:
-		return &Designator{QualId: *v}
+		return &Designator{QualId: v}
 	case Ident:
-		return &Designator{QualId: QualId{Ident: v}}
-	case string:
-		return &Designator{QualId: QualId{Ident: Ident(v)}}
+		return &Designator{QualId: &QualId{Ident: &v}}
+	case *Ident:
+		return &Designator{QualId: &QualId{Ident: v}}
+	case token.Token:
+		return NewDesignator(NewIdent(&v))
+	case *token.Token:
+		return NewDesignator(NewIdent(v))
 	default:
 		panic(errors.Errorf("Unsupported type %T for NewDesignator", arg))
 	}
 }
 
+func (m *Designator) Children() Nodes {
+	r := Nodes{m.QualId}
+	if m.Items != nil {
+		r = append(r, m.Items)
+	}
+	return r
+}
+
+type DesignatorItems []DesignatorItem
+
+func (s DesignatorItems) Children() Nodes {
+	r := make(Nodes, len(s))
+	for i, v := range s {
+		r[i] = v
+	}
+	return r
+}
+
 type DesignatorItem interface {
+	Node
 	isDesignatorItem()
 }
 
@@ -125,19 +345,46 @@ func (DesignatorItemIdent) isDesignatorItem() {}
 
 type DesignatorItemIdent Ident
 
+func NewDesignatorItemIdent(v interface{}) *DesignatorItemIdent {
+	r := DesignatorItemIdent(*NewIdentFrom(v))
+	return &r
+}
+
+func (m *DesignatorItemIdent) Children() Nodes {
+	return Nodes{}
+}
+
 func (DesignatorItemExprList) isDesignatorItem() {}
 
 type DesignatorItemExprList ExprList
 
+func (s DesignatorItemExprList) Children() Nodes {
+	r := make(Nodes, len(s))
+	for i, v := range s {
+		r[i] = v
+	}
+	return r
+}
+
 func (*DesignatorItemDereference) isDesignatorItem() {}
 
-type DesignatorItemDereference struct{}
+type DesignatorItemDereference struct {
+}
+
+func (*DesignatorItemDereference) Children() Nodes {
+	return Nodes{}
+}
 
 func (ValueFactor) isFactor() {}
 
 type ValueFactor struct {
 	Value string
 }
+
+func (*ValueFactor) Children() Nodes {
+	return Nodes{}
+}
+
 type Number struct{ ValueFactor }
 
 func NewNumber(v string) *Number { return &Number{ValueFactor: ValueFactor{Value: v}} }
@@ -149,15 +396,24 @@ func NewString(v string) *String { return &String{ValueFactor: ValueFactor{Value
 // Ninl
 func (*Nil) isFactor() {}
 
-type Nil struct{}
+type Nil struct {
+}
 
 func NewNil() *Nil { return &Nil{} }
+
+func (*Nil) Children() Nodes {
+	return Nodes{}
+}
 
 // Parentheses
 func (*Parentheses) isFactor() {}
 
 type Parentheses struct { // Round brackets
-	Expression Expression
+	Expression *Expression
+}
+
+func (m *Parentheses) Children() Nodes {
+	return Nodes{m.Expression}
 }
 
 func (*Not) isFactor() {}
@@ -166,21 +422,49 @@ type Not struct {
 	Factor Factor
 }
 
-func (*SetConstructor) isFactor() {}
+func (m *Not) Children() Nodes {
+	return Nodes{m.Factor}
+}
 
+func (SetConstructor) isFactor() {}
+
+// - SetConstructor
+//   ```
+//   '[' [SetElement ','...] ']'
+//   ```
 type SetConstructor struct {
 	SetElements []*SetElement
 }
 
+func (m *SetConstructor) Children() Nodes {
+	r := make(Nodes, len(m.SetElements))
+	for i, v := range m.SetElements {
+		r[i] = v
+	}
+	return r
+}
+
+// - SetElement
+//   ```
+//   Expression ['..' Expression]
+//   ```
 type SetElement struct {
-	Expression
+	*Expression
 	SubRangeEnd *Expression
 }
 
 func NewSetElement(expr *Expression) *SetElement {
 	return &SetElement{
-		Expression: *expr,
+		Expression: expr,
 	}
+}
+
+func (m *SetElement) Children() Nodes {
+	r := Nodes{m.Expression}
+	if m.SubRangeEnd != nil {
+		r = append(r, m.SubRangeEnd)
+	}
+	return r
 }
 
 func (*TypeCast) isFactor() {}
@@ -188,4 +472,8 @@ func (*TypeCast) isFactor() {}
 type TypeCast struct {
 	TypeId     *TypeId
 	Expression Expression
+}
+
+func (m *TypeCast) Children() Nodes {
+	return Nodes{m.TypeId, &m.Expression}
 }

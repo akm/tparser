@@ -1,16 +1,16 @@
 package runes
 
 type Position struct {
-	Index int
 	Line  int
 	Col   int
+	Index int
 }
 
 func NewPosition() *Position {
 	return &Position{
-		Index: 0,
 		Line:  1,
 		Col:   1,
+		Index: 0,
 	}
 }
 

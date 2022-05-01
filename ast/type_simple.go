@@ -56,7 +56,7 @@ func (*RealType) isType()       {}
 func (*RealType) isSimpleType() {}
 
 type RealType struct {
-	Name Ident
+	Name *Ident
 }
 
 func NewRealType(name interface{}) *RealType {
@@ -64,12 +64,16 @@ func NewRealType(name interface{}) *RealType {
 	case *RealType:
 		return v
 	case Ident:
+		return &RealType{Name: &v}
+	case *Ident:
 		return &RealType{Name: v}
-	case string:
-		return &RealType{Name: Ident(v)}
 	default:
 		panic(errors.Errorf("invalid type %T for NewRealType %+v", name, name))
 	}
+}
+
+func (m *RealType) Children() Nodes {
+	return Nodes{m.Name}
 }
 
 // - OrdinalType
@@ -154,7 +158,7 @@ func (*OrdIdent) isSimpleType()  {}
 func (*OrdIdent) isOrdinalType() {}
 
 type OrdIdent struct {
-	Name Ident
+	Name *Ident
 }
 
 func NewOrdIdent(name interface{}) *OrdIdent {
@@ -162,12 +166,16 @@ func NewOrdIdent(name interface{}) *OrdIdent {
 	case *OrdIdent:
 		return v
 	case Ident:
+		return &OrdIdent{Name: &v}
+	case *Ident:
 		return &OrdIdent{Name: v}
-	case string:
-		return &OrdIdent{Name: Ident(v)}
 	default:
 		panic(errors.Errorf("invalid type %T for NewOrdIndent %+v", name, name))
 	}
+}
+
+func (m *OrdIdent) Children() Nodes {
+	return Nodes{m.Name}
 }
 
 // - EnumeratedType
@@ -184,9 +192,25 @@ func (EnumeratedType) isOrdinalType() {}
 
 type EnumeratedType []*EnumeratedTypeElement
 
+func (m EnumeratedType) Children() Nodes {
+	r := make(Nodes, len(m))
+	for i, e := range m {
+		r[i] = e
+	}
+	return r
+}
+
 type EnumeratedTypeElement struct {
-	Ident     Ident
+	Ident     *Ident
 	ConstExpr *ConstExpr
+}
+
+func (m *EnumeratedTypeElement) Children() Nodes {
+	r := Nodes{m.Ident}
+	if m.ConstExpr != nil {
+		r = append(r, m.ConstExpr)
+	}
+	return r
 }
 
 // - SubrangeType
@@ -200,4 +224,8 @@ func (*SubrangeType) isOrdinalType() {}
 type SubrangeType struct {
 	Low  ConstExpr
 	High ConstExpr
+}
+
+func (m *SubrangeType) Children() Nodes {
+	return Nodes{&m.Low, &m.High}
 }

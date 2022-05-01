@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/akm/tparser/ast"
+	"github.com/akm/tparser/ast/asttest"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -14,6 +15,7 @@ func TestUnitWithConstSection(t *testing.T) {
 			parser.NextToken()
 			res, err := parser.ParseUnit()
 			if assert.NoError(t, err) {
+				asttest.ClearLocations(t, res)
 				assert.Equal(t, expected, res)
 			}
 		})
@@ -31,13 +33,13 @@ func TestUnitWithConstSection(t *testing.T) {
 		IMPLEMENTATION
 		END.`),
 		&ast.Unit{
-			Ident: ast.Ident("Unit1"),
+			Ident: asttest.NewIdent("Unit1"),
 			InterfaceSection: &ast.InterfaceSection{
 				InterfaceDecls: []ast.InterfaceDecl{
 					ast.ConstSection{
-						{Ident: ast.Ident("MaxValue"), ConstExpr: *ast.NewConstExpr(ast.NewNumber("237"))},
-						{Ident: ast.Ident("Message1"), ConstExpr: *ast.NewConstExpr(ast.NewString("'Out of memory'"))},
-						{Ident: ast.Ident("Max"), ConstExpr: *ast.NewConstExpr(ast.NewNumber("100")), Type: &ast.OrdIdent{Name: "Integer"}},
+						{Ident: asttest.NewIdent("MaxValue"), ConstExpr: asttest.NewConstExpr(asttest.NewNumber("237"))},
+						{Ident: asttest.NewIdent("Message1"), ConstExpr: asttest.NewConstExpr(asttest.NewString("'Out of memory'"))},
+						{Ident: asttest.NewIdent("Max"), ConstExpr: asttest.NewConstExpr(asttest.NewNumber("100")), Type: asttest.NewOrdIdent("Integer")},
 					},
 				},
 			},
@@ -53,6 +55,7 @@ func TestConstSectionl(t *testing.T) {
 			parser.NextToken()
 			res, err := parser.ParseConstSection()
 			if assert.NoError(t, err) {
+				asttest.ClearLocations(t, res)
 				assert.Equal(t, expected, res)
 			}
 		})
@@ -62,21 +65,21 @@ func TestConstSectionl(t *testing.T) {
 		"number const",
 		[]rune(`CONST MaxValue = 237;`),
 		ast.ConstSection{
-			{Ident: ast.Ident("MaxValue"), ConstExpr: *ast.NewConstExpr(ast.NewNumber("237"))},
+			{Ident: asttest.NewIdent("MaxValue"), ConstExpr: asttest.NewConstExpr(asttest.NewNumber("237"))},
 		},
 	)
 	run(
 		"number const",
 		[]rune(`CONST Max: Integer = 100;`),
 		ast.ConstSection{
-			{Ident: ast.Ident("Max"), ConstExpr: *ast.NewConstExpr(ast.NewNumber("100")), Type: &ast.OrdIdent{Name: "Integer"}},
+			{Ident: asttest.NewIdent("Max"), ConstExpr: asttest.NewConstExpr(asttest.NewNumber("100")), Type: asttest.NewOrdIdent("Integer")},
 		},
 	)
 	run(
 		"message as identifier",
 		[]rune(`CONST Message = 'Out of memory';`),
 		ast.ConstSection{
-			{Ident: ast.Ident("Message"), ConstExpr: *ast.NewConstExpr(ast.NewString("'Out of memory'"))},
+			{Ident: asttest.NewIdent("Message"), ConstExpr: asttest.NewConstExpr(asttest.NewString("'Out of memory'"))},
 		},
 	)
 
@@ -99,107 +102,107 @@ func TestConstSectionl(t *testing.T) {
 			AlphaNum = Alpha + Numeric;
 		`),
 		ast.ConstSection{
-			{Ident: ast.Ident("Min"), ConstExpr: *ast.NewConstExpr(ast.NewNumber("0"))},
-			{Ident: ast.Ident("Max"), ConstExpr: *ast.NewConstExpr(ast.NewNumber("100"))},
+			{Ident: asttest.NewIdent("Min"), ConstExpr: asttest.NewConstExpr(asttest.NewNumber("0"))},
+			{Ident: asttest.NewIdent("Max"), ConstExpr: asttest.NewConstExpr(asttest.NewNumber("100"))},
 			// Center = (Max - Min) div 2;
-			{Ident: ast.Ident("Center"), ConstExpr: *ast.NewConstExpr(
+			{Ident: asttest.NewIdent("Center"), ConstExpr: asttest.NewConstExpr(
 				&ast.Term{
 					Factor: &ast.Parentheses{
-						Expression: ast.Expression{
-							SimpleExpression: ast.SimpleExpression{
-								Term: *ast.NewTerm("Max"),
+						Expression: &ast.Expression{
+							SimpleExpression: &ast.SimpleExpression{
+								Term: asttest.NewTerm("Max"),
 								AddOpTerms: []*ast.AddOpTerm{
-									{AddOp: "-", Term: *ast.NewTerm("Min")},
+									{AddOp: "-", Term: asttest.NewTerm("Min")},
 								},
 							},
 						},
 					},
 					MulOpFactors: []*ast.MulOpFactor{
-						{MulOp: "DIV", Factor: ast.NewNumber("2")},
+						{MulOp: "DIV", Factor: asttest.NewNumber("2")},
 					},
 				},
 			)},
 			// Beta = Chr(225);
-			{Ident: ast.Ident("Beta"), ConstExpr: *ast.NewConstExpr(
+			{Ident: asttest.NewIdent("Beta"), ConstExpr: asttest.NewConstExpr(
 				&ast.DesignatorFactor{
-					Designator: ast.Designator{
-						QualId: ast.QualId{Ident: ast.Ident("Chr")},
+					Designator: &ast.Designator{
+						QualId: &ast.QualId{Ident: asttest.NewIdent("Chr")},
 					},
 					ExprList: ast.ExprList{
-						ast.NewConstExpr(ast.NewNumber("225")),
+						asttest.NewConstExpr(asttest.NewNumber("225")),
 					},
 				},
 			)},
 			// NumChars = Ord('Z') - Ord('A') + 1;
-			{Ident: ast.Ident("NumChars"), ConstExpr: *ast.NewConstExpr(
+			{Ident: asttest.NewIdent("NumChars"), ConstExpr: asttest.NewConstExpr(
 				&ast.SimpleExpression{
-					Term: *ast.NewTerm(
+					Term: asttest.NewTerm(
 						&ast.DesignatorFactor{
-							Designator: ast.Designator{
-								QualId: ast.QualId{Ident: ast.Ident("Ord")},
+							Designator: &ast.Designator{
+								QualId: &ast.QualId{Ident: asttest.NewIdent("Ord")},
 							},
 							ExprList: ast.ExprList{
-								ast.NewConstExpr(ast.NewString("'Z'")),
+								asttest.NewConstExpr(asttest.NewString("'Z'")),
 							},
 						},
 					),
 					AddOpTerms: []*ast.AddOpTerm{
 						{
 							AddOp: "-",
-							Term: *ast.NewTerm(
+							Term: asttest.NewTerm(
 								&ast.DesignatorFactor{
-									Designator: ast.Designator{
-										QualId: ast.QualId{Ident: ast.Ident("Ord")},
+									Designator: &ast.Designator{
+										QualId: &ast.QualId{Ident: asttest.NewIdent("Ord")},
 									},
 									ExprList: ast.ExprList{
-										ast.NewConstExpr(ast.NewString("'A'")),
+										asttest.NewConstExpr(asttest.NewString("'A'")),
 									},
 								},
 							),
 						},
 						{
 							AddOp: "+",
-							Term:  *ast.NewTerm(ast.NewNumber("1")),
+							Term:  asttest.NewTerm(asttest.NewNumber("1")),
 						},
 					},
 				},
 			)},
 			// Message = 'Out of memory';
-			{Ident: ast.Ident("Message"), ConstExpr: *ast.NewConstExpr(ast.NewString("'Out of memory'"))},
+			{Ident: asttest.NewIdent("Message"), ConstExpr: asttest.NewConstExpr(asttest.NewString("'Out of memory'"))},
 			// ErrStr = ' Error: ' + Message + '. ';
-			{Ident: ast.Ident("ErrStr"), ConstExpr: *ast.NewConstExpr(
+			{Ident: asttest.NewIdent("ErrStr"), ConstExpr: asttest.NewConstExpr(
 				&ast.SimpleExpression{
-					Term: *ast.NewTerm(ast.NewString("' Error: '")),
+					Term: asttest.NewTerm(asttest.NewString("' Error: '")),
 					AddOpTerms: []*ast.AddOpTerm{
 						{
 							AddOp: "+",
-							Term:  *ast.NewTerm("Message"),
+							Term:  asttest.NewTerm("Message"),
 						},
 						{
 							AddOp: "+",
-							Term:  *ast.NewTerm(ast.NewString("'. '")),
+							Term:  asttest.NewTerm(asttest.NewString("'. '")),
 						},
 					},
 				},
 			)},
 			// ErrPos = 80 - Length(ErrStr) div 2;
-			{Ident: ast.Ident("ErrPos"), ConstExpr: *ast.NewConstExpr(
+			{Ident: asttest.NewIdent("ErrPos"), ConstExpr: asttest.NewConstExpr(
 				&ast.SimpleExpression{
-					Term: *ast.NewTerm(ast.NewNumber("80")),
+					Term: asttest.NewTerm(asttest.NewNumber("80")),
 					AddOpTerms: []*ast.AddOpTerm{
 						{
 							AddOp: "-",
-							Term: ast.Term{
+							Term: &ast.Term{
 								Factor: &ast.DesignatorFactor{
-									Designator: ast.Designator{
-										QualId: ast.QualId{Ident: ast.Ident("Length")},
+									Designator: &ast.Designator{
+										QualId: &ast.QualId{Ident: asttest.NewIdent("Length")},
 									},
 									ExprList: ast.ExprList{
-										ast.NewConstExpr("ErrStr"),
+										asttest.NewConstExpr("ErrStr"),
 									},
 								},
 								MulOpFactors: []*ast.MulOpFactor{
-									{MulOp: "DIV", Factor: ast.NewNumber("2")},
+									{MulOp: "DIV", Factor: asttest.NewNumber("2")},
 								},
 							},
 						},
@@ -207,48 +210,48 @@ func TestConstSectionl(t *testing.T) {
 				},
 			)},
 			// Ln10 = 2.302585092994045684;
-			{Ident: ast.Ident("Ln10"), ConstExpr: *ast.NewConstExpr(ast.NewNumber("2.302585092994045684"))},
+			{Ident: asttest.NewIdent("Ln10"), ConstExpr: asttest.NewConstExpr(asttest.NewNumber("2.302585092994045684"))},
 			// Ln10R = 1 / Ln10;
-			{Ident: ast.Ident("Ln10R"), ConstExpr: *ast.NewConstExpr(
+			{Ident: asttest.NewIdent("Ln10R"), ConstExpr: asttest.NewConstExpr(
 				&ast.Term{
-					Factor: ast.NewNumber("1"),
+					Factor: asttest.NewNumber("1"),
 					MulOpFactors: []*ast.MulOpFactor{
-						{MulOp: "/", Factor: ast.NewDesignatorFactor("Ln10")},
+						{MulOp: "/", Factor: asttest.NewDesignatorFactor("Ln10")},
 					},
 				},
 			)},
 			// Numeric = ['0'..'9'];
-			{Ident: ast.Ident("Numeric"), ConstExpr: *ast.NewConstExpr(
+			{Ident: asttest.NewIdent("Numeric"), ConstExpr: asttest.NewConstExpr(
 				&ast.SetConstructor{
 					SetElements: []*ast.SetElement{
 						{
-							Expression:  *ast.NewConstExpr(ast.NewString("'0'")),
-							SubRangeEnd: ast.NewConstExpr(ast.NewString("'9'")),
+							Expression:  asttest.NewConstExpr(asttest.NewString("'0'")),
+							SubRangeEnd: asttest.NewConstExpr(asttest.NewString("'9'")),
 						},
 					},
 				},
 			)},
 			// Alpha = ['A'..'Z', 'a'..'z'];
-			{Ident: ast.Ident("Alpha"), ConstExpr: *ast.NewConstExpr(
+			{Ident: asttest.NewIdent("Alpha"), ConstExpr: asttest.NewConstExpr(
 				&ast.SetConstructor{
 					SetElements: []*ast.SetElement{
 						{
-							Expression:  *ast.NewConstExpr(ast.NewString("'A'")),
-							SubRangeEnd: ast.NewConstExpr(ast.NewString("'Z'")),
+							Expression:  asttest.NewConstExpr(asttest.NewString("'A'")),
+							SubRangeEnd: asttest.NewConstExpr(asttest.NewString("'Z'")),
 						},
 						{
-							Expression:  *ast.NewConstExpr(ast.NewString("'a'")),
-							SubRangeEnd: ast.NewConstExpr(ast.NewString("'z'")),
+							Expression:  asttest.NewConstExpr(asttest.NewString("'a'")),
+							SubRangeEnd: asttest.NewConstExpr(asttest.NewString("'z'")),
 						},
 					},
 				},
 			)},
 			// AlphaNum = Alpha + Numeric;
-			{Ident: ast.Ident("AlphaNum"), ConstExpr: *ast.NewConstExpr(
+			{Ident: asttest.NewIdent("AlphaNum"), ConstExpr: asttest.NewConstExpr(
 				&ast.SimpleExpression{
-					Term: *ast.NewTerm("Alpha"),
+					Term: asttest.NewTerm("Alpha"),
 					AddOpTerms: []*ast.AddOpTerm{
-						{AddOp: "+", Term: *ast.NewTerm("Numeric")},
+						{AddOp: "+", Term: asttest.NewTerm("Numeric")},
 					},
 				},
 			)},

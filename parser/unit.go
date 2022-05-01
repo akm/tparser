@@ -20,7 +20,7 @@ func (p *Parser) ParseUnit() (*ast.Unit, error) {
 		return nil, err
 	}
 	res := &ast.Unit{
-		Ident: ast.Ident(ident.Value()),
+		Ident: ast.NewIdent(ident),
 	}
 	t := p.NextToken()
 	if t.Type == token.PortabilityDirective {
@@ -62,8 +62,8 @@ func (p *Parser) ParseInterfaceSection() (*ast.InterfaceSection, error) {
 		if err != nil {
 			return nil, err
 		}
-		res.UsesClause = &usesClause
-		p.context.unitIdentifiers = append(p.context.unitIdentifiers, (usesClause.IdentList())...)
+		res.UsesClause = usesClause
+		p.context.unitIdentifiers = append(p.context.unitIdentifiers, usesClause.IdentList().Names()...)
 		p.NextToken()
 	}
 
@@ -152,22 +152,22 @@ func (p *Parser) ParseQualId() (*ast.QualId, error) {
 	if _, err := p.Current(token.Some(token.Identifier, token.Directive)); err != nil {
 		return nil, err
 	}
-	name1 := string(p.CurrentToken().Raw())
+	name1 := p.CurrentToken()
 	p.NextToken()
 	if p.CurrentToken().Is(token.Symbol('.')) {
 		p.NextToken()
 		if _, err := p.Current(token.Identifier); err != nil {
 			return nil, err
 		}
-		name2 := p.CurrentToken().Raw()
+		name2 := p.CurrentToken()
 		p.NextToken()
 		return &ast.QualId{
 			UnitId: ast.NewUnitId(name1),
-			Ident:  ast.Ident(name2),
+			Ident:  ast.NewIdent(name2),
 		}, nil
 	} else {
 		return &ast.QualId{
-			Ident: ast.Ident(name1),
+			Ident: ast.NewIdent(name1),
 		}, nil
 	}
 }

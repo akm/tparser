@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/akm/tparser/ast"
+	"github.com/akm/tparser/ast/asttest"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -14,6 +15,7 @@ func TestEnumeratedType(t *testing.T) {
 			parser.NextToken()
 			res, err := parser.ParseType()
 			if assert.NoError(t, err) {
+				asttest.ClearLocations(t, res)
 				assert.Equal(t, expected, res)
 			}
 		})
@@ -23,10 +25,10 @@ func TestEnumeratedType(t *testing.T) {
 		"card",
 		[]rune(`(Club, Diamond, Heart, Spade)`),
 		ast.EnumeratedType{
-			{Ident: ast.Ident("Club")},
-			{Ident: ast.Ident("Diamond")},
-			{Ident: ast.Ident("Heart")},
-			{Ident: ast.Ident("Spade")},
+			{Ident: asttest.NewIdent("Club")},
+			{Ident: asttest.NewIdent("Diamond")},
+			{Ident: asttest.NewIdent("Heart")},
+			{Ident: asttest.NewIdent("Spade")},
 		},
 	)
 
@@ -34,13 +36,13 @@ func TestEnumeratedType(t *testing.T) {
 		"Enumerated types with explicitly assigned ordinality",
 		[]rune(`(Small = 5, Medium = 10, Large = Small + Medium)`),
 		ast.EnumeratedType{
-			{Ident: ast.Ident("Small"), ConstExpr: ast.NewConstExpr(ast.NewNumber("5"))},
-			{Ident: ast.Ident("Medium"), ConstExpr: ast.NewConstExpr(ast.NewNumber("10"))},
-			{Ident: ast.Ident("Large"), ConstExpr: ast.NewConstExpr(
+			{Ident: asttest.NewIdent("Small"), ConstExpr: asttest.NewConstExpr(asttest.NewNumber("5"))},
+			{Ident: asttest.NewIdent("Medium"), ConstExpr: asttest.NewConstExpr(asttest.NewNumber("10"))},
+			{Ident: asttest.NewIdent("Large"), ConstExpr: asttest.NewConstExpr(
 				&ast.SimpleExpression{
-					Term: *ast.NewTerm("Small"),
+					Term: asttest.NewTerm("Small"),
 					AddOpTerms: []*ast.AddOpTerm{
-						{AddOp: "+", Term: *ast.NewTerm("Medium")},
+						{AddOp: "+", Term: asttest.NewTerm("Medium")},
 					},
 				},
 			)},
@@ -64,16 +66,19 @@ func TestSubrangeType(t *testing.T) {
 	run(
 		"subrange type of enumerated type",
 		[]rune(`Green..White`),
-		&ast.SubrangeType{Low: *ast.NewConstExpr("Green"), High: *ast.NewConstExpr("White")},
+		&ast.SubrangeType{
+			Low:  *asttest.NewConstExpr(asttest.NewIdent("Green", asttest.NewIdentLocation(1, 1, 0, 6))),
+			High: *asttest.NewConstExpr(asttest.NewIdent("White", asttest.NewIdentLocation(1, 8, 7, 1, 12, 12))),
+		},
 	)
 	run(
 		"subrange type of number",
 		[]rune(`-128..127`),
-		&ast.SubrangeType{Low: *ast.NewConstExpr(ast.NewNumber("-128")), High: *ast.NewConstExpr(ast.NewNumber("127"))},
+		&ast.SubrangeType{Low: *asttest.NewConstExpr(asttest.NewNumber("-128")), High: *asttest.NewConstExpr(asttest.NewNumber("127"))},
 	)
 	run(
 		"subrange type of character",
 		[]rune(`'A'..'Z'`),
-		&ast.SubrangeType{Low: *ast.NewConstExpr(ast.NewString("'A'")), High: *ast.NewConstExpr(ast.NewString("'Z'"))},
+		&ast.SubrangeType{Low: *asttest.NewConstExpr(asttest.NewString("'A'")), High: *asttest.NewConstExpr(asttest.NewString("'Z'"))},
 	)
 }

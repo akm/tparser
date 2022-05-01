@@ -31,7 +31,7 @@ func (p *Parser) ParseExpression() (*ast.Expression, error) {
 	if err != nil {
 		return nil, err
 	}
-	res.SimpleExpression = *se
+	res.SimpleExpression = se
 
 	for {
 		if p.CurrentToken().Is(RelOpPredicator) {
@@ -43,7 +43,7 @@ func (p *Parser) ParseExpression() (*ast.Expression, error) {
 			}
 			res.RelOpSimpleExpressions = append(
 				res.RelOpSimpleExpressions,
-				&ast.RelOpSimpleExpression{RelOp: op, SimpleExpression: *se},
+				&ast.RelOpSimpleExpression{RelOp: op, SimpleExpression: se},
 			)
 		} else {
 			break
@@ -75,7 +75,7 @@ func (p *Parser) ParseSimpleExpression() (*ast.SimpleExpression, error) {
 	if err != nil {
 		return nil, err
 	}
-	res.Term = *tm
+	res.Term = tm
 
 	for {
 		if p.CurrentToken().Is(AddOpPredicator) {
@@ -87,7 +87,7 @@ func (p *Parser) ParseSimpleExpression() (*ast.SimpleExpression, error) {
 			}
 			res.AddOpTerms = append(
 				res.AddOpTerms,
-				&ast.AddOpTerm{AddOp: op, Term: *tm},
+				&ast.AddOpTerm{AddOp: op, Term: tm},
 			)
 		} else {
 			break
@@ -154,7 +154,7 @@ func (p *Parser) ParseFactor() (ast.Factor, error) {
 			if err != nil {
 				return nil, err
 			}
-			return &ast.Address{Designator: *d}, nil
+			return &ast.Address{Designator: d}, nil
 		case "[":
 			set, err := p.ParseSetConstructor()
 			if err != nil {
@@ -172,7 +172,7 @@ func (p *Parser) ParseFactor() (ast.Factor, error) {
 				return nil, err
 			}
 			p.NextToken()
-			return &ast.Parentheses{Expression: *expr}, nil
+			return &ast.Parentheses{Expression: expr}, nil
 		}
 	} else if t0.Is(token.ReservedWord) {
 		switch t0Value {
@@ -198,7 +198,7 @@ func (p *Parser) ParseFactor() (ast.Factor, error) {
 			return nil, err
 		}
 		res := &ast.DesignatorFactor{
-			Designator: *d,
+			Designator: d,
 		}
 		if p.CurrentToken().Is(token.Symbol('(')) {
 			p.NextToken()
@@ -243,7 +243,7 @@ func (p *Parser) ParseDesignator() (*ast.Designator, error) {
 	if err != nil {
 		return nil, err
 	}
-	res.QualId = *qualId
+	res.QualId = qualId
 
 	for {
 		if _, err := p.Current(token.SpecialSymbol); err != nil {
@@ -256,7 +256,7 @@ func (p *Parser) ParseDesignator() (*ast.Designator, error) {
 			if err != nil {
 				return nil, err
 			}
-			item = ast.DesignatorItemIdent(t.Value())
+			item = ast.NewDesignatorItemIdent(t.Value())
 		case "[":
 			p.NextToken()
 			exprList, err := p.ParseExprList(token.Symbol(']'))
@@ -301,7 +301,7 @@ func (p *Parser) ParseSetElement() (*ast.SetElement, error) {
 	if err != nil {
 		return nil, err
 	}
-	res.Expression = *expr1
+	res.Expression = expr1
 	if p.CurrentToken().Is(token.SpecialSymbol.HasText("..")) {
 		p.NextToken()
 		expr2, err := p.ParseExpression()

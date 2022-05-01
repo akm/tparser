@@ -1,8 +1,20 @@
 package ast
 
+// - VarSection
+//   ```
+//   VAR (VarDecl ';')...
+//   ```
 func (VarSection) canBeInterfaceDecl() {}
 
 type VarSection []*VarDecl
+
+func (s VarSection) Children() Nodes {
+	r := make(Nodes, len(s))
+	for idx, i := range s {
+		r[idx] = i
+	}
+	return r
+}
 
 // - VarDecl
 //   - (On Windows)
@@ -22,7 +34,22 @@ type VarDecl struct {
 	PortabilityDirective *PortabilityDirective
 }
 
+func (m *VarDecl) Children() Nodes {
+	r := Nodes{m.IdentList}
+	if m.Type != nil {
+		r = append(r, m.Type)
+	}
+	if m.Absolute != nil {
+		r = append(r, m.Absolute)
+	}
+	if m.ConstExpr != nil {
+		r = append(r, m.ConstExpr)
+	}
+	return r
+}
+
 type VarDeclAbsolute interface {
+	Node
 	isVarDeclAbsolute()
 }
 
@@ -30,9 +57,21 @@ func (VarDeclAbsoluteIdent) isVarDeclAbsolute() {}
 
 type VarDeclAbsoluteIdent Ident
 
-func NewVarDeclAbsoluteIdent(ident Ident) *VarDeclAbsoluteIdent {
-	r := VarDeclAbsoluteIdent(ident)
-	return &r
+func NewVarDeclAbsoluteIdent(arg interface{}) *VarDeclAbsoluteIdent {
+	switch v := arg.(type) {
+	case Ident:
+		r := VarDeclAbsoluteIdent(v)
+		return &r
+	case *Ident:
+		r := VarDeclAbsoluteIdent(*v)
+		return &r
+	default:
+		return NewVarDeclAbsoluteIdent(NewIdentFrom(arg))
+	}
+}
+
+func (*VarDeclAbsoluteIdent) Children() Nodes {
+	return Nodes{}
 }
 
 func (*VarDeclAbsoluteConstExpr) isVarDeclAbsolute() {}
@@ -48,7 +87,23 @@ func (ThreadVarSection) canBeInterfaceDecl() {}
 
 type ThreadVarSection []*ThreadVarDecl
 
+func (s ThreadVarSection) Children() Nodes {
+	r := make(Nodes, len(s))
+	for idx, i := range s {
+		r[idx] = i
+	}
+	return r
+}
+
 type ThreadVarDecl struct {
 	IdentList IdentList
 	Type      Type
+}
+
+func (m *ThreadVarDecl) Children() Nodes {
+	r := Nodes{m.IdentList}
+	if m.Type != nil {
+		r = append(r, m.Type)
+	}
+	return r
 }

@@ -34,7 +34,7 @@ func (p *Parser) ParseConstantDecl() (*ast.ConstantDecl, error) {
 	if err != nil {
 		return nil, err
 	}
-	res.Ident = ast.Ident(ident.Raw())
+	res.Ident = ast.NewIdent(ident)
 
 	p.NextToken()
 	if p.CurrentToken().Is(token.Symbol(':')) {
@@ -54,7 +54,7 @@ func (p *Parser) ParseConstantDecl() (*ast.ConstantDecl, error) {
 	if err != nil {
 		return nil, err
 	}
-	res.ConstExpr = *expr
+	res.ConstExpr = expr
 
 	return res, nil
 }

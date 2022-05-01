@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/akm/tparser/ast"
+	"github.com/akm/tparser/ast/asttest"
 	"github.com/akm/tparser/ext"
 	"github.com/stretchr/testify/assert"
 )
@@ -15,12 +16,13 @@ func TestUnitWithTypeSection(t *testing.T) {
 			parser.NextToken()
 			res, err := parser.ParseUnit()
 			if assert.NoError(t, err) {
+				asttest.ClearLocations(t, res)
 				assert.Equal(t, expected, res)
 			}
 		})
 	}
 
-	unit2 := ast.UnitId("Unit2")
+	unit2 := asttest.NewUnitId("Unit2")
 	run(
 		"2 type declarations",
 		[]rune(`
@@ -33,13 +35,13 @@ func TestUnitWithTypeSection(t *testing.T) {
 		IMPLEMENTATION
 		END.`),
 		&ast.Unit{
-			Ident: ast.Ident("Unit1"),
+			Ident: asttest.NewIdent("Unit1"),
 			InterfaceSection: &ast.InterfaceSection{
-				UsesClause: &ast.UsesClause{ast.NewUnitRef("Unit2")},
+				UsesClause: ast.UsesClause{asttest.NewUnitRef("Unit2")},
 				InterfaceDecls: []ast.InterfaceDecl{
 					ast.TypeSection{
-						{Ident: ast.Ident("TTypeId1"), Type: &ast.TypeId{Ident: ast.Ident("TType1")}},
-						{Ident: ast.Ident("TTypeId2"), Type: &ast.TypeId{UnitId: &unit2, Ident: ast.Ident("TType2")}},
+						{Ident: asttest.NewIdent("TTypeId1"), Type: &ast.TypeId{Ident: asttest.NewIdent("TType1")}},
+						{Ident: asttest.NewIdent("TTypeId2"), Type: &ast.TypeId{UnitId: unit2, Ident: asttest.NewIdent("TType2")}},
 					},
 				},
 			},
@@ -67,27 +69,27 @@ func TestUnitWithTypeSection(t *testing.T) {
 		IMPLEMENTATION
 		END.`),
 		&ast.Unit{
-			Ident: ast.Ident("Unit1"),
+			Ident: asttest.NewIdent("Unit1"),
 			InterfaceSection: &ast.InterfaceSection{
-				UsesClause: &ast.UsesClause{ast.NewUnitRef("Unit2")},
+				UsesClause: ast.UsesClause{asttest.NewUnitRef("Unit2")},
 				InterfaceDecls: []ast.InterfaceDecl{
 					ast.TypeSection{
-						{Ident: ast.Ident("TTypeId1"), Type: &ast.TypeId{Ident: ast.Ident("TType1")}},
-						{Ident: ast.Ident("TTypeId2"), Type: &ast.TypeId{UnitId: &unit2, Ident: ast.Ident("TType2")}},
+						{Ident: asttest.NewIdent("TTypeId1"), Type: &ast.TypeId{Ident: asttest.NewIdent("TType1")}},
+						{Ident: asttest.NewIdent("TTypeId2"), Type: &ast.TypeId{UnitId: unit2, Ident: asttest.NewIdent("TType2")}},
 					},
 					ast.TypeSection{
-						{Ident: ast.Ident("TMyInteger1"), Type: &ast.OrdIdent{Name: ast.Ident("INTEGER")}},
-						{Ident: ast.Ident("TMyReal1"), Type: &ast.RealType{Name: ast.Ident("REAL")}},
-						{Ident: ast.Ident("TMyString1"), Type: &ast.StringType{Name: "STRING"}},
-						{Ident: ast.Ident("TMyString2"), Type: &ast.StringType{Name: "ANSISTRING"}},
-						{Ident: ast.Ident("TMyEnumerated1"), Type: ast.EnumeratedType{
-							{Ident: ast.Ident("tsClick")},
-							{Ident: ast.Ident("tsClack")},
-							{Ident: ast.Ident("tsClock")},
+						{Ident: asttest.NewIdent("TMyInteger1"), Type: &ast.OrdIdent{Name: asttest.NewIdent("INTEGER")}},
+						{Ident: asttest.NewIdent("TMyReal1"), Type: &ast.RealType{Name: asttest.NewIdent("REAL")}},
+						{Ident: asttest.NewIdent("TMyString1"), Type: &ast.StringType{Name: "STRING"}},
+						{Ident: asttest.NewIdent("TMyString2"), Type: &ast.StringType{Name: "ANSISTRING"}},
+						{Ident: asttest.NewIdent("TMyEnumerated1"), Type: ast.EnumeratedType{
+							{Ident: asttest.NewIdent("tsClick")},
+							{Ident: asttest.NewIdent("tsClack")},
+							{Ident: asttest.NewIdent("tsClock")},
 						}},
-						{Ident: ast.Ident("TMySubrange1"), Type: &ast.SubrangeType{Low: *ast.NewConstExpr("tsClick"), High: *ast.NewConstExpr("tsClack")}},
-						{Ident: ast.Ident("TMySubrange2"), Type: &ast.SubrangeType{Low: *ast.NewConstExpr(ast.NewNumber("-128")), High: *ast.NewConstExpr(ast.NewNumber("127"))}},
-						{Ident: ast.Ident("TMySubrange3"), Type: &ast.SubrangeType{Low: *ast.NewConstExpr(ast.NewString("'A'")), High: *ast.NewConstExpr(ast.NewString("'Z'"))}},
+						{Ident: asttest.NewIdent("TMySubrange1"), Type: &ast.SubrangeType{Low: *asttest.NewConstExpr("tsClick"), High: *asttest.NewConstExpr("tsClack")}},
+						{Ident: asttest.NewIdent("TMySubrange2"), Type: &ast.SubrangeType{Low: *asttest.NewConstExpr(asttest.NewNumber("-128")), High: *asttest.NewConstExpr(asttest.NewNumber("127"))}},
+						{Ident: asttest.NewIdent("TMySubrange3"), Type: &ast.SubrangeType{Low: *asttest.NewConstExpr(asttest.NewString("'A'")), High: *asttest.NewConstExpr(asttest.NewString("'Z'"))}},
 					},
 				},
 			},
@@ -103,6 +105,7 @@ func TestTypeSection(t *testing.T) {
 			parser.NextToken()
 			res, err := parser.ParseTypeSection()
 			if assert.NoError(t, err) {
+				asttest.ClearLocations(t, res)
 				assert.Equal(t, expected, res)
 			}
 		})
@@ -111,7 +114,7 @@ func TestTypeSection(t *testing.T) {
 	run("simple type declaration",
 		[]rune(`TYPE TTypeId1 = TType1;`),
 		ast.TypeSection{
-			{Ident: ast.Ident("TTypeId1"), Type: &ast.TypeId{Ident: ast.Ident("TType1")}},
+			{Ident: asttest.NewIdent("TTypeId1"), Type: &ast.TypeId{Ident: asttest.NewIdent("TType1")}},
 		},
 	)
 	run(
@@ -119,11 +122,11 @@ func TestTypeSection(t *testing.T) {
 		[]rune(`TYPE TTypeId1 = TType1;
 			TTypeId2 = (tsClick, tsClack, tsClock);`),
 		ast.TypeSection{
-			{Ident: ast.Ident("TTypeId1"), Type: &ast.TypeId{Ident: ast.Ident("TType1")}},
-			{Ident: ast.Ident("TTypeId2"), Type: ast.EnumeratedType{
-				{Ident: ast.Ident("tsClick")},
-				{Ident: ast.Ident("tsClack")},
-				{Ident: ast.Ident("tsClock")},
+			{Ident: asttest.NewIdent("TTypeId1"), Type: &ast.TypeId{Ident: asttest.NewIdent("TType1")}},
+			{Ident: asttest.NewIdent("TTypeId2"), Type: ast.EnumeratedType{
+				{Ident: asttest.NewIdent("tsClick")},
+				{Ident: asttest.NewIdent("tsClack")},
+				{Ident: asttest.NewIdent("tsClock")},
 			}},
 		},
 	)
@@ -132,8 +135,8 @@ func TestTypeSection(t *testing.T) {
 		[]rune(`TYPE TRealType1 = REAL;`),
 		ast.TypeSection{
 			&ast.TypeDecl{
-				Ident: ast.Ident("TRealType1"),
-				Type:  &ast.RealType{Name: "REAL"},
+				Ident: asttest.NewIdent("TRealType1"),
+				Type:  asttest.NewRealType("REAL"),
 			},
 		},
 	)
@@ -144,15 +147,15 @@ func TestTypeSection(t *testing.T) {
 			TMyString1 = STRING;
 			TMyReal1 = REAL;`),
 		ast.TypeSection{
-			{Ident: ast.Ident("TMyInteger1"), Type: &ast.OrdIdent{Name: ast.Ident("INTEGER")}},
-			{Ident: ast.Ident("TMyString1"), Type: &ast.StringType{Name: "STRING"}},
-			{Ident: ast.Ident("TMyReal1"), Type: &ast.RealType{Name: ast.Ident("REAL")}},
+			{Ident: asttest.NewIdent("TMyInteger1"), Type: &ast.OrdIdent{Name: asttest.NewIdent("INTEGER")}},
+			{Ident: asttest.NewIdent("TMyString1"), Type: &ast.StringType{Name: "STRING"}},
+			{Ident: asttest.NewIdent("TMyReal1"), Type: &ast.RealType{Name: asttest.NewIdent("REAL")}},
 		},
 	)
 }
 
 func TestTypeDecl(t *testing.T) {
-	u1 := ast.UnitId("U1")
+	u1 := asttest.NewUnitId("U1")
 
 	run := func(name string, text []rune, expected *ast.TypeDecl) {
 		t.Run(name, func(t *testing.T) {
@@ -169,8 +172,8 @@ func TestTypeDecl(t *testing.T) {
 		"simple type",
 		[]rune(`TTypeId1 = TType1`),
 		&ast.TypeDecl{
-			Ident: ast.Ident("TTypeId1"),
-			Type:  &ast.TypeId{Ident: ast.Ident("TType1")},
+			Ident: asttest.NewIdent("TTypeId1", asttest.NewIdentLocation(1, 1, 0, 1, 9, 8)),
+			Type:  &ast.TypeId{Ident: asttest.NewIdent("TType1", asttest.NewIdentLocation(1, 12, 11, 1, 17, 17))},
 		},
 	)
 
@@ -178,22 +181,25 @@ func TestTypeDecl(t *testing.T) {
 		"simple type with unit",
 		[]rune(`TTypeId1 = U1.TType1`),
 		&ast.TypeDecl{
-			Ident: ast.Ident("TTypeId1"),
-			Type:  &ast.TypeId{UnitId: &u1, Ident: ast.Ident("TType1")},
+			Ident: asttest.NewIdent("TTypeId1", asttest.NewIdentLocation(1, 1, 0, 1, 9, 8)),
+			Type: &ast.TypeId{
+				UnitId: ast.NewUnitId(asttest.NewIdent("U1", asttest.NewIdentLocation(1, 12, 11, 14))),
+				Ident:  asttest.NewIdent("TType1", asttest.NewIdentLocation(1, 15, 14, 1, 20, 20)),
+			},
 		},
 	)
 	run(
 		"type declaration with TYPE reserved word",
 		[]rune(`TTypeId1 = TYPE TType1`),
 		&ast.TypeDecl{
-			Ident: ast.Ident("TTypeId1"),
-			Type:  &ast.TypeId{Ident: ast.Ident("TType1")},
+			Ident: asttest.NewIdent("TTypeId1", asttest.NewIdentLocation(1, 1, 0, 1, 9, 8)),
+			Type:  &ast.TypeId{Ident: asttest.NewIdent("TType1", asttest.NewIdentLocation(1, 17, 16, 1, 22, 22))},
 		},
 	)
 }
 
 func TestTypeId(t *testing.T) {
-	u1 := ast.UnitId("U1")
+	u1 := asttest.NewUnitId("U1")
 
 	run := func(name string, text []rune, expected *ast.TypeId) {
 		t.Run(name, func(t *testing.T) {
@@ -209,15 +215,15 @@ func TestTypeId(t *testing.T) {
 	run(
 		"simple type",
 		[]rune(`TType1`),
-		&ast.TypeId{Ident: ast.Ident("TType1")},
+		&ast.TypeId{Ident: asttest.NewIdent("TType1", asttest.NewIdentLocation(1, 1, 0, 1, 6, 6))},
 	)
 
 	run(
 		"type with unit",
 		[]rune(`U1.TType1`),
 		&ast.TypeId{
-			UnitId: &u1,
-			Ident:  ast.Ident("TType1"),
+			UnitId: ast.NewUnitId(asttest.NewIdent("U1", asttest.NewIdentLocation(1, 1, 0, 3))),
+			Ident:  asttest.NewIdent("TType1", asttest.NewIdentLocation(1, 4, 3, 1, 9, 9)),
 		},
 	)
 }
@@ -229,30 +235,31 @@ func TestNamedType(t *testing.T) {
 			parser.NextToken()
 			res, err := parser.ParseType()
 			if assert.NoError(t, err) {
+				asttest.ClearLocations(t, res)
 				assert.Equal(t, expected, res)
 			}
 		})
 	}
 
-	run([]rune(`INTEGER`), &ast.OrdIdent{Name: ast.Ident("INTEGER")})
-	run([]rune(`CARDINAL`), &ast.OrdIdent{Name: ast.Ident("CARDINAL")})
-	run([]rune(`SHORTINT`), &ast.OrdIdent{Name: ast.Ident("SHORTINT")})
-	run([]rune(`SMALLINT`), &ast.OrdIdent{Name: ast.Ident("SMALLINT")})
-	run([]rune(`LONGINT`), &ast.OrdIdent{Name: ast.Ident("LONGINT")})
-	run([]rune(`INT64`), &ast.OrdIdent{Name: ast.Ident("INT64")})
-	run([]rune(`BYTE`), &ast.OrdIdent{Name: ast.Ident("BYTE")})
-	run([]rune(`WORD`), &ast.OrdIdent{Name: ast.Ident("WORD")})
-	run([]rune(`LONGWORD`), &ast.OrdIdent{Name: ast.Ident("LONGWORD")})
-	run([]rune(`CHAR`), &ast.OrdIdent{Name: ast.Ident("CHAR")})
-	run([]rune(`ANSICHAR`), &ast.OrdIdent{Name: ast.Ident("ANSICHAR")})
-	run([]rune(`WIDECHAR`), &ast.OrdIdent{Name: ast.Ident("WIDECHAR")})
-	run([]rune(`BOOLEAN`), &ast.OrdIdent{Name: ast.Ident("BOOLEAN")})
+	run([]rune(`INTEGER`), &ast.OrdIdent{Name: asttest.NewIdent("INTEGER")})
+	run([]rune(`CARDINAL`), &ast.OrdIdent{Name: asttest.NewIdent("CARDINAL")})
+	run([]rune(`SHORTINT`), &ast.OrdIdent{Name: asttest.NewIdent("SHORTINT")})
+	run([]rune(`SMALLINT`), &ast.OrdIdent{Name: asttest.NewIdent("SMALLINT")})
+	run([]rune(`LONGINT`), &ast.OrdIdent{Name: asttest.NewIdent("LONGINT")})
+	run([]rune(`INT64`), &ast.OrdIdent{Name: asttest.NewIdent("INT64")})
+	run([]rune(`BYTE`), &ast.OrdIdent{Name: asttest.NewIdent("BYTE")})
+	run([]rune(`WORD`), &ast.OrdIdent{Name: asttest.NewIdent("WORD")})
+	run([]rune(`LONGWORD`), &ast.OrdIdent{Name: asttest.NewIdent("LONGWORD")})
+	run([]rune(`CHAR`), &ast.OrdIdent{Name: asttest.NewIdent("CHAR")})
+	run([]rune(`ANSICHAR`), &ast.OrdIdent{Name: asttest.NewIdent("ANSICHAR")})
+	run([]rune(`WIDECHAR`), &ast.OrdIdent{Name: asttest.NewIdent("WIDECHAR")})
+	run([]rune(`BOOLEAN`), &ast.OrdIdent{Name: asttest.NewIdent("BOOLEAN")})
 
-	run([]rune(`REAL48`), &ast.RealType{Name: ast.Ident("REAL48")})
-	run([]rune(`REAL`), &ast.RealType{Name: ast.Ident("REAL")})
-	run([]rune(`SINGLE`), &ast.RealType{Name: ast.Ident("SINGLE")})
-	run([]rune(`DOUBLE`), &ast.RealType{Name: ast.Ident("DOUBLE")})
-	run([]rune(`EXTENDED`), &ast.RealType{Name: ast.Ident("EXTENDED")})
-	run([]rune(`CURRENCY`), &ast.RealType{Name: ast.Ident("CURRENCY")})
-	run([]rune(`COMP`), &ast.RealType{Name: ast.Ident("COMP")})
+	run([]rune(`REAL48`), &ast.RealType{Name: asttest.NewIdent("REAL48")})
+	run([]rune(`REAL`), &ast.RealType{Name: asttest.NewIdent("REAL")})
+	run([]rune(`SINGLE`), &ast.RealType{Name: asttest.NewIdent("SINGLE")})
+	run([]rune(`DOUBLE`), &ast.RealType{Name: asttest.NewIdent("DOUBLE")})
+	run([]rune(`EXTENDED`), &ast.RealType{Name: asttest.NewIdent("EXTENDED")})
+	run([]rune(`CURRENCY`), &ast.RealType{Name: asttest.NewIdent("CURRENCY")})
+	run([]rune(`COMP`), &ast.RealType{Name: asttest.NewIdent("COMP")})
 }

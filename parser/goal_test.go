@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/akm/tparser/ast"
+	"github.com/akm/tparser/ast/asttest"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -17,7 +18,7 @@ func TestGoal(t *testing.T) {
 	res, err := parser.ParseGoal()
 	if assert.NoError(t, err) {
 		assert.Equal(t, &ast.Unit{
-			Ident:                 ast.Ident("U1"),
+			Ident:                 asttest.NewIdent("U1", asttest.NewIdentLocation(1, 6, 5, 8)),
 			InterfaceSection:      &ast.InterfaceSection{},
 			ImplementationSection: &ast.ImplementationSection{},
 		}, res)
