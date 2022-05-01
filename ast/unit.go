@@ -136,8 +136,8 @@ func (u *UnitId) String() string {
 	}
 }
 
-func (*UnitId) Children() Nodes {
-	return Nodes{}
+func (m *UnitId) Children() Nodes {
+	return Nodes{(*Ident)(m)}
 }
 
 // - QualId
