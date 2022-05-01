@@ -27,6 +27,7 @@ func TestExportHeading(t *testing.T) {
 			parser.NextToken()
 			res, err := parser.ParseExportedHeading()
 			if assert.NoError(t, err) {
+				asttest.ClearLocations(t, res)
 				assert.Equal(t, expected, res)
 			}
 		})
@@ -424,6 +425,7 @@ func TestExportHeading(t *testing.T) {
 		parser.NextToken()
 		res, err := parser.ParseUnit()
 		if assert.NoError(t, err) {
+			asttest.ClearLocations(t, res)
 			assert.Equal(t,
 				&ast.Unit{
 					Ident: *asttest.NewIdent("Unit1"),
@@ -439,41 +441,56 @@ func TestExportHeading(t *testing.T) {
 }
 
 func TestFormalParameters(t *testing.T) {
-	run := func(text string, expected ast.FormalParameters) {
+	run := func(text string, clearLocations bool, expected ast.FormalParameters) {
 		t.Run(text, func(t *testing.T) {
 			runes := []rune(text)
 			parser := NewParser(&runes, NewContext())
 			parser.NextToken()
 			res, err := parser.ParseFormalParameters()
 			if assert.NoError(t, err) {
+				if clearLocations {
+					asttest.ClearLocations(t, res)
+				}
 				assert.Equal(t, expected, res)
 			}
 		})
 	}
 
 	run(
-		"(X, Y: Real)",
+		"(X, Y: Real)", true,
 		ast.FormalParameters{
 			asttest.NewFormalParm([]string{"X", "Y"}, asttest.NewRealType("Real")),
 		},
 	)
 	run(
-		"(var S: string; X: Integer)",
+		"(var S: string; X: Integer)", true,
 		ast.FormalParameters{
 			asttest.NewFormalParm("S", asttest.NewStringType("STRING"), &ast.FpoVar),
 			asttest.NewFormalParm("X", asttest.NewOrdIdent("Integer")),
 		},
 	)
 	run(
-		"(HWnd: Integer; Text, Caption: PChar; PChar: Integer)",
+		"(HWnd: Integer; Text, Caption: PChar; PChar: Integer)", false,
 		ast.FormalParameters{
-			asttest.NewFormalParm("HWnd", asttest.NewOrdIdent("Integer")),
-			asttest.NewFormalParm([]string{"Text", "Caption"}, "PChar"),
-			asttest.NewFormalParm("PChar", asttest.NewOrdIdent("Integer")),
+			asttest.NewFormalParm(
+				asttest.NewIdent("HWnd", asttest.NewIdentLocation(1, 2, 1, 6)),
+				asttest.NewOrdIdent(asttest.NewIdent("Integer", asttest.NewIdentLocation(1, 8, 7, 15))),
+			),
+			asttest.NewFormalParm(
+				[]*ast.Ident{
+					asttest.NewIdent("Text", asttest.NewIdentLocation(1, 17, 16, 21)),
+					asttest.NewIdent("Caption", asttest.NewIdentLocation(1, 23, 22, 30)),
+				},
+				asttest.NewIdent("PChar", asttest.NewIdentLocation(1, 32, 31, 37)),
+			),
+			asttest.NewFormalParm(
+				asttest.NewIdent("PChar", asttest.NewIdentLocation(1, 39, 38, 44)),
+				asttest.NewOrdIdent(asttest.NewIdent("Integer", asttest.NewIdentLocation(1, 46, 45, 53))),
+			),
 		},
 	)
 	run(
-		"(const P; I: Integer)",
+		"(const P; I: Integer)", true,
 		ast.FormalParameters{
 			asttest.NewFormalParm([]string{"P"}, nil, &ast.FpoConst),
 			asttest.NewFormalParm([]string{"I"}, asttest.NewOrdIdent("Integer")),

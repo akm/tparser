@@ -28,7 +28,7 @@ func TestUnit(t *testing.T) {
 			implementation
 			end.`),
 		&ast.Unit{
-			Ident:                 *asttest.NewIdent("U1"),
+			Ident:                 *asttest.NewIdent("U1", asttest.NewIdentLocation(1, 6, 5, 8)),
 			InterfaceSection:      &ast.InterfaceSection{},
 			ImplementationSection: &ast.ImplementationSection{},
 		},
@@ -54,9 +54,9 @@ func TestInterfaceSection(t *testing.T) {
 		[]rune(`INTERFACE USES U1,U2,U3;`),
 		&ast.InterfaceSection{
 			UsesClause: ast.UsesClause{
-				asttest.NewUnitRef("U1"),
-				asttest.NewUnitRef("U2"),
-				asttest.NewUnitRef("U3"),
+				asttest.NewUnitRef(asttest.NewIdent("U1", asttest.NewIdentLocation(1, 16, 15, 18))),
+				asttest.NewUnitRef(asttest.NewIdent("U2", asttest.NewIdentLocation(1, 19, 18, 21))),
+				asttest.NewUnitRef(asttest.NewIdent("U3", asttest.NewIdentLocation(1, 22, 21, 24))),
 			},
 		},
 	)

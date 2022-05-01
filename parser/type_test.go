@@ -16,6 +16,7 @@ func TestUnitWithTypeSection(t *testing.T) {
 			parser.NextToken()
 			res, err := parser.ParseUnit()
 			if assert.NoError(t, err) {
+				asttest.ClearLocations(t, res)
 				assert.Equal(t, expected, res)
 			}
 		})
@@ -104,6 +105,7 @@ func TestTypeSection(t *testing.T) {
 			parser.NextToken()
 			res, err := parser.ParseTypeSection()
 			if assert.NoError(t, err) {
+				asttest.ClearLocations(t, res)
 				assert.Equal(t, expected, res)
 			}
 		})
@@ -170,8 +172,8 @@ func TestTypeDecl(t *testing.T) {
 		"simple type",
 		[]rune(`TTypeId1 = TType1`),
 		&ast.TypeDecl{
-			Ident: *asttest.NewIdent("TTypeId1"),
-			Type:  &ast.TypeId{Ident: *asttest.NewIdent("TType1")},
+			Ident: *asttest.NewIdent("TTypeId1", asttest.NewIdentLocation(1, 1, 0, 1, 9, 8)),
+			Type:  &ast.TypeId{Ident: *asttest.NewIdent("TType1", asttest.NewIdentLocation(1, 12, 11, 1, 17, 17))},
 		},
 	)
 
@@ -179,16 +181,19 @@ func TestTypeDecl(t *testing.T) {
 		"simple type with unit",
 		[]rune(`TTypeId1 = U1.TType1`),
 		&ast.TypeDecl{
-			Ident: *asttest.NewIdent("TTypeId1"),
-			Type:  &ast.TypeId{UnitId: u1, Ident: *asttest.NewIdent("TType1")},
+			Ident: *asttest.NewIdent("TTypeId1", asttest.NewIdentLocation(1, 1, 0, 1, 9, 8)),
+			Type: &ast.TypeId{
+				UnitId: ast.NewUnitId(asttest.NewIdent("U1", asttest.NewIdentLocation(1, 12, 11, 14))),
+				Ident:  *asttest.NewIdent("TType1", asttest.NewIdentLocation(1, 15, 14, 1, 20, 20)),
+			},
 		},
 	)
 	run(
 		"type declaration with TYPE reserved word",
 		[]rune(`TTypeId1 = TYPE TType1`),
 		&ast.TypeDecl{
-			Ident: *asttest.NewIdent("TTypeId1"),
-			Type:  &ast.TypeId{Ident: *asttest.NewIdent("TType1")},
+			Ident: *asttest.NewIdent("TTypeId1", asttest.NewIdentLocation(1, 1, 0, 1, 9, 8)),
+			Type:  &ast.TypeId{Ident: *asttest.NewIdent("TType1", asttest.NewIdentLocation(1, 17, 16, 1, 22, 22))},
 		},
 	)
 }
@@ -210,15 +215,15 @@ func TestTypeId(t *testing.T) {
 	run(
 		"simple type",
 		[]rune(`TType1`),
-		&ast.TypeId{Ident: *asttest.NewIdent("TType1")},
+		&ast.TypeId{Ident: *asttest.NewIdent("TType1", asttest.NewIdentLocation(1, 1, 0, 1, 6, 6))},
 	)
 
 	run(
 		"type with unit",
 		[]rune(`U1.TType1`),
 		&ast.TypeId{
-			UnitId: u1,
-			Ident:  *asttest.NewIdent("TType1"),
+			UnitId: ast.NewUnitId(asttest.NewIdent("U1", asttest.NewIdentLocation(1, 1, 0, 3))),
+			Ident:  *asttest.NewIdent("TType1", asttest.NewIdentLocation(1, 4, 3, 1, 9, 9)),
 		},
 	)
 }
@@ -230,6 +235,7 @@ func TestNamedType(t *testing.T) {
 			parser.NextToken()
 			res, err := parser.ParseType()
 			if assert.NoError(t, err) {
+				asttest.ClearLocations(t, res)
 				assert.Equal(t, expected, res)
 			}
 		})

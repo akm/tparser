@@ -14,7 +14,11 @@ func TestIdentClausee(t *testing.T) {
 	parser.NextToken()
 	res, err := parser.ParseIdentList(';')
 	if assert.NoError(t, err) {
-		expect := asttest.NewIdentList("U1", "U2", "U3")
+		expect := asttest.NewIdentList(
+			asttest.NewIdent("U1", asttest.NewIdentLocation(1, 1, 0, 3)),
+			asttest.NewIdent("U2", asttest.NewIdentLocation(1, 4, 3, 6)),
+			asttest.NewIdent("U3", asttest.NewIdentLocation(1, 7, 6, 9)),
+		)
 		assert.Equal(t, &expect, res)
 	}
 }

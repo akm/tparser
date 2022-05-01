@@ -15,6 +15,7 @@ func TestEnumeratedType(t *testing.T) {
 			parser.NextToken()
 			res, err := parser.ParseType()
 			if assert.NoError(t, err) {
+				asttest.ClearLocations(t, res)
 				assert.Equal(t, expected, res)
 			}
 		})
@@ -65,7 +66,10 @@ func TestSubrangeType(t *testing.T) {
 	run(
 		"subrange type of enumerated type",
 		[]rune(`Green..White`),
-		&ast.SubrangeType{Low: *asttest.NewConstExpr("Green"), High: *asttest.NewConstExpr("White")},
+		&ast.SubrangeType{
+			Low:  *asttest.NewConstExpr(asttest.NewIdent("Green", asttest.NewIdentLocation(1, 1, 0, 6))),
+			High: *asttest.NewConstExpr(asttest.NewIdent("White", asttest.NewIdentLocation(1, 8, 7, 1, 12, 12))),
+		},
 	)
 	run(
 		"subrange type of number",
