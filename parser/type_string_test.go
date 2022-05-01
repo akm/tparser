@@ -31,9 +31,9 @@ func TestStringType(t *testing.T) {
 			Name: "STRING",
 			Length: asttest.NewConstExpr(
 				&ast.SimpleExpression{
-					Term: *asttest.NewTerm(asttest.NewIdent("ALen", asttest.NewIdentLocation(1, 8, 7, 12))),
+					Term: asttest.NewTerm(asttest.NewIdent("ALen", asttest.NewIdentLocation(1, 8, 7, 12))),
 					AddOpTerms: []*ast.AddOpTerm{
-						{AddOp: "+", Term: *asttest.NewTerm(asttest.NewIdent("BLen", asttest.NewIdentLocation(1, 15, 14, 19)))},
+						{AddOp: "+", Term: asttest.NewTerm(asttest.NewIdent("BLen", asttest.NewIdentLocation(1, 15, 14, 19)))},
 					},
 				},
 			),

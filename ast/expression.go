@@ -10,7 +10,7 @@ import (
 //   SimpleExpression [RelOp SimpleExpression]...
 //   ```
 type Expression struct {
-	SimpleExpression
+	*SimpleExpression
 	RelOpSimpleExpressions RelOpSimpleExpressions
 }
 
@@ -19,14 +19,14 @@ func NewExpression(arg interface{}) *Expression {
 	case *Expression:
 		return v
 	case *SimpleExpression:
-		return &Expression{SimpleExpression: *v}
+		return &Expression{SimpleExpression: v}
 	default:
-		return &Expression{SimpleExpression: *NewSimpleExpression(arg)}
+		return &Expression{SimpleExpression: NewSimpleExpression(arg)}
 	}
 }
 
 func (m *Expression) Children() Nodes {
-	r := Nodes{&m.SimpleExpression}
+	r := Nodes{m.SimpleExpression}
 	if m.RelOpSimpleExpressions != nil {
 		r = append(r, m.RelOpSimpleExpressions)
 	}
@@ -70,11 +70,11 @@ func (s ExprList) Children() Nodes {
 //   ```
 type RelOpSimpleExpression struct {
 	RelOp string // '>' | '<' | '<=' | '>=' | '=' | '<>' | "IN" | "IS" | "AS"
-	SimpleExpression
+	*SimpleExpression
 }
 
 func (m *RelOpSimpleExpression) Children() Nodes {
-	return Nodes{&m.SimpleExpression}
+	return Nodes{m.SimpleExpression}
 }
 
 type RelOpSimpleExpressions []*RelOpSimpleExpression
@@ -93,7 +93,7 @@ func (s RelOpSimpleExpressions) Children() Nodes {
 //   ```
 type SimpleExpression struct {
 	UnaryOp *string //  '+' | '-' or nil
-	Term
+	*Term
 	AddOpTerms AddOpTerms
 }
 
@@ -102,14 +102,14 @@ func NewSimpleExpression(arg interface{}) *SimpleExpression {
 	case *SimpleExpression:
 		return v
 	case *Term:
-		return &SimpleExpression{Term: *v}
+		return &SimpleExpression{Term: v}
 	default:
-		return &SimpleExpression{Term: *NewTerm(arg)}
+		return &SimpleExpression{Term: NewTerm(arg)}
 	}
 }
 
 func (m *SimpleExpression) Children() Nodes {
-	r := Nodes{&m.Term}
+	r := Nodes{m.Term}
 	if m.AddOpTerms != nil {
 		r = append(r, m.AddOpTerms)
 	}
@@ -131,11 +131,11 @@ func (m *SimpleExpression) Children() Nodes {
 //   ```
 type AddOpTerm struct {
 	AddOp string // '+' | '-' | "OR" | "XOR"
-	Term
+	*Term
 }
 
 func (m *AddOpTerm) Children() Nodes {
-	return Nodes{&m.Term}
+	return Nodes{m.Term}
 }
 
 type AddOpTerms []*AddOpTerm
@@ -258,7 +258,7 @@ type Factor interface {
 func (*DesignatorFactor) isFactor() {}
 
 type DesignatorFactor struct {
-	Designator
+	*Designator
 	ExprList ExprList
 }
 
@@ -267,12 +267,12 @@ func NewDesignatorFactor(arg interface{}) *DesignatorFactor {
 	case *DesignatorFactor:
 		return v
 	default:
-		return &DesignatorFactor{Designator: *NewDesignator(arg)}
+		return &DesignatorFactor{Designator: NewDesignator(arg)}
 	}
 }
 
 func (m *DesignatorFactor) Children() Nodes {
-	r := Nodes{&m.Designator}
+	r := Nodes{m.Designator}
 	if m.ExprList != nil {
 		r = append(r, m.ExprList)
 	}
@@ -283,11 +283,11 @@ func (m *DesignatorFactor) Children() Nodes {
 func (*Address) isFactor() {}
 
 type Address struct {
-	Designator
+	*Designator
 }
 
 func (m *Address) Children() Nodes {
-	return Nodes{&m.Designator}
+	return Nodes{m.Designator}
 }
 
 // - Designator
@@ -295,7 +295,7 @@ func (m *Address) Children() Nodes {
 //   QualId ['.' Ident | '[' ExprList ']' | '^']...
 //   ```
 type Designator struct {
-	QualId
+	*QualId
 	Items DesignatorItems
 }
 
@@ -304,11 +304,11 @@ func NewDesignator(arg interface{}) *Designator {
 	case *Designator:
 		return v
 	case *QualId:
-		return &Designator{QualId: *v}
+		return &Designator{QualId: v}
 	case Ident:
-		return &Designator{QualId: QualId{Ident: v}}
+		return &Designator{QualId: &QualId{Ident: v}}
 	case *Ident:
-		return &Designator{QualId: QualId{Ident: *v}}
+		return &Designator{QualId: &QualId{Ident: *v}}
 	case token.Token:
 		return NewDesignator(NewIdent(&v))
 	case *token.Token:
@@ -319,7 +319,7 @@ func NewDesignator(arg interface{}) *Designator {
 }
 
 func (m *Designator) Children() Nodes {
-	r := Nodes{&m.QualId}
+	r := Nodes{m.QualId}
 	if m.Items != nil {
 		r = append(r, m.Items)
 	}
@@ -409,11 +409,11 @@ func (*Nil) Children() Nodes {
 func (*Parentheses) isFactor() {}
 
 type Parentheses struct { // Round brackets
-	Expression Expression
+	Expression *Expression
 }
 
 func (m *Parentheses) Children() Nodes {
-	return Nodes{&m.Expression}
+	return Nodes{m.Expression}
 }
 
 func (*Not) isFactor() {}
@@ -449,18 +449,18 @@ func (m *SetConstructor) Children() Nodes {
 //   Expression ['..' Expression]
 //   ```
 type SetElement struct {
-	Expression
+	*Expression
 	SubRangeEnd *Expression
 }
 
 func NewSetElement(expr *Expression) *SetElement {
 	return &SetElement{
-		Expression: *expr,
+		Expression: expr,
 	}
 }
 
 func (m *SetElement) Children() Nodes {
-	r := Nodes{&m.Expression}
+	r := Nodes{m.Expression}
 	if m.SubRangeEnd != nil {
 		r = append(r, m.SubRangeEnd)
 	}

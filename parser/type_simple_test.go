@@ -40,9 +40,9 @@ func TestEnumeratedType(t *testing.T) {
 			{Ident: *asttest.NewIdent("Medium"), ConstExpr: asttest.NewConstExpr(asttest.NewNumber("10"))},
 			{Ident: *asttest.NewIdent("Large"), ConstExpr: asttest.NewConstExpr(
 				&ast.SimpleExpression{
-					Term: *asttest.NewTerm("Small"),
+					Term: asttest.NewTerm("Small"),
 					AddOpTerms: []*ast.AddOpTerm{
-						{AddOp: "+", Term: *asttest.NewTerm("Medium")},
+						{AddOp: "+", Term: asttest.NewTerm("Medium")},
 					},
 				},
 			)},
