@@ -14,7 +14,7 @@ import "github.com/pkg/errors"
 func (*ExportedHeading) canBeInterfaceDecl() {}
 
 type ExportedHeading struct {
-	FunctionHeading *FunctionHeading
+	*FunctionHeading
 	Directives      []Directive
 	ExternalOptions *ExternalOptions
 }
@@ -44,8 +44,8 @@ const (
 func (*FunctionHeading) isExportedHeading() {}
 
 type FunctionHeading struct {
-	Type             FunctionType
-	Ident            *Ident
+	Type FunctionType
+	*Ident
 	FormalParameters FormalParameters
 	ReturnType       Type
 }
@@ -174,7 +174,7 @@ func NewArrayParameterType(arg interface{}) *ParameterType {
 }
 
 type Parameter struct {
-	IdentList IdentList
+	IdentList
 	Type      *ParameterType
 	ConstExpr *ConstExpr
 }

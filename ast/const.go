@@ -24,7 +24,7 @@ func (s ConstSection) Children() Nodes {
 //   Ident ':' TypeId '=' TypedConstant [PortabilityDirective]
 //   ```
 type ConstantDecl struct {
-	Ident                *Ident
+	*Ident
 	Type                 Type
 	ConstExpr            *ConstExpr
 	PortabilityDirective *PortabilityDirective

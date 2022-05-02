@@ -27,7 +27,7 @@ func (s VarSection) Children() Nodes {
 //     ```
 
 type VarDecl struct {
-	IdentList            IdentList
+	IdentList
 	Type                 Type
 	Absolute             VarDeclAbsolute
 	ConstExpr            *ConstExpr
@@ -96,8 +96,8 @@ func (s ThreadVarSection) Children() Nodes {
 }
 
 type ThreadVarDecl struct {
-	IdentList IdentList
-	Type      Type
+	IdentList
+	Type Type
 }
 
 func (m *ThreadVarDecl) Children() Nodes {

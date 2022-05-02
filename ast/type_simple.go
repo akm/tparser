@@ -56,7 +56,7 @@ func (*RealType) isType()       {}
 func (*RealType) isSimpleType() {}
 
 type RealType struct {
-	Ident *Ident
+	*Ident
 }
 
 func NewRealType(name interface{}) *RealType {
@@ -158,7 +158,7 @@ func (*OrdIdent) isSimpleType()  {}
 func (*OrdIdent) isOrdinalType() {}
 
 type OrdIdent struct {
-	Ident *Ident
+	*Ident
 }
 
 func NewOrdIdent(name interface{}) *OrdIdent {
@@ -201,7 +201,7 @@ func (m EnumeratedType) Children() Nodes {
 }
 
 type EnumeratedTypeElement struct {
-	Ident     *Ident
+	*Ident
 	ConstExpr *ConstExpr
 }
 

@@ -12,8 +12,8 @@ func (*Unit) isGoal() {}
 //   InitSection '.'
 //   ```
 type Unit struct {
-	Path                  string
-	Ident                 *Ident
+	Path string
+	*Ident
 	PortabilityDirective  *PortabilityDirective // optional
 	InterfaceSection      *InterfaceSection
 	ImplementationSection *ImplementationSection

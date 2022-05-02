@@ -27,8 +27,8 @@ func (s UsesClause) Children() Nodes {
 }
 
 type UnitRef struct {
-	Ident *Ident
-	Path  *string
+	*Ident
+	Path *string
 }
 
 func NewUnitRef(name interface{}, paths ...string) *UnitRef {

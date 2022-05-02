@@ -26,7 +26,7 @@ func (s TypeSection) Children() Nodes {
 //   Ident '=' [TYPE] RestrictedType [PortabilityDirective]
 //   ```
 type TypeDecl struct {
-	Ident                *Ident
+	*Ident
 	Type                 Type
 	PortabilityDirective *PortabilityDirective
 }
