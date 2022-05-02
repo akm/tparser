@@ -7,26 +7,25 @@ import (
 )
 
 type Position = runes.Position
-
-type IdentLocation struct {
-	// Path string
+type Location struct {
+	Path  string
 	Start *Position
 	End   *Position
 }
 
-func NewIdentLocation(v *token.Token) *IdentLocation {
-	return &IdentLocation{Start: v.Start, End: v.End}
+func NewLocation(v *token.Token) *Location {
+	return &Location{Start: v.Start, End: v.End}
 }
 
 type Ident struct {
 	Name     string
-	Location *IdentLocation
+	Location *Location
 }
 
 func NewIdent(v *token.Token) *Ident {
 	return &Ident{
 		Name:     v.RawString(),
-		Location: NewIdentLocation(v),
+		Location: NewLocation(v),
 	}
 }
 
