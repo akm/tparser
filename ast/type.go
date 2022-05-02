@@ -74,6 +74,7 @@ func (*TypeId) isType() {}
 type TypeId struct {
 	UnitId *UnitId
 	Ident  *Ident
+	Ref    *TypeDecl // Actual Type object
 }
 
 func NewTypeId(unitIdOrIdent interface{}, args ...interface{}) *TypeId {
