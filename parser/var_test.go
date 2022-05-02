@@ -159,3 +159,48 @@ func TestVarSectionl(t *testing.T) {
 		},
 	)
 }
+
+func TestVarReferringType(t *testing.T) {
+	run := func(name string, text []rune, expected *ast.Unit) {
+		t.Run(name, func(t *testing.T) {
+			parser := NewParser(&text)
+			parser.NextToken()
+			res, err := parser.ParseUnit()
+			if assert.NoError(t, err) {
+				asttest.ClearLocations(t, res)
+				assert.Equal(t, expected, res)
+			}
+		})
+	}
+
+	typeDecl := &ast.TypeDecl{Ident: asttest.NewIdent("TMyInteger1"), Type: &ast.OrdIdent{Ident: asttest.NewIdent("INTEGER")}}
+
+	run(
+		"reference from var to type in unit",
+		[]rune(`
+		UNIT Unit1;
+		INTERFACE
+		TYPE TMyInteger1 = INTEGER;
+		VAR MyInteger1: TMyInteger1;
+		IMPLEMENTATION
+		END.`),
+		&ast.Unit{
+			Ident: asttest.NewIdent("Unit1"),
+			InterfaceSection: &ast.InterfaceSection{
+				InterfaceDecls: []ast.InterfaceDecl{
+					ast.TypeSection{typeDecl},
+					ast.VarSection{
+						{
+							IdentList: asttest.NewIdentList("MyInteger1"),
+							Type: &ast.TypeId{
+								Ident: asttest.NewIdent("TMyInteger1"),
+								Ref:   typeDecl,
+							},
+						},
+					},
+				},
+			},
+			ImplementationSection: &ast.ImplementationSection{},
+		},
+	)
+}
