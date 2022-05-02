@@ -1,5 +1,7 @@
 package ast
 
+import "strings"
+
 func (*Unit) isGoal() {}
 
 // - Unit
@@ -34,6 +36,18 @@ func (m *Unit) Children() Nodes {
 		r = append(r, m.InitSection)
 	}
 	return r
+}
+
+type Units []*Unit
+
+func (s Units) ByName(name string) *Unit {
+	key := strings.ToLower(name)
+	for _, u := range s {
+		if strings.ToLower(u.Ident.Name) == key {
+			return u
+		}
+	}
+	return nil
 }
 
 // - InterfaceSection
