@@ -78,8 +78,8 @@ func TestUnitWithTypeSection(t *testing.T) {
 						{Ident: asttest.NewIdent("TTypeId2"), Type: &ast.TypeId{UnitId: unit2, Ident: asttest.NewIdent("TType2")}},
 					},
 					ast.TypeSection{
-						{Ident: asttest.NewIdent("TMyInteger1"), Type: &ast.OrdIdent{Name: asttest.NewIdent("INTEGER")}},
-						{Ident: asttest.NewIdent("TMyReal1"), Type: &ast.RealType{Name: asttest.NewIdent("REAL")}},
+						{Ident: asttest.NewIdent("TMyInteger1"), Type: &ast.OrdIdent{Ident: asttest.NewIdent("INTEGER")}},
+						{Ident: asttest.NewIdent("TMyReal1"), Type: &ast.RealType{Ident: asttest.NewIdent("REAL")}},
 						{Ident: asttest.NewIdent("TMyString1"), Type: &ast.StringType{Name: "STRING"}},
 						{Ident: asttest.NewIdent("TMyString2"), Type: &ast.StringType{Name: "ANSISTRING"}},
 						{Ident: asttest.NewIdent("TMyEnumerated1"), Type: ast.EnumeratedType{
@@ -147,9 +147,9 @@ func TestTypeSection(t *testing.T) {
 			TMyString1 = STRING;
 			TMyReal1 = REAL;`),
 		ast.TypeSection{
-			{Ident: asttest.NewIdent("TMyInteger1"), Type: &ast.OrdIdent{Name: asttest.NewIdent("INTEGER")}},
+			{Ident: asttest.NewIdent("TMyInteger1"), Type: &ast.OrdIdent{Ident: asttest.NewIdent("INTEGER")}},
 			{Ident: asttest.NewIdent("TMyString1"), Type: &ast.StringType{Name: "STRING"}},
-			{Ident: asttest.NewIdent("TMyReal1"), Type: &ast.RealType{Name: asttest.NewIdent("REAL")}},
+			{Ident: asttest.NewIdent("TMyReal1"), Type: &ast.RealType{Ident: asttest.NewIdent("REAL")}},
 		},
 	)
 }
@@ -241,25 +241,25 @@ func TestNamedType(t *testing.T) {
 		})
 	}
 
-	run([]rune(`INTEGER`), &ast.OrdIdent{Name: asttest.NewIdent("INTEGER")})
-	run([]rune(`CARDINAL`), &ast.OrdIdent{Name: asttest.NewIdent("CARDINAL")})
-	run([]rune(`SHORTINT`), &ast.OrdIdent{Name: asttest.NewIdent("SHORTINT")})
-	run([]rune(`SMALLINT`), &ast.OrdIdent{Name: asttest.NewIdent("SMALLINT")})
-	run([]rune(`LONGINT`), &ast.OrdIdent{Name: asttest.NewIdent("LONGINT")})
-	run([]rune(`INT64`), &ast.OrdIdent{Name: asttest.NewIdent("INT64")})
-	run([]rune(`BYTE`), &ast.OrdIdent{Name: asttest.NewIdent("BYTE")})
-	run([]rune(`WORD`), &ast.OrdIdent{Name: asttest.NewIdent("WORD")})
-	run([]rune(`LONGWORD`), &ast.OrdIdent{Name: asttest.NewIdent("LONGWORD")})
-	run([]rune(`CHAR`), &ast.OrdIdent{Name: asttest.NewIdent("CHAR")})
-	run([]rune(`ANSICHAR`), &ast.OrdIdent{Name: asttest.NewIdent("ANSICHAR")})
-	run([]rune(`WIDECHAR`), &ast.OrdIdent{Name: asttest.NewIdent("WIDECHAR")})
-	run([]rune(`BOOLEAN`), &ast.OrdIdent{Name: asttest.NewIdent("BOOLEAN")})
+	run([]rune(`INTEGER`), &ast.OrdIdent{Ident: asttest.NewIdent("INTEGER")})
+	run([]rune(`CARDINAL`), &ast.OrdIdent{Ident: asttest.NewIdent("CARDINAL")})
+	run([]rune(`SHORTINT`), &ast.OrdIdent{Ident: asttest.NewIdent("SHORTINT")})
+	run([]rune(`SMALLINT`), &ast.OrdIdent{Ident: asttest.NewIdent("SMALLINT")})
+	run([]rune(`LONGINT`), &ast.OrdIdent{Ident: asttest.NewIdent("LONGINT")})
+	run([]rune(`INT64`), &ast.OrdIdent{Ident: asttest.NewIdent("INT64")})
+	run([]rune(`BYTE`), &ast.OrdIdent{Ident: asttest.NewIdent("BYTE")})
+	run([]rune(`WORD`), &ast.OrdIdent{Ident: asttest.NewIdent("WORD")})
+	run([]rune(`LONGWORD`), &ast.OrdIdent{Ident: asttest.NewIdent("LONGWORD")})
+	run([]rune(`CHAR`), &ast.OrdIdent{Ident: asttest.NewIdent("CHAR")})
+	run([]rune(`ANSICHAR`), &ast.OrdIdent{Ident: asttest.NewIdent("ANSICHAR")})
+	run([]rune(`WIDECHAR`), &ast.OrdIdent{Ident: asttest.NewIdent("WIDECHAR")})
+	run([]rune(`BOOLEAN`), &ast.OrdIdent{Ident: asttest.NewIdent("BOOLEAN")})
 
-	run([]rune(`REAL48`), &ast.RealType{Name: asttest.NewIdent("REAL48")})
-	run([]rune(`REAL`), &ast.RealType{Name: asttest.NewIdent("REAL")})
-	run([]rune(`SINGLE`), &ast.RealType{Name: asttest.NewIdent("SINGLE")})
-	run([]rune(`DOUBLE`), &ast.RealType{Name: asttest.NewIdent("DOUBLE")})
-	run([]rune(`EXTENDED`), &ast.RealType{Name: asttest.NewIdent("EXTENDED")})
-	run([]rune(`CURRENCY`), &ast.RealType{Name: asttest.NewIdent("CURRENCY")})
-	run([]rune(`COMP`), &ast.RealType{Name: asttest.NewIdent("COMP")})
+	run([]rune(`REAL48`), &ast.RealType{Ident: asttest.NewIdent("REAL48")})
+	run([]rune(`REAL`), &ast.RealType{Ident: asttest.NewIdent("REAL")})
+	run([]rune(`SINGLE`), &ast.RealType{Ident: asttest.NewIdent("SINGLE")})
+	run([]rune(`DOUBLE`), &ast.RealType{Ident: asttest.NewIdent("DOUBLE")})
+	run([]rune(`EXTENDED`), &ast.RealType{Ident: asttest.NewIdent("EXTENDED")})
+	run([]rune(`CURRENCY`), &ast.RealType{Ident: asttest.NewIdent("CURRENCY")})
+	run([]rune(`COMP`), &ast.RealType{Ident: asttest.NewIdent("COMP")})
 }
