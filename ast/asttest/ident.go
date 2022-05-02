@@ -121,9 +121,9 @@ func NewIdentLocation(args ...interface{}) *ast.Location {
 		case *ast.Location:
 			return v
 		case token.Token:
-			return ast.NewLocation(&v)
+			return ast.NewLocation(v.Start, v.End)
 		case *token.Token:
-			return ast.NewLocation(v)
+			return ast.NewLocation(v.Start, v.End)
 		default:
 			panic(errors.Errorf("unexpected type %T (%v) is given for NewIdentLocation", args[0], args[0]))
 		}

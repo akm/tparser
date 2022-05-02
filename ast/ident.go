@@ -13,8 +13,8 @@ type Location struct {
 	End   *Position
 }
 
-func NewLocation(v *token.Token) *Location {
-	return &Location{Start: v.Start, End: v.End}
+func NewLocation(start, end *runes.Position) *Location {
+	return &Location{Start: start, End: end}
 }
 
 type Ident struct {
@@ -25,7 +25,7 @@ type Ident struct {
 func NewIdent(v *token.Token) *Ident {
 	return &Ident{
 		Name:     v.RawString(),
-		Location: NewLocation(v),
+		Location: NewLocation(v.Start, v.End),
 	}
 }
 
