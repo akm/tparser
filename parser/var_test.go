@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/akm/tparser/ast"
+	"github.com/akm/tparser/ast/astcore"
 	"github.com/akm/tparser/ast/asttest"
 	"github.com/stretchr/testify/assert"
 )
@@ -194,7 +195,7 @@ func TestVarReferringType(t *testing.T) {
 							IdentList: asttest.NewIdentList("MyInteger1"),
 							Type: &ast.TypeId{
 								Ident: asttest.NewIdent("TMyInteger1"),
-								Ref:   typeDecl,
+								Ref:   astcore.NewDeclaration(typeDecl.Ident, typeDecl),
 							},
 						},
 					},
