@@ -1,6 +1,10 @@
 package ast
 
-import "strings"
+import (
+	"strings"
+
+	"github.com/akm/tparser/ast/astcore"
+)
 
 func (*Unit) isGoal() {}
 
@@ -18,6 +22,7 @@ type Unit struct {
 	InterfaceSection      *InterfaceSection
 	ImplementationSection *ImplementationSection
 	InitSection           *InitSection // optional
+	astcore.Decl
 }
 
 func (m *Unit) GetPath() string {
@@ -36,6 +41,10 @@ func (m *Unit) Children() Nodes {
 		r = append(r, m.InitSection)
 	}
 	return r
+}
+
+func (m *Unit) ToDeclarations() astcore.Declarations {
+	return astcore.Declarations{astcore.NewDeclaration(m.Ident, m)}
 }
 
 type Units []*Unit

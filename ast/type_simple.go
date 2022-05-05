@@ -3,6 +3,7 @@ package ast
 import (
 	"strings"
 
+	"github.com/akm/tparser/ast/astcore"
 	"github.com/akm/tparser/ext"
 	"github.com/pkg/errors"
 )
@@ -196,6 +197,14 @@ func (m EnumeratedType) Children() Nodes {
 	r := make(Nodes, len(m))
 	for i, e := range m {
 		r[i] = e
+	}
+	return r
+}
+
+func (s EnumeratedType) ToDeclarations() astcore.Declarations {
+	r := make(astcore.Declarations, len(s))
+	for idx, i := range s {
+		r[idx] = astcore.NewDeclaration(i.Ident, i)
 	}
 	return r
 }

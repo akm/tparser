@@ -1,6 +1,9 @@
 package ast
 
-import "github.com/pkg/errors"
+import (
+	"github.com/akm/tparser/ast/astcore"
+	"github.com/pkg/errors"
+)
 
 // - TypeSection
 //   ```
@@ -29,10 +32,15 @@ type TypeDecl struct {
 	*Ident
 	Type                 Type
 	PortabilityDirective *PortabilityDirective
+	astcore.Decl
 }
 
 func (m *TypeDecl) Children() Nodes {
 	return Nodes{m.Ident, m.Type}
+}
+
+func (m *TypeId) ToDeclarations() astcore.Declarations {
+	return astcore.Declarations{astcore.NewDeclaration(m.Ident, m)}
 }
 
 // - Type

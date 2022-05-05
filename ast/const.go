@@ -1,5 +1,7 @@
 package ast
 
+import "github.com/akm/tparser/ast/astcore"
+
 // - ConstSection
 //   ```
 //   CONST (ConstantDecl ';')...
@@ -28,6 +30,7 @@ type ConstantDecl struct {
 	Type                 Type
 	ConstExpr            *ConstExpr
 	PortabilityDirective *PortabilityDirective
+	astcore.Decl
 }
 
 func (m *ConstantDecl) Children() Nodes {
@@ -37,6 +40,10 @@ func (m *ConstantDecl) Children() Nodes {
 	}
 	r = append(r, m.ConstExpr)
 	return r
+}
+
+func (m *ConstantDecl) ToDeclarations() astcore.Declarations {
+	return astcore.Declarations{astcore.NewDeclaration(m.Ident, m)}
 }
 
 // - ConstExpr

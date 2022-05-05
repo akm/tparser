@@ -1,6 +1,9 @@
 package ast
 
-import "github.com/pkg/errors"
+import (
+	"github.com/akm/tparser/ast/astcore"
+	"github.com/pkg/errors"
+)
 
 // - ExportedHeading
 //   ```
@@ -17,6 +20,7 @@ type ExportedHeading struct {
 	*FunctionHeading
 	Directives      []Directive
 	ExternalOptions *ExternalOptions
+	astcore.Decl
 }
 
 func (m *ExportedHeading) Children() Nodes {
@@ -29,6 +33,10 @@ const (
 	FtProcedure FunctionType = iota
 	FtFunction
 )
+
+func (m *ExportedHeading) ToDeclarations() astcore.Declarations {
+	return astcore.Declarations{astcore.NewDeclaration(m.Ident, m)}
+}
 
 // - FunctionHeading
 //   ```
@@ -90,6 +98,7 @@ var (
 type FormalParm struct {
 	Opt *FormalParmOption
 	*Parameter
+	astcore.Decl
 }
 
 func (m *FormalParm) Children() Nodes {
@@ -132,6 +141,10 @@ func NewFormalParm(name interface{}, args ...interface{}) *FormalParm {
 	default:
 		panic(errors.Errorf("too many arguments for NewFormalParm: %v, %v", name, args))
 	}
+}
+
+func (m *FormalParm) ToDeclarations() astcore.Declarations {
+	return astcore.NewDeclarations(m.IdentList, m)
 }
 
 // - Parameter
