@@ -62,7 +62,7 @@ func NewNumber(v string) *ast.Number {
 	return ast.NewNumber(v)
 }
 
-func NewString(v string) *ast.String {
+func NewString(v string) *ast.StringFactor {
 	return ast.NewString(v)
 }
 

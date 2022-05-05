@@ -396,15 +396,15 @@ func (*Number) Children() Nodes {
 //   ```
 //   String
 //   ```
-func (*String) isFactor() {}
+func (*StringFactor) isFactor() {}
 
-type String struct {
+type StringFactor struct {
 	Factor
 	Value string
 }
 
-func NewString(v string) *String { return &String{Value: v} }
-func (*String) Children() Nodes {
+func NewString(v string) *StringFactor { return &StringFactor{Value: v} }
+func (*StringFactor) Children() Nodes {
 	return Nodes{}
 }
 

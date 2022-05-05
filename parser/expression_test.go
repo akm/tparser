@@ -53,7 +53,7 @@ func TestExpression(t *testing.T) {
 		&ast.Expression{
 			SimpleExpression: &ast.SimpleExpression{
 				Term: &ast.Term{
-					Factor: &ast.String{Value: "'abc'"},
+					Factor: &ast.StringFactor{Value: "'abc'"},
 				},
 			},
 		},
