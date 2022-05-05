@@ -57,6 +57,7 @@ func (*RealType) isType()       {}
 func (*RealType) isSimpleType() {}
 
 type RealType struct {
+	SimpleType
 	*Ident
 }
 
@@ -159,6 +160,7 @@ func (*OrdIdent) isSimpleType()  {}
 func (*OrdIdent) isOrdinalType() {}
 
 type OrdIdent struct {
+	OrdinalType
 	*Ident
 }
 
@@ -191,7 +193,7 @@ func (EnumeratedType) isType()        {}
 func (EnumeratedType) isSimpleType()  {}
 func (EnumeratedType) isOrdinalType() {}
 
-type EnumeratedType []*EnumeratedTypeElement
+type EnumeratedType []*EnumeratedTypeElement // must implement OrdinalType
 
 func (m EnumeratedType) Children() Nodes {
 	r := make(Nodes, len(m))
@@ -231,6 +233,7 @@ func (*SubrangeType) isSimpleType()  {}
 func (*SubrangeType) isOrdinalType() {}
 
 type SubrangeType struct {
+	OrdinalType
 	Low  ConstExpr
 	High ConstExpr
 }
