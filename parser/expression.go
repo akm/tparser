@@ -224,10 +224,10 @@ func (p *Parser) ParseStringFactor(t *token.Token, skipTypeCheck bool) (*ast.Str
 	}
 }
 
-func (p *Parser) ParseNumberFactor(t *token.Token, skipTypeCheck bool) (*ast.Number, error) {
+func (p *Parser) ParseNumberFactor(t *token.Token, skipTypeCheck bool) (*ast.NumberFactor, error) {
 	if skipTypeCheck || t.Is(token.CharacterString) {
 		p.NextToken()
-		return &ast.Number{Value: t.Value()}, nil
+		return &ast.NumberFactor{Value: t.Value()}, nil
 	} else {
 		return nil, errors.Errorf("unexpected token %s for NumberFactor", t)
 	}

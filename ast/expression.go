@@ -381,15 +381,15 @@ func (*DesignatorItemDereference) Children() Nodes {
 //   ```
 //   Number
 //   ```
-func (*Number) isFactor() {}
+func (*NumberFactor) isFactor() {}
 
-type Number struct {
+type NumberFactor struct {
 	Factor
 	Value string
 }
 
-func NewNumber(v string) *Number { return &Number{Value: v} }
-func (*Number) Children() Nodes {
+func NewNumber(v string) *NumberFactor { return &NumberFactor{Value: v} }
+func (*NumberFactor) Children() Nodes {
 	return Nodes{}
 }
 
