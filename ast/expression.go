@@ -258,6 +258,7 @@ type Factor interface {
 func (*DesignatorFactor) isFactor() {}
 
 type DesignatorFactor struct {
+	Factor
 	*Designator
 	ExprList ExprList
 }
@@ -283,6 +284,7 @@ func (m *DesignatorFactor) Children() Nodes {
 func (*Address) isFactor() {}
 
 type Address struct {
+	Factor
 	*Designator
 }
 
@@ -376,9 +378,13 @@ func (*DesignatorItemDereference) Children() Nodes {
 	return Nodes{}
 }
 
+//   ```
+//   Number
+//   ```
 func (*Number) isFactor() {}
 
 type Number struct {
+	Factor
 	Value string
 }
 
@@ -387,9 +393,13 @@ func (*Number) Children() Nodes {
 	return Nodes{}
 }
 
+//   ```
+//   String
+//   ```
 func (*String) isFactor() {}
 
 type String struct {
+	Factor
 	Value string
 }
 
@@ -402,6 +412,7 @@ func (*String) Children() Nodes {
 func (*Nil) isFactor() {}
 
 type Nil struct {
+	Factor
 }
 
 func NewNil() *Nil { return &Nil{} }
@@ -414,6 +425,7 @@ func (*Nil) Children() Nodes {
 func (*Parentheses) isFactor() {}
 
 type Parentheses struct { // Round brackets
+	Factor
 	Expression *Expression
 }
 
@@ -421,10 +433,13 @@ func (m *Parentheses) Children() Nodes {
 	return Nodes{m.Expression}
 }
 
+//   ```
+//   NOT Factor
+//   ```
 func (*Not) isFactor() {}
 
 type Not struct {
-	Factor Factor
+	Factor
 }
 
 func (m *Not) Children() Nodes {
@@ -438,6 +453,7 @@ func (SetConstructor) isFactor() {}
 //   '[' [SetElement ','...] ']'
 //   ```
 type SetConstructor struct {
+	Factor
 	SetElements []*SetElement
 }
 
@@ -472,9 +488,13 @@ func (m *SetElement) Children() Nodes {
 	return r
 }
 
+//   ```
+//   TypeId '(' Expression ')'
+//   ```
 func (*TypeCast) isFactor() {}
 
 type TypeCast struct {
+	Factor
 	TypeId     *TypeId
 	Expression Expression
 }
