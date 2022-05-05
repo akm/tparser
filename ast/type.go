@@ -80,6 +80,7 @@ type Type interface {
 func (*TypeId) isType() {}
 
 type TypeId struct {
+	Type
 	UnitId *UnitId
 	Ident  *Ident
 	Ref    *astcore.Declaration // Actual Type object

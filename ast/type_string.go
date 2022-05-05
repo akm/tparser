@@ -20,6 +20,7 @@ var stringTypeNames = ext.Strings{
 func (*StringType) isType() {}
 
 type StringType struct {
+	Type
 	Name   string
 	Length *ConstExpr
 }
