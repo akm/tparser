@@ -17,6 +17,19 @@ var stringTypeNames = ext.Strings{
 	"WIDESTRING",
 }.Set()
 
+// - StringType
+//   ```
+//   STRING
+//   ```
+//   ```
+//   ANSISTRING
+//   ```
+//   ```
+//   WIDESTRING
+//   ```
+//   ```
+//   STRING '[' ConstExpr ']'
+//   ```
 type StringType struct {
 	Type
 	Name   string

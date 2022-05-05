@@ -17,6 +17,10 @@ func NewLocation(start, end *runes.Position) *Location {
 	return &Location{Start: start, End: end}
 }
 
+// - Ident
+//   ```
+//   <identifier>
+//   ```
 type Ident struct {
 	Name     string
 	Location *Location
@@ -48,6 +52,10 @@ func (m *Ident) Children() Nodes {
 	return Nodes{}
 }
 
+// - IdentList
+//   ```
+//   Ident ','...
+//   ```
 type IdentList []*Ident
 
 func NewIdentList(args ...interface{}) IdentList {

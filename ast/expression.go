@@ -33,6 +33,10 @@ func (m *Expression) Children() Nodes {
 	return r
 }
 
+// - ExprList
+//   ```
+//   Expression ','...
+//   ```
 type ExprList []*Expression
 
 func (s ExprList) Children() Nodes {

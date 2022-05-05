@@ -9,7 +9,11 @@ import (
 //   ```
 //   USES IdentList ';'
 //   ```
-// Actually USES has not only IdentList.
+// In the uses clause of a program or library, any unit name may be followed
+// by the reserved word in and the name of a source file, with or without a
+// directory path, in single quotation marks; directory paths can be absolute
+// or relative. Examples:
+//     uses Windows, Messages, SysUtils, Strings in 'C:\Classes\Strings.pas', Classes;
 type UsesClause []*UnitRef
 
 func (s UsesClause) IdentList() IdentList {
