@@ -343,7 +343,7 @@ type DesignatorItem interface {
 
 func (DesignatorItemIdent) isDesignatorItem() {}
 
-type DesignatorItemIdent Ident
+type DesignatorItemIdent Ident // Must implement DesignatorItem, and ancestor Ident implements Node.
 
 func NewDesignatorItemIdent(v interface{}) *DesignatorItemIdent {
 	r := DesignatorItemIdent(*NewIdentFrom(v))
@@ -356,7 +356,7 @@ func (m *DesignatorItemIdent) Children() Nodes {
 
 func (DesignatorItemExprList) isDesignatorItem() {}
 
-type DesignatorItemExprList ExprList
+type DesignatorItemExprList ExprList // Must implement DesignatorItem, and ancestor ExprList implements Node.
 
 func (s DesignatorItemExprList) Children() Nodes {
 	r := make(Nodes, len(s))
@@ -369,6 +369,7 @@ func (s DesignatorItemExprList) Children() Nodes {
 func (*DesignatorItemDereference) isDesignatorItem() {}
 
 type DesignatorItemDereference struct {
+	DesignatorItem
 }
 
 func (*DesignatorItemDereference) Children() Nodes {

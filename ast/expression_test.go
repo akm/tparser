@@ -22,7 +22,6 @@ func TestExpression(t *testing.T) {
 	t.Run("DesignatorItem", func(t *testing.T) {
 		assert.Implements(t, (*DesignatorItem)(nil), &DesignatorItemIdent{})
 		assert.Implements(t, (*DesignatorItem)(nil), DesignatorItemExprList{})
-		assert.Implements(t, (*DesignatorItem)(nil), &DesignatorItemDereference{})
 	})
 	t.Run("Node", func(t *testing.T) {
 		assert.Implements(t, (*Node)(nil), &Expression{})
@@ -37,7 +36,6 @@ func TestExpression(t *testing.T) {
 		assert.Implements(t, (*Node)(nil), &Designator{})
 		assert.Implements(t, (*Node)(nil), &DesignatorItemIdent{})
 		assert.Implements(t, (*Node)(nil), &DesignatorItemExprList{})
-		assert.Implements(t, (*Node)(nil), &DesignatorItemDereference{})
 		assert.Implements(t, (*Node)(nil), &ValueFactor{})
 		assert.Implements(t, (*Node)(nil), &Number{})
 		assert.Implements(t, (*Node)(nil), &String{})
