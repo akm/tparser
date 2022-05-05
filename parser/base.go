@@ -1,6 +1,9 @@
 package parser
 
 import (
+	"log"
+	"os"
+
 	"github.com/akm/tparser/token"
 	"github.com/pkg/errors"
 )
@@ -9,14 +12,18 @@ type Parser struct {
 	tokenizer *token.Tokenizer
 	curr      *token.Token
 	context   *Context
+	logger    *log.Logger
 }
 
 func NewParser(text *[]rune, args ...interface{}) *Parser {
 	var ctx *Context
+	var logger *log.Logger
 	for _, arg := range args {
 		switch v := arg.(type) {
 		case *Context:
 			ctx = v
+		case *log.Logger:
+			logger = v
 		default:
 			panic(errors.Errorf("unexpected type %T (%v)", arg, arg))
 		}
@@ -24,9 +31,13 @@ func NewParser(text *[]rune, args ...interface{}) *Parser {
 	if ctx == nil {
 		ctx = NewContext()
 	}
+	if logger == nil {
+		logger = log.New(os.Stderr, "", log.LstdFlags|log.Llongfile)
+	}
 	return &Parser{
 		tokenizer: token.NewTokenizer(text, 0),
 		context:   ctx,
+		logger:    logger,
 	}
 }
 
@@ -95,4 +106,8 @@ func (p *Parser) Until(terminator token.Predicator, separator token.Predicator, 
 		}
 	}
 	return nil
+}
+
+func (p *Parser) Logf(format string, args ...interface{}) {
+	p.logger.Printf(format, args...)
 }
