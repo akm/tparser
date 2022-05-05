@@ -1,6 +1,9 @@
 package ast
 
-import "github.com/pkg/errors"
+import (
+	"github.com/akm/tparser/ast/astcore"
+	"github.com/pkg/errors"
+)
 
 // - UsesClause
 //   ```
@@ -23,12 +26,19 @@ func (s UsesClause) Children() Nodes {
 		r[i] = m
 	}
 	return r
+}
 
+func (s UsesClause) ToDeclarations() astcore.Declarations {
+	r := make(astcore.Declarations, len(s))
+	for idx, i := range s {
+		r[idx] = astcore.NewDeclaration(i.Ident, i)
+	}
+	return r
 }
 
 type UnitRef struct {
-	Ident *Ident
-	Path  *string
+	*Ident
+	Path *string
 }
 
 func NewUnitRef(name interface{}, paths ...string) *UnitRef {

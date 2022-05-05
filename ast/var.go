@@ -1,5 +1,7 @@
 package ast
 
+import "github.com/akm/tparser/ast/astcore"
+
 // - VarSection
 //   ```
 //   VAR (VarDecl ';')...
@@ -27,11 +29,12 @@ func (s VarSection) Children() Nodes {
 //     ```
 
 type VarDecl struct {
-	IdentList            IdentList
+	IdentList
 	Type                 Type
 	Absolute             VarDeclAbsolute
 	ConstExpr            *ConstExpr
 	PortabilityDirective *PortabilityDirective
+	astcore.Decl
 }
 
 func (m *VarDecl) Children() Nodes {
@@ -46,6 +49,10 @@ func (m *VarDecl) Children() Nodes {
 		r = append(r, m.ConstExpr)
 	}
 	return r
+}
+
+func (m *VarDecl) ToDeclarations() astcore.Declarations {
+	return astcore.NewDeclarations(m.IdentList, m)
 }
 
 type VarDeclAbsolute interface {
@@ -96,8 +103,9 @@ func (s ThreadVarSection) Children() Nodes {
 }
 
 type ThreadVarDecl struct {
-	IdentList IdentList
-	Type      Type
+	IdentList
+	Type Type
+	astcore.Decl
 }
 
 func (m *ThreadVarDecl) Children() Nodes {
@@ -106,4 +114,8 @@ func (m *ThreadVarDecl) Children() Nodes {
 		r = append(r, m.Type)
 	}
 	return r
+}
+
+func (m *ThreadVarDecl) ToDeclarations() astcore.Declarations {
+	return astcore.NewDeclarations(m.IdentList, m)
 }

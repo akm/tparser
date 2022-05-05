@@ -31,5 +31,6 @@ func (p *Parser) ParseUsesClause() (ast.UsesClause, error) {
 	}); err != nil {
 		return nil, err
 	}
+	p.context.DeclarationMap.SetDecl(r)
 	return r, nil
 }

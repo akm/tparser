@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/akm/tparser/ast"
+	"github.com/akm/tparser/ast/astcore"
 	"github.com/akm/tparser/ast/asttest"
 	"github.com/stretchr/testify/assert"
 )
@@ -72,7 +73,7 @@ func TestFunctionHeadingMethods(t *testing.T) {
 		assert.Equal(t, ast.Nodes{ident1, parameters}, heading.Children())
 
 		identNames := []string{}
-		ast.WalkDown(heading, func(node ast.Node) error {
+		astcore.WalkDown(heading, func(node ast.Node) error {
 			if ident, ok := node.(*ast.Ident); ok {
 				identNames = append(identNames, ident.Name)
 			}

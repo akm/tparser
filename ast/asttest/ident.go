@@ -4,12 +4,13 @@ import (
 	"testing"
 
 	"github.com/akm/tparser/ast"
+	"github.com/akm/tparser/ast/astcore"
 	"github.com/akm/tparser/token"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 )
 
-func NewIdent(arg interface{}, locations ...*ast.IdentLocation) *ast.Ident {
+func NewIdent(arg interface{}, locations ...*ast.Location) *ast.Ident {
 	var r *ast.Ident
 	switch v := arg.(type) {
 	case string:
@@ -112,23 +113,23 @@ func castInts(args []interface{}) []int {
 // - startLine, startCol, startIndex, endCol
 // - startLine, startCol, startIndex, endCol, endIndex
 // - startLine, startCol, startIndex, endLine, endCol, endIndex
-func NewIdentLocation(args ...interface{}) *ast.IdentLocation {
+func NewIdentLocation(args ...interface{}) *ast.Location {
 	switch len(args) {
 	case 1:
 		switch v := args[0].(type) {
-		case ast.IdentLocation:
+		case ast.Location:
 			return &v
-		case *ast.IdentLocation:
+		case *ast.Location:
 			return v
 		case token.Token:
-			return ast.NewIdentLocation(&v)
+			return ast.NewLocation(v.Start, v.End)
 		case *token.Token:
-			return ast.NewIdentLocation(v)
+			return ast.NewLocation(v.Start, v.End)
 		default:
 			panic(errors.Errorf("unexpected type %T (%v) is given for NewIdentLocation", args[0], args[0]))
 		}
 	case 2:
-		return &ast.IdentLocation{Start: castPosition(args[0]), End: castPosition(args[1])}
+		return &ast.Location{Start: castPosition(args[0]), End: castPosition(args[1])}
 	case 4:
 		vals := castInts(args)
 		startLine, startCol, startIndex, endCol := vals[0], vals[1], vals[2], vals[3]
@@ -142,7 +143,7 @@ func NewIdentLocation(args ...interface{}) *ast.IdentLocation {
 		return NewIdentLocation(startLine, startCol, startIndex, startLine, endCol, endIndex)
 	case 6:
 		vals := castInts(args)
-		return &ast.IdentLocation{Start: NewPosition(vals[0:3]...), End: NewPosition(vals[3:6]...)}
+		return &ast.Location{Start: NewPosition(vals[0:3]...), End: NewPosition(vals[3:6]...)}
 	default:
 		panic(errors.Errorf("unexpected number of arguments (%d) are given for NewIdentLocation", len(args)))
 	}
@@ -153,7 +154,7 @@ func ClearLocation(ident *ast.Ident) {
 }
 
 func ClearLocations(t *testing.T, node ast.Node) {
-	err := ast.WalkDown(node, func(n ast.Node) error {
+	err := astcore.WalkDown(node, func(n ast.Node) error {
 		switch v := n.(type) {
 		case *ast.Ident:
 			ClearLocation(v)

@@ -1,5 +1,11 @@
 package ast
 
+import (
+	"strings"
+
+	"github.com/akm/tparser/ast/astcore"
+)
+
 func (*Unit) isGoal() {}
 
 // - Unit
@@ -10,12 +16,13 @@ func (*Unit) isGoal() {}
 //   InitSection '.'
 //   ```
 type Unit struct {
-	Path                  string
-	Ident                 *Ident
+	Path string
+	*Ident
 	PortabilityDirective  *PortabilityDirective // optional
 	InterfaceSection      *InterfaceSection
 	ImplementationSection *ImplementationSection
 	InitSection           *InitSection // optional
+	astcore.Decl
 }
 
 func (m *Unit) GetPath() string {
@@ -34,6 +41,22 @@ func (m *Unit) Children() Nodes {
 		r = append(r, m.InitSection)
 	}
 	return r
+}
+
+func (m *Unit) ToDeclarations() astcore.Declarations {
+	return astcore.Declarations{astcore.NewDeclaration(m.Ident, m)}
+}
+
+type Units []*Unit
+
+func (s Units) ByName(name string) *Unit {
+	key := strings.ToLower(name)
+	for _, u := range s {
+		if strings.ToLower(u.Ident.Name) == key {
+			return u
+		}
+	}
+	return nil
 }
 
 // - InterfaceSection

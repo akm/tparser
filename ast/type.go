@@ -1,6 +1,9 @@
 package ast
 
-import "github.com/pkg/errors"
+import (
+	"github.com/akm/tparser/ast/astcore"
+	"github.com/pkg/errors"
+)
 
 // - TypeSection
 //   ```
@@ -26,13 +29,18 @@ func (s TypeSection) Children() Nodes {
 //   Ident '=' [TYPE] RestrictedType [PortabilityDirective]
 //   ```
 type TypeDecl struct {
-	Ident                *Ident
+	*Ident
 	Type                 Type
 	PortabilityDirective *PortabilityDirective
+	astcore.Decl
 }
 
 func (m *TypeDecl) Children() Nodes {
 	return Nodes{m.Ident, m.Type}
+}
+
+func (m *TypeDecl) ToDeclarations() astcore.Declarations {
+	return astcore.Declarations{astcore.NewDeclaration(m.Ident, m)}
 }
 
 // - Type
@@ -74,6 +82,7 @@ func (*TypeId) isType() {}
 type TypeId struct {
 	UnitId *UnitId
 	Ident  *Ident
+	Ref    *astcore.Declaration // Actual Type object
 }
 
 func NewTypeId(unitIdOrIdent interface{}, args ...interface{}) *TypeId {

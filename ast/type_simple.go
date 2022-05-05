@@ -3,6 +3,7 @@ package ast
 import (
 	"strings"
 
+	"github.com/akm/tparser/ast/astcore"
 	"github.com/akm/tparser/ext"
 	"github.com/pkg/errors"
 )
@@ -56,7 +57,7 @@ func (*RealType) isType()       {}
 func (*RealType) isSimpleType() {}
 
 type RealType struct {
-	Name *Ident
+	*Ident
 }
 
 func NewRealType(name interface{}) *RealType {
@@ -64,16 +65,16 @@ func NewRealType(name interface{}) *RealType {
 	case *RealType:
 		return v
 	case Ident:
-		return &RealType{Name: &v}
+		return &RealType{Ident: &v}
 	case *Ident:
-		return &RealType{Name: v}
+		return &RealType{Ident: v}
 	default:
 		panic(errors.Errorf("invalid type %T for NewRealType %+v", name, name))
 	}
 }
 
 func (m *RealType) Children() Nodes {
-	return Nodes{m.Name}
+	return Nodes{m.Ident}
 }
 
 // - OrdinalType
@@ -158,7 +159,7 @@ func (*OrdIdent) isSimpleType()  {}
 func (*OrdIdent) isOrdinalType() {}
 
 type OrdIdent struct {
-	Name *Ident
+	*Ident
 }
 
 func NewOrdIdent(name interface{}) *OrdIdent {
@@ -166,16 +167,16 @@ func NewOrdIdent(name interface{}) *OrdIdent {
 	case *OrdIdent:
 		return v
 	case Ident:
-		return &OrdIdent{Name: &v}
+		return &OrdIdent{Ident: &v}
 	case *Ident:
-		return &OrdIdent{Name: v}
+		return &OrdIdent{Ident: v}
 	default:
 		panic(errors.Errorf("invalid type %T for NewOrdIndent %+v", name, name))
 	}
 }
 
 func (m *OrdIdent) Children() Nodes {
-	return Nodes{m.Name}
+	return Nodes{m.Ident}
 }
 
 // - EnumeratedType
@@ -200,8 +201,16 @@ func (m EnumeratedType) Children() Nodes {
 	return r
 }
 
+func (s EnumeratedType) ToDeclarations() astcore.Declarations {
+	r := make(astcore.Declarations, len(s))
+	for idx, i := range s {
+		r[idx] = astcore.NewDeclaration(i.Ident, i)
+	}
+	return r
+}
+
 type EnumeratedTypeElement struct {
-	Ident     *Ident
+	*Ident
 	ConstExpr *ConstExpr
 }
 

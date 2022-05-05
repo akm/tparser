@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/akm/tparser/ast"
+	"github.com/akm/tparser/ast/astcore"
 	"github.com/akm/tparser/ast/asttest"
 	"github.com/stretchr/testify/assert"
 )
@@ -36,8 +37,8 @@ func TestUnitWithVarSection(t *testing.T) {
 			InterfaceSection: &ast.InterfaceSection{
 				InterfaceDecls: ast.InterfaceDecls{
 					ast.VarSection{
-						{IdentList: asttest.NewIdentList("I"), Type: &ast.OrdIdent{Name: asttest.NewIdent("Integer")}},
-						{IdentList: asttest.NewIdentList("X", "Y"), Type: &ast.RealType{Name: asttest.NewIdent("Real")}},
+						{IdentList: asttest.NewIdentList("I"), Type: &ast.OrdIdent{Ident: asttest.NewIdent("Integer")}},
+						{IdentList: asttest.NewIdentList("X", "Y"), Type: &ast.RealType{Ident: asttest.NewIdent("Real")}},
 					},
 				},
 			},
@@ -63,13 +64,13 @@ func TestUnitWithVarSection(t *testing.T) {
 			InterfaceSection: &ast.InterfaceSection{
 				InterfaceDecls: []ast.InterfaceDecl{
 					ast.VarSection{
-						{IdentList: asttest.NewIdentList("X", "Y", "Z"), Type: &ast.RealType{Name: asttest.NewIdent("Double")}},
-						{IdentList: asttest.NewIdentList("I", "J", "K"), Type: &ast.OrdIdent{Name: asttest.NewIdent("Integer")}},
+						{IdentList: asttest.NewIdentList("X", "Y", "Z"), Type: &ast.RealType{Ident: asttest.NewIdent("Double")}},
+						{IdentList: asttest.NewIdentList("I", "J", "K"), Type: &ast.OrdIdent{Ident: asttest.NewIdent("Integer")}},
 					},
 					ast.VarSection{
 						{IdentList: asttest.NewIdentList("Digit"), Type: &ast.SubrangeType{Low: *asttest.NewConstExpr(asttest.NewNumber("0")), High: *asttest.NewConstExpr(asttest.NewNumber("9"))}},
-						{IdentList: asttest.NewIdentList("Okay"), Type: &ast.OrdIdent{Name: asttest.NewIdent("Boolean")}},
-						{IdentList: asttest.NewIdentList("A"), Type: &ast.OrdIdent{Name: asttest.NewIdent("Integer")}, ConstExpr: asttest.NewExpression(asttest.NewNumber("7"))},
+						{IdentList: asttest.NewIdentList("Okay"), Type: &ast.OrdIdent{Ident: asttest.NewIdent("Boolean")}},
+						{IdentList: asttest.NewIdentList("A"), Type: &ast.OrdIdent{Ident: asttest.NewIdent("Integer")}, ConstExpr: asttest.NewExpression(asttest.NewNumber("7"))},
 					},
 				},
 			},
@@ -90,7 +91,7 @@ func TestUnitWithVarSection(t *testing.T) {
 			InterfaceSection: &ast.InterfaceSection{
 				InterfaceDecls: []ast.InterfaceDecl{
 					ast.ThreadVarSection{
-						{IdentList: asttest.NewIdentList("X"), Type: &ast.OrdIdent{Name: asttest.NewIdent("Integer")}},
+						{IdentList: asttest.NewIdentList("X"), Type: &ast.OrdIdent{Ident: asttest.NewIdent("Integer")}},
 					},
 				},
 			},
@@ -124,7 +125,7 @@ func TestVarSectionl(t *testing.T) {
 			},
 			&ast.VarDecl{
 				IdentList: asttest.NewIdentList(asttest.NewIdent("StrLen", asttest.NewIdentLocation(3, 4, 25, 10))),
-				Type:      &ast.OrdIdent{Name: asttest.NewIdent("Byte", asttest.NewIdentLocation(3, 12, 33, 16))},
+				Type:      &ast.OrdIdent{Ident: asttest.NewIdent("Byte", asttest.NewIdentLocation(3, 12, 33, 16))},
 				Absolute:  asttest.NewVarDeclAbsoluteIdent(asttest.NewIdent("Str", asttest.NewIdentLocation(3, 26, 47, 29))),
 			},
 		},
@@ -135,7 +136,7 @@ func TestVarSectionl(t *testing.T) {
 		ast.VarSection{
 			{
 				IdentList: asttest.NewIdentList(asttest.NewIdent("A", asttest.NewIdentLocation(1, 5, 4, 6))),
-				Type:      &ast.OrdIdent{Name: asttest.NewIdent("Integer", asttest.NewIdentLocation(1, 8, 7, 15))},
+				Type:      &ast.OrdIdent{Ident: asttest.NewIdent("Integer", asttest.NewIdentLocation(1, 8, 7, 15))},
 				ConstExpr: asttest.NewExpression(asttest.NewNumber("7")),
 			},
 		},
@@ -154,8 +155,53 @@ func TestVarSectionl(t *testing.T) {
 				Type:      &ast.SubrangeType{Low: *asttest.NewConstExpr(asttest.NewNumber("0")), High: *asttest.NewConstExpr(asttest.NewNumber("9"))}},
 			{
 				IdentList: asttest.NewIdentList(asttest.NewIdent("Okay", asttest.NewIdentLocation(3, 5, 26, 9))),
-				Type:      &ast.OrdIdent{Name: asttest.NewIdent("Boolean", asttest.NewIdentLocation(3, 11, 32, 18))},
+				Type:      &ast.OrdIdent{Ident: asttest.NewIdent("Boolean", asttest.NewIdentLocation(3, 11, 32, 18))},
 			},
+		},
+	)
+}
+
+func TestVarReferringType(t *testing.T) {
+	run := func(name string, text []rune, expected *ast.Unit) {
+		t.Run(name, func(t *testing.T) {
+			parser := NewParser(&text)
+			parser.NextToken()
+			res, err := parser.ParseUnit()
+			if assert.NoError(t, err) {
+				asttest.ClearLocations(t, res)
+				assert.Equal(t, expected, res)
+			}
+		})
+	}
+
+	typeDecl := &ast.TypeDecl{Ident: asttest.NewIdent("TMyInteger1"), Type: &ast.OrdIdent{Ident: asttest.NewIdent("INTEGER")}}
+
+	run(
+		"reference from var to type in unit",
+		[]rune(`
+		UNIT Unit1;
+		INTERFACE
+		TYPE TMyInteger1 = INTEGER;
+		VAR MyInteger1: TMyInteger1;
+		IMPLEMENTATION
+		END.`),
+		&ast.Unit{
+			Ident: asttest.NewIdent("Unit1"),
+			InterfaceSection: &ast.InterfaceSection{
+				InterfaceDecls: []ast.InterfaceDecl{
+					ast.TypeSection{typeDecl},
+					ast.VarSection{
+						{
+							IdentList: asttest.NewIdentList("MyInteger1"),
+							Type: &ast.TypeId{
+								Ident: asttest.NewIdent("TMyInteger1"),
+								Ref:   astcore.NewDeclaration(typeDecl.Ident, typeDecl),
+							},
+						},
+					},
+				},
+			},
+			ImplementationSection: &ast.ImplementationSection{},
 		},
 	)
 }

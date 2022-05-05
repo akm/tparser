@@ -1,6 +1,9 @@
 package ast
 
-import "github.com/pkg/errors"
+import (
+	"github.com/akm/tparser/ast/astcore"
+	"github.com/pkg/errors"
+)
 
 // - ExportedHeading
 //   ```
@@ -14,9 +17,10 @@ import "github.com/pkg/errors"
 func (*ExportedHeading) canBeInterfaceDecl() {}
 
 type ExportedHeading struct {
-	FunctionHeading *FunctionHeading
+	*FunctionHeading
 	Directives      []Directive
 	ExternalOptions *ExternalOptions
+	astcore.Decl
 }
 
 func (m *ExportedHeading) Children() Nodes {
@@ -29,6 +33,10 @@ const (
 	FtProcedure FunctionType = iota
 	FtFunction
 )
+
+func (m *ExportedHeading) ToDeclarations() astcore.Declarations {
+	return astcore.Declarations{astcore.NewDeclaration(m.Ident, m)}
+}
 
 // - FunctionHeading
 //   ```
@@ -44,8 +52,8 @@ const (
 func (*FunctionHeading) isExportedHeading() {}
 
 type FunctionHeading struct {
-	Type             FunctionType
-	Ident            *Ident
+	Type FunctionType
+	*Ident
 	FormalParameters FormalParameters
 	ReturnType       Type
 }
@@ -90,6 +98,7 @@ var (
 type FormalParm struct {
 	Opt *FormalParmOption
 	*Parameter
+	astcore.Decl
 }
 
 func (m *FormalParm) Children() Nodes {
@@ -134,6 +143,10 @@ func NewFormalParm(name interface{}, args ...interface{}) *FormalParm {
 	}
 }
 
+func (m *FormalParm) ToDeclarations() astcore.Declarations {
+	return astcore.NewDeclarations(m.IdentList, m)
+}
+
 // - Parameter
 //   ```
 //   IdentList [':' ([ARRAY OF] SimpleType | STRING | FILE)]
@@ -174,7 +187,7 @@ func NewArrayParameterType(arg interface{}) *ParameterType {
 }
 
 type Parameter struct {
-	IdentList IdentList
+	IdentList
 	Type      *ParameterType
 	ConstExpr *ConstExpr
 }

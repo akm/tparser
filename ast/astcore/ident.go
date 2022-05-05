@@ -1,4 +1,4 @@
-package ast
+package astcore
 
 import (
 	"github.com/akm/tparser/runes"
@@ -7,26 +7,25 @@ import (
 )
 
 type Position = runes.Position
-
-type IdentLocation struct {
-	// Path string
+type Location struct {
+	Path  string
 	Start *Position
 	End   *Position
 }
 
-func NewIdentLocation(v *token.Token) *IdentLocation {
-	return &IdentLocation{Start: v.Start, End: v.End}
+func NewLocation(start, end *runes.Position) *Location {
+	return &Location{Start: start, End: end}
 }
 
 type Ident struct {
 	Name     string
-	Location *IdentLocation
+	Location *Location
 }
 
 func NewIdent(v *token.Token) *Ident {
 	return &Ident{
 		Name:     v.RawString(),
-		Location: NewIdentLocation(v),
+		Location: NewLocation(v.Start, v.End),
 	}
 }
 
