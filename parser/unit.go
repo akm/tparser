@@ -22,6 +22,7 @@ func (p *Parser) ParseUnit() (*ast.Unit, error) {
 	res := &ast.Unit{
 		Ident: ast.NewIdent(ident),
 	}
+
 	t := p.NextToken()
 	if t.Type == token.PortabilityDirective {
 		s := ast.PortabilityDirective(t.Value())
@@ -48,6 +49,7 @@ func (p *Parser) ParseUnit() (*ast.Unit, error) {
 	}
 	res.InterfaceSection = intf
 	res.ImplementationSection = impl
+	p.context.DeclarationMap.SetDecl(res)
 	return res, nil
 }
 

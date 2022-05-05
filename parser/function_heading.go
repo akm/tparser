@@ -29,6 +29,8 @@ func (p *Parser) ParseExportedHeading() (*ast.ExportedHeading, error) {
 		return nil, err
 	}
 	r := &ast.ExportedHeading{FunctionHeading: functionHeading}
+	p.context.DeclarationMap.SetDecl(r)
+
 	p.NextToken()
 	if p.CurrentToken().Is(token.Directive) {
 		r.Directives = []ast.Directive{}
@@ -205,6 +207,7 @@ func (p *Parser) ParseFormalParm() (*ast.FormalParm, error) {
 		return nil, err
 	}
 	r.Parameter = parameter
+	p.context.DeclarationMap.SetDecl(r)
 	return r, nil
 }
 

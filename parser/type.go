@@ -49,6 +49,7 @@ func (p *Parser) ParseTypeDecl() (*ast.TypeDecl, error) {
 		return nil, err
 	}
 	res.Type = typ
+	p.context.DeclarationMap.SetDecl(res)
 
 	{
 		t := p.CurrentToken()
@@ -61,6 +62,7 @@ func (p *Parser) ParseTypeDecl() (*ast.TypeDecl, error) {
 			p.NextToken()
 		}
 	}
+
 	return res, nil
 }
 

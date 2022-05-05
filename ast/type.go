@@ -39,7 +39,7 @@ func (m *TypeDecl) Children() Nodes {
 	return Nodes{m.Ident, m.Type}
 }
 
-func (m *TypeId) ToDeclarations() astcore.Declarations {
+func (m *TypeDecl) ToDeclarations() astcore.Declarations {
 	return astcore.Declarations{astcore.NewDeclaration(m.Ident, m)}
 }
 
