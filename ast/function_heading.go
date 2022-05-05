@@ -21,6 +21,7 @@ type ExportedHeading struct {
 	Directives      []Directive
 	ExternalOptions *ExternalOptions
 	astcore.Decl
+	InterfaceDecl
 }
 
 func (m *ExportedHeading) Children() Nodes {

@@ -8,7 +8,7 @@ import "github.com/akm/tparser/ast/astcore"
 //   ```
 func (VarSection) canBeInterfaceDecl() {}
 
-type VarSection []*VarDecl
+type VarSection []*VarDecl // must implement InterfaceDecl
 
 func (s VarSection) Children() Nodes {
 	r := make(Nodes, len(s))
@@ -92,7 +92,7 @@ type VarDeclAbsoluteConstExpr ConstExpr
 // • cannot specify the absolute directive.
 func (ThreadVarSection) canBeInterfaceDecl() {}
 
-type ThreadVarSection []*ThreadVarDecl
+type ThreadVarSection []*ThreadVarDecl // must implement InterfaceDecl
 
 func (s ThreadVarSection) Children() Nodes {
 	r := make(Nodes, len(s))
