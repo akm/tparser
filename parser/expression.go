@@ -218,7 +218,7 @@ func (p *Parser) ParseFactor() (ast.Factor, error) {
 func (p *Parser) ParseStringFactor(t *token.Token, skipTypeCheck bool) (*ast.String, error) {
 	if skipTypeCheck || t.Is(token.CharacterString) {
 		p.NextToken()
-		return &ast.String{ValueFactor: ast.ValueFactor{Value: t.Value()}}, nil
+		return &ast.String{Value: t.Value()}, nil
 	} else {
 		return nil, errors.Errorf("unexpected token %s for StringFactor", t)
 	}
@@ -227,7 +227,7 @@ func (p *Parser) ParseStringFactor(t *token.Token, skipTypeCheck bool) (*ast.Str
 func (p *Parser) ParseNumberFactor(t *token.Token, skipTypeCheck bool) (*ast.Number, error) {
 	if skipTypeCheck || t.Is(token.CharacterString) {
 		p.NextToken()
-		return &ast.Number{ValueFactor: ast.ValueFactor{Value: t.Value()}}, nil
+		return &ast.Number{Value: t.Value()}, nil
 	} else {
 		return nil, errors.Errorf("unexpected token %s for NumberFactor", t)
 	}

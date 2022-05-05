@@ -36,9 +36,7 @@ func TestExpression(t *testing.T) {
 		&ast.Expression{
 			SimpleExpression: &ast.SimpleExpression{
 				Term: &ast.Term{
-					Factor: &ast.Number{
-						ValueFactor: ast.ValueFactor{Value: "7"},
-					},
+					Factor: &ast.Number{Value: "7"},
 				},
 			},
 		},
@@ -55,9 +53,7 @@ func TestExpression(t *testing.T) {
 		&ast.Expression{
 			SimpleExpression: &ast.SimpleExpression{
 				Term: &ast.Term{
-					Factor: &ast.String{
-						ValueFactor: ast.ValueFactor{Value: "'abc'"},
-					},
+					Factor: &ast.String{Value: "'abc'"},
 				},
 			},
 		},
@@ -78,7 +74,7 @@ func TestExpression(t *testing.T) {
 	run(
 		"integer constant", false,
 		[]rune(`15`),
-		asttest.NewExpression(&ast.Number{ValueFactor: ast.ValueFactor{Value: "15"}}),
+		asttest.NewExpression(&ast.Number{Value: "15"}),
 	)
 
 	run(

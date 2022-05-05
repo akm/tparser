@@ -376,23 +376,27 @@ func (*DesignatorItemDereference) Children() Nodes {
 	return Nodes{}
 }
 
-func (ValueFactor) isFactor() {}
+func (*Number) isFactor() {}
 
-type ValueFactor struct {
+type Number struct {
 	Value string
 }
 
-func (*ValueFactor) Children() Nodes {
+func NewNumber(v string) *Number { return &Number{Value: v} }
+func (*Number) Children() Nodes {
 	return Nodes{}
 }
 
-type Number struct{ ValueFactor }
+func (*String) isFactor() {}
 
-func NewNumber(v string) *Number { return &Number{ValueFactor: ValueFactor{Value: v}} }
+type String struct {
+	Value string
+}
 
-type String struct{ ValueFactor }
-
-func NewString(v string) *String { return &String{ValueFactor: ValueFactor{Value: v}} }
+func NewString(v string) *String { return &String{Value: v} }
+func (*String) Children() Nodes {
+	return Nodes{}
+}
 
 // Ninl
 func (*Nil) isFactor() {}
