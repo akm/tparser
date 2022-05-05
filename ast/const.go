@@ -6,10 +6,9 @@ import "github.com/akm/tparser/ast/astcore"
 //   ```
 //   CONST (ConstantDecl ';')...
 //   ```
-func (ConstSection) canBeInterfaceDecl() {}
-
 type ConstSection []*ConstantDecl // must implement InterfaceDecl
 
+func (ConstSection) canBeInterfaceDecl() {}
 func (s ConstSection) Children() Nodes {
 	r := make(Nodes, len(s))
 	for i, m := range s {

@@ -6,8 +6,6 @@ import (
 	"github.com/akm/tparser/ast/astcore"
 )
 
-func (*Unit) isGoal() {}
-
 // - Unit
 //   ```
 //   UNIT Ident [PortabilityDirective] ';'
@@ -25,6 +23,7 @@ type Unit struct {
 	astcore.Decl
 }
 
+func (*Unit) isGoal() {}
 func (m *Unit) GetPath() string {
 	return m.Path
 }

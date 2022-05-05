@@ -14,8 +14,6 @@ import (
 //   ```
 //
 //
-func (*ExportedHeading) canBeInterfaceDecl() {}
-
 type ExportedHeading struct {
 	*FunctionHeading
 	Directives      []Directive
@@ -24,9 +22,8 @@ type ExportedHeading struct {
 	InterfaceDecl
 }
 
-func (m *ExportedHeading) Children() Nodes {
-	return Nodes{m.FunctionHeading}
-}
+func (*ExportedHeading) canBeInterfaceDecl() {}
+func (m *ExportedHeading) Children() Nodes   { return Nodes{m.FunctionHeading} }
 
 type FunctionType uint
 
@@ -50,8 +47,6 @@ func (m *ExportedHeading) ToDeclarations() astcore.Declarations {
 //   PROCEDURE Ident [FormalParameters]
 //   ```
 
-func (*FunctionHeading) isExportedHeading() {}
-
 type FunctionHeading struct {
 	Type FunctionType
 	*Ident
@@ -59,6 +54,7 @@ type FunctionHeading struct {
 	ReturnType       Type
 }
 
+func (*FunctionHeading) isExportedHeading() {}
 func (s FunctionHeading) Children() Nodes {
 	r := Nodes{s.Ident}
 	if s.FormalParameters != nil {
