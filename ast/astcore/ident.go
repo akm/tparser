@@ -1,4 +1,4 @@
-package ast
+package astcore
 
 import (
 	"github.com/akm/tparser/runes"

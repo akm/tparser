@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/akm/tparser/ast"
+	"github.com/akm/tparser/ast/astcore"
 	"github.com/akm/tparser/token"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
@@ -153,7 +154,7 @@ func ClearLocation(ident *ast.Ident) {
 }
 
 func ClearLocations(t *testing.T, node ast.Node) {
-	err := ast.WalkDown(node, func(n ast.Node) error {
+	err := astcore.WalkDown(node, func(n ast.Node) error {
 		switch v := n.(type) {
 		case *ast.Ident:
 			ClearLocation(v)

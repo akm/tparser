@@ -1,4 +1,4 @@
-package ast
+package astcore
 
 import "github.com/pkg/errors"
 
