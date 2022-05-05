@@ -215,19 +215,19 @@ func (p *Parser) ParseFactor() (ast.Factor, error) {
 	return nil, errors.Errorf("unexpected token %s", t0)
 }
 
-func (p *Parser) ParseStringFactor(t *token.Token, skipTypeCheck bool) (*ast.String, error) {
+func (p *Parser) ParseStringFactor(t *token.Token, skipTypeCheck bool) (*ast.StringFactor, error) {
 	if skipTypeCheck || t.Is(token.CharacterString) {
 		p.NextToken()
-		return &ast.String{ValueFactor: ast.ValueFactor{Value: t.Value()}}, nil
+		return &ast.StringFactor{Value: t.Value()}, nil
 	} else {
 		return nil, errors.Errorf("unexpected token %s for StringFactor", t)
 	}
 }
 
-func (p *Parser) ParseNumberFactor(t *token.Token, skipTypeCheck bool) (*ast.Number, error) {
+func (p *Parser) ParseNumberFactor(t *token.Token, skipTypeCheck bool) (*ast.NumberFactor, error) {
 	if skipTypeCheck || t.Is(token.CharacterString) {
 		p.NextToken()
-		return &ast.Number{ValueFactor: ast.ValueFactor{Value: t.Value()}}, nil
+		return &ast.NumberFactor{Value: t.Value()}, nil
 	} else {
 		return nil, errors.Errorf("unexpected token %s for NumberFactor", t)
 	}

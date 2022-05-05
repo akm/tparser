@@ -6,10 +6,9 @@ import "github.com/akm/tparser/ast/astcore"
 //   ```
 //   VAR (VarDecl ';')...
 //   ```
+type VarSection []*VarDecl // must implement InterfaceDecl
+
 func (VarSection) canBeInterfaceDecl() {}
-
-type VarSection []*VarDecl
-
 func (s VarSection) Children() Nodes {
 	r := make(Nodes, len(s))
 	for idx, i := range s {
@@ -27,7 +26,6 @@ func (s VarSection) Children() Nodes {
 //     ```
 //     IdentList ':' Type [ABSOLUTE (Ident) | '=' ConstExpr] [PortabilityDirective]
 //     ```
-
 type VarDecl struct {
 	IdentList
 	Type                 Type
@@ -60,8 +58,6 @@ type VarDeclAbsolute interface {
 	isVarDeclAbsolute()
 }
 
-func (VarDeclAbsoluteIdent) isVarDeclAbsolute() {}
-
 type VarDeclAbsoluteIdent Ident
 
 func NewVarDeclAbsoluteIdent(arg interface{}) *VarDeclAbsoluteIdent {
@@ -77,23 +73,24 @@ func NewVarDeclAbsoluteIdent(arg interface{}) *VarDeclAbsoluteIdent {
 	}
 }
 
+func (VarDeclAbsoluteIdent) isVarDeclAbsolute() {}
 func (*VarDeclAbsoluteIdent) Children() Nodes {
 	return Nodes{}
 }
 
-func (*VarDeclAbsoluteConstExpr) isVarDeclAbsolute() {}
-
 type VarDeclAbsoluteConstExpr ConstExpr
+
+func (*VarDeclAbsoluteConstExpr) isVarDeclAbsolute() {}
 
 // threadvar X: Integer;
 // Thread-variable declarations
 // • cannot occur within a procedure or function.
 // • cannot include initializations.
 // • cannot specify the absolute directive.
+
+type ThreadVarSection []*ThreadVarDecl // must implement InterfaceDecl
+
 func (ThreadVarSection) canBeInterfaceDecl() {}
-
-type ThreadVarSection []*ThreadVarDecl
-
 func (s ThreadVarSection) Children() Nodes {
 	r := make(Nodes, len(s))
 	for idx, i := range s {

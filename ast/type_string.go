@@ -17,9 +17,8 @@ var stringTypeNames = ext.Strings{
 	"WIDESTRING",
 }.Set()
 
-func (*StringType) isType() {}
-
 type StringType struct {
+	Type
 	Name   string
 	Length *ConstExpr
 }
@@ -43,6 +42,7 @@ func NewStringType(name string, args ...interface{}) *StringType {
 	}
 }
 
+func (*StringType) isType() {}
 func (m *StringType) Children() Nodes {
 	r := Nodes{}
 	if m.Length != nil {

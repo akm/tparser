@@ -9,10 +9,9 @@ import (
 //   ```
 //   TYPE (TypeDecl ';')...
 //   ```
+type TypeSection []*TypeDecl // must implement InterfaceDecl
+
 func (TypeSection) canBeInterfaceDecl() {}
-
-type TypeSection []*TypeDecl
-
 func (s TypeSection) Children() Nodes {
 	r := make(Nodes, len(s))
 	for i, m := range s {
@@ -77,9 +76,8 @@ type Type interface {
 //   ```
 //   [UnitId '.'] <type-identifier>
 //   ```
-func (*TypeId) isType() {}
-
 type TypeId struct {
+	Type
 	UnitId *UnitId
 	Ident  *Ident
 	Ref    *astcore.Declaration // Actual Type object
@@ -98,6 +96,7 @@ func NewTypeId(unitIdOrIdent interface{}, args ...interface{}) *TypeId {
 	}
 }
 
+func (*TypeId) isType() {}
 func (m *TypeId) Children() Nodes {
 	r := Nodes{}
 	if m.UnitId != nil {

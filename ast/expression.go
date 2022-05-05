@@ -134,9 +134,7 @@ type AddOpTerm struct {
 	*Term
 }
 
-func (m *AddOpTerm) Children() Nodes {
-	return Nodes{m.Term}
-}
+func (m *AddOpTerm) Children() Nodes { return Nodes{m.Term} }
 
 type AddOpTerms []*AddOpTerm
 
@@ -207,9 +205,7 @@ type MulOpFactor struct {
 	Factor
 }
 
-func (m *MulOpFactor) Children() Nodes {
-	return Nodes{m.Factor}
-}
+func (m *MulOpFactor) Children() Nodes { return Nodes{m.Factor} }
 
 type MulOpFactors []*MulOpFactor
 
@@ -255,9 +251,9 @@ type Factor interface {
 }
 
 // Designator ['(' ExprList ')']
-func (*DesignatorFactor) isFactor() {}
 
 type DesignatorFactor struct {
+	Factor
 	*Designator
 	ExprList ExprList
 }
@@ -271,6 +267,7 @@ func NewDesignatorFactor(arg interface{}) *DesignatorFactor {
 	}
 }
 
+func (*DesignatorFactor) isFactor() {}
 func (m *DesignatorFactor) Children() Nodes {
 	r := Nodes{m.Designator}
 	if m.ExprList != nil {
@@ -280,15 +277,14 @@ func (m *DesignatorFactor) Children() Nodes {
 }
 
 // '@' Designator
-func (*Address) isFactor() {}
 
 type Address struct {
+	Factor
 	*Designator
 }
 
-func (m *Address) Children() Nodes {
-	return Nodes{m.Designator}
-}
+func (m *Address) Children() Nodes { return Nodes{m.Designator} }
+func (*Address) isFactor()         {}
 
 // - Designator
 //   ```
@@ -341,23 +337,19 @@ type DesignatorItem interface {
 	isDesignatorItem()
 }
 
-func (DesignatorItemIdent) isDesignatorItem() {}
-
-type DesignatorItemIdent Ident
+type DesignatorItemIdent Ident // Must implement DesignatorItem, and ancestor Ident implements Node.
 
 func NewDesignatorItemIdent(v interface{}) *DesignatorItemIdent {
 	r := DesignatorItemIdent(*NewIdentFrom(v))
 	return &r
 }
 
-func (m *DesignatorItemIdent) Children() Nodes {
-	return Nodes{}
-}
+func (m *DesignatorItemIdent) Children() Nodes { return Nodes{} }
+func (DesignatorItemIdent) isDesignatorItem()  {}
+
+type DesignatorItemExprList ExprList // Must implement DesignatorItem, and ancestor ExprList implements Node.
 
 func (DesignatorItemExprList) isDesignatorItem() {}
-
-type DesignatorItemExprList ExprList
-
 func (s DesignatorItemExprList) Children() Nodes {
 	r := make(Nodes, len(s))
 	for i, v := range s {
@@ -366,76 +358,78 @@ func (s DesignatorItemExprList) Children() Nodes {
 	return r
 }
 
+type DesignatorItemDereference struct {
+	DesignatorItem
+}
+
+func (*DesignatorItemDereference) Children() Nodes   { return Nodes{} }
 func (*DesignatorItemDereference) isDesignatorItem() {}
 
-type DesignatorItemDereference struct {
-}
+//   ```
+//   Number
+//   ```
 
-func (*DesignatorItemDereference) Children() Nodes {
-	return Nodes{}
-}
-
-func (ValueFactor) isFactor() {}
-
-type ValueFactor struct {
+type NumberFactor struct {
+	Factor
 	Value string
 }
 
-func (*ValueFactor) Children() Nodes {
-	return Nodes{}
+func NewNumber(v string) *NumberFactor { return &NumberFactor{Value: v} }
+func (*NumberFactor) Children() Nodes  { return Nodes{} }
+func (*NumberFactor) isFactor()        {}
+
+//   ```
+//   String
+//   ```
+type StringFactor struct {
+	Factor
+	Value string
 }
 
-type Number struct{ ValueFactor }
-
-func NewNumber(v string) *Number { return &Number{ValueFactor: ValueFactor{Value: v}} }
-
-type String struct{ ValueFactor }
-
-func NewString(v string) *String { return &String{ValueFactor: ValueFactor{Value: v}} }
+func NewString(v string) *StringFactor { return &StringFactor{Value: v} }
+func (*StringFactor) Children() Nodes  { return Nodes{} }
+func (*StringFactor) isFactor()        {}
 
 // Ninl
-func (*Nil) isFactor() {}
 
 type Nil struct {
+	Factor
 }
 
-func NewNil() *Nil { return &Nil{} }
-
-func (*Nil) Children() Nodes {
-	return Nodes{}
-}
+func NewNil() *Nil           { return &Nil{} }
+func (*Nil) Children() Nodes { return Nodes{} }
+func (*Nil) isFactor()       {}
 
 // Parentheses
-func (*Parentheses) isFactor() {}
-
 type Parentheses struct { // Round brackets
+	Factor
 	Expression *Expression
 }
 
-func (m *Parentheses) Children() Nodes {
-	return Nodes{m.Expression}
-}
+func (m *Parentheses) Children() Nodes { return Nodes{m.Expression} }
+func (*Parentheses) isFactor()         {}
 
-func (*Not) isFactor() {}
+//   ```
+//   NOT Factor
+//   ```
 
 type Not struct {
-	Factor Factor
+	Factor
 }
 
-func (m *Not) Children() Nodes {
-	return Nodes{m.Factor}
-}
-
-func (SetConstructor) isFactor() {}
+func (m *Not) Children() Nodes { return Nodes{m.Factor} }
+func (*Not) isFactor()         {}
 
 // - SetConstructor
 //   ```
 //   '[' [SetElement ','...] ']'
 //   ```
 type SetConstructor struct {
+	Factor
 	SetElements []*SetElement
 }
 
+func (SetConstructor) isFactor() {}
 func (m *SetConstructor) Children() Nodes {
 	r := make(Nodes, len(m.SetElements))
 	for i, v := range m.SetElements {
@@ -454,9 +448,7 @@ type SetElement struct {
 }
 
 func NewSetElement(expr *Expression) *SetElement {
-	return &SetElement{
-		Expression: expr,
-	}
+	return &SetElement{Expression: expr}
 }
 
 func (m *SetElement) Children() Nodes {
@@ -467,13 +459,14 @@ func (m *SetElement) Children() Nodes {
 	return r
 }
 
-func (*TypeCast) isFactor() {}
-
+//   ```
+//   TypeId '(' Expression ')'
+//   ```
 type TypeCast struct {
+	Factor
 	TypeId     *TypeId
 	Expression Expression
 }
 
-func (m *TypeCast) Children() Nodes {
-	return Nodes{m.TypeId, &m.Expression}
-}
+func (*TypeCast) isFactor()         {}
+func (m *TypeCast) Children() Nodes { return Nodes{m.TypeId, &m.Expression} }

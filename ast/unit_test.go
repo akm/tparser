@@ -16,7 +16,6 @@ func TestUnit(t *testing.T) {
 		assert.Implements(t, (*InterfaceDecl)(nil), &ConstSection{})
 		assert.Implements(t, (*InterfaceDecl)(nil), &TypeSection{})
 		assert.Implements(t, (*InterfaceDecl)(nil), &VarSection{})
-		assert.Implements(t, (*InterfaceDecl)(nil), &ExportedHeading{})
 	})
 	t.Run("Node", func(t *testing.T) {
 		assert.Implements(t, (*Node)(nil), &Unit{})

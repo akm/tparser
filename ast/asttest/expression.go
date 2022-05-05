@@ -58,11 +58,11 @@ func NewDesignatorItemIdent(arg interface{}) *ast.DesignatorItemIdent {
 	}
 }
 
-func NewNumber(v string) *ast.Number {
+func NewNumber(v string) *ast.NumberFactor {
 	return ast.NewNumber(v)
 }
 
-func NewString(v string) *ast.String {
+func NewString(v string) *ast.StringFactor {
 	return ast.NewString(v)
 }
 
