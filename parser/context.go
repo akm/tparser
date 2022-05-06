@@ -46,6 +46,14 @@ func NewContext(args ...interface{}) *Context {
 	}
 }
 
+func (c *Context) Clone() *Context {
+	return &Context{
+		unitIdentifiers: c.unitIdentifiers,
+		Units:           c.Units,
+		DeclarationMap:  c.DeclarationMap,
+	}
+}
+
 func (c *Context) IsUnitIdentifier(token *token.Token) bool {
 	return c.unitIdentifiers.Include(token.Value()) || c.Units.ByName(token.Value()) != nil
 }
