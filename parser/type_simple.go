@@ -95,7 +95,6 @@ func (p *Parser) ParseEnumeratedType() (ast.EnumeratedType, error) {
 			return nil, errors.Errorf("Unsupported token %+v for EnumeratedType", t)
 		}
 	}
-	p.context.DeclarationMap.SetDecl(res)
 	return res, nil
 }
 
@@ -115,5 +114,6 @@ func (p *Parser) ParseEnumeratedTypeElement() (*ast.EnumeratedTypeElement, error
 		res.ConstExpr = expr
 	}
 
+	p.context.DeclarationMap.SetDecl(res)
 	return res, nil
 }

@@ -196,15 +196,8 @@ func (m EnumeratedType) Children() Nodes {
 	return r
 }
 
-func (s EnumeratedType) ToDeclarations() astcore.Declarations {
-	r := make(astcore.Declarations, len(s))
-	for idx, i := range s {
-		r[idx] = astcore.NewDeclaration(i.Ident, i)
-	}
-	return r
-}
-
 type EnumeratedTypeElement struct {
+	astcore.Decl
 	*Ident
 	ConstExpr *ConstExpr
 }
@@ -215,6 +208,9 @@ func (m *EnumeratedTypeElement) Children() Nodes {
 		r = append(r, m.ConstExpr)
 	}
 	return r
+}
+func (m *EnumeratedTypeElement) ToDeclarations() astcore.Declarations {
+	return astcore.Declarations{astcore.NewDeclaration(m.Ident, m)}
 }
 
 // - SubrangeType
