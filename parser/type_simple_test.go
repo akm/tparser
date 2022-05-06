@@ -35,20 +35,23 @@ func TestEnumeratedType(t *testing.T) {
 	run(
 		"Enumerated types with explicitly assigned ordinality",
 		[]rune(`(Small = 5, Medium = 10, Large = Small + Medium)`),
-		ast.EnumeratedType{
-			{Ident: asttest.NewIdent("Small"), ConstExpr: asttest.NewConstExpr(asttest.NewNumber("5"))},
-			{Ident: asttest.NewIdent("Medium"), ConstExpr: asttest.NewConstExpr(asttest.NewNumber("10"))},
-			{Ident: asttest.NewIdent("Large"), ConstExpr: asttest.NewConstExpr(
-				&ast.SimpleExpression{
-					Term: asttest.NewTerm("Small"),
-					AddOpTerms: []*ast.AddOpTerm{
-						{AddOp: "+", Term: asttest.NewTerm("Medium")},
+		func() ast.EnumeratedType {
+			small := &ast.EnumeratedTypeElement{Ident: asttest.NewIdent("Small"), ConstExpr: asttest.NewConstExpr(asttest.NewNumber("5"))}
+			medium := &ast.EnumeratedTypeElement{Ident: asttest.NewIdent("Medium"), ConstExpr: asttest.NewConstExpr(asttest.NewNumber("10"))}
+			return ast.EnumeratedType{
+				small,
+				medium,
+				{Ident: asttest.NewIdent("Large"), ConstExpr: asttest.NewConstExpr(
+					&ast.SimpleExpression{
+						Term: asttest.NewTerm(asttest.NewQualId("Small", small.ToDeclarations()[0])),
+						AddOpTerms: []*ast.AddOpTerm{
+							{AddOp: "+", Term: asttest.NewTerm(asttest.NewQualId("Medium", medium.ToDeclarations()[0]))},
+						},
 					},
-				},
-			)},
-		},
+				)},
+			}
+		}(),
 	)
-
 }
 
 func TestSubrangeType(t *testing.T) {
