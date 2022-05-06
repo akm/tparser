@@ -34,7 +34,14 @@ type Statement struct {
 	Body    StatementBody
 }
 
-func (m *Statement) Children() Nodes { return Nodes{m.LabelId, m.Body} }
+func (m *Statement) Children() Nodes {
+	res := Nodes{}
+	if m.LabelId != nil {
+		res = append(res, m.LabelId)
+	}
+	res = append(res, m.Body)
+	return res
+}
 
 type StatementBody interface {
 	Node
@@ -112,7 +119,13 @@ type CallStatement struct {
 func (*CallStatement) isStatementBody()         {}
 func (*CallStatement) isSimpleStatement()       {}
 func (m *CallStatement) isDesignatorStatement() {}
-func (m *CallStatement) Children() Nodes        { return Nodes{m.Designator, m.ExprList} }
+func (m *CallStatement) Children() Nodes {
+	res := Nodes{m.Designator}
+	if m.ExprList != nil {
+		res = append(res, m.ExprList)
+	}
+	return res
+}
 
 //   (AssignStatement)
 //   ```
@@ -127,4 +140,6 @@ type AssignStatement struct {
 func (*AssignStatement) isStatementBody()         {}
 func (*AssignStatement) isSimpleStatement()       {}
 func (m *AssignStatement) isDesignatorStatement() {}
-func (m *AssignStatement) Children() Nodes        { return Nodes{m.Designator, m.Expression} }
+func (m *AssignStatement) Children() Nodes {
+	return Nodes{m.Designator, m.Expression}
+}

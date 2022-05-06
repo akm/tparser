@@ -16,7 +16,18 @@ type Block struct {
 }
 
 func (m *Block) Children() Nodes {
-	return Nodes{m.DeclSections, m.ExportsStmts1, m.CompoundStmt, m.ExportsStmts2}
+	res := Nodes{}
+	if m.DeclSections != nil {
+		res = append(res, m.DeclSections)
+	}
+	if m.ExportsStmts1 != nil {
+		res = append(res, m.ExportsStmts1)
+	}
+	res = append(res, m.CompoundStmt)
+	if m.ExportsStmts2 != nil {
+		res = append(res, m.ExportsStmts2)
+	}
+	return res
 }
 
 type ExportsStmts []*ExportsStmt // must implements Node
@@ -58,7 +69,14 @@ type ExportsItem struct {
 }
 
 func (m *ExportsItem) Children() Nodes {
-	return Nodes{m.Ident, m.Name, m.Index}
+	res := Nodes{m.Ident}
+	if m.Name != nil {
+		res = append(res, m.Name)
+	}
+	if m.Index != nil {
+		res = append(res, m.Index)
+	}
+	return res
 }
 
 // - DeclSection
@@ -97,9 +115,11 @@ func (m DeclSections) Children() Nodes {
 //   LABEL LabelId ';'
 //   ```
 type LabelDeclSection struct {
+	DeclSection
 	*LabelId
 }
 
 func (*LabelDeclSection) canBeDeclSection() {}
+func (m LabelDeclSection) Children() Nodes  { return Nodes{m.LabelId} }
 
 type LabelId = Ident
