@@ -112,7 +112,7 @@ func TestTypeSection(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			parser := NewParser(&text)
 			parser.NextToken()
-			res, err := parser.ParseTypeSection()
+			res, err := parser.ParseTypeSection(true)
 			if assert.NoError(t, err) {
 				asttest.ClearLocations(t, res)
 				assert.Equal(t, expected, res)

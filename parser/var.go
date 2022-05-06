@@ -5,9 +5,16 @@ import (
 	"github.com/akm/tparser/token"
 )
 
-func (p *Parser) ParseVarSection() (ast.VarSection, error) {
-	if _, err := p.Current(token.ReservedWord.HasKeyword("VAR")); err != nil {
-		return nil, err
+func (p *Parser) ParseVarSection(required bool) (ast.VarSection, error) {
+	kw := token.ReservedWord.HasKeyword("VAR")
+	if required {
+		if _, err := p.Current(kw); err != nil {
+			return nil, err
+		}
+	} else {
+		if !p.CurrentToken().Is(kw) {
+			return nil, nil
+		}
 	}
 	p.NextToken()
 	res := ast.VarSection{}
@@ -66,9 +73,16 @@ func (p *Parser) ParseVarDecl() (*ast.VarDecl, error) {
 	return res, nil
 }
 
-func (p *Parser) ParseThreadVarSection() (ast.ThreadVarSection, error) {
-	if _, err := p.Current(token.ReservedWord.HasKeyword("THREADVAR")); err != nil {
-		return nil, err
+func (p *Parser) ParseThreadVarSection(required bool) (ast.ThreadVarSection, error) {
+	kw := token.ReservedWord.HasKeyword("THREADVAR")
+	if required {
+		if _, err := p.Current(kw); err != nil {
+			return nil, err
+		}
+	} else {
+		if !p.CurrentToken().Is(kw) {
+			return nil, nil
+		}
 	}
 	p.NextToken()
 	res := ast.ThreadVarSection{}

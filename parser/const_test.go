@@ -53,7 +53,7 @@ func TestConstSectionl(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			parser := NewParser(&text)
 			parser.NextToken()
-			res, err := parser.ParseConstSection()
+			res, err := parser.ParseConstSection(true)
 			if assert.NoError(t, err) {
 				asttest.ClearLocations(t, res)
 				if !assert.Equal(t, expected, res) {

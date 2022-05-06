@@ -86,28 +86,28 @@ func (p *Parser) ParseInterfaceSection() (*ast.InterfaceSection, error) {
 		}
 		switch t.Value() {
 		case "TYPE":
-			section, err := p.ParseTypeSection()
+			section, err := p.ParseTypeSection(true)
 			if err != nil {
 				return nil, err
 			}
 			res.InterfaceDecls = append(res.InterfaceDecls, section)
 			continue
 		case "VAR":
-			section, err := p.ParseVarSection()
+			section, err := p.ParseVarSection(true)
 			if err != nil {
 				return nil, err
 			}
 			res.InterfaceDecls = append(res.InterfaceDecls, section)
 			continue
 		case "THREADVAR":
-			section, err := p.ParseThreadVarSection()
+			section, err := p.ParseThreadVarSection(true)
 			if err != nil {
 				return nil, err
 			}
 			res.InterfaceDecls = append(res.InterfaceDecls, section)
 			continue
 		case "CONST":
-			section, err := p.ParseConstSection()
+			section, err := p.ParseConstSection(true)
 			if err != nil {
 				return nil, err
 			}

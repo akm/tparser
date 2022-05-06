@@ -5,9 +5,16 @@ import (
 	"github.com/akm/tparser/token"
 )
 
-func (p *Parser) ParseConstSection() (ast.ConstSection, error) {
-	if _, err := p.Current(token.ReservedWord.HasKeyword("CONST")); err != nil {
-		return nil, err
+func (p *Parser) ParseConstSection(required bool) (ast.ConstSection, error) {
+	kw := token.ReservedWord.HasKeyword("CONST")
+	if required {
+		if _, err := p.Current(kw); err != nil {
+			return nil, err
+		}
+	} else {
+		if !p.CurrentToken().Is(kw) {
+			return nil, nil
+		}
 	}
 	p.NextToken()
 	res := ast.ConstSection{}
