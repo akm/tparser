@@ -64,6 +64,8 @@ func TestConstSectionl(t *testing.T) {
 							assert.Equal(t, expected[idx].Type, decl.Type)
 							assert.Equal(t, expected[idx].ConstExpr, decl.ConstExpr)
 							assert.Equal(t, expected[idx].ConstExpr.String(), decl.ConstExpr.String())
+							// spew.Dump(expected[idx].ConstExpr)
+							// spew.Dump(decl.ConstExpr)
 						}
 					}
 				}
@@ -173,9 +175,9 @@ func TestConstSectionl(t *testing.T) {
 						Factor: &ast.Parentheses{
 							Expression: &ast.Expression{
 								SimpleExpression: &ast.SimpleExpression{
-									Term: asttest.NewTerm(asttest.NewQualId("Max", min.ToDeclarations()[0])),
+									Term: asttest.NewTerm(asttest.NewQualId("Max", max.ToDeclarations()[0])),
 									AddOpTerms: []*ast.AddOpTerm{
-										{AddOp: "-", Term: asttest.NewTerm(asttest.NewQualId("Min", max.ToDeclarations()[0]))},
+										{AddOp: "-", Term: asttest.NewTerm(asttest.NewQualId("Min", min.ToDeclarations()[0]))},
 									},
 								},
 							},
