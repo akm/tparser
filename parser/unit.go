@@ -155,6 +155,7 @@ func (p *Parser) ParseQualId() (*ast.QualId, error) {
 		return nil, err
 	}
 	name1 := p.CurrentToken()
+	p.logger.Printf("ParseQualId %s", name1.RawString())
 	if p.context.IsUnitIdentifier(name1) {
 		if _, err := p.Next(token.Symbol('.')); err != nil {
 			return nil, err
@@ -169,6 +170,9 @@ func (p *Parser) ParseQualId() (*ast.QualId, error) {
 	} else {
 		p.NextToken()
 		d := p.context.DeclarationMap.Get(name1.RawString())
+
+		p.logger.Printf("ParseQualId Declaration for %s => %+v", name1.RawString(), d)
+
 		return ast.NewQualId(nil, ast.NewIdent(name1), d), nil
 	}
 }
