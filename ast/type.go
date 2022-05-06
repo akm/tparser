@@ -1,6 +1,8 @@
 package ast
 
 import (
+	"fmt"
+
 	"github.com/akm/tparser/ast/astcore"
 	"github.com/pkg/errors"
 )
@@ -104,4 +106,11 @@ func (m *TypeId) Children() Nodes {
 	}
 	r = append(r, m.Ident)
 	return r
+}
+func (m *TypeId) String() string {
+	if m.UnitId != nil {
+		return fmt.Sprintf("%s.%s", m.UnitId.String(), m.Ident.Name)
+	} else {
+		return m.Ident.Name
+	}
 }

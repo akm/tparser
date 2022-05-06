@@ -1,6 +1,7 @@
 package ast
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/akm/tparser/ast/astcore"
@@ -170,6 +171,7 @@ type QualId struct {
 	UnitId *UnitId
 	Ident  *Ident
 	Ref    *astcore.Declaration // Actual Type object
+	fmt.Stringer
 }
 
 func NewQualId(unitId *UnitId, ident *Ident, refs ...*astcore.Declaration) *QualId {
@@ -187,4 +189,11 @@ func (m *QualId) Children() Nodes {
 	}
 	r = append(r, m.Ident)
 	return r
+}
+func (m *QualId) String() string {
+	if m.UnitId != nil {
+		return fmt.Sprintf("%s.%s", m.UnitId.Name, m.Ident.Name)
+	} else {
+		return m.Ident.Name
+	}
 }

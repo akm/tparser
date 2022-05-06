@@ -1,6 +1,10 @@
 package ast
 
 import (
+	"fmt"
+	"strings"
+
+	"github.com/akm/tparser/ext"
 	"github.com/akm/tparser/token"
 	"github.com/pkg/errors"
 )
@@ -12,6 +16,7 @@ import (
 type Expression struct {
 	*SimpleExpression
 	RelOpSimpleExpressions RelOpSimpleExpressions
+	fmt.Stringer
 }
 
 func NewExpression(arg interface{}) *Expression {
@@ -33,11 +38,15 @@ func (m *Expression) Children() Nodes {
 	return r
 }
 
+func (m *Expression) String() string {
+	return fmt.Sprintf("%s %s", m.SimpleExpression.String(), m.RelOpSimpleExpressions.String())
+}
+
 // - ExprList
 //   ```
 //   Expression ','...
 //   ```
-type ExprList []*Expression
+type ExprList []*Expression // must implement Node, fmt.Stringer
 
 func (s ExprList) Children() Nodes {
 	r := make(Nodes, len(s))
@@ -45,6 +54,14 @@ func (s ExprList) Children() Nodes {
 		r[i] = v
 	}
 	return r
+}
+
+func (s ExprList) String() string {
+	r := make(ext.Strings, len(s))
+	for idx, i := range s {
+		r[idx] = i.String()
+	}
+	return strings.Join(r, ", ")
 }
 
 // - RelOp
@@ -75,13 +92,18 @@ func (s ExprList) Children() Nodes {
 type RelOpSimpleExpression struct {
 	RelOp string // '>' | '<' | '<=' | '>=' | '=' | '<>' | "IN" | "IS" | "AS"
 	*SimpleExpression
+	fmt.Stringer
 }
 
 func (m *RelOpSimpleExpression) Children() Nodes {
 	return Nodes{m.SimpleExpression}
 }
 
-type RelOpSimpleExpressions []*RelOpSimpleExpression
+func (m *RelOpSimpleExpression) String() string {
+	return fmt.Sprintf("%s %s", m.RelOp, m.SimpleExpression.String())
+}
+
+type RelOpSimpleExpressions []*RelOpSimpleExpression // must implement Node, fmt.Stringer
 
 func (s RelOpSimpleExpressions) Children() Nodes {
 	r := make(Nodes, len(s))
@@ -89,6 +111,14 @@ func (s RelOpSimpleExpressions) Children() Nodes {
 		r[i] = v
 	}
 	return r
+}
+
+func (s RelOpSimpleExpressions) String() string {
+	r := make(ext.Strings, len(s))
+	for idx, i := range s {
+		r[idx] = i.String()
+	}
+	return strings.Join(r, " ")
 }
 
 // - SimpleExpression
@@ -120,6 +150,10 @@ func (m *SimpleExpression) Children() Nodes {
 	return r
 }
 
+func (m *SimpleExpression) String() string {
+	return fmt.Sprintf("%s %s", m.AddOpTerms.String(), m.AddOpTerms.String())
+}
+
 // - AddOp
 //   ```
 //   '+'
@@ -136,11 +170,16 @@ func (m *SimpleExpression) Children() Nodes {
 type AddOpTerm struct {
 	AddOp string // '+' | '-' | "OR" | "XOR"
 	*Term
+	fmt.Stringer
 }
 
 func (m *AddOpTerm) Children() Nodes { return Nodes{m.Term} }
 
-type AddOpTerms []*AddOpTerm
+func (m *AddOpTerm) String() string {
+	return fmt.Sprintf("%s %s", m.AddOp, m.Term.String())
+}
+
+type AddOpTerms []*AddOpTerm // must implement Node, fmt.Stringer
 
 func (s AddOpTerms) Children() Nodes {
 	r := make(Nodes, len(s))
@@ -148,6 +187,14 @@ func (s AddOpTerms) Children() Nodes {
 		r[i] = v
 	}
 	return r
+}
+
+func (s AddOpTerms) String() string {
+	r := make(ext.Strings, len(s))
+	for idx, i := range s {
+		r[idx] = i.String()
+	}
+	return strings.Join(r, " ")
 }
 
 // - Term
@@ -176,6 +223,10 @@ func (m *Term) Children() Nodes {
 		r = append(r, m.MulOpFactors)
 	}
 	return r
+}
+
+func (m *Term) String() string {
+	return fmt.Sprintf("%s %s", m.Factor.String(), m.MulOpFactors.String())
 }
 
 // - MulOp
@@ -211,7 +262,11 @@ type MulOpFactor struct {
 
 func (m *MulOpFactor) Children() Nodes { return Nodes{m.Factor} }
 
-type MulOpFactors []*MulOpFactor
+func (m *MulOpFactor) String() string {
+	return fmt.Sprintf("%s %s", m.MulOp, m.Factor.String())
+}
+
+type MulOpFactors []*MulOpFactor // must implement Node, fmt.Stringer
 
 func (s MulOpFactors) Children() Nodes {
 	r := make(Nodes, len(s))
@@ -219,6 +274,14 @@ func (s MulOpFactors) Children() Nodes {
 		r[i] = v
 	}
 	return r
+}
+
+func (s MulOpFactors) String() string {
+	r := make(ext.Strings, len(s))
+	for idx, i := range s {
+		r[idx] = i.String()
+	}
+	return strings.Join(r, " ")
 }
 
 // - Factor
@@ -250,8 +313,9 @@ func (s MulOpFactors) Children() Nodes {
 //   TypeId '(' Expression ')'
 //   ```
 type Factor interface {
-	Node
 	isFactor()
+	Node
+	fmt.Stringer
 }
 
 // Designator ['(' ExprList ')']
@@ -280,6 +344,10 @@ func (m *DesignatorFactor) Children() Nodes {
 	return r
 }
 
+func (m *DesignatorFactor) String() string {
+	return fmt.Sprintf("%s(%s)", m.Factor.String(), m.ExprList.String())
+}
+
 // '@' Designator
 
 type Address struct {
@@ -289,6 +357,9 @@ type Address struct {
 
 func (m *Address) Children() Nodes { return Nodes{m.Designator} }
 func (*Address) isFactor()         {}
+func (m *Address) String() string {
+	return fmt.Sprintf("@%s", m.Designator.String())
+}
 
 // - Designator
 //   ```
@@ -326,6 +397,10 @@ func (m *Designator) Children() Nodes {
 	return r
 }
 
+func (m *Designator) String() string {
+	return fmt.Sprintf("%s%s", m.QualId.String(), m.Items.String())
+}
+
 type DesignatorItems []DesignatorItem
 
 func (s DesignatorItems) Children() Nodes {
@@ -336,9 +411,18 @@ func (s DesignatorItems) Children() Nodes {
 	return r
 }
 
+func (s DesignatorItems) String() string {
+	r := make(ext.Strings, len(s))
+	for idx, i := range s {
+		r[idx] = i.String()
+	}
+	return strings.Join(r, ", ")
+}
+
 type DesignatorItem interface {
-	Node
 	isDesignatorItem()
+	Node
+	fmt.Stringer
 }
 
 type DesignatorItemIdent Ident // Must implement DesignatorItem, and ancestor Ident implements Node.
@@ -350,6 +434,9 @@ func NewDesignatorItemIdent(v interface{}) *DesignatorItemIdent {
 
 func (m *DesignatorItemIdent) Children() Nodes { return Nodes{} }
 func (DesignatorItemIdent) isDesignatorItem()  {}
+func (m *DesignatorItemIdent) String() string {
+	return fmt.Sprintf(".%s", m.Name)
+}
 
 type DesignatorItemExprList ExprList // Must implement DesignatorItem, and ancestor ExprList implements Node.
 
@@ -361,6 +448,9 @@ func (s DesignatorItemExprList) Children() Nodes {
 	}
 	return r
 }
+func (m DesignatorItemExprList) String() string {
+	return fmt.Sprintf("[%s]", m.String())
+}
 
 type DesignatorItemDereference struct {
 	DesignatorItem
@@ -368,6 +458,7 @@ type DesignatorItemDereference struct {
 
 func (*DesignatorItemDereference) Children() Nodes   { return Nodes{} }
 func (*DesignatorItemDereference) isDesignatorItem() {}
+func (*DesignatorItemDereference) String() string    { return "^" }
 
 //   ```
 //   Number
@@ -381,6 +472,7 @@ type NumberFactor struct {
 func NewNumber(v string) *NumberFactor { return &NumberFactor{Value: v} }
 func (*NumberFactor) Children() Nodes  { return Nodes{} }
 func (*NumberFactor) isFactor()        {}
+func (m *NumberFactor) String() string { return m.Value }
 
 //   ```
 //   String
@@ -393,6 +485,7 @@ type StringFactor struct {
 func NewString(v string) *StringFactor { return &StringFactor{Value: v} }
 func (*StringFactor) Children() Nodes  { return Nodes{} }
 func (*StringFactor) isFactor()        {}
+func (m *StringFactor) String() string { return m.Value }
 
 // Ninl
 
@@ -403,6 +496,7 @@ type Nil struct {
 func NewNil() *Nil           { return &Nil{} }
 func (*Nil) Children() Nodes { return Nodes{} }
 func (*Nil) isFactor()       {}
+func (*Nil) String() string  { return "Nil" }
 
 // Parentheses
 type Parentheses struct { // Round brackets
@@ -412,6 +506,9 @@ type Parentheses struct { // Round brackets
 
 func (m *Parentheses) Children() Nodes { return Nodes{m.Expression} }
 func (*Parentheses) isFactor()         {}
+func (m *Parentheses) String() string {
+	return fmt.Sprintf("(%s)", m.Expression.String())
+}
 
 //   ```
 //   NOT Factor
@@ -423,6 +520,9 @@ type Not struct {
 
 func (m *Not) Children() Nodes { return Nodes{m.Factor} }
 func (*Not) isFactor()         {}
+func (m *Not) String() string {
+	return fmt.Sprintf("Not %s", m.Factor.String())
+}
 
 // - SetConstructor
 //   ```
@@ -430,16 +530,30 @@ func (*Not) isFactor()         {}
 //   ```
 type SetConstructor struct {
 	Factor
-	SetElements []*SetElement
+	SetElements SetElements
 }
 
-func (SetConstructor) isFactor() {}
-func (m *SetConstructor) Children() Nodes {
-	r := make(Nodes, len(m.SetElements))
-	for i, v := range m.SetElements {
+func (SetConstructor) isFactor()          {}
+func (m *SetConstructor) Children() Nodes { return Nodes{m.SetElements} }
+func (m *SetConstructor) String() string {
+	return fmt.Sprintf("[%s]", m.SetElements.String())
+}
+
+type SetElements []*SetElement // Must implement Node and fmt.Stringer
+func (s SetElements) Children() Nodes {
+	r := make(Nodes, len(s))
+	for i, v := range s {
 		r[i] = v
 	}
 	return r
+}
+
+func (s SetElements) String() string {
+	r := make(ext.Strings, len(s))
+	for idx, i := range s {
+		r[idx] = i.String()
+	}
+	return strings.Join(r, " ")
 }
 
 // - SetElement
@@ -462,6 +576,13 @@ func (m *SetElement) Children() Nodes {
 	}
 	return r
 }
+func (m *SetElement) String() string {
+	if m.SubRangeEnd == nil {
+		return m.Expression.String()
+	} else {
+		return fmt.Sprintf("%s..%s", m.Expression.String(), m.SubRangeEnd.String())
+	}
+}
 
 //   ```
 //   TypeId '(' Expression ')'
@@ -474,3 +595,6 @@ type TypeCast struct {
 
 func (*TypeCast) isFactor()         {}
 func (m *TypeCast) Children() Nodes { return Nodes{m.TypeId, &m.Expression} }
+func (m *TypeCast) String() string {
+	return fmt.Sprintf("%s(%s)", m.TypeId.String(), m.Expression.String())
+}
