@@ -63,7 +63,7 @@ func TestConstSectionl(t *testing.T) {
 							assert.Equal(t, expected[idx].Ident, decl.Ident)
 							assert.Equal(t, expected[idx].Type, decl.Type)
 							assert.Equal(t, expected[idx].ConstExpr, decl.ConstExpr)
-							assert.Equal(t, expected[idx].ConstExpr.String(), decl.ConstExpr.String())
+							// assert.Equal(t, expected[idx].ConstExpr.String(), decl.ConstExpr.String())
 							// spew.Dump(expected[idx].ConstExpr)
 							// spew.Dump(decl.ConstExpr)
 						}
