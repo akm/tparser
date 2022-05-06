@@ -19,7 +19,7 @@ func TestProgram(t *testing.T) {
 					asttest.ClearLocations(t, res)
 				}
 				assert.Equal(t, expected, res)
-				// assert.Equal(t, expected.ProgramBlock.Block, res.ProgramBlock.Block)
+				assert.Equal(t, expected.ProgramBlock.Block, res.ProgramBlock.Block)
 			}
 
 		})
@@ -66,40 +66,50 @@ end.
 		&ast.Program{
 			Ident: asttest.NewIdent("Hello"),
 			ProgramBlock: &ast.ProgramBlock{
-				Block: &ast.Block{
-					DeclSections: ast.DeclSections{
-						ast.ConstSection{
-							&ast.ConstantDecl{
-								Ident:     asttest.NewIdent("DefaultMessage"),
-								ConstExpr: asttest.NewConstExpr(asttest.NewString("'hello, world'")),
-							},
+				Block: func() *ast.Block {
+					constDecl := &ast.ConstantDecl{
+						Ident:     asttest.NewIdent("DefaultMessage"),
+						ConstExpr: asttest.NewConstExpr(asttest.NewString("'hello, world'")),
+					}
+					varDecl := &ast.VarDecl{
+						IdentList: asttest.NewIdentList("msg"),
+						Type:      asttest.NewStringType("STRING"),
+					}
+					return &ast.Block{
+						DeclSections: ast.DeclSections{
+							ast.ConstSection{constDecl},
+							ast.VarSection{varDecl},
 						},
-						ast.VarSection{
-							&ast.VarDecl{
-								IdentList: asttest.NewIdentList("msg"),
-								Type:      asttest.NewStringType("STRING"),
-							},
-						},
-					},
-					CompoundStmt: &ast.CompoundStmt{
-						StmtList: ast.StmtList{
-							&ast.Statement{
-								Body: &ast.AssignStatement{
-									Designator: asttest.NewDesignator(asttest.NewIdent("msg")),
-									Expression: asttest.NewExpression(asttest.NewDesignator("DefaultMessage")),
+						CompoundStmt: &ast.CompoundStmt{
+							StmtList: ast.StmtList{
+								&ast.Statement{
+									Body: &ast.AssignStatement{
+										Designator: asttest.NewDesignator(
+											asttest.NewQualId(asttest.NewIdent("msg"), varDecl.ToDeclarations()[0]),
+										),
+										Expression: asttest.NewExpression(
+											asttest.NewDesignator(
+												asttest.NewQualId(asttest.NewIdent("DefaultMessage"), constDecl.ToDeclarations()[0]),
+											),
+										),
+									},
 								},
-							},
-							&ast.Statement{
-								Body: &ast.CallStatement{
-									Designator: asttest.NewDesignator(asttest.NewIdent("writeln")),
-									ExprList: ast.ExprList{
-										asttest.NewExpression(asttest.NewDesignator("msg")),
+								&ast.Statement{
+									Body: &ast.CallStatement{
+										Designator: asttest.NewDesignator(asttest.NewIdent("writeln")),
+										ExprList: ast.ExprList{
+											asttest.NewExpression(
+												asttest.NewDesignator(
+													asttest.NewQualId(asttest.NewIdent("msg"), varDecl.ToDeclarations()[0]),
+												),
+											),
+										},
 									},
 								},
 							},
 						},
-					},
-				},
+					}
+				}(),
 			},
 		},
 	)
