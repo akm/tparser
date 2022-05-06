@@ -33,31 +33,42 @@ func (p *Parser) ParseExportedHeading() (*ast.ExportedHeading, error) {
 
 	p.NextToken()
 	if p.CurrentToken().Is(token.Directive) {
-		r.Directives = []ast.Directive{}
-		for {
-			t := p.CurrentToken()
-			if !t.Is(token.Directive) {
-				break
-			}
-			dir := ast.Directive(strings.ToUpper(t.Value()))
-			r.Directives = append(r.Directives, dir)
-			switch dir {
-			case ast.DrExternal:
-				extOpts, err := p.ParseExternalOptions()
-				if err != nil {
-					return nil, err
-				}
-				r.ExternalOptions = extOpts
-			default:
-				p.NextToken()
-			}
-			if _, err := p.Current(token.Symbol(';')); err != nil {
-				return nil, err
-			}
-			p.NextToken()
+		directives, opts, err := p.ParseFunctionDirectives()
+		if err != nil {
+			return nil, err
 		}
+		r.Directives = directives
+		r.ExternalOptions = opts
 	}
 	return r, nil
+}
+
+func (p *Parser) ParseFunctionDirectives() ([]ast.Directive, *ast.ExternalOptions, error) {
+	directives := []ast.Directive{}
+	var opts *ast.ExternalOptions
+	for {
+		t := p.CurrentToken()
+		if !t.Is(token.Directive) {
+			break
+		}
+		dir := ast.Directive(strings.ToUpper(t.Value()))
+		directives = append(directives, dir)
+		switch dir {
+		case ast.DrExternal:
+			extOpts, err := p.ParseExternalOptions()
+			if err != nil {
+				return nil, nil, err
+			}
+			opts = extOpts
+		default:
+			p.NextToken()
+		}
+		if _, err := p.Current(token.Symbol(';')); err != nil {
+			return nil, nil, err
+		}
+		p.NextToken()
+	}
+	return directives, opts, nil
 }
 
 func (p *Parser) ParseExternalOptions() (*ast.ExternalOptions, error) {
