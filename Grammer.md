@@ -476,7 +476,7 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
 - StmtList
   ```
-  Statement ';'
+  (Statement ';') ...
   ```
 - SimpleStatement
   ```
