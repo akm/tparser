@@ -125,9 +125,7 @@ func TestConstSectionl(t *testing.T) {
 			// Beta = Chr(225);
 			{Ident: asttest.NewIdent("Beta"), ConstExpr: asttest.NewConstExpr(
 				&ast.DesignatorFactor{
-					Designator: &ast.Designator{
-						QualId: &ast.QualId{Ident: asttest.NewIdent("Chr")},
-					},
+					Designator: &ast.Designator{QualId: asttest.NewQualId("Chr")},
 					ExprList: ast.ExprList{
 						asttest.NewConstExpr(asttest.NewNumber("225")),
 					},
@@ -138,9 +136,7 @@ func TestConstSectionl(t *testing.T) {
 				&ast.SimpleExpression{
 					Term: asttest.NewTerm(
 						&ast.DesignatorFactor{
-							Designator: &ast.Designator{
-								QualId: &ast.QualId{Ident: asttest.NewIdent("Ord")},
-							},
+							Designator: &ast.Designator{QualId: asttest.NewQualId("Ord")},
 							ExprList: ast.ExprList{
 								asttest.NewConstExpr(asttest.NewString("'Z'")),
 							},
@@ -151,9 +147,7 @@ func TestConstSectionl(t *testing.T) {
 							AddOp: "-",
 							Term: asttest.NewTerm(
 								&ast.DesignatorFactor{
-									Designator: &ast.Designator{
-										QualId: &ast.QualId{Ident: asttest.NewIdent("Ord")},
-									},
+									Designator: &ast.Designator{QualId: asttest.NewQualId("Ord")},
 									ExprList: ast.ExprList{
 										asttest.NewConstExpr(asttest.NewString("'A'")),
 									},
@@ -194,9 +188,7 @@ func TestConstSectionl(t *testing.T) {
 							AddOp: "-",
 							Term: &ast.Term{
 								Factor: &ast.DesignatorFactor{
-									Designator: &ast.Designator{
-										QualId: &ast.QualId{Ident: asttest.NewIdent("Length")},
-									},
+									Designator: &ast.Designator{QualId: asttest.NewQualId("Length")},
 									ExprList: ast.ExprList{
 										asttest.NewConstExpr("ErrStr"),
 									},
