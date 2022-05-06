@@ -17,23 +17,36 @@ func (p *Parser) ParseCompoundStmt(required bool) (*ast.CompoundStmt, error) {
 		}
 	}
 	p.NextToken()
-	stmtList, err := p.ParseStmtList()
+
+	terminator := token.ReservedWord.HasKeyword("END")
+	stmtList, err := p.ParseStmtList(terminator)
 	if err != nil {
 		return nil, err
 	}
-	if _, err := p.Current(token.ReservedWord.HasKeyword("END")); err != nil {
+	if _, err := p.Current(terminator); err != nil {
 		return nil, err
 	}
 	p.NextToken()
 	return &ast.CompoundStmt{StmtList: stmtList}, nil
 }
 
-func (p *Parser) ParseStmtList() (*ast.StmtList, error) {
-	statement, err := p.ParseStatement()
-	if err != nil {
-		return nil, err
+func (p *Parser) ParseStmtList(terminator token.Predicator) (ast.StmtList, error) {
+	res := ast.StmtList{}
+	for {
+		statement, err := p.ParseStatement()
+		if err != nil {
+			return nil, err
+		}
+		if _, err := p.Current(token.Symbol(';')); err != nil {
+			return nil, err
+		}
+		res = append(res, statement)
+		p.NextToken()
+		if p.CurrentToken().Is(terminator) {
+			break
+		}
 	}
-	return &ast.StmtList{Statement: statement}, nil
+	return res, nil
 }
 
 func (p *Parser) ParseStatement() (*ast.Statement, error) {
@@ -73,6 +86,7 @@ func (p *Parser) ParseDesignatorStatement() (ast.DesignatorStatement, error) {
 	}
 	t := p.CurrentToken()
 	if t.Value() == ":=" {
+		p.NextToken()
 		expr, err := p.ParseExpression()
 		if err != nil {
 			return nil, err

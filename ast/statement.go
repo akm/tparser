@@ -6,21 +6,23 @@ package ast
 //   ```
 type CompoundStmt struct {
 	Node
-	*StmtList
+	StmtList
 }
 
 func (m *CompoundStmt) Children() Nodes { return Nodes{m.StmtList} }
 
 // - StmtList
 //   ```
-//   Statement ';'
+//   (Statement ';') ...
 //   ```
-type StmtList struct {
-	Node
-	*Statement
+type StmtList []*Statement // must implement Node
+func (s StmtList) Children() Nodes {
+	r := make(Nodes, len(s))
+	for idx, i := range s {
+		r[idx] = i
+	}
+	return r
 }
-
-func (m *StmtList) Children() Nodes { return Nodes{m.Statement} }
 
 // - Statement
 //   ```
