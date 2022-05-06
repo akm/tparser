@@ -16,6 +16,7 @@ func TestProgram(t *testing.T) {
 			res, err := parser.ParseProgram()
 			if assert.NoError(t, err) {
 				assert.Equal(t, expected, res)
+				// assert.Equal(t, expected.ProgramBlock.Block, res.ProgramBlock.Block)
 			}
 
 		})
@@ -34,9 +35,11 @@ end.`),
 						StmtList: &ast.StmtList{
 							Statement: &ast.Statement{
 								Body: &ast.CallStatement{
-									Designator: asttest.NewDesignator("writeln"),
+									Designator: asttest.NewDesignator(
+										asttest.NewIdent("writeln", asttest.NewIdentLocation(3, 4, 23, 3, 11, 30)),
+									),
 									ExprList: ast.ExprList{
-										asttest.NewExpression(asttest.NewString("hello, world")),
+										asttest.NewExpression(asttest.NewString("'hello, world'")),
 									},
 								},
 							},
