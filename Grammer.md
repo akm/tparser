@@ -116,7 +116,7 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
 - LabelDeclSection
   ```
-  LABEL LabelId
+  LABEL LabelId ';'
   ```
 - ConstSection
   ```
