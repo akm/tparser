@@ -68,7 +68,7 @@ func TestUnitWithVarSection(t *testing.T) {
 						{IdentList: asttest.NewIdentList("I", "J", "K"), Type: &ast.OrdIdent{Ident: asttest.NewIdent("Integer")}},
 					},
 					ast.VarSection{
-						{IdentList: asttest.NewIdentList("Digit"), Type: &ast.SubrangeType{Low: *asttest.NewConstExpr(asttest.NewNumber("0")), High: *asttest.NewConstExpr(asttest.NewNumber("9"))}},
+						{IdentList: asttest.NewIdentList("Digit"), Type: &ast.SubrangeType{Low: asttest.NewConstExpr(asttest.NewNumber("0")), High: asttest.NewConstExpr(asttest.NewNumber("9"))}},
 						{IdentList: asttest.NewIdentList("Okay"), Type: &ast.OrdIdent{Ident: asttest.NewIdent("Boolean")}},
 						{IdentList: asttest.NewIdentList("A"), Type: &ast.OrdIdent{Ident: asttest.NewIdent("Integer")}, ConstExpr: asttest.NewExpression(asttest.NewNumber("7"))},
 					},
@@ -152,7 +152,7 @@ func TestVarSectionl(t *testing.T) {
 		ast.VarSection{
 			{
 				IdentList: asttest.NewIdentList(asttest.NewIdent("Digit", asttest.NewIdentLocation(2, 5, 10, 10))),
-				Type:      &ast.SubrangeType{Low: *asttest.NewConstExpr(asttest.NewNumber("0")), High: *asttest.NewConstExpr(asttest.NewNumber("9"))}},
+				Type:      &ast.SubrangeType{Low: asttest.NewConstExpr(asttest.NewNumber("0")), High: asttest.NewConstExpr(asttest.NewNumber("9"))}},
 			{
 				IdentList: asttest.NewIdentList(asttest.NewIdent("Okay", asttest.NewIdentLocation(3, 5, 26, 9))),
 				Type:      &ast.OrdIdent{Ident: asttest.NewIdent("Boolean", asttest.NewIdentLocation(3, 11, 32, 18))},

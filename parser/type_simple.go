@@ -46,8 +46,8 @@ func (p *Parser) parseSubrangeTypeForIdentifier(required bool) (*ast.SubrangeTyp
 			return nil, err
 		}
 		return &ast.SubrangeType{
-			Low:  *ast.NewConstExpr(t1),
-			High: *expr,
+			Low:  ast.NewConstExpr(t1),
+			High: expr,
 		}, nil
 	} else {
 		defer rollback()
@@ -73,8 +73,8 @@ func (p *Parser) ParseConstSubrageType() (*ast.SubrangeType, error) {
 		return nil, err
 	}
 	return &ast.SubrangeType{
-		Low:  *lowExpr,
-		High: *highExpr,
+		Low:  lowExpr,
+		High: highExpr,
 	}, nil
 }
 

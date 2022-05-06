@@ -223,11 +223,11 @@ func (m *EnumeratedTypeElement) Children() Nodes {
 //   ```
 type SubrangeType struct {
 	OrdinalType
-	Low  ConstExpr
-	High ConstExpr
+	Low  *ConstExpr
+	High *ConstExpr
 }
 
 func (*SubrangeType) isType()           {}
 func (*SubrangeType) isSimpleType()     {}
 func (*SubrangeType) isOrdinalType()    {}
-func (m *SubrangeType) Children() Nodes { return Nodes{&m.Low, &m.High} }
+func (m *SubrangeType) Children() Nodes { return Nodes{m.Low, m.High} }

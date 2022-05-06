@@ -67,18 +67,18 @@ func TestSubrangeType(t *testing.T) {
 		"subrange type of enumerated type",
 		[]rune(`Green..White`),
 		&ast.SubrangeType{
-			Low:  *asttest.NewConstExpr(asttest.NewIdent("Green", asttest.NewIdentLocation(1, 1, 0, 6))),
-			High: *asttest.NewConstExpr(asttest.NewIdent("White", asttest.NewIdentLocation(1, 8, 7, 1, 12, 12))),
+			Low:  asttest.NewConstExpr(asttest.NewIdent("Green", asttest.NewIdentLocation(1, 1, 0, 6))),
+			High: asttest.NewConstExpr(asttest.NewIdent("White", asttest.NewIdentLocation(1, 8, 7, 1, 12, 12))),
 		},
 	)
 	run(
 		"subrange type of number",
 		[]rune(`-128..127`),
-		&ast.SubrangeType{Low: *asttest.NewConstExpr(asttest.NewNumber("-128")), High: *asttest.NewConstExpr(asttest.NewNumber("127"))},
+		&ast.SubrangeType{Low: asttest.NewConstExpr(asttest.NewNumber("-128")), High: asttest.NewConstExpr(asttest.NewNumber("127"))},
 	)
 	run(
 		"subrange type of character",
 		[]rune(`'A'..'Z'`),
-		&ast.SubrangeType{Low: *asttest.NewConstExpr(asttest.NewString("'A'")), High: *asttest.NewConstExpr(asttest.NewString("'Z'"))},
+		&ast.SubrangeType{Low: asttest.NewConstExpr(asttest.NewString("'A'")), High: asttest.NewConstExpr(asttest.NewString("'Z'"))},
 	)
 }
