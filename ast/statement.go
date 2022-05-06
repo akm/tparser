@@ -5,27 +5,37 @@ package ast
 //   BEGIN StmtList END
 //   ```
 type CompoundStmt struct {
+	Node
 	*StmtList
 }
+
+func (m *CompoundStmt) Children() Nodes { return Nodes{m.StmtList} }
 
 // - StmtList
 //   ```
 //   Statement ';'
 //   ```
 type StmtList struct {
+	Node
 	*Statement
 }
+
+func (m *StmtList) Children() Nodes { return Nodes{m.Statement} }
 
 // - Statement
 //   ```
 //   [LabelId ':'] [SimpleStatement | StructStmt]
 //   ```
 type Statement struct {
+	Node
 	LabelId *LabelId
 	Body    StatementBody
 }
 
+func (m *Statement) Children() Nodes { return Nodes{m.LabelId, m.Body} }
+
 type StatementBody interface {
+	Node
 	isStatementBody()
 }
 
@@ -84,7 +94,7 @@ type StructStmt interface {
 
 type DesignatorStatement interface {
 	SimpleStatement
-	GetDesignator() *Designator
+	isDesignatorStatement()
 }
 
 //   (CallStatement)
@@ -97,9 +107,10 @@ type CallStatement struct {
 	ExprList   ExprList // nil able
 }
 
-func (*CallStatement) isStatementBody()             {}
-func (*CallStatement) isSimpleStatement()           {}
-func (m *CallStatement) GetDesignator() *Designator { return m.Designator }
+func (*CallStatement) isStatementBody()         {}
+func (*CallStatement) isSimpleStatement()       {}
+func (m *CallStatement) isDesignatorStatement() {}
+func (m *CallStatement) Children() Nodes        { return Nodes{m.Designator, m.ExprList} }
 
 //   (AssignStatement)
 //   ```
@@ -111,6 +122,7 @@ type AssignStatement struct {
 	Expression *Expression
 }
 
-func (*AssignStatement) isStatementBody()             {}
-func (*AssignStatement) isSimpleStatement()           {}
-func (m *AssignStatement) GetDesignator() *Designator { return m.Designator }
+func (*AssignStatement) isStatementBody()         {}
+func (*AssignStatement) isSimpleStatement()       {}
+func (m *AssignStatement) isDesignatorStatement() {}
+func (m *AssignStatement) Children() Nodes        { return Nodes{m.Designator, m.Expression} }

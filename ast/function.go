@@ -1,5 +1,7 @@
 package ast
 
+import "github.com/akm/tparser/ast/astcore"
+
 // - ProcedureDeclSection
 //   ```
 //   ProcedureDecl
@@ -22,12 +24,20 @@ type ProcedureDeclSection interface {
 //   FunctionHeading ';' [Directive] [PortabilityDirective]
 //   Block ';'
 //   ```
-func (*FunctionDecl) canBeDeclSection()       {}
-func (*FunctionDecl) isProcedureDeclSection() {}
-
 type FunctionDecl struct {
-	Heading              *FunctionHeading
-	Directive            *Directive
+	astcore.Decl
+	*FunctionHeading
+	Directives           []Directive
+	ExternalOptions      *ExternalOptions
 	PortabilityDirective *PortabilityDirective
 	Block                *Block
+}
+
+func (*FunctionDecl) canBeDeclSection()       {}
+func (*FunctionDecl) isProcedureDeclSection() {}
+func (m *FunctionDecl) Children() Nodes {
+	return Nodes{m.FunctionHeading, m.Block}
+}
+func (m *FunctionDecl) ToDeclarations() astcore.Declarations {
+	return astcore.Declarations{astcore.NewDeclaration(m.Ident, m)}
 }

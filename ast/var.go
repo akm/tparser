@@ -88,10 +88,10 @@ func (*VarDeclAbsoluteConstExpr) isVarDeclAbsolute() {}
 // • cannot occur within a procedure or function.
 // • cannot include initializations.
 // • cannot specify the absolute directive.
-
 type ThreadVarSection []*ThreadVarDecl // must implement InterfaceDecl
 
 func (ThreadVarSection) canBeInterfaceDecl() {}
+func (ThreadVarSection) canBeDeclSection()   {}
 func (s ThreadVarSection) Children() Nodes {
 	r := make(Nodes, len(s))
 	for idx, i := range s {
