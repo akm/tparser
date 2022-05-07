@@ -7,10 +7,11 @@ import "github.com/akm/tparser/ast/astcore"
 //   BEGIN StmtList END
 //   ```
 type CompoundStmt struct {
-	Node
+	StructStmt
 	StmtList
 }
 
+func (*CompoundStmt) isStructStmt()     {}
 func (m *CompoundStmt) Children() Nodes { return Nodes{m.StmtList} }
 
 // - StmtList
