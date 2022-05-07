@@ -1,5 +1,7 @@
 package ast
 
+import "github.com/akm/tparser/ast/astcore"
+
 // - CompoundStmt
 //   ```
 //   BEGIN StmtList END
@@ -143,3 +145,30 @@ func (m *AssignStatement) isDesignatorStatement() {}
 func (m *AssignStatement) Children() Nodes {
 	return Nodes{m.Designator, m.Expression}
 }
+
+//   (InheritedStatement)
+//   ```
+//   INHERITED
+//   ```
+type InheritedStatement struct {
+	SimpleStatement
+	Ref *astcore.Declaration // reference to the ancestor method
+}
+
+func (*InheritedStatement) isStatementBody()   {}
+func (*InheritedStatement) isSimpleStatement() {}
+func (*InheritedStatement) Children() Nodes    { return Nodes{} }
+
+//   (GotoStatement)
+//   ```
+//   GOTO LabelId
+//   ```
+type GotoStatement struct {
+	SimpleStatement
+	LabelId *LabelId
+	Ref     *astcore.Declaration
+}
+
+func (*GotoStatement) isStatementBody()   {}
+func (*GotoStatement) isSimpleStatement() {}
+func (m *GotoStatement) Children() Nodes  { return Nodes{m.LabelId} }
