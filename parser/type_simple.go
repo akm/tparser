@@ -45,9 +45,11 @@ func (p *Parser) parseSubrangeTypeForIdentifier(required bool) (*ast.SubrangeTyp
 		if err != nil {
 			return nil, err
 		}
+		d := p.context.DeclarationMap.Get(t1.RawString())
+		qualId := ast.NewQualId(nil, ast.NewIdent(t1), d)
 		return &ast.SubrangeType{
-			Low:  *ast.NewConstExpr(t1),
-			High: *expr,
+			Low:  ast.NewConstExpr(qualId),
+			High: expr,
 		}, nil
 	} else {
 		defer rollback()
@@ -73,8 +75,8 @@ func (p *Parser) ParseConstSubrageType() (*ast.SubrangeType, error) {
 		return nil, err
 	}
 	return &ast.SubrangeType{
-		Low:  *lowExpr,
-		High: *highExpr,
+		Low:  lowExpr,
+		High: highExpr,
 	}, nil
 }
 
@@ -95,7 +97,6 @@ func (p *Parser) ParseEnumeratedType() (ast.EnumeratedType, error) {
 			return nil, errors.Errorf("Unsupported token %+v for EnumeratedType", t)
 		}
 	}
-	p.context.DeclarationMap.SetDecl(res)
 	return res, nil
 }
 
@@ -115,5 +116,6 @@ func (p *Parser) ParseEnumeratedTypeElement() (*ast.EnumeratedTypeElement, error
 		res.ConstExpr = expr
 	}
 
+	p.context.DeclarationMap.SetDecl(res)
 	return res, nil
 }

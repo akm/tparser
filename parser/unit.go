@@ -155,21 +155,20 @@ func (p *Parser) ParseQualId() (*ast.QualId, error) {
 		return nil, err
 	}
 	name1 := p.CurrentToken()
-	p.NextToken()
-	if p.CurrentToken().Is(token.Symbol('.')) {
-		p.NextToken()
-		if _, err := p.Current(token.Identifier); err != nil {
+	if p.context.IsUnitIdentifier(name1) {
+		if _, err := p.Next(token.Symbol('.')); err != nil {
 			return nil, err
 		}
-		name2 := p.CurrentToken()
+		name2, err := p.Next(token.Identifier)
+		if err != nil {
+			return nil, err
+		}
+		// TODO find Declaration from Unit in context
 		p.NextToken()
-		return &ast.QualId{
-			UnitId: ast.NewUnitId(name1),
-			Ident:  ast.NewIdent(name2),
-		}, nil
+		return ast.NewQualId(ast.NewUnitId(name1), ast.NewIdent(name2)), nil
 	} else {
-		return &ast.QualId{
-			Ident: ast.NewIdent(name1),
-		}, nil
+		p.NextToken()
+		d := p.context.DeclarationMap.Get(name1.RawString())
+		return ast.NewQualId(nil, ast.NewIdent(name1), d), nil
 	}
 }

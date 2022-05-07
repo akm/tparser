@@ -17,7 +17,12 @@ func TestUnitWithTypeSection(t *testing.T) {
 			res, err := parser.ParseUnit()
 			if assert.NoError(t, err) {
 				asttest.ClearLocations(t, res)
-				assert.Equal(t, expected, res)
+				if !assert.Equal(t, expected, res) {
+					if !assert.Equal(t, expected.InterfaceSection.InterfaceDecls, res.InterfaceSection.InterfaceDecls) {
+						assert.Equal(t, expected.InterfaceSection.InterfaceDecls[0], res.InterfaceSection.InterfaceDecls[0])
+						assert.Equal(t, expected.InterfaceSection.InterfaceDecls[1], res.InterfaceSection.InterfaceDecls[1])
+					}
+				}
 			}
 		})
 	}
@@ -77,20 +82,24 @@ func TestUnitWithTypeSection(t *testing.T) {
 						{Ident: asttest.NewIdent("TTypeId1"), Type: &ast.TypeId{Ident: asttest.NewIdent("TType1")}},
 						{Ident: asttest.NewIdent("TTypeId2"), Type: &ast.TypeId{UnitId: unit2, Ident: asttest.NewIdent("TType2")}},
 					},
-					ast.TypeSection{
-						{Ident: asttest.NewIdent("TMyInteger1"), Type: &ast.OrdIdent{Ident: asttest.NewIdent("INTEGER")}},
-						{Ident: asttest.NewIdent("TMyReal1"), Type: &ast.RealType{Ident: asttest.NewIdent("REAL")}},
-						{Ident: asttest.NewIdent("TMyString1"), Type: &ast.StringType{Name: "STRING"}},
-						{Ident: asttest.NewIdent("TMyString2"), Type: &ast.StringType{Name: "ANSISTRING"}},
-						{Ident: asttest.NewIdent("TMyEnumerated1"), Type: ast.EnumeratedType{
-							{Ident: asttest.NewIdent("tsClick")},
-							{Ident: asttest.NewIdent("tsClack")},
-							{Ident: asttest.NewIdent("tsClock")},
-						}},
-						{Ident: asttest.NewIdent("TMySubrange1"), Type: &ast.SubrangeType{Low: *asttest.NewConstExpr("tsClick"), High: *asttest.NewConstExpr("tsClack")}},
-						{Ident: asttest.NewIdent("TMySubrange2"), Type: &ast.SubrangeType{Low: *asttest.NewConstExpr(asttest.NewNumber("-128")), High: *asttest.NewConstExpr(asttest.NewNumber("127"))}},
-						{Ident: asttest.NewIdent("TMySubrange3"), Type: &ast.SubrangeType{Low: *asttest.NewConstExpr(asttest.NewString("'A'")), High: *asttest.NewConstExpr(asttest.NewString("'Z'"))}},
-					},
+					func() ast.TypeSection {
+						tsClick := &ast.EnumeratedTypeElement{Ident: asttest.NewIdent("tsClick")}
+						tsClack := &ast.EnumeratedTypeElement{Ident: asttest.NewIdent("tsClack")}
+						tsClock := &ast.EnumeratedTypeElement{Ident: asttest.NewIdent("tsClock")}
+						return ast.TypeSection{
+							{Ident: asttest.NewIdent("TMyInteger1"), Type: &ast.OrdIdent{Ident: asttest.NewIdent("INTEGER")}},
+							{Ident: asttest.NewIdent("TMyReal1"), Type: &ast.RealType{Ident: asttest.NewIdent("REAL")}},
+							{Ident: asttest.NewIdent("TMyString1"), Type: &ast.StringType{Name: "STRING"}},
+							{Ident: asttest.NewIdent("TMyString2"), Type: &ast.StringType{Name: "ANSISTRING"}},
+							{Ident: asttest.NewIdent("TMyEnumerated1"), Type: ast.EnumeratedType{tsClick, tsClack, tsClock}},
+							{Ident: asttest.NewIdent("TMySubrange1"), Type: &ast.SubrangeType{
+								Low:  asttest.NewConstExpr(asttest.NewQualId("tsClick", tsClick.ToDeclarations()[0])),
+								High: asttest.NewConstExpr(asttest.NewQualId("tsClack", tsClack.ToDeclarations()[0])),
+							}},
+							{Ident: asttest.NewIdent("TMySubrange2"), Type: &ast.SubrangeType{Low: asttest.NewConstExpr(asttest.NewNumber("-128")), High: asttest.NewConstExpr(asttest.NewNumber("127"))}},
+							{Ident: asttest.NewIdent("TMySubrange3"), Type: &ast.SubrangeType{Low: asttest.NewConstExpr(asttest.NewString("'A'")), High: asttest.NewConstExpr(asttest.NewString("'Z'"))}},
+						}
+					}(),
 				},
 			},
 			ImplementationSection: &ast.ImplementationSection{},

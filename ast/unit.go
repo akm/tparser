@@ -169,6 +169,15 @@ func (m *UnitId) Children() Nodes {
 type QualId struct {
 	UnitId *UnitId
 	Ident  *Ident
+	Ref    *astcore.Declaration // Actual Type object
+}
+
+func NewQualId(unitId *UnitId, ident *Ident, refs ...*astcore.Declaration) *QualId {
+	r := &QualId{UnitId: unitId, Ident: ident}
+	if len(refs) > 0 {
+		r.Ref = refs[0]
+	}
+	return r
 }
 
 func (m *QualId) Children() Nodes {
