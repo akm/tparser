@@ -188,3 +188,14 @@ func (m *QualId) Children() Nodes {
 	r = append(r, m.Ident)
 	return r
 }
+
+// QualIds
+type QualIds []*QualId // must implement Node
+
+func (s QualIds) Children() Nodes {
+	r := make(Nodes, len(s))
+	for i, m := range s {
+		r[i] = m
+	}
+	return r
+}
