@@ -8,8 +8,8 @@ import (
 func (p *Parser) ParseGoal() (ast.Goal, error) {
 	token := p.NextToken()
 	switch token.Value() {
-	// case "PROGRAM":
-	// 	return p.ParseProgram()
+	case "PROGRAM":
+		return p.ParseProgram()
 	// case "PACKAGE":
 	// 	return p.ParsePackage()
 	// case "LIBRARY":
