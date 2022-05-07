@@ -1,5 +1,7 @@
 package ast
 
+import "github.com/akm/tparser/ast/astcore"
+
 // - Block
 //   ```
 //   [DeclSection]
@@ -115,11 +117,17 @@ func (m DeclSections) Children() Nodes {
 //   LABEL LabelId ';'
 //   ```
 type LabelDeclSection struct {
-	DeclSection
 	*LabelId
+	DeclSection
+	astcore.Decl
 }
 
 func (*LabelDeclSection) canBeDeclSection() {}
-func (m LabelDeclSection) Children() Nodes  { return Nodes{m.LabelId} }
+func (m *LabelDeclSection) Children() Nodes { return Nodes{m.LabelId} }
+func (m *LabelDeclSection) ToDeclarations() astcore.Declarations {
+	return astcore.Declarations{astcore.NewDeclaration(m.LabelId, m)}
+}
 
 type LabelId = Ident
+
+func NewLabelId(ident *Ident) *LabelId { return ident }
