@@ -1,5 +1,7 @@
 package ast
 
+import "github.com/akm/tparser/ast/astcore"
+
 // - Program
 //   ```
 //   [PROGRAM Ident ['(' IdentList ')'] ';']
@@ -9,12 +11,17 @@ package ast
 //     program Calc(input, output);
 // Borland’s Object Pascal compiler ignores these parameters.
 type Program struct {
-	Node
+	Path string
 	*Ident
 	// IdentList    *IdentList // Borland’s Object Pascal compiler ignores these parameters.
 	ProgramBlock *ProgramBlock
+	Goal
 }
 
+func (*Program) isGoal() {}
+func (m *Program) GetPath() string {
+	return m.Path
+}
 func (m *Program) Children() Nodes {
 	res := Nodes{}
 	if m.Ident != nil {
@@ -22,6 +29,9 @@ func (m *Program) Children() Nodes {
 	}
 	res = append(res, m.ProgramBlock)
 	return res
+}
+func (m *Program) ToDeclarations() astcore.Declarations {
+	return astcore.Declarations{astcore.NewDeclaration(m.Ident, m)}
 }
 
 // - ProgramBlock

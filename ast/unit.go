@@ -20,7 +20,7 @@ type Unit struct {
 	InterfaceSection      *InterfaceSection
 	ImplementationSection *ImplementationSection
 	InitSection           *InitSection // optional
-	astcore.Decl
+	Goal
 }
 
 func (*Unit) isGoal() {}
