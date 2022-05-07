@@ -394,6 +394,17 @@ func NewString(v string) *StringFactor { return &StringFactor{Value: v} }
 func (*StringFactor) Children() Nodes  { return Nodes{} }
 func (*StringFactor) isFactor()        {}
 
+// ValueFactor for true, false or other values
+
+type ValueFactor struct {
+	Factor
+	Value string
+}
+
+func NewValueFactor(v string) *ValueFactor { return &ValueFactor{Value: v} }
+func (*ValueFactor) Children() Nodes       { return Nodes{} }
+func (*ValueFactor) isFactor()             {}
+
 // Ninl
 
 type Nil struct {
