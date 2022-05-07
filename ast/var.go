@@ -9,6 +9,7 @@ import "github.com/akm/tparser/ast/astcore"
 type VarSection []*VarDecl // must implement InterfaceDecl
 
 func (VarSection) canBeInterfaceDecl() {}
+func (VarSection) canBeDeclSection()   {}
 func (s VarSection) Children() Nodes {
 	r := make(Nodes, len(s))
 	for idx, i := range s {
@@ -87,10 +88,10 @@ func (*VarDeclAbsoluteConstExpr) isVarDeclAbsolute() {}
 // • cannot occur within a procedure or function.
 // • cannot include initializations.
 // • cannot specify the absolute directive.
-
 type ThreadVarSection []*ThreadVarDecl // must implement InterfaceDecl
 
 func (ThreadVarSection) canBeInterfaceDecl() {}
+func (ThreadVarSection) canBeDeclSection()   {}
 func (s ThreadVarSection) Children() Nodes {
 	r := make(Nodes, len(s))
 	for idx, i := range s {

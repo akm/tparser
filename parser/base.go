@@ -44,9 +44,11 @@ func NewParser(text *[]rune, args ...interface{}) *Parser {
 func (p *Parser) RollbackPoint() func() {
 	tokenizer := p.tokenizer.Clone()
 	curr := p.curr.Clone()
+	ctx := p.context.Clone()
 	return func() {
 		p.tokenizer = tokenizer
 		p.curr = curr
+		p.context = ctx
 	}
 }
 

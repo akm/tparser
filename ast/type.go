@@ -12,6 +12,7 @@ import (
 type TypeSection []*TypeDecl // must implement InterfaceDecl
 
 func (TypeSection) canBeInterfaceDecl() {}
+func (TypeSection) canBeDeclSection()   {}
 func (s TypeSection) Children() Nodes {
 	r := make(Nodes, len(s))
 	for i, m := range s {

@@ -105,7 +105,7 @@ func TestVarSectionl(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			parser := NewParser(&text)
 			parser.NextToken()
-			res, err := parser.ParseVarSection()
+			res, err := parser.ParseVarSection(true)
 			if assert.NoError(t, err) {
 				assert.Equal(t, expected, res)
 			}

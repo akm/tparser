@@ -1,0 +1,125 @@
+package ast
+
+// - Block
+//   ```
+//   [DeclSection]
+//   [ExportsStmt]...
+//   CompoundStmt
+//   [ExportsStmt]...
+//   ```
+type Block struct {
+	Node
+	DeclSections  DeclSections
+	ExportsStmts1 ExportsStmts
+	CompoundStmt  *CompoundStmt
+	ExportsStmts2 ExportsStmts
+}
+
+func (m *Block) Children() Nodes {
+	res := Nodes{}
+	if m.DeclSections != nil {
+		res = append(res, m.DeclSections)
+	}
+	if m.ExportsStmts1 != nil {
+		res = append(res, m.ExportsStmts1)
+	}
+	res = append(res, m.CompoundStmt)
+	if m.ExportsStmts2 != nil {
+		res = append(res, m.ExportsStmts2)
+	}
+	return res
+}
+
+type ExportsStmts []*ExportsStmt // must implements Node
+func (s ExportsStmts) Children() Nodes {
+	r := make(Nodes, len(s))
+	for idx, i := range s {
+		r[idx] = i
+	}
+	return r
+}
+
+// - ExportsStmt
+//   ```
+//   EXPORTS ExportsItem [, ExportsItem]...
+//   ```
+type ExportsStmt struct {
+	Node
+	ExportsItems []*ExportsItem
+}
+
+func (m *ExportsStmt) Children() Nodes {
+	r := make(Nodes, len(m.ExportsItems))
+	for idx, i := range m.ExportsItems {
+		r[idx] = i
+	}
+	return r
+}
+
+// - ExportsItem
+//   ```
+//   Ident [NAME|INDEX “‘” ConstExpr “‘”]
+//         [INDEX|NAME “‘” ConstExpr “‘”]
+//   ```
+type ExportsItem struct {
+	Node
+	*Ident
+	Name  *ConstExpr
+	Index *ConstExpr
+}
+
+func (m *ExportsItem) Children() Nodes {
+	res := Nodes{m.Ident}
+	if m.Name != nil {
+		res = append(res, m.Name)
+	}
+	if m.Index != nil {
+		res = append(res, m.Index)
+	}
+	return res
+}
+
+// - DeclSection
+//   ```
+//   LabelDeclSection
+//   ```
+//   ```
+//   ConstSection
+//   ```
+//   ```
+//   TypeSection
+//   ```
+//   ```
+//   VarSection
+//   ```
+//   ```
+//   ProcedureDeclSection
+//   ```
+type DeclSection interface {
+	Node
+	canBeDeclSection()
+}
+
+type DeclSections []DeclSection // must implement Node
+
+func (m DeclSections) Children() Nodes {
+	r := make(Nodes, len(m))
+	for idx, i := range m {
+		r[idx] = i
+	}
+	return r
+}
+
+// - LabelDeclSection
+//   ```
+//   LABEL LabelId ';'
+//   ```
+type LabelDeclSection struct {
+	DeclSection
+	*LabelId
+}
+
+func (*LabelDeclSection) canBeDeclSection() {}
+func (m LabelDeclSection) Children() Nodes  { return Nodes{m.LabelId} }
+
+type LabelId = Ident

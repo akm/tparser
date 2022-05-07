@@ -6,9 +6,16 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (p *Parser) ParseTypeSection() (ast.TypeSection, error) {
-	if _, err := p.Current(token.ReservedWord.HasKeyword("TYPE")); err != nil {
-		return nil, err
+func (p *Parser) ParseTypeSection(required bool) (ast.TypeSection, error) {
+	kw := token.ReservedWord.HasKeyword("TYPE")
+	if required {
+		if _, err := p.Current(kw); err != nil {
+			return nil, err
+		}
+	} else {
+		if !p.CurrentToken().Is(kw) {
+			return nil, nil
+		}
 	}
 	p.NextToken()
 	res := ast.TypeSection{}
