@@ -43,21 +43,6 @@ func (m *Statement) Children() Nodes {
 	return res
 }
 
-type StatementBody interface {
-	Node
-	isStatementBody()
-}
-
-type SimpleStatement interface {
-	StatementBody
-	isSimpleStatement()
-}
-
-type StructStmt interface {
-	StatementBody
-	isStructStmt()
-}
-
 // - SimpleStatement
 //   (CallStatement)
 //   ```
@@ -100,7 +85,22 @@ type StructStmt interface {
 //   ```
 //   AssemblerStmt
 //   ```
+type StatementBody interface {
+	Node
+	isStatementBody()
+}
 
+type SimpleStatement interface {
+	StatementBody
+	isSimpleStatement()
+}
+
+type StructStmt interface {
+	StatementBody
+	isStructStmt()
+}
+
+// DesignatorStatement is an interface for CallStatement and AssignStatement
 type DesignatorStatement interface {
 	SimpleStatement
 	isDesignatorStatement()
