@@ -54,10 +54,30 @@ func (p *Parser) ParseStatement() (*ast.Statement, error) {
 	rollback := p.RollbackPoint()
 	labelId := p.CurrentToken()
 	if p.NextToken().Is(token.Symbol(':')) {
-		res.LabelId = ast.NewIdent(labelId)
+		res.LabelId = ast.NewLabelId(ast.NewIdent(labelId))
 		p.NextToken()
 	} else {
 		rollback()
+	}
+
+	t := p.CurrentToken()
+	if t.Is(token.ReservedWord) {
+		switch t.Value() {
+		case "INHERITED":
+			if stmt, err := p.ParseInheritedStmt(); err != nil {
+				return nil, err
+			} else {
+				res.Body = stmt
+				return res, nil
+			}
+		case "GOTO":
+			if stmt, err := p.ParseGotoStatement(); err != nil {
+				return nil, err
+			} else {
+				res.Body = stmt
+				return res, nil
+			}
+		}
 	}
 
 	// TODO InheritedStatement
@@ -109,4 +129,30 @@ func (p *Parser) ParseDesignatorStatement() (ast.DesignatorStatement, error) {
 		}
 		return res, nil
 	}
+}
+
+func (p *Parser) ParseInheritedStmt() (*ast.InheritedStatement, error) {
+	if _, err := p.Current(token.ReservedWord.HasKeyword("INHERITED")); err != nil {
+		return nil, err
+	}
+	p.NextToken()
+	return &ast.InheritedStatement{
+		// Ref: (find callee ancestor method)
+	}, nil
+}
+
+func (p *Parser) ParseGotoStatement() (*ast.GotoStatement, error) {
+	if _, err := p.Current(token.ReservedWord.HasKeyword("GOTO")); err != nil {
+		return nil, err
+	}
+	t, err := p.Next(token.Identifier)
+	if err != nil {
+		return nil, err
+	}
+	d := p.context.DeclarationMap.Get(t.Value())
+	p.NextToken()
+	return &ast.GotoStatement{
+		LabelId: ast.NewLabelId(ast.NewIdent(t)),
+		Ref:     d,
+	}, nil
 }
