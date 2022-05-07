@@ -173,3 +173,324 @@ type GotoStatement struct {
 func (*GotoStatement) isStatementBody()   {}
 func (*GotoStatement) isSimpleStatement() {}
 func (m *GotoStatement) Children() Nodes  { return Nodes{m.LabelId} }
+
+// - ConditionalStmt
+//   ```
+//   IfStmt
+//   ```
+//   ```
+//   CaseStmt
+//   ```
+type ConditionalStmt interface {
+	StructStmt
+	isConditionalStmt()
+}
+
+// - IfStmt
+//   ```
+//   IF Expression THEN Statement [ELSE Statement]
+//   ```
+
+type IfStmt struct {
+	Condition *Expression
+	Then      *Statement
+	Else      *Statement
+	ConditionalStmt
+}
+
+func (*IfStmt) isStatementBody()   {}
+func (*IfStmt) isStructStmt()      {}
+func (*IfStmt) isConditionalStmt() {}
+func (m *IfStmt) Children() Nodes {
+	r := Nodes{m.Condition, m.Then}
+	if m.Else != nil {
+		r = append(r, m.Else)
+	}
+	return r
+}
+
+// - CaseStmt
+//   ```
+//   CASE Expression OF CaseSelector ';'... [ELSE StmtList] [';'] END
+//   ```
+
+type CaseStmt struct {
+	Expression    *Expression
+	CaseSelectors CaseSelectors
+	Else          StmtList
+}
+
+func (*CaseStmt) isStatementBody()   {}
+func (*CaseStmt) isStructStmt()      {}
+func (*CaseStmt) isConditionalStmt() {}
+func (m *CaseStmt) Children() Nodes {
+	r := Nodes{m.Expression, m.CaseSelectors}
+	if m.Else != nil {
+		r = append(r, m.Else)
+	}
+	return r
+}
+
+type CaseSelectors []*CaseSelector // must implements Node
+func (s CaseSelectors) Children() Nodes {
+	r := make(Nodes, len(s))
+	for idx, i := range s {
+		r[idx] = i
+	}
+	return r
+}
+
+// - CaseSelector
+//   ```
+//   CaseLabel ','... ':' Statement
+//   ```
+type CaseSelector struct {
+	CaseLabels CaseLabels
+	Statement  *Statement
+	Node
+}
+
+func (m *CaseSelector) Children() Nodes {
+	return Nodes{m.CaseLabels, m.Statement}
+}
+
+type CaseLabels []*CaseLabel // must implements Node
+func (s CaseLabels) Children() Nodes {
+	r := make(Nodes, len(s))
+	for idx, i := range s {
+		r[idx] = i
+	}
+	return r
+}
+
+// - CaseLabel
+//   ```
+//   ConstExpr ['..' ConstExpr]
+//   ```
+
+type CaseLabel struct {
+	ConstExpr      *ConstExpr
+	ExtraConstExpr *ConstExpr
+	Node
+}
+
+func (m *CaseLabel) Children() Nodes {
+	r := Nodes{m.ConstExpr}
+	if m.ExtraConstExpr != nil {
+		r = append(r, m.ExtraConstExpr)
+	}
+	return r
+}
+
+// - LoopStmt
+//   ```
+//   RepeatStmt
+//   ```
+//   ```
+//   WhileStmt
+//   ```
+//   ```
+//   ForStmt
+//   ```
+type LoopStmt interface {
+	StructStmt
+	isLoopStmt()
+}
+
+// - RepeatStmt
+//   ```
+//   REPEAT Statement UNTIL Expression
+//   ```
+type RepeatStmt struct {
+	Statement *Statement
+	Condition *Expression
+	LoopStmt
+}
+
+func (*RepeatStmt) isStatementBody() {}
+func (*RepeatStmt) isStructStmt()    {}
+func (*RepeatStmt) isLoopStmt()      {}
+func (m *RepeatStmt) Children() Nodes {
+	return Nodes{m.Statement, m.Condition}
+}
+
+// - WhileStmt
+//   ```
+//   WHILE Expression DO Statement
+//   ```
+type WhileStmt struct {
+	Condition *Expression
+	Statement *Statement
+	LoopStmt
+}
+
+func (*WhileStmt) isStatementBody() {}
+func (*WhileStmt) isStructStmt()    {}
+func (*WhileStmt) isLoopStmt()      {}
+func (m *WhileStmt) Children() Nodes {
+	return Nodes{m.Condition, m.Statement}
+}
+
+// - ForStmt
+//   ```
+//   FOR QualId ':=' Expression (TO | DOWNTO) Expression DO Statement
+//   ```
+type ForStmt struct {
+	Initial    *Expression
+	Terminator *Expression
+	Down       bool // false: TO, true: DOWNTO
+	Statement  *Statement
+	LoopStmt
+}
+
+func (*ForStmt) isStatementBody() {}
+func (*ForStmt) isStructStmt()    {}
+func (*ForStmt) isLoopStmt()      {}
+func (m *ForStmt) Children() Nodes {
+	return Nodes{m.Initial, m.Terminator, m.Statement}
+}
+
+// - WithStmt
+//   ```
+//   WITH IdentList DO Statement
+//   ```
+//   Ident in IdentList doesn't have Ref to Declaration. So we use QualIds instead.
+type WithStmt struct {
+	Objects   QualIds
+	Statement *Statement
+	StructStmt
+}
+
+func (*WithStmt) isStatementBody() {}
+func (*WithStmt) isStructStmt()    {}
+func (m *WithStmt) Children() Nodes {
+	return Nodes{m.Objects, m.Statement}
+}
+
+// - TryExceptStmt
+//   ```
+//   TRY
+//     Statement...
+//   EXCEPT
+//     ExceptionBlock
+//   END
+//   ```
+type TryExceptStmt struct {
+	Statements     StmtList
+	ExceptionBlock *ExceptionBlock
+	StructStmt
+}
+
+func (*TryExceptStmt) isStatementBody() {}
+func (*TryExceptStmt) isStructStmt()    {}
+func (m *TryExceptStmt) Children() Nodes {
+	return Nodes{m.Statements, m.ExceptionBlock}
+}
+
+// - ExceptionBlock
+//   ```
+//   [ON [Ident ‘:’] TypeID DO Statement]...
+//   [ELSE Statement...]
+//   ```
+type ExceptionBlock struct {
+	Handlers *ExceptionBlockHandlers
+	Else     StmtList
+	Node
+}
+
+func (m *ExceptionBlock) Children() Nodes {
+	return Nodes{m.Handlers, m.Else}
+}
+
+type ExceptionBlockHandlers []*ExceptionBlockHandler // must implements Node
+func (s ExceptionBlockHandlers) Children() Nodes {
+	r := make(Nodes, len(s))
+	for idx, i := range s {
+		r[idx] = i
+	}
+	return r
+}
+
+type ExceptionBlockHandler struct {
+	Ident     *Ident
+	TypeId    *TypeId
+	Statement *Statement
+	Node
+}
+
+func (m *ExceptionBlockHandler) Children() Nodes {
+	r := Nodes{}
+	if m.Ident != nil {
+		r = append(r, m.Ident)
+	}
+	r = append(r, m.TypeId, m.Statement)
+	return r
+}
+
+// - TryFinallyStmt
+//   ```
+//   TRY
+//     Statement
+//   FINALLY
+//     Statement
+//   END
+//   ```
+type TryFinallyStmt struct {
+	Statements1 StmtList
+	Statements2 StmtList
+	StructStmt
+}
+
+func (*TryFinallyStmt) isStatementBody() {}
+func (*TryFinallyStmt) isStructStmt()    {}
+func (m *TryFinallyStmt) Children() Nodes {
+	return Nodes{m.Statements1, m.Statements2}
+}
+
+// - RaiseStmt
+//   ```
+//   RAISE [object] [AT address]
+//   ```
+type RaiseStmt struct {
+	Object  *Expression
+	Address *Expression
+	StructStmt
+}
+
+func (*RaiseStmt) isStatementBody() {}
+func (*RaiseStmt) isStructStmt()    {}
+func (m *RaiseStmt) Children() Nodes {
+	r := Nodes{}
+	if m.Object != nil {
+		r = append(r, m.Object)
+	}
+	if m.Address != nil {
+		r = append(r, m.Address)
+	}
+	return r
+}
+
+// - AssemblerStatement
+//   (Is this correct?)
+//   ```
+//   ASM
+//   ```
+//   ```
+//   <assemblylanguage>
+//   ```
+//   ```
+//   END
+//   ```
+//   It seems to be the following:
+//   ```
+//   ASM
+//   <assemblylanguage>
+//   END
+//   ```
+type AssemblerStatement struct {
+	StructStmt
+}
+
+func (*AssemblerStatement) isStatementBody() {}
+func (*AssemblerStatement) isStructStmt()    {}
+func (*AssemblerStatement) Children() Nodes  { return Nodes{} }
