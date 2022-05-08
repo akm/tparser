@@ -215,16 +215,16 @@ func (m *IfStmt) Children() Nodes {
 //   ```
 
 type CaseStmt struct {
-	Expression    *Expression
-	CaseSelectors CaseSelectors
-	Else          StmtList
+	Expression *Expression
+	Selectors  CaseSelectors
+	Else       StmtList
 }
 
 func (*CaseStmt) isStatementBody()   {}
 func (*CaseStmt) isStructStmt()      {}
 func (*CaseStmt) isConditionalStmt() {}
 func (m *CaseStmt) Children() Nodes {
-	r := Nodes{m.Expression, m.CaseSelectors}
+	r := Nodes{m.Expression, m.Selectors}
 	if m.Else != nil {
 		r = append(r, m.Else)
 	}
@@ -245,13 +245,13 @@ func (s CaseSelectors) Children() Nodes {
 //   CaseLabel ','... ':' Statement
 //   ```
 type CaseSelector struct {
-	CaseLabels CaseLabels
-	Statement  *Statement
+	Labels    CaseLabels
+	Statement *Statement
 	Node
 }
 
 func (m *CaseSelector) Children() Nodes {
-	return Nodes{m.CaseLabels, m.Statement}
+	return Nodes{m.Labels, m.Statement}
 }
 
 type CaseLabels []*CaseLabel // must implements Node
@@ -272,6 +272,17 @@ type CaseLabel struct {
 	ConstExpr      *ConstExpr
 	ExtraConstExpr *ConstExpr
 	Node
+}
+
+func NewCaseLabel(expr *ConstExpr, extras ...*ConstExpr) *CaseLabel {
+	switch len(extras) {
+	case 0:
+		return &CaseLabel{ConstExpr: expr}
+	case 1:
+		return &CaseLabel{ConstExpr: expr, ExtraConstExpr: extras[0]}
+	default:
+		panic("too many extras for NewCaseLabel")
+	}
 }
 
 func (m *CaseLabel) Children() Nodes {
