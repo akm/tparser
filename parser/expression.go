@@ -187,6 +187,8 @@ func (p *Parser) ParseFactor() (ast.Factor, error) {
 			}
 			return &ast.Not{Factor: f}, nil
 		}
+	} else if ast.IsManifestConstant(t0Value) {
+		return p.ParseManifestConstant(t0, true)
 	} else if t0.Is(token.CharacterString) {
 		return p.ParseStringFactor(t0, true)
 	} else if t0.Is(token.Some(token.NumeralInt, token.NumeralReal)) {
@@ -213,6 +215,15 @@ func (p *Parser) ParseFactor() (ast.Factor, error) {
 	}
 
 	return nil, errors.Errorf("unexpected token %s", t0)
+}
+
+func (p *Parser) ParseManifestConstant(t *token.Token, skipTypeCheck bool) (*ast.ValueFactor, error) {
+	if skipTypeCheck || ast.IsManifestConstant(t.Value()) {
+		p.NextToken()
+		return &ast.ValueFactor{Value: t.Value()}, nil
+	} else {
+		return nil, errors.Errorf("unexpected token %s for ValueFactor", t)
+	}
 }
 
 func (p *Parser) ParseStringFactor(t *token.Token, skipTypeCheck bool) (*ast.StringFactor, error) {
