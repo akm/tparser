@@ -310,10 +310,10 @@ type LoopStmt interface {
 
 // - RepeatStmt
 //   ```
-//   REPEAT Statement UNTIL Expression
+//   REPEAT StmtList UNTIL Expression
 //   ```
 type RepeatStmt struct {
-	Statement *Statement
+	StmtList  StmtList
 	Condition *Expression
 	LoopStmt
 }
@@ -322,7 +322,7 @@ func (*RepeatStmt) isStatementBody() {}
 func (*RepeatStmt) isStructStmt()    {}
 func (*RepeatStmt) isLoopStmt()      {}
 func (m *RepeatStmt) Children() Nodes {
-	return Nodes{m.Statement, m.Condition}
+	return Nodes{m.StmtList, m.Condition}
 }
 
 // - WhileStmt
