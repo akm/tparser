@@ -51,13 +51,16 @@ func (p *Parser) ParseStmtList(terminator token.Predicator) (ast.StmtList, error
 
 func (p *Parser) ParseStatement() (*ast.Statement, error) {
 	res := &ast.Statement{}
-	rollback := p.RollbackPoint()
 	labelId := p.CurrentToken()
-	if p.NextToken().Is(token.Symbol(':')) {
-		res.LabelId = ast.NewLabelId(ast.NewIdent(labelId))
-		p.NextToken()
-	} else {
-		rollback()
+	labelDecl := p.context.DeclarationMap.Get(labelId.Value())
+	if labelDecl != nil {
+		if _, ok := labelDecl.Node.(*ast.LabelDeclSection); ok {
+			res.LabelId = ast.NewLabelId(ast.NewIdent(labelId))
+			if _, err := p.Next(token.Symbol(':')); err != nil {
+				return nil, err
+			}
+			p.NextToken()
+		}
 	}
 
 	t := p.CurrentToken()
