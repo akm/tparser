@@ -341,23 +341,28 @@ type DesignatorItem interface {
 	isDesignatorItem()
 }
 
-type DesignatorItemIdent Ident // Must implement DesignatorItem, and ancestor Ident implements Node.
+type DesignatorItemIdent struct {
+	*Ident
+	Node
+}
 
 func NewDesignatorItemIdent(arg interface{}) *DesignatorItemIdent {
 	switch v := arg.(type) {
 	case *DesignatorItemIdent:
 		return v
 	case *Ident:
-		return (*DesignatorItemIdent)(v)
+		return &DesignatorItemIdent{Ident: v}
 	case *token.Token:
-		return (*DesignatorItemIdent)(NewIdent(v))
+		return &DesignatorItemIdent{Ident: NewIdent(v)}
 	default:
 		panic(errors.Errorf("Unsupported type %T for NewDesignatorItemIdent", arg))
 	}
 }
 
-func (m *DesignatorItemIdent) Children() Nodes { return Nodes{} }
-func (DesignatorItemIdent) isDesignatorItem()  {}
+func (*DesignatorItemIdent) isDesignatorItem() {}
+func (m *DesignatorItemIdent) Children() Nodes {
+	return Nodes{m.Ident}
+}
 
 type DesignatorItemExprList ExprList // Must implement DesignatorItem, and ancestor ExprList implements Node.
 

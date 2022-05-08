@@ -102,7 +102,7 @@ end;
 								Designator: &ast.Designator{
 									QualId: asttest.NewQualId("Form1"),
 									Items: []ast.DesignatorItem{
-										(*ast.DesignatorItemIdent)(asttest.NewIdent("Close")),
+										ast.NewDesignatorItemIdent(asttest.NewIdent("Close")),
 									},
 								},
 							},
