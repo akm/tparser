@@ -555,7 +555,7 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
 - RepeatStmt
   ```
-  REPEAT Statement UNTIL Expression
+  REPEAT StmtList UNTIL Expression
   ```
 - WhileStmt
   ```
