@@ -347,10 +347,11 @@ func (m *WhileStmt) Children() Nodes {
 //   FOR QualId ':=' Expression (TO | DOWNTO) Expression DO Statement
 //   ```
 type ForStmt struct {
-	Initial    *Expression
-	Terminator *Expression
-	Down       bool // false: TO, true: DOWNTO
-	Statement  *Statement
+	QualId    *QualId
+	Initial   *Expression
+	Terminal  *Expression
+	Down      bool // false: TO, true: DOWNTO
+	Statement *Statement
 	LoopStmt
 }
 
@@ -358,7 +359,7 @@ func (*ForStmt) isStatementBody() {}
 func (*ForStmt) isStructStmt()    {}
 func (*ForStmt) isLoopStmt()      {}
 func (m *ForStmt) Children() Nodes {
-	return Nodes{m.Initial, m.Terminator, m.Statement}
+	return Nodes{m.QualId, m.Initial, m.Terminal, m.Statement}
 }
 
 // - WithStmt
