@@ -28,3 +28,26 @@ func (p *Parser) ParseRepeatStmt() (*ast.RepeatStmt, error) {
 		Condition: condition,
 	}, nil
 }
+
+func (p *Parser) ParseWhileStmt() (*ast.WhileStmt, error) {
+	if _, err := p.Current(token.ReservedWord.HasKeyword("WHILE")); err != nil {
+		return nil, err
+	}
+	p.NextToken()
+	condition, err := p.ParseExpression()
+	if err != nil {
+		return nil, err
+	}
+	if _, err := p.Current(token.ReservedWord.HasKeyword("DO")); err != nil {
+		return nil, err
+	}
+	p.NextToken()
+	statement, err := p.ParseStatement()
+	if err != nil {
+		return nil, err
+	}
+	return &ast.WhileStmt{
+		Condition: condition,
+		Statement: statement,
+	}, nil
+}
