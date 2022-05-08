@@ -343,9 +343,17 @@ type DesignatorItem interface {
 
 type DesignatorItemIdent Ident // Must implement DesignatorItem, and ancestor Ident implements Node.
 
-func NewDesignatorItemIdent(v interface{}) *DesignatorItemIdent {
-	r := DesignatorItemIdent(*NewIdentFrom(v))
-	return &r
+func NewDesignatorItemIdent(arg interface{}) *DesignatorItemIdent {
+	switch v := arg.(type) {
+	case *DesignatorItemIdent:
+		return v
+	case *Ident:
+		return (*DesignatorItemIdent)(v)
+	case *token.Token:
+		return (*DesignatorItemIdent)(NewIdent(v))
+	default:
+		panic(errors.Errorf("Unsupported type %T for NewDesignatorItemIdent", arg))
+	}
 }
 
 func (m *DesignatorItemIdent) Children() Nodes { return Nodes{} }

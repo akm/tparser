@@ -267,7 +267,7 @@ func (p *Parser) ParseDesignator() (*ast.Designator, error) {
 			if err != nil {
 				return nil, err
 			}
-			item = ast.NewDesignatorItemIdent(t.Value())
+			item = ast.NewDesignatorItemIdent(t)
 		case "[":
 			p.NextToken()
 			exprList, err := p.ParseExprList(token.Symbol(']'))
