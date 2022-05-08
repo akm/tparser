@@ -101,6 +101,13 @@ func (p *Parser) ParseStatement() (*ast.Statement, error) {
 				res.Body = stmt
 				return res, nil
 			}
+		case "REPEAT":
+			if stmt, err := p.ParseRepeatStmt(); err != nil {
+				return nil, err
+			} else {
+				res.Body = stmt
+				return res, nil
+			}
 		}
 	}
 
