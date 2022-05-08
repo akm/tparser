@@ -94,13 +94,16 @@ func (p *Parser) ParseStatement() (*ast.Statement, error) {
 				res.Body = stmt
 				return res, nil
 			}
+		case "CASE":
+			if stmt, err := p.ParseCaseStmt(); err != nil {
+				return nil, err
+			} else {
+				res.Body = stmt
+				return res, nil
+			}
 		}
 	}
 
-	// TODO InheritedStatement
-	// TODO GotoStatement
-	// TODO CompoundStmt
-	// TODO ConditionalStmt
 	// TODO LoopStmt
 	// TODO WithStmt
 	// TODO TryExceptStmt
