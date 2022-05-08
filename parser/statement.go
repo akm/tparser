@@ -80,6 +80,20 @@ func (p *Parser) ParseStatement() (*ast.Statement, error) {
 				res.Body = stmt
 				return res, nil
 			}
+		case "BEGIN":
+			if stmt, err := p.ParseCompoundStmt(true); err != nil {
+				return nil, err
+			} else {
+				res.Body = stmt
+				return res, nil
+			}
+		case "IF":
+			if stmt, err := p.ParseIfStmt(); err != nil {
+				return nil, err
+			} else {
+				res.Body = stmt
+				return res, nil
+			}
 		}
 	}
 
