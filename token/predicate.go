@@ -3,6 +3,8 @@ package token
 import (
 	"fmt"
 	"strings"
+
+	"github.com/akm/tparser/runes"
 )
 
 type Predicator interface {
@@ -74,15 +76,14 @@ func TokenType(typ Type) Predicator {
 	}
 }
 
-func Symbol(r rune) Predicator {
+func Symbol(rs ...rune) Predicator {
 	return &PredicatorImpl{
-		name: fmt.Sprintf("Symbol %q", r),
+		name: fmt.Sprintf("Symbol %q", rs),
 		predicate: func(t *Token) bool {
 			if t.Type != SpecialSymbol {
 				return false
 			}
-			raw := t.Raw()
-			return len(raw) == 1 && raw[0] == r
+			return runes.Equal(t.Raw(), rs)
 		},
 	}
 }

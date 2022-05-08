@@ -341,15 +341,28 @@ type DesignatorItem interface {
 	isDesignatorItem()
 }
 
-type DesignatorItemIdent Ident // Must implement DesignatorItem, and ancestor Ident implements Node.
-
-func NewDesignatorItemIdent(v interface{}) *DesignatorItemIdent {
-	r := DesignatorItemIdent(*NewIdentFrom(v))
-	return &r
+type DesignatorItemIdent struct {
+	*Ident
+	Node
 }
 
-func (m *DesignatorItemIdent) Children() Nodes { return Nodes{} }
-func (DesignatorItemIdent) isDesignatorItem()  {}
+func NewDesignatorItemIdent(arg interface{}) *DesignatorItemIdent {
+	switch v := arg.(type) {
+	case *DesignatorItemIdent:
+		return v
+	case *Ident:
+		return &DesignatorItemIdent{Ident: v}
+	case *token.Token:
+		return &DesignatorItemIdent{Ident: NewIdent(v)}
+	default:
+		panic(errors.Errorf("Unsupported type %T for NewDesignatorItemIdent", arg))
+	}
+}
+
+func (*DesignatorItemIdent) isDesignatorItem() {}
+func (m *DesignatorItemIdent) Children() Nodes {
+	return Nodes{m.Ident}
+}
 
 type DesignatorItemExprList ExprList // Must implement DesignatorItem, and ancestor ExprList implements Node.
 
@@ -393,6 +406,17 @@ type StringFactor struct {
 func NewString(v string) *StringFactor { return &StringFactor{Value: v} }
 func (*StringFactor) Children() Nodes  { return Nodes{} }
 func (*StringFactor) isFactor()        {}
+
+// ValueFactor for true, false or other values
+
+type ValueFactor struct {
+	Factor
+	Value string
+}
+
+func NewValueFactor(v string) *ValueFactor { return &ValueFactor{Value: v} }
+func (*ValueFactor) Children() Nodes       { return Nodes{} }
+func (*ValueFactor) isFactor()             {}
 
 // Ninl
 
