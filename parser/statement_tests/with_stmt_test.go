@@ -69,7 +69,7 @@ end.
 										Statement: &ast.Statement{
 											Body: &ast.IfStmt{
 												Condition: &ast.Expression{
-													SimpleExpression: asttest.NewSimpleExpression("Month"),
+													SimpleExpression: asttest.NewSimpleExpression("Month"), // TODO Use QualId with reference to decl
 													RelOpSimpleExpressions: []*ast.RelOpSimpleExpression{
 														{RelOp: "=", SimpleExpression: asttest.NewSimpleExpression(asttest.NewNumber("12"))},
 													},
@@ -79,16 +79,16 @@ end.
 														StmtList: ast.StmtList{
 															{
 																Body: &ast.AssignStatement{
-																	Designator: asttest.NewDesignator("Month"),
+																	Designator: asttest.NewDesignator("Month"), // TODO Use QualId with reference to decl
 																	Expression: asttest.NewExpression(asttest.NewNumber("1")),
 																},
 															},
 															{
 																Body: &ast.AssignStatement{
-																	Designator: asttest.NewDesignator("Year"),
+																	Designator: asttest.NewDesignator("Year"), // TODO Use QualId with reference to decl
 																	Expression: asttest.NewExpression(
 																		&ast.SimpleExpression{
-																			Term: &ast.Term{Factor: asttest.NewDesignatorFactor(asttest.NewIdent("Year"))},
+																			Term: &ast.Term{Factor: asttest.NewDesignatorFactor(asttest.NewIdent("Year"))}, // TODO Use QualId with reference to decl
 																			AddOpTerms: []*ast.AddOpTerm{
 																				{AddOp: "+", Term: asttest.NewTerm(asttest.NewNumber("1"))},
 																			},
@@ -101,10 +101,10 @@ end.
 												},
 												Else: &ast.Statement{
 													Body: &ast.AssignStatement{
-														Designator: asttest.NewDesignator("Month"),
+														Designator: asttest.NewDesignator("Month"), // TODO Use QualId with reference to decl
 														Expression: asttest.NewExpression(
 															&ast.SimpleExpression{
-																Term: &ast.Term{Factor: asttest.NewDesignatorFactor(asttest.NewIdent("Month"))},
+																Term: &ast.Term{Factor: asttest.NewDesignatorFactor(asttest.NewIdent("Month"))}, // TODO Use QualId with reference to decl
 																AddOpTerms: []*ast.AddOpTerm{
 																	{AddOp: "+", Term: asttest.NewTerm(asttest.NewNumber("1"))},
 																},
