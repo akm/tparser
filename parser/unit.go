@@ -150,6 +150,27 @@ func (p *Parser) ParseImplementationSection() (*ast.ImplementationSection, error
 	return res, nil
 }
 
+func (p *Parser) ParseQualIds() (ast.QualIds, error) {
+	res := ast.QualIds{}
+	separator := token.Symbol(',')
+	err := p.Until(token.Not(separator), separator, func() error {
+		qualId, err := p.ParseQualId()
+		if err != nil {
+			return err
+		}
+		res = append(res, qualId)
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	if len(res) < 1 {
+		return nil, nil
+	} else {
+		return res, nil
+	}
+}
+
 func (p *Parser) ParseQualId() (*ast.QualId, error) {
 	if _, err := p.Current(token.Some(token.Identifier, token.Directive)); err != nil {
 		return nil, err
