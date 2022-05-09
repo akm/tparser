@@ -122,10 +122,16 @@ func (p *Parser) ParseStatement() (*ast.Statement, error) {
 				res.Body = stmt
 				return res, nil
 			}
+		case "WITH":
+			if stmt, err := p.ParseWithStmt(); err != nil {
+				return nil, err
+			} else {
+				res.Body = stmt
+				return res, nil
+			}
 		}
 	}
 
-	// TODO WithStmt
 	// TODO TryExceptStmt
 	// TODO TryFinallyStmt
 	// TODO RaiseStmt

@@ -110,3 +110,10 @@ func PredicatorBy(name string, fn func(string) bool) Predicator {
 		},
 	}
 }
+
+func Not(p Predicator) Predicator {
+	return &PredicatorImpl{
+		name:      fmt.Sprintf("Not %s", p.Name()),
+		predicate: func(t *Token) bool { return !p.Predicate(t) },
+	}
+}
