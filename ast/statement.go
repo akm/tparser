@@ -411,7 +411,7 @@ func (m *TryExceptStmt) Children() Nodes {
 //   [ELSE Statement...]
 //   ```
 type ExceptionBlock struct {
-	Handlers *ExceptionBlockHandlers
+	Handlers ExceptionBlockHandlers
 	Else     StmtList
 	Node
 }
@@ -431,7 +431,7 @@ func (s ExceptionBlockHandlers) Children() Nodes {
 
 type ExceptionBlockHandler struct {
 	Ident     *Ident
-	TypeId    *TypeId
+	Type      Type
 	Statement *Statement
 	Node
 }
@@ -441,7 +441,7 @@ func (m *ExceptionBlockHandler) Children() Nodes {
 	if m.Ident != nil {
 		r = append(r, m.Ident)
 	}
-	r = append(r, m.TypeId, m.Statement)
+	r = append(r, m.Type, m.Statement)
 	return r
 }
 
