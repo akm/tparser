@@ -5,23 +5,11 @@ import (
 
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/asttest"
-	"github.com/akm/tparser/parser"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestWithStmt(t *testing.T) {
 	run := func(name string, text []rune, expected *ast.Program) {
-		t.Run(name, func(t *testing.T) {
-			parser := parser.NewParser(&text)
-			parser.NextToken()
-			res, err := parser.ParseProgram()
-			if assert.NoError(t, err) {
-				asttest.ClearLocations(t, res)
-				assert.Equal(t, expected, res)
-				assert.Equal(t, expected.ProgramBlock.Block, res.ProgramBlock.Block)
-			}
-
-		})
+		runProgram(t, name, true, text, expected)
 	}
 
 	// TODO Add TDate record type definition and check references to the fields
