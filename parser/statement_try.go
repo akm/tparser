@@ -37,8 +37,9 @@ func (p *Parser) ParseTryStmt() (ast.TryStmt, error) {
 
 func (p *Parser) ParseExceptionBlock() (*ast.ExceptionBlock, error) {
 	kwEnd := token.ReservedWord.HasKeyword("END")
-	// If there is no "ON" keyword at the head, then the exception block is else statements only
-	if !p.CurrentToken().Is(token.ReservedWord.HasKeyword("ON")) {
+	// ON is NOT a reserved word
+	// If there is no "ON" at the head, then the exception block is else statements only
+	if !p.CurrentToken().Is(token.UpperCase("ON")) {
 		statements, err := p.ParseStmtList(kwEnd)
 		if err != nil {
 			return nil, err
@@ -80,7 +81,8 @@ func (p *Parser) ParseExceptionBlockHandlers() (ast.ExceptionBlockHandlers, erro
 			return nil, err
 		}
 		res = append(res, handler)
-		if !p.CurrentToken().Is(token.ReservedWord.HasKeyword("ON")) {
+		// ON is NOT a reserved word
+		if !p.CurrentToken().Is(token.UpperCase("ON")) {
 			break
 		}
 	}
@@ -88,7 +90,8 @@ func (p *Parser) ParseExceptionBlockHandlers() (ast.ExceptionBlockHandlers, erro
 }
 
 func (p *Parser) ParseExceptionBlockHandler() (*ast.ExceptionBlockHandler, error) {
-	if _, err := p.Current(token.ReservedWord.HasKeyword("ON")); err != nil {
+	// ON is NOT a reserved word
+	if _, err := p.Current(token.UpperCase("ON")); err != nil {
 		return nil, err
 	}
 	t := p.NextToken()
