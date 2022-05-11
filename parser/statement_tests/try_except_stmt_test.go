@@ -5,21 +5,11 @@ import (
 
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/asttest"
-	"github.com/akm/tparser/parser"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestTryExceptStmt(t *testing.T) {
 	run := func(name string, text []rune, expected *ast.Statement) {
-		t.Run(name, func(t *testing.T) {
-			parser := parser.NewParser(&text)
-			parser.NextToken()
-			res, err := parser.ParseStatement()
-			if assert.NoError(t, err) {
-				asttest.ClearLocations(t, res)
-				assert.Equal(t, expected, res)
-			}
-		})
+		runSatement(t, name, true, text, expected)
 	}
 
 	run(

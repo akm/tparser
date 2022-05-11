@@ -5,31 +5,22 @@ import (
 
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/asttest"
-	"github.com/akm/tparser/parser"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestForStmt(t *testing.T) {
 	run := func(name string, text []rune, expected *ast.Statement) {
-		t.Run(name, func(t *testing.T) {
-			parser := parser.NewParser(&text)
-			parser.NextToken()
-			res, err := parser.ParseStatement()
-			if assert.NoError(t, err) {
-				asttest.ClearLocations(t, res)
-				if !assert.Equal(t, expected, res) {
-					if !assert.Equal(t, expected.Body, res.Body) {
-						expectFor := expected.Body.(*ast.ForStmt)
-						actualFor := res.Body.(*ast.ForStmt)
-						if !assert.Equal(t, expectFor.QualId, actualFor.QualId) {
-						}
-						if !assert.Equal(t, expectFor.Initial, actualFor.Initial) {
-						}
-						if !assert.Equal(t, expectFor.Terminal, actualFor.Terminal) {
-						}
-						if !assert.Equal(t, expectFor.Statement, actualFor.Statement) {
-						}
-					}
+		runSatement(t, name, true, text, expected, func(expected, actual *ast.Statement) {
+			if !assert.Equal(t, expected.Body, actual.Body) {
+				expectFor := expected.Body.(*ast.ForStmt)
+				actualFor := actual.Body.(*ast.ForStmt)
+				if !assert.Equal(t, expectFor.QualId, actualFor.QualId) {
+				}
+				if !assert.Equal(t, expectFor.Initial, actualFor.Initial) {
+				}
+				if !assert.Equal(t, expectFor.Terminal, actualFor.Terminal) {
+				}
+				if !assert.Equal(t, expectFor.Statement, actualFor.Statement) {
 				}
 			}
 		})
