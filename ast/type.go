@@ -85,12 +85,20 @@ type TypeId struct {
 }
 
 func NewTypeId(unitIdOrIdent interface{}, args ...interface{}) *TypeId {
+	var ref *astcore.Declaration
+	if len(args) > 0 {
+		if v, ok := args[len(args)-1].(*astcore.Declaration); ok {
+			ref = v
+			args = args[:len(args)-1]
+		}
+	}
 	if len(args) == 0 {
-		return &TypeId{Ident: NewIdentFrom(unitIdOrIdent)}
+		return &TypeId{Ident: NewIdentFrom(unitIdOrIdent), Ref: ref}
 	} else if len(args) == 1 {
 		return &TypeId{
 			UnitId: NewUnitId(unitIdOrIdent),
 			Ident:  NewIdentFrom(args[0]),
+			Ref:    ref,
 		}
 	} else {
 		panic(errors.Errorf("too many arguments for NewTypeId: %v, %v", unitIdOrIdent, args))
