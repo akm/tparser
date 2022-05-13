@@ -54,23 +54,32 @@ func (p *Parser) ParseExceptionBlock() (*ast.ExceptionBlock, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	res := &ast.ExceptionBlock{Handlers: handlers}
+
 	if p.CurrentToken().Is(kwEnd) {
 		p.NextToken()
-		return &ast.ExceptionBlock{Handlers: handlers}, nil
-	}
-	if _, err := p.Current(token.ReservedWord.HasKeyword("ELSE")); err != nil {
-		return nil, err
+		return res, nil
 	}
 
-	statements, err := p.ParseStmtList(kwEnd)
-	if err != nil {
-		return nil, err
+	if p.CurrentToken().Is(token.ReservedWord.HasKeyword("ELSE")) {
+		p.NextToken()
+		statements, err := p.ParseStmtList(kwEnd)
+		if err != nil {
+			return nil, err
+		}
+		res.Else = statements
 	}
+
+	if p.CurrentToken().Is(token.Symbol(';')) {
+		p.NextToken()
+	}
+
 	if _, err := p.Current(kwEnd); err != nil {
 		return nil, err
 	}
 	p.NextToken()
-	return &ast.ExceptionBlock{Handlers: handlers, Else: statements}, nil
+	return res, nil
 }
 
 func (p *Parser) ParseExceptionBlockHandlers() (ast.ExceptionBlockHandlers, error) {
@@ -81,6 +90,11 @@ func (p *Parser) ParseExceptionBlockHandlers() (ast.ExceptionBlockHandlers, erro
 			return nil, err
 		}
 		res = append(res, handler)
+
+		if p.CurrentToken().Is(token.Symbol(';')) {
+			p.NextToken()
+		}
+
 		// ON is NOT a reserved word
 		if !p.CurrentToken().Is(token.UpperCase("ON")) {
 			break
@@ -97,9 +111,17 @@ func (p *Parser) ParseExceptionBlockHandler() (*ast.ExceptionBlockHandler, error
 	t := p.NextToken()
 
 	hasIdent := true
+
+	p.logger.Printf("p.context.DeclarationMap.Keys(): %+v\n", p.context.DeclarationMap.Keys())
+
 	if decl := p.context.DeclarationMap.Get(t.RawString()); decl != nil {
-		if _, ok := decl.Node.(ast.Type); ok {
+		p.logger.Printf("decl: %+v\n", *decl)
+		p.logger.Printf("decl.Node: %+v\n", decl.Node)
+		if _, ok := decl.Node.(*ast.TypeDecl); ok {
+			p.logger.Printf("decl is Node\n")
 			hasIdent = false
+		} else {
+			p.logger.Printf("decl is NOT Node\n")
 		}
 	}
 	res := &ast.ExceptionBlockHandler{}
@@ -115,6 +137,12 @@ func (p *Parser) ParseExceptionBlockHandler() (*ast.ExceptionBlockHandler, error
 		return nil, err
 	}
 	res.Type = typ
+
+	if _, err := p.Current(token.UpperCase("DO")); err != nil {
+		return nil, err
+	}
+	p.NextToken()
+
 	statement, err := p.ParseStatement()
 	if err != nil {
 		return nil, err
