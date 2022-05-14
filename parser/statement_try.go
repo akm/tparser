@@ -30,8 +30,19 @@ func (p *Parser) ParseTryStmt() (ast.TryStmt, error) {
 			Statements:     stmtList,
 			ExceptionBlock: exceptionBlock,
 		}, nil
+	} else if p.CurrentToken().Is(token.ReservedWord.HasKeyword("FINALLY")) {
+		p.NextToken()
+		finallyStmtList, err := p.ParseStmtList(token.ReservedWord.HasKeyword("END"))
+		if err != nil {
+			return nil, err
+		}
+		p.NextToken()
+		return &ast.TryFinallyStmt{
+			Statements1: stmtList,
+			Statements2: finallyStmtList,
+		}, nil
 	} else {
-		return nil, errors.Errorf("expected 'except' but got %s", p.CurrentToken().RawString())
+		return nil, errors.Errorf("expected 'except' or 'finally' but got %s", p.CurrentToken().RawString())
 	}
 }
 
