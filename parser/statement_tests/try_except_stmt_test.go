@@ -112,10 +112,12 @@ end.
 					ExceptionBlock: &ast.ExceptionBlock{
 						Handlers: ast.ExceptionBlockHandlers{
 							{
-								Type: asttest.NewTypeId(
-									"EZeroDivide",
-									astcore.NewDeclaration(typeDeclEZeroDivide.Ident, typeDeclEZeroDivide),
-								),
+								Decl: &ast.ExceptionBlockHandlerDecl{
+									Type: asttest.NewTypeId(
+										"EZeroDivide",
+										astcore.NewDeclaration(typeDeclEZeroDivide.Ident, typeDeclEZeroDivide),
+									),
+								},
 								Statement: &ast.Statement{
 									Body: &ast.CallStatement{
 										Designator: asttest.NewDesignator(
@@ -168,10 +170,12 @@ end.
 					ExceptionBlock: &ast.ExceptionBlock{
 						Handlers: ast.ExceptionBlockHandlers{
 							{
-								Type: asttest.NewTypeId(
-									"EZeroDivide",
-									astcore.NewDeclaration(typeDeclEZeroDivide.Ident, typeDeclEZeroDivide),
-								),
+								Decl: &ast.ExceptionBlockHandlerDecl{
+									Type: asttest.NewTypeId(
+										"EZeroDivide",
+										astcore.NewDeclaration(typeDeclEZeroDivide.Ident, typeDeclEZeroDivide),
+									),
+								},
 								Statement: &ast.Statement{
 									Body: &ast.CallStatement{
 										Designator: asttest.NewDesignator("HandleZeroDivide"),
@@ -179,10 +183,12 @@ end.
 								},
 							},
 							{
-								Type: asttest.NewTypeId(
-									"EOverflow",
-									astcore.NewDeclaration(typeDeclEOverflow.Ident, typeDeclEOverflow),
-								),
+								Decl: &ast.ExceptionBlockHandlerDecl{
+									Type: asttest.NewTypeId(
+										"EOverflow",
+										astcore.NewDeclaration(typeDeclEOverflow.Ident, typeDeclEOverflow),
+									),
+								},
 								Statement: &ast.Statement{
 									Body: &ast.CallStatement{
 										Designator: asttest.NewDesignator("HandleOverflow"),
@@ -190,10 +196,12 @@ end.
 								},
 							},
 							{
-								Type: asttest.NewTypeId(
-									"EMathError",
-									astcore.NewDeclaration(typeDeclEMathError.Ident, typeDeclEMathError),
-								),
+								Decl: &ast.ExceptionBlockHandlerDecl{
+									Type: asttest.NewTypeId(
+										"EMathError",
+										astcore.NewDeclaration(typeDeclEMathError.Ident, typeDeclEMathError),
+									),
+								},
 								Statement: &ast.Statement{
 									Body: &ast.CallStatement{
 										Designator: asttest.NewDesignator("HandleMathError"),
@@ -246,10 +254,12 @@ end.
 					ExceptionBlock: &ast.ExceptionBlock{
 						Handlers: ast.ExceptionBlockHandlers{
 							{
-								Type: asttest.NewTypeId(
-									"EZeroDivide",
-									astcore.NewDeclaration(typeDeclEZeroDivide.Ident, typeDeclEZeroDivide),
-								),
+								Decl: &ast.ExceptionBlockHandlerDecl{
+									Type: asttest.NewTypeId(
+										"EZeroDivide",
+										astcore.NewDeclaration(typeDeclEZeroDivide.Ident, typeDeclEZeroDivide),
+									),
+								},
 								Statement: &ast.Statement{
 									Body: &ast.CallStatement{
 										Designator: asttest.NewDesignator("HandleZeroDivide"),
@@ -257,10 +267,12 @@ end.
 								},
 							},
 							{
-								Type: asttest.NewTypeId(
-									"EOverflow",
-									astcore.NewDeclaration(typeDeclEOverflow.Ident, typeDeclEOverflow),
-								),
+								Decl: &ast.ExceptionBlockHandlerDecl{
+									Type: asttest.NewTypeId(
+										"EOverflow",
+										astcore.NewDeclaration(typeDeclEOverflow.Ident, typeDeclEOverflow),
+									),
+								},
 								Statement: &ast.Statement{
 									Body: &ast.CallStatement{
 										Designator: asttest.NewDesignator("HandleOverflow"),
@@ -268,10 +280,12 @@ end.
 								},
 							},
 							{
-								Type: asttest.NewTypeId(
-									"EMathError",
-									astcore.NewDeclaration(typeDeclEMathError.Ident, typeDeclEMathError),
-								),
+								Decl: &ast.ExceptionBlockHandlerDecl{
+									Type: asttest.NewTypeId(
+										"EMathError",
+										astcore.NewDeclaration(typeDeclEMathError.Ident, typeDeclEMathError),
+									),
+								},
 								Statement: &ast.Statement{
 									Body: &ast.CallStatement{
 										Designator: asttest.NewDesignator("HandleMathError"),
@@ -295,6 +309,14 @@ end.
 	typeDeclException := &ast.TypeDecl{
 		Ident: asttest.NewIdent("Exception"),
 		Type:  asttest.NewTypeId("Error"),
+	}
+
+	eDecl := &ast.ExceptionBlockHandlerDecl{
+		Ident: asttest.NewIdent("E"),
+		Type: asttest.NewTypeId(
+			"Exception",
+			astcore.NewDeclaration(typeDeclException.Ident, typeDeclException),
+		),
 	}
 
 	runProgram(t,
@@ -328,18 +350,17 @@ end.
 					ExceptionBlock: &ast.ExceptionBlock{
 						Handlers: ast.ExceptionBlockHandlers{
 							{
-								Ident: asttest.NewIdent("E"),
-								Type: asttest.NewTypeId(
-									"Exception",
-									astcore.NewDeclaration(typeDeclException.Ident, typeDeclException),
-								),
+								Decl: eDecl,
 								Statement: &ast.Statement{
 									Body: &ast.CallStatement{
 										Designator: asttest.NewDesignator("ErrorDialog"),
 										ExprList: ast.ExprList{
 											asttest.NewExpression(
 												&ast.Designator{
-													QualId: asttest.NewQualId("E"), // TODO have astcore.Declarations to E. See https://github.com/akm/tparser/issues/27
+													QualId: asttest.NewQualId(
+														"E",
+														astcore.NewDeclaration(eDecl.Ident, eDecl),
+													),
 													Items: ast.DesignatorItems{
 														asttest.NewDesignatorItemIdent("Message"),
 													},
@@ -347,7 +368,10 @@ end.
 											),
 											asttest.NewExpression(
 												&ast.Designator{
-													QualId: asttest.NewQualId("E"), // TODO have astcore.Declarations to E. See https://github.com/akm/tparser/issues/27
+													QualId: asttest.NewQualId(
+														"E",
+														astcore.NewDeclaration(eDecl.Ident, eDecl),
+													),
 													Items: ast.DesignatorItems{
 														asttest.NewDesignatorItemIdent("HelpContext"),
 													},

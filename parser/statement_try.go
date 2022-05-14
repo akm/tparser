@@ -124,9 +124,9 @@ func (p *Parser) ParseExceptionBlockHandler() (*ast.ExceptionBlockHandler, error
 			p.logger.Printf("decl is NOT Node\n")
 		}
 	}
-	res := &ast.ExceptionBlockHandler{}
+	decl := &ast.ExceptionBlockHandlerDecl{}
 	if hasIdent {
-		res.Ident = ast.NewIdent(t)
+		decl.Ident = ast.NewIdent(t)
 		if _, err := p.Next(token.Symbol(':')); err != nil {
 			return nil, err
 		}
@@ -136,7 +136,12 @@ func (p *Parser) ParseExceptionBlockHandler() (*ast.ExceptionBlockHandler, error
 	if err != nil {
 		return nil, err
 	}
-	res.Type = typ
+	decl.Type = typ
+	if decl.Ident != nil {
+		p.context.DeclarationMap.SetDecl(decl)
+	}
+
+	res := &ast.ExceptionBlockHandler{Decl: decl}
 
 	if _, err := p.Current(token.UpperCase("DO")); err != nil {
 		return nil, err
