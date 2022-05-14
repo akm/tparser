@@ -38,7 +38,7 @@ func (t *Token) RawString() string {
 func (t *Token) Value() string {
 	res := t.RawString()
 	switch t.Type {
-	case ReservedWord, Directive, PortabilityDirective:
+	case ReservedWord:
 		return strings.ToUpper(res)
 	default:
 		return res

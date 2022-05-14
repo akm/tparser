@@ -13,10 +13,6 @@ func ProcessWord(c *runes.Cursor) *Token {
 		s := t.Value()
 		if isReservedWord(s) {
 			t.Type = ReservedWord
-		} else if isPortabilityDirective(s) {
-			t.Type = PortabilityDirective
-		} else if isDirective(s) {
-			t.Type = Directive
 		} else {
 			t.Type = Identifier
 		}

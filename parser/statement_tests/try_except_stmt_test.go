@@ -306,7 +306,7 @@ begin
 	try
 		DoSomething;
 	except
-		on E: Exception do ErrorDialog(E.Message1, E.HelpContext); // TODO Use Message instead of Message1. See https://github.com/akm/tparser/issues/26
+		on E: Exception do ErrorDialog(E.Message, E.HelpContext);
 	end;
 end.
 `),
@@ -341,7 +341,7 @@ end.
 												&ast.Designator{
 													QualId: asttest.NewQualId("E"), // TODO have astcore.Declarations to E. See https://github.com/akm/tparser/issues/27
 													Items: ast.DesignatorItems{
-														asttest.NewDesignatorItemIdent("Message1"),
+														asttest.NewDesignatorItemIdent("Message"),
 													},
 												},
 											),

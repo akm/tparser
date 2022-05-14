@@ -1,14 +1,49 @@
 package token
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/akm/tparser/ext"
 )
 
-func isDirective(w string) bool {
-	return directives.Include(strings.ToUpper(w))
+type DirectivePredicator struct {
+	nameSet ext.StringSet
 }
+
+func NewDirectivePredicator(nameSet ext.StringSet) *DirectivePredicator {
+	return &DirectivePredicator{nameSet: nameSet}
+}
+
+func (m *DirectivePredicator) Name() string {
+	return fmt.Sprintf("Directive(%s)", strings.Join(m.nameSet.Slice(), ","))
+}
+
+func (m *DirectivePredicator) Predicate(t *Token) bool {
+	return m.nameSet.Include(strings.ToUpper(t.RawString()))
+}
+
+func Directives(names ...string) Predicator {
+	for _, name := range names {
+		if !directives.Include(name) {
+			panic(fmt.Sprintf("%s is not a directive", name))
+		}
+	}
+	return NewDirectivePredicator(ext.NewStringSet(names...))
+}
+
+var Directive = NewDirectivePredicator(directives)
+
+func PortabilityDirectives(names ...string) Predicator {
+	for _, name := range names {
+		if !portabilityDirectives.Include(name) {
+			panic(fmt.Sprintf("%s is not a portable directive", name))
+		}
+	}
+	return NewDirectivePredicator(ext.NewStringSet(names...))
+}
+
+var PortabilityDirective = NewDirectivePredicator(portabilityDirectives)
 
 var directives = ext.Strings{
 	// "ABSOLUTE", // Used in VarDecl
@@ -56,10 +91,6 @@ var directives = ext.Strings{
 	// "WRITE", // Used in PropertySpecifiers
 	// "WRITEONLY", // Not found in Grammer
 }.Set()
-
-func isPortabilityDirective(w string) bool {
-	return portabilityDirectives.Include(strings.ToUpper(w))
-}
 
 var portabilityDirectives = ext.Strings{
 	"PLATFORM",
