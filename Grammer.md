@@ -2,44 +2,51 @@
 
 See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/cbuilder6/EN/CB6_ObjPascalLangGuide_EN.pdf) in [RAD Studio documents](https://docs.embarcadero.com/products/rad_studio/)
 
-- Goal
+Mark | State | Count
+:---:|--------|----:
+🔖 | TODO         | 44
+🚧 | In progress   | 7
+✔️ | Done         | 74
+
+
+- Goal 🚧
   ```
   (Program | Package | Library | Unit)
   ```
-- Program
+- Program ✔️
   ```
   [PROGRAM Ident ['(' IdentList ')'] ';']
   ProgramBlock '.'
   ```
-- Unit
+- Unit ✔️
   ```
   UNIT Ident [PortabilityDirective] ';'
   InterfaceSection
   ImplementationSection
   InitSection '.'
   ```
-- Package
+- Package 🔖
   ```
   PACKAGE Ident ';'
   [RequiresClause]
   [ContainsClause]
   END '.'
   ```
-- Library
+- Library 🔖
   ```
   LIBRARY Ident ';'
   ProgramBlock '.'
   ```
-- ProgramBlock
+- ProgramBlock ✔️
   ```
   [UsesClause]
   Block
   ```
-- UsesClause
+- UsesClause ✔️
   ```
   USES IdentList ';'
   ```
-- PortabilityDirective
+- PortabilityDirective 🚧
   ```
   platform
   ```
@@ -49,13 +56,13 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
   library
   ```
-- InterfaceSection
+- InterfaceSection ✔️
   ```
   INTERFACE
   [UsesClause]
   [InterfaceDecl]...
   ```
-- InterfaceDecl
+- InterfaceDecl ✔️
   ```
   ConstSection
   ```
@@ -68,44 +75,44 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
   ExportedHeading
   ```
-- ExportedHeading
+- ExportedHeading ✔️
   ```
   ProcedureHeading ';' [Directive]
   ```
   ```
   FunctionHeading ';' [Directive]
   ```
-- ImplementationSection
+- ImplementationSection 🔖
   ```
   IMPLEMENTATION
   [UsesClause]
   [DeclSection]...
   [ExportsStmt]...
   ```
-- Block
+- Block ✔️
   ```
   [DeclSection]
   [ExportsStmt]...
   BlockBody
   [ExportsStmt]...
   ```
-- BlockBody
+- BlockBody ✔️
   ```
   CompoundStmt
   ```
   ```
   AssemberStatement
   ```
-- ExportsStmt
+- ExportsStmt ✔️
   ```
   EXPORTS ExportsItem [, ExportsItem]...
   ```
-- ExportsItem
+- ExportsItem ✔️
   ```
   Ident [NAME|INDEX “‘” ConstExpr “‘”]
         [INDEX|NAME “‘” ConstExpr “‘”]
   ```
-- DeclSection
+- DeclSection ✔️
   ```
   LabelDeclSection
   ```
@@ -121,49 +128,49 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
   ProcedureDeclSection
   ```
-- LabelDeclSection
+- LabelDeclSection ✔️
   ```
   LABEL LabelId ';'
   ```
-- ConstSection
+- ConstSection ✔️
   ```
   CONST (ConstantDecl ';')...
   ```
-- ConstantDecl
+- ConstantDecl ✔️
   ```
   Ident '=' ConstExpr [PortabilityDirective]
   ```
   ```
   Ident ':' TypeId '=' TypedConstant [PortabilityDirective]
   ```
-- TypeSection
+- TypeSection ✔️
   ```
   TYPE (TypeDecl ';')...
   ```
-- TypeDecl
+- TypeDecl ✔️
   ```
   Ident '=' [TYPE] Type [PortabilityDirective]
   ```
   ```
   Ident '=' [TYPE] RestrictedType [PortabilityDirective]
   ```
-- TypedConstant
+- TypedConstant 🔖
   ```
   (ConstExpr | ArrayConstant | RecordConstant)
   ```
-- ArrayConstant
+- ArrayConstant 🔖
   ```
   '(' TypedConstant ',' ')'
   ```
-- RecordConstant
+- RecordConstant 🔖
   ```
   '(' RecordFieldConstant ';'... ')'
   ```
-- RecordFieldConstant
+- RecordFieldConstant 🔖
   ```
   Ident ':' TypedConstant
   ```
-- Type
+- Type 🚧
   ```
   TypeId
   ```
@@ -188,7 +195,7 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
   ClassRefType
   ```
-- RestrictedType
+- RestrictedType 🔖
   ```
   ObjectType
   ```
@@ -198,15 +205,15 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
   InterfaceType
   ```
-- ClassRefType
+- ClassRefType 🔖
   ```
   CLASS OF TypeId
   ```
-- SimpleType
+- SimpleType ✔️
   ```
   (OrdinalType | RealType)
   ```
-- RealType
+- RealType ✔️
   ```
   REAL48
   ```
@@ -228,11 +235,11 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
   COMP
   ```
-- OrdinalType
+- OrdinalType ✔️
   ```
   (SubrangeType | EnumeratedType | OrdIdent)
   ```
-- OrdIdent
+- OrdIdent ✔️
   ```
   SHORTINT
   ```
@@ -269,26 +276,26 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
   PCHAR
   ```
-- VariantType
+- VariantType 🔖
   ```
   VARIANT
   ```
   ```
   OLEVARIANT
   ```
-- SubrangeType
+- SubrangeType ✔️
   ```
   ConstExpr '..' ConstExpr
   ```
-- EnumeratedType
+- EnumeratedType ✔️
   ```
   '(' EnumeratedTypeElement ','... ')'
   ```
-- EnumeratedTypeElement
+- EnumeratedTypeElement ✔️
   ```
   Ident [ '=' ConstExpr ]
   ```
-- StringType
+- StringType ✔️
   ```
   STRING
   ```
@@ -301,55 +308,55 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
   STRING '[' ConstExpr ']'
   ```
-- StrucType
+- StrucType 🔖
   ```
   [PACKED] (ArrayType [PACKED]| SetType | FileType | RecType [PACKED])
   ```
-- ArrayType
+- ArrayType 🔖
   ```
   ARRAY ['[' OrdinalType ','... ']'] OF Type [PortabilityDirective]
   ```
-- RecType
+- RecType 🔖
   ```
   RECORD [FieldList] END [PortabilityDirective]
   ```
-- FieldList
+- FieldList 🔖
   ```
   FieldDecl ';'... [VariantSection] [';']
   ```
-- FieldDecl
+- FieldDecl 🔖
   ```
   IdentList ':' Type [PortabilityDirective]
   ```
-- VariantSection
+- VariantSection 🔖
   ```
   CASE [Ident ':'] TypeId OF RecVariant ';'...
   ```
-- RecVariant
+- RecVariant 🔖
   ```
   ConstExpr ','... ':' '(' [FieldList] ')'
   ```
-- SetType
+- SetType 🔖
   ```
   SET OF OrdinalType [PortabilityDirective]
   ```
-- FileType
+- FileType 🔖
   ```
   FILE OF TypeId [PortabilityDirective]
   ```
-- PointerType
+- PointerType 🔖
   ```
   '^' TypeId [PortabilityDirective]
   ```
-- ProcedureType
+- ProcedureType 🔖
   ```
   (ProcedureHeading | FunctionHeading) [OF OBJECT]
   ```
-- VarSection
+- VarSection ✔️
   ```
   VAR (VarDecl ';')...
   ```
-- VarDecl
+- VarDecl ✔️
   - (On Windows)
     ```
     IdentList ':' Type [(ABSOLUTE (Ident | ConstExpr)) | '=' ConstExpr] [PortabilityDirective]
@@ -358,19 +365,19 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
     ```
     IdentList ':' Type [ABSOLUTE (Ident) | '=' ConstExpr] [PortabilityDirective]
     ```
-- Expression
+- Expression ✔️
   ```
   SimpleExpression [RelOp SimpleExpression]...
   ```
-- SimpleExpression
+- SimpleExpression ✔️
   ```
   ['+' | '-'] Term [AddOp Term]...
   ```
-- Term
+- Term ✔️
   ```
   Factor [MulOp Factor]...
   ```
-- Factor
+- Factor ✔️
   ```
   Designator ['(' ExprList ')']
   ```
@@ -398,7 +405,7 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
   TypeId '(' Expression ')'
   ```
-- RelOp
+- RelOp ✔️
   ```
   '>'
   ```
@@ -423,7 +430,7 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
   IS
   ```
-- AddOp
+- AddOp ✔️
   ```
   '+'
   ```
@@ -436,7 +443,7 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
   XOR
   ```
-- MulOp
+- MulOp ✔️
   ```
   '*'
   ```
@@ -461,31 +468,31 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
   AS
   ```
-- Designator
+- Designator ✔️
   ```
   QualId ['.' Ident | '[' ExprList ']' | '^']...
   ```
-- SetConstructor
+- SetConstructor ✔️
   ```
   '[' [SetElement ','...] ']'
   ```
-- SetElement
+- SetElement ✔️
   ```
   Expression ['..' Expression]
   ```
-- ExprList
+- ExprList ✔️
   ```
   Expression ','...
   ```
-- Statement
+- Statement ✔️
   ```
   [LabelId ':'] [SimpleStatement | StructStmt]
   ```
-- StmtList
+- StmtList ✔️
   ```
   (Statement ';') ...
   ```
-- SimpleStatement
+- SimpleStatement ✔️
   ```
   Designator ['(' [ExprList] ')']
   ```
@@ -498,7 +505,7 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
   GOTO LabelId
   ```
-- StructStmt
+- StructStmt ✔️
   ```
   CompoundStmt
   ```
@@ -523,34 +530,34 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
   AssemblerStmt
   ```
-- CompoundStmt
+- CompoundStmt ✔️
   ```
   BEGIN StmtList END
   ```
-- ConditionalStmt
+- ConditionalStmt ✔️
   ```
   IfStmt
   ```
   ```
   CaseStmt
   ```
-- IfStmt
+- IfStmt ✔️
   ```
   IF Expression THEN Statement [ELSE Statement]
   ```
-- CaseStmt
+- CaseStmt ✔️
   ```
   CASE Expression OF CaseSelector ';'... [ELSE StmtList] [';'] END
   ```
-- CaseSelector
+- CaseSelector ✔️
   ```
   CaseLabel ','... ':' Statement
   ```
-- CaseLabel
+- CaseLabel ✔️
   ```
   ConstExpr ['..' ConstExpr]
   ```
-- LoopStmt
+- LoopStmt ✔️
   ```
   RepeatStmt
   ```
@@ -560,23 +567,23 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
   ForStmt
   ```
-- RepeatStmt
+- RepeatStmt ✔️
   ```
   REPEAT StmtList UNTIL Expression
   ```
-- WhileStmt
+- WhileStmt ✔️
   ```
   WHILE Expression DO Statement
   ```
-- ForStmt
+- ForStmt ✔️
   ```
   FOR QualId ':=' Expression (TO | DOWNTO) Expression DO Statement
   ```
-- WithStmt
+- WithStmt 🚧
   ```
   WITH IdentList DO Statement
   ```
-- TryExceptStmt
+- TryExceptStmt ✔️
   ```
   TRY
     Statement...
@@ -584,12 +591,12 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
     ExceptionBlock
   END
   ```
-- ExceptionBlock
+- ExceptionBlock ✔️
   ```
   [ON [Ident ‘:’] TypeID DO Statement]...
   [ELSE Statement...]
   ```
-- TryFinallyStmt
+- TryFinallyStmt ✔️
   ```
   TRY
     Statement
@@ -597,52 +604,52 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
     Statement
   END
   ```
-- RaiseStmt
+- RaiseStmt ✔️
   ```
   RAISE [object] [AT address]
   ```
-- AssemblerStatement
+- AssemblerStatement ✔️
   ```
   ASM
   <assemblylanguage>
   END
   ```
-- ProcedureDeclSection
+- ProcedureDeclSection ✔️
   ```
   ProcedureDecl
   ```
   ```
   FunctionDecl
   ```
-- ProcedureDecl
+- ProcedureDecl ✔️
   ```
   ProcedureHeading ';' [Directive] [PortabilityDirective]
   Block ';'
   ```
-- FunctionDecl
+- FunctionDecl ✔️
   ```
   FunctionHeading ';' [Directive] [PortabilityDirective]
   Block ';'
   ```
-- FunctionHeading
+- FunctionHeading ✔️
   ```
   FUNCTION Ident [FormalParameters] ':' (SimpleType | STRING)
   ```
   (Actually ReturnType is not only SimpleType or STRING.
   TypeId also can be also.)
-- ProcedureHeading
+- ProcedureHeading ✔️
   ```
   PROCEDURE Ident [FormalParameters]
   ```
-- FormalParameters
+- FormalParameters ✔️
   ```
   '(' [FormalParm ';'...] ')'
   ```
-- FormalParm
+- FormalParm ✔️
   ```
   [VAR | CONST | OUT] Parameter
   ```
-- Parameter
+- Parameter ✔️
   ```
   IdentList [':' ([ARRAY OF] SimpleType | STRING | FILE)]
   ```
@@ -651,7 +658,7 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
   Ident ':' SimpleType '=' ConstExpr
   ```
-- Directive
+- Directive 🚧
   ```
   CDECL
   ```
@@ -709,38 +716,38 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
   ABSTRACT
   ```
-- ObjectType
+- ObjectType 🔖
   ```
   OBJECT [ObjHeritage] [ObjFieldList] [MethodList] END
   ```
-- ObjHeritage
+- ObjHeritage 🔖
   ```
   '(' QualId ')'
   ```
-- MethodList
+- MethodList 🔖
   ```
   (MethodHeading [';' VIRTUAL]) ';'...
   ```
-- MethodHeading
+- MethodHeading 🔖
   ```
   ProcedureHeading
   FunctionHeading
   ConstructorHeading
   DestructorHeading
   ```
-- ConstructorHeading
+- ConstructorHeading 🔖
   ```
   CONSTRUCTOR Ident [FormalParameters]
   ```
-- DestructorHeading
+- DestructorHeading 🔖
   ```
   DESTRUCTOR Ident [FormalParameters]
   ```
-- ObjFieldList
+- ObjFieldList 🔖
   ```
   (IdentList ':' Type) ';'
   ```
-- InitSection
+- InitSection 🔖
   ```
   INITIALIZATION StmtList [FINALIZATION StmtList] END
   ```
@@ -750,7 +757,7 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
   END
   ```
-- ClassType
+- ClassType 🔖
   ```
   CLASS [ClassHeritage]
   [ClassVisibility]
@@ -759,39 +766,39 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   [ClassPropertyList]
   END
   ```
-- ClassHeritage
+- ClassHeritage 🔖
   ```
   '(' IdentList ')'
   ```
-- ClassVisibility
+- ClassVisibility 🔖
   ```
   [PUBLIC | PROTECTED | PRIVATE | PUBLISHED]
   ```
-- ClassFieldList
+- ClassFieldList 🔖
   ```
   (ClassVisibility ObjFieldList) ';'...
   ```
-- ClassMethodList
+- ClassMethodList 🔖
   ```
   (ClassVisibility MethodList) ';'...
   ```
-- ClassPropertyList
+- ClassPropertyList 🔖
   ```
   (ClassVisibility PropertyList ';')...
   ```
-- PropertyList
+- PropertyList 🔖
   ```
   PROPERTY Ident [PropertyInterface] [PropertySpecifiers] [PortabilityDirective]
   ```
-- PropertyInterface
+- PropertyInterface 🔖
   ```
   [PropertyParameterList] ':' Ident
   ```
-- PropertyParameterList
+- PropertyParameterList 🔖
   ```
   '[' (IdentList ':' TypeId) ';'... ']'
   ```
-- PropertySpecifiers
+- PropertySpecifiers 🔖
   ```
   [INDEX ConstExpr]
   [READ Ident]
@@ -800,7 +807,7 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   [(DEFAULT ConstExpr) | NODEFAULT]
   [IMPLEMENTS TypeId]
   ```
-- InterfaceType
+- InterfaceType 🔖
   ```
   INTERFACE
   [InterfaceHeritage]
@@ -809,51 +816,51 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ...
   END
   ```
-- InterfaceHeritage
+- InterfaceHeritage 🔖
   ```
   '(' IdentList ')'
   ```
-- RequiresClause
+- RequiresClause 🔖
   ```
   REQUIRES IdentList... ';'
   ```
-- ContainsClause
+- ContainsClause 🔖
   ```
   CONTAINS IdentList... ';'
   ```
-- IdentList
+- IdentList ✔️
   ```
   Ident ','...
   ```
-- QualId
+- QualId ✔️
   ```
   [UnitId '.'] Ident
   ```
-- TypeId
+- TypeId ✔️
   ```
   [UnitId '.'] <type-identifier>
   ```
-- Ident
+- Ident ✔️
   ```
   <identifier>
   ```
-- ConstExpr
+- ConstExpr 🚧
   ```
   <constant-expression>
   ```
-- UnitId
+- UnitId ✔️
   ```
   <unit-identifier>
   ```
-- LabelId
+- LabelId ✔️
   ```
   <label-identifier>
   ```
-- Number
+- Number ✔️
   ```
   <number>
   ```
-- String
+- String ✔️
   ```
   <string>
   ```
