@@ -503,17 +503,6 @@ func (m *RaiseStmt) Children() Nodes {
 }
 
 // - AssemblerStatement
-//   (Is this correct?)
-//   ```
-//   ASM
-//   ```
-//   ```
-//   <assemblylanguage>
-//   ```
-//   ```
-//   END
-//   ```
-//   It seems to be the following:
 //   ```
 //   ASM
 //   <assemblylanguage>

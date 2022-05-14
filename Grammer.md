@@ -595,17 +595,6 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   RAISE [object] [AT address]
   ```
 - AssemblerStatement
-  (Is this correct?)
-  ```
-  ASM
-  ```
-  ```
-  <assemblylanguage>
-  ```
-  ```
-  END
-  ```
-  It seems to be the following:
   ```
   ASM
   <assemblylanguage>
