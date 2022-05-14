@@ -153,8 +153,6 @@ func (p *Parser) ParseStatement() (*ast.Statement, error) {
 		}
 	}
 
-	// TODO AssemblerStmt
-
 	if stmt, err := p.ParseDesignatorStatement(); err != nil {
 		return nil, err
 	} else {
