@@ -16,8 +16,6 @@ const (
 	Identifier
 	QualifiedIdentifier
 	ReservedWord
-	Directive
-	PortabilityDirective
 	NumeralInt
 	NumeralReal
 	Label
@@ -25,19 +23,17 @@ const (
 )
 
 var TypeNames = map[Type]string{
-	EOF:                  "EOF",
-	Space:                "space",
-	Comment:              "comment",
-	SpecialSymbol:        "special symbol",
-	Identifier:           "identifier",
-	QualifiedIdentifier:  "qualified identifier",
-	ReservedWord:         "reserved word",
-	Directive:            "directive",
-	PortabilityDirective: "portability directive",
-	NumeralInt:           "int",
-	NumeralReal:          "real",
-	Label:                "label",
-	CharacterString:      "character string",
+	EOF:                 "EOF",
+	Space:               "space",
+	Comment:             "comment",
+	SpecialSymbol:       "special symbol",
+	Identifier:          "identifier",
+	QualifiedIdentifier: "qualified identifier",
+	ReservedWord:        "reserved word",
+	NumeralInt:          "int",
+	NumeralReal:         "real",
+	Label:               "label",
+	CharacterString:     "character string",
 }
 
 func (t Type) String() string {
@@ -65,8 +61,6 @@ func (typ Type) HasText(s string) Predicator {
 func (typ Type) HasKeyword(kw string) Predicator {
 	if typ == ReservedWord && !isReservedWord(kw) {
 		panic(errors.Errorf("%q is not a reserved word", kw))
-	} else if typ == Directive && !isDirective(kw) {
-		panic(errors.Errorf("%q is not a directive", kw))
 	}
 	return &PredicatorImpl{
 		name:      fmt.Sprintf("%s has %q", typ.String(), kw),
