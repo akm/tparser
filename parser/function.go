@@ -5,7 +5,7 @@ import (
 	"github.com/akm/tparser/token"
 )
 
-func (p *Parser) ParseProcedureDeclSection() (ast.ProcedureDeclSection, error) {
+func (p *Parser) ParseProcedureDeclSection() (*ast.FunctionDecl, error) {
 	var functionHeading *ast.FunctionHeading
 	switch p.CurrentToken().Value() {
 	case "PROCEDURE":
