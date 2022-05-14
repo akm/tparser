@@ -136,12 +136,16 @@ func (p *Parser) ParseStatement() (*ast.Statement, error) {
 				res.Body = stmt
 				return res, nil
 			}
+		case "RAISE":
+			if stmt, err := p.ParseRaiseStmt(); err != nil {
+				return nil, err
+			} else {
+				res.Body = stmt
+				return res, nil
+			}
 		}
 	}
 
-	// TODO TryExceptStmt
-	// TODO TryFinallyStmt
-	// TODO RaiseStmt
 	// TODO AssemblerStmt
 
 	if stmt, err := p.ParseDesignatorStatement(); err != nil {
