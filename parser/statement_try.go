@@ -30,8 +30,19 @@ func (p *Parser) ParseTryStmt() (ast.TryStmt, error) {
 			Statements:     stmtList,
 			ExceptionBlock: exceptionBlock,
 		}, nil
+	} else if p.CurrentToken().Is(token.ReservedWord.HasKeyword("FINALLY")) {
+		p.NextToken()
+		finallyStmtList, err := p.ParseStmtList(token.ReservedWord.HasKeyword("END"))
+		if err != nil {
+			return nil, err
+		}
+		p.NextToken()
+		return &ast.TryFinallyStmt{
+			Statements1: stmtList,
+			Statements2: finallyStmtList,
+		}, nil
 	} else {
-		return nil, errors.Errorf("expected 'except' but got %s", p.CurrentToken().RawString())
+		return nil, errors.Errorf("expected 'except' or 'finally' but got %s", p.CurrentToken().RawString())
 	}
 }
 
@@ -112,7 +123,7 @@ func (p *Parser) ParseExceptionBlockHandler() (*ast.ExceptionBlockHandler, error
 
 	hasIdent := true
 
-	p.logger.Printf("p.context.DeclarationMap.Keys(): %+v\n", p.context.DeclarationMap.Keys())
+	// p.logger.Printf("p.context.DeclarationMap.Keys(): %+v\n", p.context.DeclarationMap.Keys())
 
 	if decl := p.context.DeclarationMap.Get(t.RawString()); decl != nil {
 		p.logger.Printf("decl: %+v\n", *decl)
