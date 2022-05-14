@@ -311,6 +311,14 @@ end.
 		Type:  asttest.NewTypeId("Error"),
 	}
 
+	eDecl := &ast.ExceptionBlockHandlerDecl{
+		Ident: asttest.NewIdent("E"),
+		Type: asttest.NewTypeId(
+			"Exception",
+			astcore.NewDeclaration(typeDeclException.Ident, typeDeclException),
+		),
+	}
+
 	runProgram(t,
 		"with 1 ExceptionBlockHandler with ident",
 		true,
@@ -342,20 +350,17 @@ end.
 					ExceptionBlock: &ast.ExceptionBlock{
 						Handlers: ast.ExceptionBlockHandlers{
 							{
-								Decl: &ast.ExceptionBlockHandlerDecl{
-									Ident: asttest.NewIdent("E"),
-									Type: asttest.NewTypeId(
-										"Exception",
-										astcore.NewDeclaration(typeDeclException.Ident, typeDeclException),
-									),
-								},
+								Decl: eDecl,
 								Statement: &ast.Statement{
 									Body: &ast.CallStatement{
 										Designator: asttest.NewDesignator("ErrorDialog"),
 										ExprList: ast.ExprList{
 											asttest.NewExpression(
 												&ast.Designator{
-													QualId: asttest.NewQualId("E"), // TODO have astcore.Declarations to E. See https://github.com/akm/tparser/issues/27
+													QualId: asttest.NewQualId(
+														"E",
+														astcore.NewDeclaration(eDecl.Ident, eDecl),
+													),
 													Items: ast.DesignatorItems{
 														asttest.NewDesignatorItemIdent("Message"),
 													},
@@ -363,7 +368,10 @@ end.
 											),
 											asttest.NewExpression(
 												&ast.Designator{
-													QualId: asttest.NewQualId("E"), // TODO have astcore.Declarations to E. See https://github.com/akm/tparser/issues/27
+													QualId: asttest.NewQualId(
+														"E",
+														astcore.NewDeclaration(eDecl.Ident, eDecl),
+													),
 													Items: ast.DesignatorItems{
 														asttest.NewDesignatorItemIdent("HelpContext"),
 													},
