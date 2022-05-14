@@ -23,7 +23,7 @@ func (p *Parser) ParseBlock() (*ast.Block, error) {
 	if err != nil {
 		return nil, err
 	}
-	res.CompoundStmt = compoundStmt
+	res.Body = compoundStmt
 
 	if exportStmts, err := p.ParseExportsStmts(); err != nil {
 		return nil, err

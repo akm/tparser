@@ -61,7 +61,7 @@ end.
 
 					return &ast.Block{
 						DeclSections: ast.DeclSections{start1Decl},
-						CompoundStmt: &ast.CompoundStmt{
+						Body: &ast.CompoundStmt{
 							StmtList: ast.StmtList{
 								&ast.Statement{
 									LabelId: start1,

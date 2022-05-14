@@ -20,7 +20,7 @@ type Block struct {
 	Node
 	DeclSections  DeclSections
 	ExportsStmts1 ExportsStmts
-	CompoundStmt  BlockBody
+	Body          BlockBody
 	ExportsStmts2 ExportsStmts
 }
 
@@ -32,7 +32,7 @@ func (m *Block) Children() Nodes {
 	if m.ExportsStmts1 != nil {
 		res = append(res, m.ExportsStmts1)
 	}
-	res = append(res, m.CompoundStmt)
+	res = append(res, m.Body)
 	if m.ExportsStmts2 != nil {
 		res = append(res, m.ExportsStmts2)
 	}

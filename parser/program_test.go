@@ -34,7 +34,7 @@ end.`),
 			Ident: asttest.NewIdent("Hello", asttest.NewIdentLocation(1, 9, 8, 14)),
 			ProgramBlock: &ast.ProgramBlock{
 				Block: &ast.Block{
-					CompoundStmt: &ast.CompoundStmt{
+					Body: &ast.CompoundStmt{
 						StmtList: ast.StmtList{
 							&ast.Statement{
 								Body: &ast.CallStatement{
@@ -80,7 +80,7 @@ end.
 							ast.ConstSection{constDecl},
 							ast.VarSection{varDecl},
 						},
-						CompoundStmt: &ast.CompoundStmt{
+						Body: &ast.CompoundStmt{
 							StmtList: ast.StmtList{
 								&ast.Statement{
 									Body: &ast.AssignStatement{
