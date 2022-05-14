@@ -123,7 +123,7 @@ func (p *Parser) ParseExceptionBlockHandler() (*ast.ExceptionBlockHandler, error
 
 	hasIdent := true
 
-	p.logger.Printf("p.context.DeclarationMap.Keys(): %+v\n", p.context.DeclarationMap.Keys())
+	// p.logger.Printf("p.context.DeclarationMap.Keys(): %+v\n", p.context.DeclarationMap.Keys())
 
 	if decl := p.context.DeclarationMap.Get(t.RawString()); decl != nil {
 		p.logger.Printf("decl: %+v\n", *decl)
