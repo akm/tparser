@@ -24,7 +24,7 @@ func (p *Parser) ParseUnit() (*ast.Unit, error) {
 	}
 
 	t := p.NextToken()
-	if t.Type == token.PortabilityDirective {
+	if t.Is(token.PortabilityDirective) {
 		s := ast.PortabilityDirective(t.Value())
 		res.PortabilityDirective = &s
 		t = p.NextToken()
@@ -172,7 +172,7 @@ func (p *Parser) ParseQualIds() (ast.QualIds, error) {
 }
 
 func (p *Parser) ParseQualId() (*ast.QualId, error) {
-	if _, err := p.Current(token.Some(token.Identifier, token.Directive)); err != nil {
+	if _, err := p.Current(token.Some(token.Identifier)); err != nil {
 		return nil, err
 	}
 	name1 := p.CurrentToken()

@@ -72,7 +72,7 @@ func (p *Parser) ParseFunctionDirectives() ([]ast.Directive, *ast.ExternalOption
 }
 
 func (p *Parser) ParseExternalOptions() (*ast.ExternalOptions, error) {
-	if _, err := p.Current(token.Directive.HasKeyword("EXTERNAL")); err != nil {
+	if _, err := p.Current(token.Directives("EXTERNAL")); err != nil {
 		return nil, err
 	}
 	t := p.NextToken()
@@ -84,20 +84,21 @@ func (p *Parser) ParseExternalOptions() (*ast.ExternalOptions, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	r.LibraryName = f1.Value
 	if p.CurrentToken().Is(token.Symbol(';')) {
 		return r, nil
 	}
 	{
 		t := p.CurrentToken()
-		if t.Is(token.Directive.HasKeyword("NAME")) {
+		if t.Is(token.Directives("NAME")) {
 			t2 := p.NextToken()
 			f2, err := p.ParseStringFactor(t2, false)
 			if err != nil {
 				return nil, err
 			}
 			r.Name = &f2.Value
-		} else if t.Is(token.Directive.HasKeyword("INDEX")) {
+		} else if t.Is(token.Directives("INDEX")) {
 			t2 := p.NextToken()
 			f2, err := p.ParseNumberFactor(t2, false)
 			if err != nil {

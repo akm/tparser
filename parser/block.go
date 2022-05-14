@@ -121,14 +121,14 @@ func (p *Parser) ParseExportsStmt(required bool) (*ast.ExportsStmt, error) {
 		}
 		item := &ast.ExportsItem{Ident: ast.NewIdent(t)}
 		t2 := p.NextToken()
-		if t2.Is(token.Directive.HasKeyword("NAME")) {
+		if t2.Is(token.Directives("NAME")) {
 			p.NextToken()
 			constExpr, err := p.ParseConstExpr()
 			if err != nil {
 				return err
 			}
 			item.Name = constExpr
-		} else if t2.Is(token.Directive.HasKeyword("INDEX")) {
+		} else if t2.Is(token.Directives("INDEX")) {
 			p.NextToken()
 			constExpr, err := p.ParseConstExpr()
 			if err != nil {
