@@ -13,7 +13,7 @@ type Block struct {
 	Node
 	DeclSections  DeclSections
 	ExportsStmts1 ExportsStmts
-	CompoundStmt  *CompoundStmt
+	CompoundStmt  BlockBody
 	ExportsStmts2 ExportsStmts
 }
 
@@ -39,6 +39,12 @@ func (s ExportsStmts) Children() Nodes {
 		r[idx] = i
 	}
 	return r
+}
+
+// BlockBody is CompoundStmt or AssemblerStatement
+type BlockBody interface {
+	StructStmt // extends StructsStmt
+	isBlockBody()
 }
 
 // - ExportsStmt
