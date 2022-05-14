@@ -74,7 +74,7 @@ end;
 				DeclSections: ast.DeclSections{
 					ast.VarSection{declI, declSearchRec},
 				},
-				CompoundStmt: &ast.CompoundStmt{
+				Body: &ast.CompoundStmt{
 					StmtList: ast.StmtList{
 						{
 							// Result := TStringList.Create;

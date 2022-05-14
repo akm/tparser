@@ -6,14 +6,21 @@ import "github.com/akm/tparser/ast/astcore"
 //   ```
 //   [DeclSection]
 //   [ExportsStmt]...
-//   CompoundStmt
+//   BlockBody
 //   [ExportsStmt]...
+//   ```
+// - BlockBody
+//   ```
+//   CompoundStmt
+//   ```
+//   ```
+//   AssemberStatement
 //   ```
 type Block struct {
 	Node
 	DeclSections  DeclSections
 	ExportsStmts1 ExportsStmts
-	CompoundStmt  *CompoundStmt
+	Body          BlockBody
 	ExportsStmts2 ExportsStmts
 }
 
@@ -25,7 +32,7 @@ func (m *Block) Children() Nodes {
 	if m.ExportsStmts1 != nil {
 		res = append(res, m.ExportsStmts1)
 	}
-	res = append(res, m.CompoundStmt)
+	res = append(res, m.Body)
 	if m.ExportsStmts2 != nil {
 		res = append(res, m.ExportsStmts2)
 	}
@@ -39,6 +46,12 @@ func (s ExportsStmts) Children() Nodes {
 		r[idx] = i
 	}
 	return r
+}
+
+// BlockBody is CompoundStmt or AssemblerStatement
+type BlockBody interface {
+	StructStmt // extends StructsStmt
+	isBlockBody()
 }
 
 // - ExportsStmt

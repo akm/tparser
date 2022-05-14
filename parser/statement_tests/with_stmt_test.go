@@ -47,7 +47,7 @@ end.
 						DeclSections: ast.DeclSections{
 							ast.VarSection{decl},
 						},
-						CompoundStmt: &ast.CompoundStmt{
+						Body: &ast.CompoundStmt{
 							StmtList: ast.StmtList{
 								&ast.Statement{
 									Body: &ast.WithStmt{

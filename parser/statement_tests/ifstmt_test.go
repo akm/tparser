@@ -54,7 +54,7 @@ end.
 				Block: func() *ast.Block {
 
 					return &ast.Block{
-						CompoundStmt: &ast.CompoundStmt{
+						Body: &ast.CompoundStmt{
 							StmtList: ast.StmtList{
 								&ast.Statement{
 									Body: &ast.IfStmt{
@@ -99,7 +99,7 @@ end.
 
 					return &ast.Block{
 						DeclSections: ast.DeclSections{ast.VarSection{decl}},
-						CompoundStmt: &ast.CompoundStmt{
+						Body: &ast.CompoundStmt{
 							StmtList: ast.StmtList{
 								&ast.Statement{
 									Body: &ast.IfStmt{
@@ -157,7 +157,7 @@ end.
 
 					return &ast.Block{
 						DeclSections: ast.DeclSections{ast.VarSection{decl}},
-						CompoundStmt: &ast.CompoundStmt{
+						Body: &ast.CompoundStmt{
 							StmtList: ast.StmtList{
 								&ast.Statement{
 									Body: &ast.IfStmt{
@@ -215,7 +215,7 @@ end.
 			ProgramBlock: &ast.ProgramBlock{
 				Block: func() *ast.Block {
 					return &ast.Block{
-						CompoundStmt: &ast.CompoundStmt{
+						Body: &ast.CompoundStmt{
 							StmtList: ast.StmtList{
 								&ast.Statement{
 									Body: &ast.IfStmt{

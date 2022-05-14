@@ -13,7 +13,7 @@ func TestTryFinallyStmt(t *testing.T) {
 			Ident: asttest.NewIdent(programName),
 			ProgramBlock: &ast.ProgramBlock{
 				Block: &ast.Block{
-					CompoundStmt: &ast.CompoundStmt{
+					Body: &ast.CompoundStmt{
 						StmtList: ast.StmtList(statements),
 					},
 				},

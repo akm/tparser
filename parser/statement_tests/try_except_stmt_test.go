@@ -51,7 +51,7 @@ end;
 				Block: func() *ast.Block {
 					return &ast.Block{
 						DeclSections: declSections,
-						CompoundStmt: &ast.CompoundStmt{
+						Body: &ast.CompoundStmt{
 							StmtList: ast.StmtList{
 								state,
 							},

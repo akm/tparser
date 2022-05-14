@@ -7,11 +7,12 @@ import "github.com/akm/tparser/ast/astcore"
 //   BEGIN StmtList END
 //   ```
 type CompoundStmt struct {
-	StructStmt
+	BlockBody
 	StmtList
 }
 
 func (*CompoundStmt) isStructStmt()     {}
+func (*CompoundStmt) isBlockBody()      {}
 func (m *CompoundStmt) Children() Nodes { return Nodes{m.StmtList} }
 
 // - StmtList
@@ -503,17 +504,6 @@ func (m *RaiseStmt) Children() Nodes {
 }
 
 // - AssemblerStatement
-//   (Is this correct?)
-//   ```
-//   ASM
-//   ```
-//   ```
-//   <assemblylanguage>
-//   ```
-//   ```
-//   END
-//   ```
-//   It seems to be the following:
 //   ```
 //   ASM
 //   <assemblylanguage>
@@ -525,4 +515,5 @@ type AssemblerStatement struct {
 
 func (*AssemblerStatement) isStatementBody() {}
 func (*AssemblerStatement) isStructStmt()    {}
+func (*AssemblerStatement) isBlockBody()     {}
 func (*AssemblerStatement) Children() Nodes  { return Nodes{} }

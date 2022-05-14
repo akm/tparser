@@ -19,11 +19,20 @@ func (p *Parser) ParseBlock() (*ast.Block, error) {
 		res.ExportsStmts1 = exportStmts
 	}
 
-	compoundStmt, err := p.ParseCompoundStmt(true)
-	if err != nil {
-		return nil, err
+	switch p.CurrentToken().Value() {
+	case "BEGIN":
+		compoundStmt, err := p.ParseCompoundStmt(true)
+		if err != nil {
+			return nil, err
+		}
+		res.Body = compoundStmt
+	case "ASM":
+		asmStmt, err := p.ParseAssemblerStatement()
+		if err != nil {
+			return nil, err
+		}
+		res.Body = asmStmt
 	}
-	res.CompoundStmt = compoundStmt
 
 	if exportStmts, err := p.ParseExportsStmts(); err != nil {
 		return nil, err

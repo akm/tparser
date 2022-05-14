@@ -143,10 +143,15 @@ func (p *Parser) ParseStatement() (*ast.Statement, error) {
 				res.Body = stmt
 				return res, nil
 			}
+		case "ASM":
+			if stmt, err := p.ParseAssemblerStatement(); err != nil {
+				return nil, err
+			} else {
+				res.Body = stmt
+				return res, nil
+			}
 		}
 	}
-
-	// TODO AssemblerStmt
 
 	if stmt, err := p.ParseDesignatorStatement(); err != nil {
 		return nil, err

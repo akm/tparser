@@ -23,12 +23,7 @@ func runProgram(t *testing.T, name string, clearLocations bool, text []rune, exp
 				if !assert.Equal(t, expected.ProgramBlock.Block, res.ProgramBlock.Block) {
 					assert.Equal(t, expected.ProgramBlock.Block.DeclSections, res.ProgramBlock.Block.DeclSections)
 					assert.Equal(t, expected.ProgramBlock.Block.ExportsStmts1, res.ProgramBlock.Block.ExportsStmts1)
-					if !assert.Equal(t, expected.ProgramBlock.Block.CompoundStmt, res.ProgramBlock.Block.CompoundStmt) {
-						expected := expected.ProgramBlock.Block.CompoundStmt
-						actual := res.ProgramBlock.Block.CompoundStmt
-						for _, callback := range callbacks {
-							callback(expected, actual)
-						}
+					if !assert.Equal(t, expected.ProgramBlock.Block.Body, res.ProgramBlock.Block.Body) {
 					}
 					assert.Equal(t, expected.ProgramBlock.Block.ExportsStmts2, res.ProgramBlock.Block.ExportsStmts2)
 				}
