@@ -129,6 +129,13 @@ func (p *Parser) ParseStatement() (*ast.Statement, error) {
 				res.Body = stmt
 				return res, nil
 			}
+		case "TRY":
+			if stmt, err := p.ParseTryStmt(); err != nil {
+				return nil, err
+			} else {
+				res.Body = stmt
+				return res, nil
+			}
 		}
 	}
 

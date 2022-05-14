@@ -379,6 +379,11 @@ func (m *WithStmt) Children() Nodes {
 	return Nodes{m.Objects, m.Statement}
 }
 
+type TryStmt interface {
+	StructStmt
+	isTryStmt()
+}
+
 // - TryExceptStmt
 //   ```
 //   TRY
@@ -390,11 +395,12 @@ func (m *WithStmt) Children() Nodes {
 type TryExceptStmt struct {
 	Statements     StmtList
 	ExceptionBlock *ExceptionBlock
-	StructStmt
+	TryStmt
 }
 
 func (*TryExceptStmt) isStatementBody() {}
 func (*TryExceptStmt) isStructStmt()    {}
+func (*TryExceptStmt) isTryStmt()       {}
 func (m *TryExceptStmt) Children() Nodes {
 	return Nodes{m.Statements, m.ExceptionBlock}
 }
@@ -405,7 +411,7 @@ func (m *TryExceptStmt) Children() Nodes {
 //   [ELSE Statement...]
 //   ```
 type ExceptionBlock struct {
-	Handlers *ExceptionBlockHandlers
+	Handlers ExceptionBlockHandlers
 	Else     StmtList
 	Node
 }
@@ -425,7 +431,7 @@ func (s ExceptionBlockHandlers) Children() Nodes {
 
 type ExceptionBlockHandler struct {
 	Ident     *Ident
-	TypeId    *TypeId
+	Type      Type
 	Statement *Statement
 	Node
 }
@@ -435,7 +441,7 @@ func (m *ExceptionBlockHandler) Children() Nodes {
 	if m.Ident != nil {
 		r = append(r, m.Ident)
 	}
-	r = append(r, m.TypeId, m.Statement)
+	r = append(r, m.Type, m.Statement)
 	return r
 }
 
@@ -450,11 +456,12 @@ func (m *ExceptionBlockHandler) Children() Nodes {
 type TryFinallyStmt struct {
 	Statements1 StmtList
 	Statements2 StmtList
-	StructStmt
+	TryStmt
 }
 
 func (*TryFinallyStmt) isStatementBody() {}
 func (*TryFinallyStmt) isStructStmt()    {}
+func (*TryFinallyStmt) isTryStmt()       {}
 func (m *TryFinallyStmt) Children() Nodes {
 	return Nodes{m.Statements1, m.Statements2}
 }
