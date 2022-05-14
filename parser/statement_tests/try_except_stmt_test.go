@@ -306,7 +306,7 @@ begin
 	try
 		DoSomething;
 	except
-		on E: Exception do ErrorDialog(E.Message1, E.HelpContext); // TODO Use Message instead of Message1
+		on E: Exception do ErrorDialog(E.Message1, E.HelpContext); // TODO Use Message instead of Message1. See https://github.com/akm/tparser/issues/26
 	end;
 end.
 `),
@@ -339,7 +339,7 @@ end.
 										ExprList: ast.ExprList{
 											asttest.NewExpression(
 												&ast.Designator{
-													QualId: asttest.NewQualId("E"), // TODO have astcore.Declarations to E
+													QualId: asttest.NewQualId("E"), // TODO have astcore.Declarations to E. See https://github.com/akm/tparser/issues/27
 													Items: ast.DesignatorItems{
 														asttest.NewDesignatorItemIdent("Message1"),
 													},
@@ -347,7 +347,7 @@ end.
 											),
 											asttest.NewExpression(
 												&ast.Designator{
-													QualId: asttest.NewQualId("E"), // TODO have astcore.Declarations to E
+													QualId: asttest.NewQualId("E"), // TODO have astcore.Declarations to E. See https://github.com/akm/tparser/issues/27
 													Items: ast.DesignatorItems{
 														asttest.NewDesignatorItemIdent("HelpContext"),
 													},
