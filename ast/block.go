@@ -6,8 +6,15 @@ import "github.com/akm/tparser/ast/astcore"
 //   ```
 //   [DeclSection]
 //   [ExportsStmt]...
-//   CompoundStmt
+//   BlockBody
 //   [ExportsStmt]...
+//   ```
+// - BlockBody
+//   ```
+//   CompoundStmt
+//   ```
+//   ```
+//   AssemberStatement
 //   ```
 type Block struct {
 	Node
