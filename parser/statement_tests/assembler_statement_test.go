@@ -79,13 +79,7 @@ end;
 					&ast.VarDecl{IdentList: asttest.NewIdentList("IntVar"), Type: asttest.NewOrdIdent("Integer")},
 				},
 			},
-			Body: &ast.CompoundStmt{
-				StmtList: ast.StmtList{
-					&ast.Statement{
-						Body: &ast.AssemblerStatement{},
-					},
-				},
-			},
+			Body: &ast.AssemblerStatement{},
 		},
 	)
 
@@ -125,7 +119,9 @@ end;
 			Ident:            asttest.NewIdent("CallVirtualMethod"),
 			FormalParameters: ast.FormalParameters{declE},
 		},
-		Block: &ast.Block{},
+		Block: &ast.Block{
+			Body: &ast.AssemblerStatement{},
+		},
 	})
 
 }
