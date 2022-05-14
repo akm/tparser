@@ -430,18 +430,27 @@ func (s ExceptionBlockHandlers) Children() Nodes {
 }
 
 type ExceptionBlockHandler struct {
-	Ident     *Ident
-	Type      Type
+	Decl      *ExceptionBlockHandlerDecl
 	Statement *Statement
 	Node
 }
 
 func (m *ExceptionBlockHandler) Children() Nodes {
+	return Nodes{m.Decl, m.Statement}
+}
+
+type ExceptionBlockHandlerDecl struct {
+	Ident *Ident
+	Type  Type
+	astcore.Decl
+}
+
+func (m *ExceptionBlockHandlerDecl) Children() Nodes {
 	r := Nodes{}
 	if m.Ident != nil {
 		r = append(r, m.Ident)
 	}
-	r = append(r, m.Type, m.Statement)
+	r = append(r, m.Type)
 	return r
 }
 
