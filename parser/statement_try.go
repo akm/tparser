@@ -137,6 +137,10 @@ func (p *Parser) ParseExceptionBlockHandler() (*ast.ExceptionBlockHandler, error
 		return nil, err
 	}
 	decl.Type = typ
+	if decl.Ident != nil {
+		p.context.DeclarationMap.SetDecl(decl)
+	}
+
 	res := &ast.ExceptionBlockHandler{Decl: decl}
 
 	if _, err := p.Current(token.UpperCase("DO")); err != nil {

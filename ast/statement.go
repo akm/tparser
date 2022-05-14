@@ -454,6 +454,10 @@ func (m *ExceptionBlockHandlerDecl) Children() Nodes {
 	return r
 }
 
+func (m *ExceptionBlockHandlerDecl) ToDeclarations() astcore.Declarations {
+	return astcore.Declarations{astcore.NewDeclaration(m.Ident, m)}
+}
+
 // - TryFinallyStmt
 //   ```
 //   TRY
