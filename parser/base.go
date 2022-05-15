@@ -1,12 +1,48 @@
 package parser
 
 import (
+	"io/ioutil"
 	"log"
 	"os"
 
+	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/token"
 	"github.com/pkg/errors"
+	"golang.org/x/text/encoding/japanese"
+	"golang.org/x/text/transform"
 )
+
+type Program struct {
+	*ast.Program
+	Units ast.Units
+}
+
+func ParseProgram(path string) (*Program, error) {
+	fp, err := os.Open(path)
+	if err != nil {
+		panic(err)
+	}
+	defer fp.Close()
+
+	decoder := japanese.ShiftJIS.NewDecoder()
+	str, err := ioutil.ReadAll(transform.NewReader(fp, decoder))
+	if err != nil {
+		return nil, err
+	}
+
+	runes := []rune(string(str))
+
+	p := NewParser(&runes)
+	p.NextToken()
+	res, err := p.ParseProgram()
+	if err != nil {
+		return nil, err
+	}
+	return &Program{
+		Program: res,
+		Units:   p.context.Units,
+	}, nil
+}
 
 type Parser struct {
 	tokenizer *token.Tokenizer
