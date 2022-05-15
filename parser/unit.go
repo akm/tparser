@@ -137,16 +137,35 @@ func (p *Parser) ParseImplementationSection() (*ast.ImplementationSection, error
 	if _, err := p.Current(token.ReservedWord.HasKeyword("IMPLEMENTATION")); err != nil {
 		return nil, err
 	}
+	p.NextToken()
+
 	res := &ast.ImplementationSection{}
-	for {
-		t := p.NextToken()
-		if t.Is(token.EOF) {
-			return nil, errors.Errorf("expects END but got %s", t.String())
+	if p.CurrentToken().Is(token.ReservedWord.HasKeyword("USES")) {
+		usesClause, err := p.ParseUsesClause()
+		if err != nil {
+			return nil, err
 		}
-		if t.Is(token.ReservedWord) {
-			break
-		}
+		res.UsesClause = usesClause
+		p.context.unitIdentifiers = append(p.context.unitIdentifiers, usesClause.IdentList().Names()...)
+		p.NextToken()
 	}
+
+	if declSections, err := p.ParseDeclSections(); err != nil {
+		return nil, err
+	} else if len(declSections) > 0 {
+		res.DeclSections = declSections
+	}
+
+	if exportsStmt, err := p.ParseExportsStmts(); err != nil {
+		return nil, err
+	} else if exportsStmt != nil {
+		res.ExportsStmts = exportsStmt
+	}
+
+	if p.CurrentToken().Is(token.Symbol(';')) {
+		p.NextToken()
+	}
+
 	return res, nil
 }
 
