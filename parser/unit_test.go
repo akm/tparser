@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/akm/tparser/ast"
+	"github.com/akm/tparser/ast/astcore"
 	"github.com/akm/tparser/ast/asttest"
 	"github.com/stretchr/testify/assert"
 )
@@ -20,7 +21,7 @@ func TestUnit(t *testing.T) {
 
 		})
 	}
-	// "unit" is loaded already in goal.go
+
 	run(
 		"simplest unit",
 		[]rune(`UNIT U1;
@@ -33,6 +34,84 @@ func TestUnit(t *testing.T) {
 			ImplementationSection: &ast.ImplementationSection{},
 		},
 	)
+
+	run(
+		"CountUp",
+		[]rune(`UNIT U1;
+interface
+procedure CountUp;
+implementation
+
+var cnt: integer;
+procedure CountUp;
+begin
+  cnt := cnt + 1;
+end;
+
+end.`),
+		&ast.Unit{
+			Ident: asttest.NewIdent("U1", asttest.NewIdentLocation(1, 6, 5, 8)),
+			InterfaceSection: &ast.InterfaceSection{
+				InterfaceDecls: []ast.InterfaceDecl{
+					&ast.ExportedHeading{
+						FunctionHeading: &ast.FunctionHeading{
+							Type:  ast.FtProcedure,
+							Ident: asttest.NewIdent("CountUp", asttest.NewIdentLocation(3, 12, 29, 19)),
+						},
+					},
+				},
+			},
+			ImplementationSection: func() *ast.ImplementationSection {
+				declCnt := &ast.VarDecl{
+					IdentList: asttest.NewIdentList(
+						asttest.NewIdent("cnt", asttest.NewIdentLocation(6, 6, 58, 9)),
+					),
+					Type: asttest.NewOrdIdent(asttest.NewIdent("integer", asttest.NewIdentLocation(6, 11, 63, 18))),
+				}
+				return &ast.ImplementationSection{
+					DeclSections: ast.DeclSections{
+						ast.VarSection{declCnt},
+						&ast.FunctionDecl{
+							FunctionHeading: &ast.FunctionHeading{
+								Type:  ast.FtProcedure,
+								Ident: asttest.NewIdent("CountUp", asttest.NewIdentLocation(7, 12, 82, 19)),
+							},
+							Block: &ast.Block{
+								Body: &ast.CompoundStmt{
+									StmtList: ast.StmtList{
+										{
+											Body: &ast.AssignStatement{
+												Designator: asttest.NewDesignator(
+													asttest.NewQualId(
+														asttest.NewIdent("cnt", asttest.NewIdentLocation(9, 4, 99, 7)),
+														astcore.NewDeclaration(declCnt.IdentList[0], declCnt),
+													),
+												),
+												Expression: asttest.NewExpression(
+													&ast.SimpleExpression{
+														Term: &ast.Term{Factor: asttest.NewDesignatorFactor(
+															asttest.NewQualId(
+																asttest.NewIdent("cnt", asttest.NewIdentLocation(9, 11, 106, 14)),
+																astcore.NewDeclaration(declCnt.IdentList[0], declCnt),
+															),
+														)},
+														AddOpTerms: []*ast.AddOpTerm{
+															{AddOp: "+", Term: asttest.NewTerm(asttest.NewNumber("1"))},
+														},
+													},
+												),
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+			}(),
+		},
+	)
+
 }
 
 func TestInterfaceSection(t *testing.T) {
