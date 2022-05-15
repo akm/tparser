@@ -11,7 +11,7 @@ import (
 //   UNIT Ident [PortabilityDirective] ';'
 //   InterfaceSection
 //   ImplementationSection
-//   InitSection '.'
+//   [InitSection] '.'
 //   ```
 type Unit struct {
 	Path string
@@ -116,10 +116,24 @@ func (s InterfaceDecls) Children() Nodes {
 //   [ExportsStmt]...
 //   ```
 type ImplementationSection struct {
+	UsesClause   UsesClause // optional
+	DeclSections DeclSections
+	ExportsStmts ExportsStmts
+	Node
 }
 
 func (m *ImplementationSection) Children() Nodes {
-	return Nodes{}
+	r := Nodes{}
+	if m.UsesClause != nil {
+		r = append(r, m.UsesClause)
+	}
+	if m.DeclSections != nil {
+		r = append(r, m.DeclSections)
+	}
+	if m.ExportsStmts != nil {
+		r = append(r, m.ExportsStmts)
+	}
+	return r
 }
 
 // - InitSection
@@ -133,10 +147,16 @@ func (m *ImplementationSection) Children() Nodes {
 //   END
 //   ```
 type InitSection struct {
+	InitializationStmts StmtList
+	FinalizationStmts   StmtList
 }
 
 func (m *InitSection) Children() Nodes {
-	return Nodes{}
+	r := Nodes{m.InitializationStmts}
+	if m.FinalizationStmts != nil {
+		r = append(r, m.FinalizationStmts)
+	}
+	return r
 }
 
 // - UnitId

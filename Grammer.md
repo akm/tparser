@@ -2,12 +2,11 @@
 
 See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/cbuilder6/EN/CB6_ObjPascalLangGuide_EN.pdf) in [RAD Studio documents](https://docs.embarcadero.com/products/rad_studio/)
 
-Mark | State | Count
-:---:|--------|----:
-🔖 | TODO         | 44
-🚧 | In progress   | 7
-✔️ | Done         | 74
-
+| Mark | State       | Count |
+| :--: | ----------- | ----: |
+|  🔖  | TODO        |    44 |
+|  🚧  | In progress |     7 |
+|  ✔️  | Done        |    74 |
 
 - Goal 🚧
   ```
@@ -23,7 +22,7 @@ Mark | State | Count
   UNIT Ident [PortabilityDirective] ';'
   InterfaceSection
   ImplementationSection
-  InitSection '.'
+  [InitSection] '.'
   ```
 - Package 🔖
   ```
