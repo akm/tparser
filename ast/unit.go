@@ -11,7 +11,7 @@ import (
 //   UNIT Ident [PortabilityDirective] ';'
 //   InterfaceSection
 //   ImplementationSection
-//   InitSection '.'
+//   [InitSection] '.'
 //   ```
 type Unit struct {
 	Path string
