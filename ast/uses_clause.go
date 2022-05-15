@@ -1,6 +1,9 @@
 package ast
 
 import (
+	"path/filepath"
+	"strings"
+
 	"github.com/akm/tparser/ast/astcore"
 	"github.com/pkg/errors"
 )
@@ -70,4 +73,16 @@ func NewUnitRef(name interface{}, paths ...string) *UnitRef {
 
 func (m *UnitRef) Children() Nodes {
 	return Nodes{m.Ident}
+}
+
+func (m *UnitRef) UnquotedPath() string {
+	if m.Path == nil {
+		return ""
+	}
+	return strings.TrimSuffix(strings.TrimPrefix(*m.Path, "'"), "'")
+}
+
+func (m *UnitRef) EffectivePath() string {
+	origPath := m.UnquotedPath()
+	return strings.ReplaceAll(origPath, "\\", string([]rune{filepath.Separator}))
 }
