@@ -147,10 +147,16 @@ func (m *ImplementationSection) Children() Nodes {
 //   END
 //   ```
 type InitSection struct {
+	InitializationStmts StmtList
+	FinalizationStmts   StmtList
 }
 
 func (m *InitSection) Children() Nodes {
-	return Nodes{}
+	r := Nodes{m.InitializationStmts}
+	if m.FinalizationStmts != nil {
+		r = append(r, m.FinalizationStmts)
+	}
+	return r
 }
 
 // - UnitId
