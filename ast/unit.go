@@ -116,6 +116,9 @@ func (s InterfaceDecls) Children() Nodes {
 //   [ExportsStmt]...
 //   ```
 type ImplementationSection struct {
+	UsesClause   UsesClause // optional
+	DeclSections DeclSections
+	ExportsStmts ExportsStmts
 }
 
 func (m *ImplementationSection) Children() Nodes {
