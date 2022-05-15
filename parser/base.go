@@ -32,6 +32,11 @@ func ParseProgram(path string) (*Program, error) {
 
 	runes := []rune(string(str))
 
+	// absPath, err := filepath.Abs(path)
+	// if err != nil {
+	// 	return nil, err
+	// }
+
 	ctx := NewContext(path)
 	p := NewParser(&runes, ctx)
 	p.NextToken()
@@ -43,6 +48,31 @@ func ParseProgram(path string) (*Program, error) {
 		Program: res,
 		Units:   p.context.GetUnits(),
 	}, nil
+}
+
+func ParseUnit(path string) (*ast.Unit, error) {
+	fp, err := os.Open(path)
+	if err != nil {
+		panic(err)
+	}
+	defer fp.Close()
+
+	decoder := japanese.ShiftJIS.NewDecoder()
+	str, err := ioutil.ReadAll(transform.NewReader(fp, decoder))
+	if err != nil {
+		return nil, err
+	}
+
+	runes := []rune(string(str))
+
+	ctx := NewContext(path)
+	p := NewParser(&runes, ctx)
+	p.NextToken()
+	res, err := p.ParseUnit()
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
 }
 
 type Parser struct {
@@ -119,7 +149,7 @@ func (p *Parser) Validate(token *token.Token, predicates ...token.Predicator) er
 	}
 	for _, pred := range predicates {
 		if !pred.Predicate(token) {
-			return errors.Errorf("expects %s but was %s", pred.Name(), token.String())
+			return errors.Errorf("expects %s but was %s in %q", pred.Name(), token.String(), p.context.GetPath())
 		}
 	}
 	return nil

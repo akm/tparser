@@ -1,6 +1,8 @@
 package parser
 
 import (
+	"path/filepath"
+
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/astcore"
 	"github.com/akm/tparser/ext"
@@ -15,6 +17,8 @@ type Context interface {
 	GetDeclarationMap() astcore.DeclarationMap
 	GetPath() string
 	SetPath(path string)
+	ResolvePath(path string) string
+	AddUnit(unit *ast.Unit)
 	GetUnits() ast.Units
 	astcore.DeclarationMap
 }
@@ -103,6 +107,14 @@ func (c *ProjectContext) SetPath(path string) {
 	c.Path = path
 }
 
+func (c *ProjectContext) ResolvePath(path string) string {
+	dir := filepath.Dir(c.GetPath())
+	return filepath.Join(dir, path)
+}
+
+func (c *ProjectContext) AddUnit(unit *ast.Unit) {
+	c.Units = append(c.Units, unit)
+}
 func (c *ProjectContext) GetUnits() ast.Units {
 	return c.Units
 }
@@ -165,8 +177,17 @@ func (c *StackableContext) GetPath() string {
 	return c.parent.GetPath()
 }
 
+func (c *StackableContext) ResolvePath(path string) string {
+	dir := filepath.Dir(c.GetPath())
+	return filepath.Join(dir, path)
+}
+
 func (c *StackableContext) SetPath(path string) {
 	c.path = &path
+}
+
+func (c *StackableContext) AddUnit(unit *ast.Unit) {
+	panic(errors.Errorf("unexpected call of AddUnit"))
 }
 
 func (c *StackableContext) GetUnits() ast.Units {

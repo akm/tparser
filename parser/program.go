@@ -42,6 +42,18 @@ func (p *Parser) ParseProgramBlock() (*ast.ProgramBlock, error) {
 		}
 		res.UsesClause = uses
 		p.NextToken()
+
+		for _, u := range uses {
+			unitPath := u.EffectivePath()
+			if unitPath != "" {
+				actualPath := p.context.ResolvePath(u.EffectivePath())
+				unit, err := ParseUnit(actualPath)
+				if err != nil {
+					return nil, err
+				}
+				p.context.AddUnit(unit)
+			}
+		}
 	}
 	block, err := p.ParseBlock()
 	if err != nil {

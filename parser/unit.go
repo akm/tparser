@@ -23,6 +23,7 @@ func (p *Parser) ParseUnit() (*ast.Unit, error) {
 		return nil, err
 	}
 	res := &ast.Unit{
+		Path:  p.context.GetPath(),
 		Ident: p.NewIdent(ident),
 	}
 

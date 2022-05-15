@@ -53,6 +53,9 @@ func (p *Parser) ParseDeclSections() (ast.DeclSections, error) {
 		} else {
 			break
 		}
+		if p.CurrentToken().Is(token.Symbol(';')) {
+			p.NextToken()
+		}
 	}
 	if len(res) == 0 {
 		return nil, nil
