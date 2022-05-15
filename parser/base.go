@@ -32,7 +32,8 @@ func ParseProgram(path string) (*Program, error) {
 
 	runes := []rune(string(str))
 
-	p := NewParser(&runes)
+	ctx := NewContext(path)
+	p := NewParser(&runes, ctx)
 	p.NextToken()
 	res, err := p.ParseProgram()
 	if err != nil {
@@ -40,7 +41,7 @@ func ParseProgram(path string) (*Program, error) {
 	}
 	return &Program{
 		Program: res,
-		Units:   p.context.Units,
+		Units:   p.context.GetUnits(),
 	}, nil
 }
 

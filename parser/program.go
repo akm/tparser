@@ -13,7 +13,10 @@ func (p *Parser) ParseProgram() (*ast.Program, error) {
 	if err != nil {
 		return nil, err
 	}
-	res := &ast.Program{Ident: p.NewIdent(ident)}
+	res := &ast.Program{
+		Path:  p.context.GetPath(),
+		Ident: p.NewIdent(ident),
+	}
 	if _, err := p.Next(token.Symbol(';')); err != nil {
 		return nil, err
 	}

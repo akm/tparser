@@ -13,10 +13,14 @@ type Context interface {
 	AddUnitIdentifiers(names ...string)
 	IsUnitIdentifier(token *token.Token) bool
 	GetDeclarationMap() astcore.DeclarationMap
+	GetPath() string
+	SetPath(path string)
+	GetUnits() ast.Units
 	astcore.DeclarationMap
 }
 
 type ProjectContext struct {
+	Path            string
 	unitIdentifiers ext.Strings // TO BE REMOVED
 	Units           ast.Units
 	astcore.DeclarationMap
@@ -27,11 +31,14 @@ func NewContext(args ...interface{}) Context {
 }
 
 func NewProjectContext(args ...interface{}) *ProjectContext {
+	var path string
 	var unitIdentifiers ext.Strings
 	var units ast.Units
 	var declarationMap astcore.DeclarationMap
 	for _, arg := range args {
 		switch v := arg.(type) {
+		case string:
+			path = v
 		case ext.Strings:
 			unitIdentifiers = v
 		case ast.Units:
@@ -52,6 +59,7 @@ func NewProjectContext(args ...interface{}) *ProjectContext {
 		declarationMap = astcore.NewDeclarationMap()
 	}
 	return &ProjectContext{
+		Path:            path,
 		unitIdentifiers: unitIdentifiers,
 		Units:           units,
 		DeclarationMap:  declarationMap,
@@ -87,7 +95,20 @@ func isUnitDeclaration(decl *astcore.Declaration) bool {
 	return ok
 }
 
+func (c *ProjectContext) GetPath() string {
+	return c.Path
+}
+
+func (c *ProjectContext) SetPath(path string) {
+	c.Path = path
+}
+
+func (c *ProjectContext) GetUnits() ast.Units {
+	return c.Units
+}
+
 type StackableContext struct {
+	path            *string
 	parent          Context
 	unitIdentifiers ext.Strings
 	declarationMap  astcore.DeclarationMap
@@ -136,4 +157,18 @@ func (c *StackableContext) SetDecl(decl astcore.Decl) {
 
 func (c *StackableContext) Keys() ext.Strings {
 	return append(c.declarationMap.Keys(), c.parent.Keys()...)
+}
+func (c *StackableContext) GetPath() string {
+	if c.path != nil {
+		return *c.path
+	}
+	return c.parent.GetPath()
+}
+
+func (c *StackableContext) SetPath(path string) {
+	c.path = &path
+}
+
+func (c *StackableContext) GetUnits() ast.Units {
+	return c.parent.GetUnits()
 }
