@@ -21,8 +21,14 @@ func AssertIdentList(t *testing.T, expected, actual ast.IdentList) {
 }
 
 func AssertIdent(t *testing.T, expected, actual *ast.Ident) {
-	assert.Equal(t, expected.Name, actual.Name)
-	assert.Equal(t, expected.Location, actual.Location)
+	if expected != nil {
+		if assert.NotNil(t, actual) {
+			assert.Equal(t, expected.Name, actual.Name)
+			assert.Equal(t, expected.Location, actual.Location)
+		}
+	} else {
+		assert.Nil(t, actual)
+	}
 }
 
 func AssertLocation(t *testing.T, expected, actual *astcore.Location) {
@@ -40,11 +46,17 @@ func AssertPosition(t *testing.T, expected, actual *astcore.Position) {
 }
 
 func AssertDeclaration(t *testing.T, expected, actual *astcore.Declaration) {
-	if !assert.Equal(t, expected.Ident, actual.Ident) {
-		AssertIdent(t, expected.Ident, actual.Ident)
-	}
-	if !assert.Equal(t, expected.Node, actual.Node) {
-		// TODO? implement AssertNode if necessary
-		// AssertNode(t, expected.Node, actual.Node)
+	if expected != nil {
+		if assert.NotNil(t, actual) {
+			if !assert.Equal(t, expected.Ident, actual.Ident) {
+				AssertIdent(t, expected.Ident, actual.Ident)
+			}
+			if !assert.Equal(t, expected.Node, actual.Node) {
+				// TODO? implement AssertNode if necessary
+				// AssertNode(t, expected.Node, actual.Node)
+			}
+		}
+	} else {
+		assert.Nil(t, actual)
 	}
 }
