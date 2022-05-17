@@ -250,9 +250,17 @@ func (p *Parser) ParseQualId() (*ast.QualId, error) {
 		if err != nil {
 			return nil, err
 		}
-		// TODO find Declaration from Unit in context
+
+		res := ast.NewQualId(ast.NewUnitId(name1), p.NewIdent(name2))
+
+		unitDecl := p.context.Get(name1.Value())
+		if unitDecl != nil {
+			if unit, ok := unitDecl.Node.(*ast.Unit); ok {
+				res.Ref = unit.DeclarationMap.Get(name2.Value())
+			}
+		}
 		p.NextToken()
-		return ast.NewQualId(ast.NewUnitId(name1), p.NewIdent(name2)), nil
+		return res, nil
 	} else {
 		p.NextToken()
 		d := p.context.Get(name1.RawString())
