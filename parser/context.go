@@ -12,6 +12,7 @@ type Context interface {
 	Clone() Context
 	AddUnitIdentifiers(names ...string)
 	IsUnitIdentifier(token *token.Token) bool
+	GetDeclarationMap() astcore.DeclarationMap
 	astcore.DeclarationMap
 }
 
@@ -69,6 +70,10 @@ func (c *ProjectContext) IsUnitIdentifier(token *token.Token) bool {
 	return c.unitIdentifiers.Include(token.Value()) || c.Units.ByName(token.Value()) != nil
 }
 
+func (c *ProjectContext) GetDeclarationMap() astcore.DeclarationMap {
+	return c.DeclarationMap
+}
+
 type StackableContext struct {
 	parent          Context
 	unitIdentifiers ext.Strings
@@ -96,6 +101,10 @@ func (c *StackableContext) AddUnitIdentifiers(names ...string) {
 
 func (c *StackableContext) IsUnitIdentifier(token *token.Token) bool {
 	return c.unitIdentifiers.Include(token.Value()) || c.parent.IsUnitIdentifier(token)
+}
+
+func (c *StackableContext) GetDeclarationMap() astcore.DeclarationMap {
+	return astcore.NewCompositeDeclarationMap(c.declarationMap, c.parent.GetDeclarationMap())
 }
 
 func (c *StackableContext) Get(name string) *astcore.Declaration {
