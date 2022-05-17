@@ -23,7 +23,7 @@ func (p *Parser) ParseUnit() (*ast.Unit, error) {
 		return nil, err
 	}
 	res := &ast.Unit{
-		Ident: ast.NewIdent(ident),
+		Ident: p.NewIdent(ident),
 	}
 
 	t := p.NextToken()
@@ -252,10 +252,10 @@ func (p *Parser) ParseQualId() (*ast.QualId, error) {
 		}
 		// TODO find Declaration from Unit in context
 		p.NextToken()
-		return ast.NewQualId(ast.NewUnitId(name1), ast.NewIdent(name2)), nil
+		return ast.NewQualId(ast.NewUnitId(name1), p.NewIdent(name2)), nil
 	} else {
 		p.NextToken()
 		d := p.context.Get(name1.RawString())
-		return ast.NewQualId(nil, ast.NewIdent(name1), d), nil
+		return ast.NewQualId(nil, p.NewIdent(name1), d), nil
 	}
 }

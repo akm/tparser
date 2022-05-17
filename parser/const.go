@@ -41,7 +41,7 @@ func (p *Parser) ParseConstantDecl() (*ast.ConstantDecl, error) {
 	if err != nil {
 		return nil, err
 	}
-	res.Ident = ast.NewIdent(ident)
+	res.Ident = p.NewIdent(ident)
 	p.context.SetDecl(res)
 
 	p.NextToken()
