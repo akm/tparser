@@ -11,7 +11,7 @@ import (
 type Context struct {
 	unitIdentifiers ext.Strings // TO BE REMOVED
 	Units           ast.Units
-	DeclarationMap  astcore.DeclarationMap
+	astcore.DeclarationMap
 }
 
 func NewContext(args ...interface{}) *Context {
