@@ -41,6 +41,8 @@ func (p *Parser) ParseUnit() (*ast.Unit, error) {
 		return nil, err
 	}
 
+	res.DeclarationMap = p.context.GetDeclarationMap()
+
 	impl, err := p.ParseImplementationSection()
 	if err != nil {
 		return nil, err
