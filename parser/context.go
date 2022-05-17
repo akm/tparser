@@ -23,6 +23,10 @@ type ProjectContext struct {
 }
 
 func NewContext(args ...interface{}) Context {
+	return NewProjectContext(args...)
+}
+
+func NewProjectContext(args ...interface{}) *ProjectContext {
 	var unitIdentifiers ext.Strings
 	var units ast.Units
 	var declarationMap astcore.DeclarationMap
