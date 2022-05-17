@@ -1,9 +1,12 @@
 package asttest
 
 import (
+	"testing"
+
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/astcore"
 	"github.com/pkg/errors"
+	"github.com/stretchr/testify/assert"
 )
 
 func NewUnitId(name interface{}) *ast.UnitId {
@@ -55,4 +58,19 @@ func NewQualId(args ...interface{}) *ast.QualId {
 	default:
 		panic(errors.Errorf("unexpected args for NewQualId: %+v", args))
 	}
+}
+
+func ClearUnitDeclarationMap(u *ast.Unit) {
+	u.DeclarationMap = nil
+}
+
+func ClearUnitDeclarationMaps(t *testing.T, node ast.Node) {
+	err := astcore.WalkDown(node, func(n ast.Node) error {
+		switch v := n.(type) {
+		case *ast.Unit:
+			ClearUnitDeclarationMap(v)
+		}
+		return nil
+	})
+	assert.NoError(t, err)
 }
