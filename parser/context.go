@@ -15,7 +15,7 @@ type Context interface {
 	astcore.DeclarationMap
 }
 
-type ContextImpl struct {
+type ProjectContext struct {
 	unitIdentifiers ext.Strings // TO BE REMOVED
 	Units           ast.Units
 	astcore.DeclarationMap
@@ -46,25 +46,25 @@ func NewContext(args ...interface{}) Context {
 	if declarationMap == nil {
 		declarationMap = astcore.NewDeclarationMap()
 	}
-	return &ContextImpl{
+	return &ProjectContext{
 		unitIdentifiers: unitIdentifiers,
 		Units:           units,
 		DeclarationMap:  declarationMap,
 	}
 }
 
-func (c *ContextImpl) Clone() Context {
-	return &ContextImpl{
+func (c *ProjectContext) Clone() Context {
+	return &ProjectContext{
 		unitIdentifiers: c.unitIdentifiers,
 		Units:           c.Units,
 		DeclarationMap:  c.DeclarationMap,
 	}
 }
 
-func (c *ContextImpl) AddUnitIdentifiers(names ...string) {
+func (c *ProjectContext) AddUnitIdentifiers(names ...string) {
 	c.unitIdentifiers = append(c.unitIdentifiers, names...)
 }
 
-func (c *ContextImpl) IsUnitIdentifier(token *token.Token) bool {
+func (c *ProjectContext) IsUnitIdentifier(token *token.Token) bool {
 	return c.unitIdentifiers.Include(token.Value()) || c.Units.ByName(token.Value()) != nil
 }
