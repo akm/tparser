@@ -54,6 +54,10 @@ func (c *Context) Clone() *Context {
 	}
 }
 
+func (c *Context) AddUnitIdentifiers(names ...string) {
+	c.unitIdentifiers = append(c.unitIdentifiers, names...)
+}
+
 func (c *Context) IsUnitIdentifier(token *token.Token) bool {
 	return c.unitIdentifiers.Include(token.Value()) || c.Units.ByName(token.Value()) != nil
 }

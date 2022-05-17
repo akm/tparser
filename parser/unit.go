@@ -74,7 +74,7 @@ func (p *Parser) ParseInterfaceSection() (*ast.InterfaceSection, error) {
 			return nil, err
 		}
 		res.UsesClause = usesClause
-		p.context.unitIdentifiers = append(p.context.unitIdentifiers, usesClause.IdentList().Names()...)
+		p.context.AddUnitIdentifiers(usesClause.IdentList().Names()...)
 		p.NextToken()
 	}
 
@@ -155,7 +155,7 @@ func (p *Parser) ParseImplementationSection() (*ast.ImplementationSection, error
 			return nil, err
 		}
 		res.UsesClause = usesClause
-		p.context.unitIdentifiers = append(p.context.unitIdentifiers, usesClause.IdentList().Names()...)
+		p.context.AddUnitIdentifiers(usesClause.IdentList().Names()...)
 		p.NextToken()
 	}
 
