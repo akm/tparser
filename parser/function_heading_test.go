@@ -425,6 +425,7 @@ func TestExportHeading(t *testing.T) {
 		parser.NextToken()
 		res, err := parser.ParseUnit()
 		if assert.NoError(t, err) {
+			asttest.ClearUnitDeclarationMap(res)
 			asttest.ClearLocations(t, res)
 			assert.Equal(t,
 				&ast.Unit{

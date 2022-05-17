@@ -52,7 +52,7 @@ func (p *Parser) ParseStmtList(terminator token.Predicator) (ast.StmtList, error
 func (p *Parser) ParseStatement() (*ast.Statement, error) {
 	res := &ast.Statement{}
 	labelId := p.CurrentToken()
-	labelDecl := p.context.DeclarationMap.Get(labelId.Value())
+	labelDecl := p.context.Get(labelId.Value())
 	if labelDecl != nil {
 		if _, ok := labelDecl.Node.(*ast.LabelDeclSection); ok {
 			res.LabelId = ast.NewLabelId(ast.NewIdent(labelId))
@@ -211,7 +211,7 @@ func (p *Parser) ParseGotoStatement() (*ast.GotoStatement, error) {
 	if err != nil {
 		return nil, err
 	}
-	d := p.context.DeclarationMap.Get(t.Value())
+	d := p.context.Get(t.Value())
 	p.NextToken()
 	return &ast.GotoStatement{
 		LabelId: ast.NewLabelId(ast.NewIdent(t)),

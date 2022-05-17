@@ -11,16 +11,16 @@ import (
 type Parser struct {
 	tokenizer *token.Tokenizer
 	curr      *token.Token
-	context   *Context
+	context   Context
 	logger    *log.Logger
 }
 
 func NewParser(text *[]rune, args ...interface{}) *Parser {
-	var ctx *Context
+	var ctx Context
 	var logger *log.Logger
 	for _, arg := range args {
 		switch v := arg.(type) {
-		case *Context:
+		case Context:
 			ctx = v
 		case *log.Logger:
 			logger = v
@@ -112,4 +112,12 @@ func (p *Parser) Until(terminator token.Predicator, separator token.Predicator, 
 
 func (p *Parser) Logf(format string, args ...interface{}) {
 	p.logger.Printf(format, args...)
+}
+
+func (p *Parser) StackContext() func() {
+	var backup Context
+	p.context, backup = NewStackableContext(p.context), p.context
+	return func() {
+		p.context = backup
+	}
 }

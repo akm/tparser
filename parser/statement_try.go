@@ -125,7 +125,7 @@ func (p *Parser) ParseExceptionBlockHandler() (*ast.ExceptionBlockHandler, error
 
 	// p.logger.Printf("p.context.DeclarationMap.Keys(): %+v\n", p.context.DeclarationMap.Keys())
 
-	if decl := p.context.DeclarationMap.Get(t.RawString()); decl != nil {
+	if decl := p.context.Get(t.RawString()); decl != nil {
 		p.logger.Printf("decl: %+v\n", *decl)
 		p.logger.Printf("decl.Node: %+v\n", decl.Node)
 		if _, ok := decl.Node.(*ast.TypeDecl); ok {
@@ -149,7 +149,7 @@ func (p *Parser) ParseExceptionBlockHandler() (*ast.ExceptionBlockHandler, error
 	}
 	decl.Type = typ
 	if decl.Ident != nil {
-		p.context.DeclarationMap.SetDecl(decl)
+		p.context.SetDecl(decl)
 	}
 
 	res := &ast.ExceptionBlockHandler{Decl: decl}

@@ -14,6 +14,9 @@ func (p *Parser) ParseUnit() (*ast.Unit, error) {
 	if _, err := p.Current(token.ReservedWord.HasKeyword("UNIT")); err != nil {
 		return nil, err
 	}
+
+	defer p.StackContext()()
+
 	// startToken := p.curr
 	ident, err := p.Next(token.Identifier)
 	if err != nil {
@@ -37,6 +40,9 @@ func (p *Parser) ParseUnit() (*ast.Unit, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	res.DeclarationMap = p.context.GetDeclarationMap()
+
 	impl, err := p.ParseImplementationSection()
 	if err != nil {
 		return nil, err
@@ -58,7 +64,7 @@ func (p *Parser) ParseUnit() (*ast.Unit, error) {
 	}
 	res.InterfaceSection = intf
 	res.ImplementationSection = impl
-	p.context.DeclarationMap.SetDecl(res)
+	p.context.SetDecl(res)
 	return res, nil
 }
 
@@ -74,7 +80,7 @@ func (p *Parser) ParseInterfaceSection() (*ast.InterfaceSection, error) {
 			return nil, err
 		}
 		res.UsesClause = usesClause
-		p.context.unitIdentifiers = append(p.context.unitIdentifiers, usesClause.IdentList().Names()...)
+		p.context.AddUnitIdentifiers(usesClause.IdentList().Names()...)
 		p.NextToken()
 	}
 
@@ -148,6 +154,8 @@ func (p *Parser) ParseImplementationSection() (*ast.ImplementationSection, error
 	}
 	p.NextToken()
 
+	defer p.StackContext()()
+
 	res := &ast.ImplementationSection{}
 	if p.CurrentToken().Is(token.ReservedWord.HasKeyword("USES")) {
 		usesClause, err := p.ParseUsesClause()
@@ -155,7 +163,7 @@ func (p *Parser) ParseImplementationSection() (*ast.ImplementationSection, error
 			return nil, err
 		}
 		res.UsesClause = usesClause
-		p.context.unitIdentifiers = append(p.context.unitIdentifiers, usesClause.IdentList().Names()...)
+		p.context.AddUnitIdentifiers(usesClause.IdentList().Names()...)
 		p.NextToken()
 	}
 
@@ -247,7 +255,7 @@ func (p *Parser) ParseQualId() (*ast.QualId, error) {
 		return ast.NewQualId(ast.NewUnitId(name1), ast.NewIdent(name2)), nil
 	} else {
 		p.NextToken()
-		d := p.context.DeclarationMap.Get(name1.RawString())
+		d := p.context.Get(name1.RawString())
 		return ast.NewQualId(nil, ast.NewIdent(name1), d), nil
 	}
 }

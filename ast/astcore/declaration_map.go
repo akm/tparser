@@ -44,3 +44,36 @@ func (m declarationMapImpl) Keys() ext.Strings {
 	}
 	return keys
 }
+
+type CompositeDeclarationMap struct {
+	maps []DeclarationMap
+}
+
+func NewCompositeDeclarationMap(maps ...DeclarationMap) *CompositeDeclarationMap {
+	return &CompositeDeclarationMap{maps: maps}
+}
+
+func (c *CompositeDeclarationMap) Get(name string) *Declaration {
+	for _, m := range c.maps {
+		if d := m.Get(name); d != nil {
+			return d
+		}
+	}
+	return nil
+}
+
+func (c *CompositeDeclarationMap) Set(d *Declaration) {
+	c.maps[0].Set(d)
+}
+
+func (c *CompositeDeclarationMap) SetDecl(decl Decl) {
+	c.maps[0].SetDecl(decl)
+}
+
+func (c *CompositeDeclarationMap) Keys() ext.Strings {
+	r := ext.Strings{}
+	for _, m := range c.maps {
+		r = append(r, m.Keys()...)
+	}
+	return r
+}

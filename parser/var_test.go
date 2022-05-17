@@ -16,6 +16,7 @@ func TestUnitWithVarSection(t *testing.T) {
 			parser.NextToken()
 			res, err := parser.ParseUnit()
 			if assert.NoError(t, err) {
+				asttest.ClearUnitDeclarationMap(res)
 				asttest.ClearLocations(t, res)
 				assert.Equal(t, expected, res)
 			}
@@ -169,6 +170,7 @@ func TestVarReferringType(t *testing.T) {
 			res, err := parser.ParseUnit()
 			if assert.NoError(t, err) {
 				asttest.ClearLocations(t, res)
+				asttest.ClearUnitDeclarationMaps(t, res)
 				assert.Equal(t, expected, res)
 			}
 		})

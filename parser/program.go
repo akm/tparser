@@ -26,7 +26,7 @@ func (p *Parser) ParseProgram() (*ast.Program, error) {
 	if _, err := p.Current(token.Symbol('.')); err != nil {
 		return nil, err
 	}
-	p.context.DeclarationMap.SetDecl(res)
+	p.context.SetDecl(res)
 	return res, nil
 }
 
