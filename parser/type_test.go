@@ -16,6 +16,7 @@ func TestUnitWithTypeSection(t *testing.T) {
 			parser.NextToken()
 			res, err := parser.ParseUnit()
 			if assert.NoError(t, err) {
+				asttest.ClearUnitDeclarationMap(res)
 				asttest.ClearLocations(t, res)
 				if !assert.Equal(t, expected, res) {
 					if !assert.Equal(t, expected.InterfaceSection.InterfaceDecls, res.InterfaceSection.InterfaceDecls) {
