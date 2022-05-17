@@ -34,17 +34,15 @@ func NewQualId(args ...interface{}) *ast.QualId {
 		switch v := args[0].(type) {
 		case *ast.UnitId:
 			unitId = v
-		case *ast.Ident:
-			unitId = ast.NewUnitId(v)
 		default:
-			unitId = (*ast.UnitId)(NewIdent(args[0]))
+			unitId = NewIdent(args[0])
 		}
 		var ident *ast.Ident
 		switch v := args[1].(type) {
 		case *ast.Ident:
-			unitId = ast.NewUnitId(v)
+			ident = v
 		default:
-			unitId = (*ast.UnitId)(NewIdent(args[0]))
+			ident = NewIdent(args[1])
 		}
 		return ast.NewQualId(unitId, ident)
 	case 3:

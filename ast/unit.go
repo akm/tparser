@@ -164,23 +164,15 @@ func (m *InitSection) Children() Nodes {
 //   ```
 //   <unit-identifier>
 //   ```
-type UnitId Ident
+type UnitId = Ident
 
 func NewUnitId(name interface{}) *UnitId {
-	r := UnitId(*NewIdentFrom(name))
-	return &r
-}
-
-func (u *UnitId) String() string {
-	if u == nil {
-		return ""
-	} else {
-		return u.Name
+	switch v := name.(type) {
+	case *UnitId:
+		return v
+	default:
+		return NewIdentFrom(name)
 	}
-}
-
-func (m *UnitId) Children() Nodes {
-	return Nodes{(*Ident)(m)}
 }
 
 // - QualId
