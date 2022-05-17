@@ -8,13 +8,20 @@ import (
 	"github.com/pkg/errors"
 )
 
-type Context struct {
+type Context interface {
+	Clone() Context
+	AddUnitIdentifiers(names ...string)
+	IsUnitIdentifier(token *token.Token) bool
+	astcore.DeclarationMap
+}
+
+type ContextImpl struct {
 	unitIdentifiers ext.Strings // TO BE REMOVED
 	Units           ast.Units
 	astcore.DeclarationMap
 }
 
-func NewContext(args ...interface{}) *Context {
+func NewContext(args ...interface{}) Context {
 	var unitIdentifiers ext.Strings
 	var units ast.Units
 	var declarationMap astcore.DeclarationMap
@@ -39,25 +46,25 @@ func NewContext(args ...interface{}) *Context {
 	if declarationMap == nil {
 		declarationMap = astcore.NewDeclarationMap()
 	}
-	return &Context{
+	return &ContextImpl{
 		unitIdentifiers: unitIdentifiers,
 		Units:           units,
 		DeclarationMap:  declarationMap,
 	}
 }
 
-func (c *Context) Clone() *Context {
-	return &Context{
+func (c *ContextImpl) Clone() Context {
+	return &ContextImpl{
 		unitIdentifiers: c.unitIdentifiers,
 		Units:           c.Units,
 		DeclarationMap:  c.DeclarationMap,
 	}
 }
 
-func (c *Context) AddUnitIdentifiers(names ...string) {
+func (c *ContextImpl) AddUnitIdentifiers(names ...string) {
 	c.unitIdentifiers = append(c.unitIdentifiers, names...)
 }
 
-func (c *Context) IsUnitIdentifier(token *token.Token) bool {
+func (c *ContextImpl) IsUnitIdentifier(token *token.Token) bool {
 	return c.unitIdentifiers.Include(token.Value()) || c.Units.ByName(token.Value()) != nil
 }

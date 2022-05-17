@@ -11,16 +11,16 @@ import (
 type Parser struct {
 	tokenizer *token.Tokenizer
 	curr      *token.Token
-	context   *Context
+	context   Context
 	logger    *log.Logger
 }
 
 func NewParser(text *[]rune, args ...interface{}) *Parser {
-	var ctx *Context
+	var ctx Context
 	var logger *log.Logger
 	for _, arg := range args {
 		switch v := arg.(type) {
-		case *Context:
+		case Context:
 			ctx = v
 		case *log.Logger:
 			logger = v
