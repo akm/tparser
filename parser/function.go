@@ -27,7 +27,7 @@ func (p *Parser) ParseProcedureDeclSection() (*ast.FunctionDecl, error) {
 		return nil, err
 	}
 	res := &ast.FunctionDecl{FunctionHeading: functionHeading}
-	p.context.DeclarationMap.SetDecl(res)
+	p.context.SetDecl(res)
 
 	p.NextToken()
 	if p.CurrentToken().Is(token.Directive) {

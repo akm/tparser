@@ -42,7 +42,7 @@ func (p *Parser) ParseConstantDecl() (*ast.ConstantDecl, error) {
 		return nil, err
 	}
 	res.Ident = ast.NewIdent(ident)
-	p.context.DeclarationMap.SetDecl(res)
+	p.context.SetDecl(res)
 
 	p.NextToken()
 	if p.CurrentToken().Is(token.Symbol(':')) {

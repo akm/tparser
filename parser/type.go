@@ -56,7 +56,7 @@ func (p *Parser) ParseTypeDecl() (*ast.TypeDecl, error) {
 		return nil, err
 	}
 	res.Type = typ
-	p.context.DeclarationMap.SetDecl(res)
+	p.context.SetDecl(res)
 
 	{
 		t := p.CurrentToken()
@@ -126,7 +126,7 @@ func (p *Parser) parseTypeIdWithoutUnit() (*ast.TypeId, error) {
 	p.NextToken()
 	r := &ast.TypeId{Ident: ident}
 
-	decl := p.context.DeclarationMap.Get(ident.Name)
+	decl := p.context.Get(ident.Name)
 	if decl == nil {
 		p.Logf("%s is not declared", ident.Name)
 	} else {

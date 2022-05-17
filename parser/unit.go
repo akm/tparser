@@ -58,7 +58,7 @@ func (p *Parser) ParseUnit() (*ast.Unit, error) {
 	}
 	res.InterfaceSection = intf
 	res.ImplementationSection = impl
-	p.context.DeclarationMap.SetDecl(res)
+	p.context.SetDecl(res)
 	return res, nil
 }
 
@@ -247,7 +247,7 @@ func (p *Parser) ParseQualId() (*ast.QualId, error) {
 		return ast.NewQualId(ast.NewUnitId(name1), ast.NewIdent(name2)), nil
 	} else {
 		p.NextToken()
-		d := p.context.DeclarationMap.Get(name1.RawString())
+		d := p.context.Get(name1.RawString())
 		return ast.NewQualId(nil, ast.NewIdent(name1), d), nil
 	}
 }

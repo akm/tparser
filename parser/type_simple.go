@@ -45,7 +45,7 @@ func (p *Parser) parseSubrangeTypeForIdentifier(required bool) (*ast.SubrangeTyp
 		if err != nil {
 			return nil, err
 		}
-		d := p.context.DeclarationMap.Get(t1.RawString())
+		d := p.context.Get(t1.RawString())
 		qualId := ast.NewQualId(nil, ast.NewIdent(t1), d)
 		return &ast.SubrangeType{
 			Low:  ast.NewConstExpr(qualId),
@@ -116,6 +116,6 @@ func (p *Parser) ParseEnumeratedTypeElement() (*ast.EnumeratedTypeElement, error
 		res.ConstExpr = expr
 	}
 
-	p.context.DeclarationMap.SetDecl(res)
+	p.context.SetDecl(res)
 	return res, nil
 }
