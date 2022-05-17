@@ -37,7 +37,7 @@ func ParseProgram(path string) (*Program, error) {
 	// 	return nil, err
 	// }
 
-	ctx := NewContext(path)
+	ctx := NewProjectContext(path)
 	p := NewParser(&runes, ctx)
 	p.NextToken()
 	res, err := p.ParseProgram()
@@ -46,7 +46,7 @@ func ParseProgram(path string) (*Program, error) {
 	}
 	return &Program{
 		Program: res,
-		Units:   p.context.GetUnits(),
+		Units:   ctx.Units,
 	}, nil
 }
 

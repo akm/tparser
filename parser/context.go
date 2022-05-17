@@ -19,7 +19,6 @@ type Context interface {
 	SetPath(path string)
 	ResolvePath(path string) string
 	AddUnit(unit *ast.Unit)
-	GetUnits() ast.Units
 	astcore.DeclarationMap
 }
 
@@ -188,8 +187,4 @@ func (c *StackableContext) SetPath(path string) {
 
 func (c *StackableContext) AddUnit(unit *ast.Unit) {
 	panic(errors.Errorf("unexpected call of AddUnit"))
-}
-
-func (c *StackableContext) GetUnits() ast.Units {
-	return c.parent.GetUnits()
 }
