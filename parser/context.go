@@ -71,11 +71,20 @@ func (c *ProjectContext) AddUnitIdentifiers(names ...string) {
 }
 
 func (c *ProjectContext) IsUnitIdentifier(token *token.Token) bool {
-	return c.unitIdentifiers.Include(token.Value()) || c.Units.ByName(token.Value()) != nil
+	s := token.Value()
+	return c.unitIdentifiers.Include(s) || isUnitDeclaration(c.DeclarationMap.Get(s)) || c.Units.ByName(s) != nil
 }
 
 func (c *ProjectContext) GetDeclarationMap() astcore.DeclarationMap {
 	return c.DeclarationMap
+}
+
+func isUnitDeclaration(decl *astcore.Declaration) bool {
+	if decl == nil {
+		return false
+	}
+	_, ok := decl.Node.(*ast.Unit)
+	return ok
 }
 
 type StackableContext struct {
