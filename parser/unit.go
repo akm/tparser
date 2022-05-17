@@ -14,6 +14,9 @@ func (p *Parser) ParseUnit() (*ast.Unit, error) {
 	if _, err := p.Current(token.ReservedWord.HasKeyword("UNIT")); err != nil {
 		return nil, err
 	}
+
+	defer p.StackContext()()
+
 	// startToken := p.curr
 	ident, err := p.Next(token.Identifier)
 	if err != nil {
@@ -37,6 +40,7 @@ func (p *Parser) ParseUnit() (*ast.Unit, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	impl, err := p.ParseImplementationSection()
 	if err != nil {
 		return nil, err
@@ -147,6 +151,8 @@ func (p *Parser) ParseImplementationSection() (*ast.ImplementationSection, error
 		return nil, err
 	}
 	p.NextToken()
+
+	defer p.StackContext()()
 
 	res := &ast.ImplementationSection{}
 	if p.CurrentToken().Is(token.ReservedWord.HasKeyword("USES")) {

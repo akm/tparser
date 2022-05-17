@@ -113,3 +113,11 @@ func (p *Parser) Until(terminator token.Predicator, separator token.Predicator, 
 func (p *Parser) Logf(format string, args ...interface{}) {
 	p.logger.Printf(format, args...)
 }
+
+func (p *Parser) StackContext() func() {
+	var backup Context
+	p.context, backup = NewStackableContext(p.context), p.context
+	return func() {
+		p.context = backup
+	}
+}
