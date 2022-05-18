@@ -31,6 +31,17 @@ func AssertIdent(t *testing.T, expected, actual *ast.Ident) {
 	}
 }
 
+func AssertIdentRef(t *testing.T, expected, actual *ast.IdentRef) {
+	if expected != nil {
+		if assert.NotNil(t, actual) {
+			AssertIdent(t, expected.Ident, actual.Ident)
+			AssertDeclaration(t, expected.Ref, actual.Ref)
+		}
+	} else {
+		assert.Nil(t, actual)
+	}
+}
+
 func AssertLocation(t *testing.T, expected, actual *astcore.Location) {
 	assert.Equal(t, expected.Path, actual.Path)
 	if !assert.Equal(t, expected.Start, actual.Start) {
