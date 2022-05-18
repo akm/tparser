@@ -13,11 +13,25 @@ func (p *Parser) IsUnitIdentifier() bool {
 // ParseUnit method is not deleted for tests.
 // Don't use this method not for test.
 func (p *Parser) ParseUnit() (*ast.Unit, error) {
+	res, err := p.ParseUnitHead()
+	if err != nil {
+		return nil, err
+	}
+	if err := p.ParseUnitBody(res); err != nil {
+		return nil, err
+	}
+	if err := p.ParseUnitTail(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func (p *Parser) ParseUnitHead() (*ast.Unit, error) {
 	if _, err := p.Current(token.ReservedWord.HasKeyword("UNIT")); err != nil {
 		return nil, err
 	}
 
-	defer p.StackContext()()
+	// defer p.StackContext()()
 
 	// startToken := p.curr
 	ident, err := p.Next(token.Identifier)
@@ -44,36 +58,42 @@ func (p *Parser) ParseUnit() (*ast.Unit, error) {
 	if err != nil {
 		return nil, err
 	}
+	res.InterfaceSection = intf
 
-	if err := p.ParseInterfaceSectionDecls(intf); err != nil {
-		return nil, err
+	return res, nil
+}
+
+func (p *Parser) ParseUnitBody(res *ast.Unit) error {
+	if err := p.ParseInterfaceSectionDecls(res.InterfaceSection); err != nil {
+		return err
 	}
-
 	res.DeclarationMap = p.context.GetDeclarationMap()
+	return nil
+}
 
+func (p *Parser) ParseUnitTail(res *ast.Unit) error {
 	impl, err := p.ParseImplementationSection()
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	if p.CurrentToken().Is(token.ReservedWord.HasKeyword("INITIALIZATION")) {
 		if initSection, err := p.ParseInitSection(); err != nil {
-			return nil, err
+			return err
 		} else if initSection != nil {
 			res.InitSection = initSection
 		}
 	}
 
 	if _, err := p.Current(token.ReservedWord.HasKeyword("END")); err != nil {
-		return nil, err
+		return err
 	}
 	if _, err := p.Next(token.Symbol('.')); err != nil {
-		return nil, err
+		return err
 	}
-	res.InterfaceSection = intf
 	res.ImplementationSection = impl
 	p.context.SetDecl(res)
-	return res, nil
+	return nil
 }
 
 func (p *Parser) ParseInterfaceSectionUses() (*ast.InterfaceSection, error) {
