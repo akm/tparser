@@ -45,8 +45,7 @@ func (p *Parser) parseSubrangeTypeForIdentifier(required bool) (*ast.SubrangeTyp
 		if err != nil {
 			return nil, err
 		}
-		d := p.context.Get(t1.RawString())
-		qualId := ast.NewQualId(nil, p.NewIdent(t1), d)
+		qualId := ast.NewQualId(nil, p.NewIdentRef(t1))
 		return &ast.SubrangeType{
 			Low:  ast.NewConstExpr(qualId),
 			High: expr,

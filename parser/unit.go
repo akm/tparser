@@ -251,19 +251,11 @@ func (p *Parser) ParseQualId() (*ast.QualId, error) {
 			return nil, err
 		}
 
-		res := ast.NewQualId(ast.NewUnitId(name1), p.NewIdent(name2))
-
-		unitDecl := p.context.Get(name1.Value())
-		if unitDecl != nil {
-			if unit, ok := unitDecl.Node.(*ast.Unit); ok {
-				res.Ref = unit.DeclarationMap.Get(name2.Value())
-			}
-		}
+		res := ast.NewQualId(p.NewIdentRef(name1), p.NewIdentRef(name2))
 		p.NextToken()
 		return res, nil
 	} else {
 		p.NextToken()
-		d := p.context.Get(name1.RawString())
-		return ast.NewQualId(nil, p.NewIdent(name1), d), nil
+		return ast.NewQualId(nil, p.NewIdentRef(name1)), nil
 	}
 }
