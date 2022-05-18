@@ -164,23 +164,15 @@ func (m *InitSection) Children() Nodes {
 //   ```
 //   <unit-identifier>
 //   ```
-type UnitId Ident
+type UnitId = Ident
 
 func NewUnitId(name interface{}) *UnitId {
-	r := UnitId(*NewIdentFrom(name))
-	return &r
-}
-
-func (u *UnitId) String() string {
-	if u == nil {
-		return ""
-	} else {
-		return u.Name
+	switch v := name.(type) {
+	case *UnitId:
+		return v
+	default:
+		return NewIdentFrom(name)
 	}
-}
-
-func (m *UnitId) Children() Nodes {
-	return Nodes{(*Ident)(m)}
 }
 
 // - QualId
@@ -188,17 +180,12 @@ func (m *UnitId) Children() Nodes {
 //   [UnitId '.'] Ident
 //   ```
 type QualId struct {
-	UnitId *UnitId
-	Ident  *Ident
-	Ref    *astcore.Declaration // Actual Type object
+	UnitId *IdentRef
+	Ident  *IdentRef
 }
 
-func NewQualId(unitId *UnitId, ident *Ident, refs ...*astcore.Declaration) *QualId {
-	r := &QualId{UnitId: unitId, Ident: ident}
-	if len(refs) > 0 {
-		r.Ref = refs[0]
-	}
-	return r
+func NewQualId(unitId *IdentRef, ident *IdentRef) *QualId {
+	return &QualId{UnitId: unitId, Ident: ident}
 }
 
 func (m *QualId) Children() Nodes {

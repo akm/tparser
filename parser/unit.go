@@ -23,7 +23,7 @@ func (p *Parser) ParseUnit() (*ast.Unit, error) {
 		return nil, err
 	}
 	res := &ast.Unit{
-		Ident: ast.NewIdent(ident),
+		Ident: p.NewIdent(ident),
 	}
 
 	t := p.NextToken()
@@ -250,12 +250,25 @@ func (p *Parser) ParseQualId() (*ast.QualId, error) {
 		if err != nil {
 			return nil, err
 		}
-		// TODO find Declaration from Unit in context
+		unitDecl := p.context.Get(name1.Value())
+		if unitDecl == nil {
+			return nil, errors.Errorf("undefined unit %s", name1.Value())
+		}
+		if !isUnitDeclaration(unitDecl) {
+			return nil, errors.Errorf("%s is not a unit", name1.Value())
+		}
+		unit := unitDecl.Node.(*ast.Unit)
+		decl := unit.DeclarationMap.Get(name2.Value())
+		if decl == nil {
+			return nil, errors.Errorf("undefined identifier %s in unit %s", name2.Value(), name1.Value())
+		}
 		p.NextToken()
-		return ast.NewQualId(ast.NewUnitId(name1), ast.NewIdent(name2)), nil
+		return &ast.QualId{
+			UnitId: &ast.IdentRef{Ident: ast.NewIdent(name1), Ref: unitDecl},
+			Ident:  &ast.IdentRef{Ident: ast.NewIdent(name2), Ref: decl},
+		}, nil
 	} else {
 		p.NextToken()
-		d := p.context.Get(name1.RawString())
-		return ast.NewQualId(nil, ast.NewIdent(name1), d), nil
+		return ast.NewQualId(nil, p.NewIdentRef(name1)), nil
 	}
 }

@@ -137,7 +137,7 @@ func (p *Parser) ParseExceptionBlockHandler() (*ast.ExceptionBlockHandler, error
 	}
 	decl := &ast.ExceptionBlockHandlerDecl{}
 	if hasIdent {
-		decl.Ident = ast.NewIdent(t)
+		decl.Ident = p.NewIdent(t)
 		if _, err := p.Next(token.Symbol(':')); err != nil {
 			return nil, err
 		}

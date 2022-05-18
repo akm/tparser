@@ -26,6 +26,26 @@ func NewIdent(arg interface{}, locations ...*ast.Location) *ast.Ident {
 	return r
 }
 
+func NewIdentRef(arg interface{}, args ...interface{}) *ast.IdentRef {
+	var location *ast.Location
+	var declaration *astcore.Declaration
+	for _, i := range args {
+		switch v := i.(type) {
+		case *ast.Location:
+			location = v
+		case *astcore.Declaration:
+			declaration = v
+		}
+	}
+	var ident *ast.Ident
+	if location != nil {
+		ident = NewIdent(arg, location)
+	} else {
+		ident = NewIdent(arg)
+	}
+	return ast.NewIdentRef(ident, declaration)
+}
+
 func NewIdentList(args ...interface{}) ast.IdentList {
 	switch len(args) {
 	case 0:

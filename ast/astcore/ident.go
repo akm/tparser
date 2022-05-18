@@ -52,6 +52,14 @@ func (m *Ident) Children() Nodes {
 	return Nodes{}
 }
 
+func (m *Ident) String() string {
+	if m == nil {
+		return ""
+	} else {
+		return m.Name
+	}
+}
+
 // - IdentList
 //   ```
 //   Ident ','...

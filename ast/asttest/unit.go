@@ -23,38 +23,42 @@ func NewQualId(args ...interface{}) *ast.QualId {
 	case 0:
 		panic(errors.Errorf("unexpected empty args for NewQualId"))
 	case 1:
-		return ast.NewQualId(nil, NewIdent(args[0]))
+		switch v := args[0].(type) {
+		case *ast.IdentRef:
+			return ast.NewQualId(nil, v)
+		case *ast.Ident:
+			return NewQualId(ast.NewIdentRef(v, nil))
+		default:
+			return NewQualId(NewIdent(args[0]))
+		}
 	case 2:
 		if declaration, ok := args[1].(*astcore.Declaration); ok {
-			r := NewQualId(args[0])
-			r.Ref = declaration
-			return r
+			ident := NewIdent(args[0])
+			return ast.NewQualId(nil, ast.NewIdentRef(ident, declaration))
 		}
-		var unitId *ast.UnitId
+		var unitId *ast.IdentRef
 		switch v := args[0].(type) {
-		case *ast.UnitId:
+		case *ast.IdentRef:
 			unitId = v
-		case *ast.Ident:
-			unitId = ast.NewUnitId(v)
 		default:
-			unitId = (*ast.UnitId)(NewIdent(args[0]))
+			unitId = ast.NewIdentRef(NewIdent(args[0]), nil)
 		}
-		var ident *ast.Ident
+		var ident *ast.IdentRef
 		switch v := args[1].(type) {
-		case *ast.Ident:
-			unitId = ast.NewUnitId(v)
+		case *ast.IdentRef:
+			ident = v
 		default:
-			unitId = (*ast.UnitId)(NewIdent(args[0]))
+			ident = ast.NewIdentRef(NewIdent(args[1]), nil)
 		}
 		return ast.NewQualId(unitId, ident)
-	case 3:
-		declaration, ok := args[2].(*astcore.Declaration)
-		if !ok {
-			panic(errors.Errorf("unexpected type of args[2] for NewQualId %+v", args))
-		}
-		r := NewQualId(args[0], args[1])
-		r.Ref = declaration
-		return r
+	// case 3:
+	// 	declaration, ok := args[2].(*astcore.Declaration)
+	// 	if !ok {
+	// 		panic(errors.Errorf("unexpected type of args[2] for NewQualId %+v", args))
+	// 	}
+	// 	r := NewQualId(args[0], args[1])
+	// 	r.Ref = declaration
+	// 	return r
 	default:
 		panic(errors.Errorf("unexpected args for NewQualId: %+v", args))
 	}

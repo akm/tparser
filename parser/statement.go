@@ -55,7 +55,7 @@ func (p *Parser) ParseStatement() (*ast.Statement, error) {
 	labelDecl := p.context.Get(labelId.Value())
 	if labelDecl != nil {
 		if _, ok := labelDecl.Node.(*ast.LabelDeclSection); ok {
-			res.LabelId = ast.NewLabelId(ast.NewIdent(labelId))
+			res.LabelId = ast.NewLabelId(p.NewIdent(labelId))
 			if _, err := p.Next(token.Symbol(':')); err != nil {
 				return nil, err
 			}
@@ -214,7 +214,7 @@ func (p *Parser) ParseGotoStatement() (*ast.GotoStatement, error) {
 	d := p.context.Get(t.Value())
 	p.NextToken()
 	return &ast.GotoStatement{
-		LabelId: ast.NewLabelId(ast.NewIdent(t)),
+		LabelId: ast.NewLabelId(p.NewIdent(t)),
 		Ref:     d,
 	}, nil
 }

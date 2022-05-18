@@ -23,6 +23,10 @@ type ProjectContext struct {
 }
 
 func NewContext(args ...interface{}) Context {
+	return NewProjectContext(args...)
+}
+
+func NewProjectContext(args ...interface{}) *ProjectContext {
 	var unitIdentifiers ext.Strings
 	var units ast.Units
 	var declarationMap astcore.DeclarationMap
@@ -67,11 +71,20 @@ func (c *ProjectContext) AddUnitIdentifiers(names ...string) {
 }
 
 func (c *ProjectContext) IsUnitIdentifier(token *token.Token) bool {
-	return c.unitIdentifiers.Include(token.Value()) || c.Units.ByName(token.Value()) != nil
+	s := token.Value()
+	return c.unitIdentifiers.Include(s) || isUnitDeclaration(c.DeclarationMap.Get(s)) || c.Units.ByName(s) != nil
 }
 
 func (c *ProjectContext) GetDeclarationMap() astcore.DeclarationMap {
 	return c.DeclarationMap
+}
+
+func isUnitDeclaration(decl *astcore.Declaration) bool {
+	if decl == nil {
+		return false
+	}
+	_, ok := decl.Node.(*ast.Unit)
+	return ok
 }
 
 type StackableContext struct {

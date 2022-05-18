@@ -306,9 +306,9 @@ func NewDesignator(arg interface{}) *Designator {
 	case *QualId:
 		return &Designator{QualId: v}
 	case Ident:
-		return &Designator{QualId: NewQualId(nil, &v)}
+		return &Designator{QualId: NewQualId(nil, NewIdentRef(&v, nil))}
 	case *Ident:
-		return &Designator{QualId: NewQualId(nil, v)}
+		return &Designator{QualId: NewQualId(nil, NewIdentRef(v, nil))}
 	case token.Token:
 		return NewDesignator(NewIdent(&v))
 	case *token.Token:
@@ -343,7 +343,7 @@ type DesignatorItem interface {
 
 type DesignatorItemIdent struct {
 	*Ident
-	Node
+	DesignatorItem
 }
 
 func NewDesignatorItemIdent(arg interface{}) *DesignatorItemIdent {
@@ -493,8 +493,8 @@ func (m *SetElement) Children() Nodes {
 type TypeCast struct {
 	Factor
 	TypeId     *TypeId
-	Expression Expression
+	Expression *Expression
 }
 
 func (*TypeCast) isFactor()         {}
-func (m *TypeCast) Children() Nodes { return Nodes{m.TypeId, &m.Expression} }
+func (m *TypeCast) Children() Nodes { return Nodes{m.TypeId, m.Expression} }

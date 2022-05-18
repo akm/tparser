@@ -128,7 +128,7 @@ func (p *Parser) ParseExportsStmt(required bool) (*ast.ExportsStmt, error) {
 		if err != nil {
 			return err
 		}
-		item := &ast.ExportsItem{Ident: ast.NewIdent(t)}
+		item := &ast.ExportsItem{Ident: p.NewIdent(t)}
 		t2 := p.NextToken()
 		if t2.Is(token.Directives("NAME")) {
 			p.NextToken()
@@ -167,7 +167,7 @@ func (p *Parser) ParseLabelDeclSection() (*ast.LabelDeclSection, error) {
 		return nil, err
 	}
 	p.NextToken()
-	r := &ast.LabelDeclSection{LabelId: ast.NewLabelId(ast.NewIdent(t))}
+	r := &ast.LabelDeclSection{LabelId: ast.NewLabelId(p.NewIdent(t))}
 	p.context.SetDecl(r)
 	return r, nil
 }
