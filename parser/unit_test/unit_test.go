@@ -212,7 +212,7 @@ func TestInterfaceSection(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			parser := parser.NewParser(&text)
 			parser.NextToken()
-			res, err := parser.ParseInterfaceSection()
+			res, err := parser.ParseInterfaceSectionUses()
 			if assert.NoError(t, err) {
 				assert.Equal(t, expected, res)
 			}
