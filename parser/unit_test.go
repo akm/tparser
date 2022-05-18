@@ -55,12 +55,14 @@ end;`),
 					Body: &ast.CallStatement{
 						Designator: asttest.NewDesignator(
 							&ast.QualId{
-								UnitId: &ast.UnitId{
-									Name:     unitFoo.Ident.Name,
-									Location: asttest.NewIdentLocation(2, 3, 8, 6),
+								UnitId: &ast.IdentRef{
+									Ident: asttest.NewIdent(unitFoo.Ident.Name, asttest.NewIdentLocation(2, 3, 8, 6)),
+									Ref:   unitFoo.ToDeclarations()[0],
 								},
-								Ident: asttest.NewIdent("Bar", asttest.NewIdentLocation(2, 7, 12, 10)),
-								Ref:   procBar.ToDeclarations()[0],
+								Ident: &ast.IdentRef{
+									Ident: asttest.NewIdent("Bar", asttest.NewIdentLocation(2, 7, 12, 10)),
+									Ref:   procBar.ToDeclarations()[0],
+								},
 							},
 						),
 					},
