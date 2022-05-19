@@ -50,31 +50,6 @@ func ParseProgram(path string) (*Program, error) {
 	}, nil
 }
 
-func ParseUnit(path string) (*ast.Unit, error) {
-	fp, err := os.Open(path)
-	if err != nil {
-		panic(err)
-	}
-	defer fp.Close()
-
-	decoder := japanese.ShiftJIS.NewDecoder()
-	str, err := ioutil.ReadAll(transform.NewReader(fp, decoder))
-	if err != nil {
-		return nil, err
-	}
-
-	runes := []rune(string(str))
-
-	ctx := NewContext(path)
-	p := NewParser(&runes, ctx)
-	p.NextToken()
-	res, err := p.ParseUnit()
-	if err != nil {
-		return nil, err
-	}
-	return res, nil
-}
-
 type Parser struct {
 	tokenizer *token.Tokenizer
 	curr      *token.Token
