@@ -22,6 +22,7 @@ type Context interface {
 	astcore.DeclarationMap
 }
 
+// ProjectContext
 type ProjectContext struct {
 	Path            string
 	unitIdentifiers ext.Strings // TO BE REMOVED
@@ -49,7 +50,7 @@ func NewProjectContext(args ...interface{}) *ProjectContext {
 		case astcore.DeclarationMap:
 			declarationMap = v
 		default:
-			panic(errors.Errorf("unexpected type %T (%v) is given for NewContext", arg, arg))
+			panic(errors.Errorf("unexpected type %T (%v) is given for NewProjectContext", arg, arg))
 		}
 	}
 	if unitIdentifiers == nil {
@@ -71,6 +72,7 @@ func NewProjectContext(args ...interface{}) *ProjectContext {
 
 func (c *ProjectContext) Clone() Context {
 	return &ProjectContext{
+		Path:            c.Path,
 		unitIdentifiers: c.unitIdentifiers,
 		Units:           c.Units,
 		DeclarationMap:  c.DeclarationMap,
@@ -118,6 +120,87 @@ func (c *ProjectContext) GetUnits() ast.Units {
 	return c.Units
 }
 
+// UnitContext
+
+type UnitContext struct {
+	Parent          *ProjectContext
+	Path            string
+	unitIdentifiers ext.Strings // TO BE REMOVED
+	astcore.DeclarationMap
+}
+
+func NewUnitContext(parent *ProjectContext, args ...interface{}) *UnitContext {
+	var path string
+	var unitIdentifiers ext.Strings
+	var declarationMap astcore.DeclarationMap
+	for _, arg := range args {
+		switch v := arg.(type) {
+		case string:
+			path = v
+		case ext.Strings:
+			unitIdentifiers = v
+		case astcore.DeclarationMap:
+			declarationMap = v
+		default:
+			panic(errors.Errorf("unexpected type %T (%v) is given for NewUnitContext", arg, arg))
+		}
+	}
+	if unitIdentifiers == nil {
+		unitIdentifiers = ext.Strings{}
+	}
+	if declarationMap == nil {
+		declarationMap = astcore.NewDeclarationMap()
+	}
+	return &UnitContext{
+		Parent:          parent,
+		Path:            path,
+		unitIdentifiers: unitIdentifiers,
+		DeclarationMap:  declarationMap,
+	}
+}
+
+func (c *UnitContext) Clone() Context {
+	return &UnitContext{
+		Parent:          c.Parent,
+		Path:            c.Path,
+		unitIdentifiers: c.unitIdentifiers,
+		DeclarationMap:  c.DeclarationMap,
+	}
+}
+func (c *UnitContext) AddUnitIdentifiers(names ...string) {
+	c.unitIdentifiers = append(c.unitIdentifiers, names...)
+}
+
+func (c *UnitContext) IsUnitIdentifier(token *token.Token) bool {
+	s := token.Value()
+	return c.unitIdentifiers.Include(s) || isUnitDeclaration(c.DeclarationMap.Get(s))
+}
+
+func (c *UnitContext) GetDeclarationMap() astcore.DeclarationMap {
+	return c.DeclarationMap
+}
+
+func (c *UnitContext) GetPath() string {
+	return c.Path
+}
+
+func (c *UnitContext) SetPath(path string) {
+	c.Path = path
+}
+
+func (c *UnitContext) ResolvePath(path string) string {
+	dir := filepath.Dir(c.GetPath())
+	return filepath.Join(dir, path)
+}
+
+func (c *UnitContext) AddUnit(unit *ast.Unit) {
+	panic(errors.Errorf("not implemented"))
+}
+func (c *UnitContext) GetUnits() ast.Units {
+	panic(errors.Errorf("not implemented"))
+}
+
+// StackableContext
 type StackableContext struct {
 	path            *string
 	parent          Context
