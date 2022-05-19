@@ -10,12 +10,28 @@ func (p *Parser) IsUnitIdentifier() bool {
 	return p.context.IsUnitIdentifier(p.CurrentToken())
 }
 
+// ParseUnit method is not deleted for tests.
+// Don't use this method not for test.
 func (p *Parser) ParseUnit() (*ast.Unit, error) {
+	res, err := p.ParseUnitHead()
+	if err != nil {
+		return nil, err
+	}
+	if err := p.ParseUnitBody(res); err != nil {
+		return nil, err
+	}
+	if err := p.ParseUnitTail(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func (p *Parser) ParseUnitHead() (*ast.Unit, error) {
 	if _, err := p.Current(token.ReservedWord.HasKeyword("UNIT")); err != nil {
 		return nil, err
 	}
 
-	defer p.StackContext()()
+	// defer p.StackContext()()
 
 	// startToken := p.curr
 	ident, err := p.Next(token.Identifier)
@@ -23,6 +39,7 @@ func (p *Parser) ParseUnit() (*ast.Unit, error) {
 		return nil, err
 	}
 	res := &ast.Unit{
+		Path:  p.context.GetPath(),
 		Ident: p.NewIdent(ident),
 	}
 
@@ -36,39 +53,50 @@ func (p *Parser) ParseUnit() (*ast.Unit, error) {
 		return nil, err
 	}
 	p.NextToken()
-	intf, err := p.ParseInterfaceSection()
+
+	intf, err := p.ParseInterfaceSectionUses()
 	if err != nil {
 		return nil, err
 	}
+	res.InterfaceSection = intf
 
+	return res, nil
+}
+
+func (p *Parser) ParseUnitBody(res *ast.Unit) error {
+	if err := p.ParseInterfaceSectionDecls(res.InterfaceSection); err != nil {
+		return err
+	}
 	res.DeclarationMap = p.context.GetDeclarationMap()
+	return nil
+}
 
+func (p *Parser) ParseUnitTail(res *ast.Unit) error {
 	impl, err := p.ParseImplementationSection()
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	if p.CurrentToken().Is(token.ReservedWord.HasKeyword("INITIALIZATION")) {
 		if initSection, err := p.ParseInitSection(); err != nil {
-			return nil, err
+			return err
 		} else if initSection != nil {
 			res.InitSection = initSection
 		}
 	}
 
 	if _, err := p.Current(token.ReservedWord.HasKeyword("END")); err != nil {
-		return nil, err
+		return err
 	}
 	if _, err := p.Next(token.Symbol('.')); err != nil {
-		return nil, err
+		return err
 	}
-	res.InterfaceSection = intf
 	res.ImplementationSection = impl
 	p.context.SetDecl(res)
-	return res, nil
+	return nil
 }
 
-func (p *Parser) ParseInterfaceSection() (*ast.InterfaceSection, error) {
+func (p *Parser) ParseInterfaceSectionUses() (*ast.InterfaceSection, error) {
 	if _, err := p.Current(token.ReservedWord.HasKeyword("INTERFACE")); err != nil {
 		return nil, err
 	}
@@ -83,7 +111,10 @@ func (p *Parser) ParseInterfaceSection() (*ast.InterfaceSection, error) {
 		p.context.AddUnitIdentifiers(usesClause.IdentList().Names()...)
 		p.NextToken()
 	}
+	return res, nil
+}
 
+func (p *Parser) ParseInterfaceSectionDecls(res *ast.InterfaceSection) error {
 	res.InterfaceDecls = []ast.InterfaceDecl{}
 	defer func() {
 		if len(res.InterfaceDecls) == 0 {
@@ -94,58 +125,58 @@ func (p *Parser) ParseInterfaceSection() (*ast.InterfaceSection, error) {
 	for {
 		t := p.CurrentToken()
 		if t.Is(token.EOF) {
-			return res, nil
+			return nil
 		}
 		if !t.Is(token.ReservedWord) {
-			return nil, errors.Errorf("expects reserved word but got %s", t.String())
+			return errors.Errorf("expects reserved word but got %s", t.String())
 		}
 		switch t.Value() {
 		case "TYPE":
 			section, err := p.ParseTypeSection(true)
 			if err != nil {
-				return nil, err
+				return err
 			}
 			res.InterfaceDecls = append(res.InterfaceDecls, section)
 			continue
 		case "VAR":
 			section, err := p.ParseVarSection(true)
 			if err != nil {
-				return nil, err
+				return err
 			}
 			res.InterfaceDecls = append(res.InterfaceDecls, section)
 			continue
 		case "THREADVAR":
 			section, err := p.ParseThreadVarSection(true)
 			if err != nil {
-				return nil, err
+				return err
 			}
 			res.InterfaceDecls = append(res.InterfaceDecls, section)
 			continue
 		case "CONST":
 			section, err := p.ParseConstSection(true)
 			if err != nil {
-				return nil, err
+				return err
 			}
 			res.InterfaceDecls = append(res.InterfaceDecls, section)
 			continue
 		case "FUNCTION":
 			section, err := p.ParseExportedHeading()
 			if err != nil {
-				return nil, err
+				return err
 			}
 			res.InterfaceDecls = append(res.InterfaceDecls, section)
 			continue
 		case "PROCEDURE":
 			section, err := p.ParseExportedHeading()
 			if err != nil {
-				return nil, err
+				return err
 			}
 			res.InterfaceDecls = append(res.InterfaceDecls, section)
 			continue
 		}
 		break
 	}
-	return res, nil
+	return nil
 }
 
 func (p *Parser) ParseImplementationSection() (*ast.ImplementationSection, error) {

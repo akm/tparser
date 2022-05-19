@@ -1,12 +1,54 @@
 package parser
 
 import (
+	"io/ioutil"
 	"log"
 	"os"
 
+	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/token"
 	"github.com/pkg/errors"
+	"golang.org/x/text/encoding/japanese"
+	"golang.org/x/text/transform"
 )
+
+type Program struct {
+	*ast.Program
+	Units ast.Units
+}
+
+func ParseProgram(path string) (*Program, error) {
+	fp, err := os.Open(path)
+	if err != nil {
+		panic(err)
+	}
+	defer fp.Close()
+
+	decoder := japanese.ShiftJIS.NewDecoder()
+	str, err := ioutil.ReadAll(transform.NewReader(fp, decoder))
+	if err != nil {
+		return nil, err
+	}
+
+	runes := []rune(string(str))
+
+	// absPath, err := filepath.Abs(path)
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	ctx := NewProjectContext(path)
+	p := NewParser(&runes, ctx)
+	p.NextToken()
+	res, err := p.ParseProgram()
+	if err != nil {
+		return nil, err
+	}
+	return &Program{
+		Program: res,
+		Units:   ctx.Units,
+	}, nil
+}
 
 type Parser struct {
 	tokenizer *token.Tokenizer
@@ -82,7 +124,7 @@ func (p *Parser) Validate(token *token.Token, predicates ...token.Predicator) er
 	}
 	for _, pred := range predicates {
 		if !pred.Predicate(token) {
-			return errors.Errorf("expects %s but was %s", pred.Name(), token.String())
+			return errors.Errorf("expects %s but was %s in %q", pred.Name(), token.String(), p.context.GetPath())
 		}
 	}
 	return nil
