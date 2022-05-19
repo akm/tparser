@@ -138,3 +138,11 @@ func (m UnitLoaders) Sort() (UnitLoaders, error) {
 	}
 	return r, nil
 }
+
+func (m UnitLoaders) DeclarationMaps() []astcore.DeclarationMap {
+	r := make([]astcore.DeclarationMap, len(m))
+	for i, loader := range m {
+		r[i] = loader.Unit.DeclarationMap
+	}
+	return r
+}
