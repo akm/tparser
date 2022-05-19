@@ -2,6 +2,7 @@ package parser
 
 import (
 	"github.com/akm/tparser/ast"
+	"github.com/akm/tparser/ast/astcore"
 	"github.com/akm/tparser/token"
 	"github.com/pkg/errors"
 )
@@ -90,6 +91,10 @@ func (p *Parser) LoadUnits(ctx *ProjectContext, uses ast.UsesClause) error {
 			return err
 		}
 	}
+
+	declMaps := []astcore.DeclarationMap{ctx.DeclarationMap}
+	declMaps = append(declMaps, loaders.DeclarationMaps()...)
+	ctx.DeclarationMap = astcore.NewCompositeDeclarationMap(declMaps...)
 
 	for _, loader := range sortedLoaders {
 		if err := loader.LoadTail(); err != nil {
