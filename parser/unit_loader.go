@@ -52,7 +52,7 @@ func (m *UnitLoader) ProcessIdentAndIntfUses() error {
 	}
 }
 
-func (m *UnitLoader) LoadBody() error {
+func (m *UnitLoader) ProcessIntfBody() error {
 	units := ast.Units{}
 	parentUnits := m.ctx.Parent.Units
 	for _, unitRef := range m.Unit.InterfaceSection.UsesClause {

@@ -87,7 +87,7 @@ func (p *Parser) LoadUnits(ctx *ProjectContext, uses ast.UsesClause) error {
 	}
 
 	for _, loader := range sortedLoaders {
-		if err := loader.LoadBody(); err != nil {
+		if err := loader.ProcessIntfBody(); err != nil {
 			return err
 		}
 	}
