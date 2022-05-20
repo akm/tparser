@@ -63,6 +63,14 @@ func AssertDeclaration(t *testing.T, expected, actual *astcore.Declaration) {
 				AssertIdent(t, expected.Ident, actual.Ident)
 			}
 			if !assert.Equal(t, expected.Node, actual.Node) {
+				t.Errorf("expected: %s at %+v (%T), actual: %s at %+v (%T)",
+					expected.Ident.Name,
+					expected.Ident.Location,
+					expected.Node,
+					actual.Ident.Name,
+					actual.Ident.Location,
+					actual.Node,
+				)
 				// TODO? implement AssertNode if necessary
 				// AssertNode(t, expected.Node, actual.Node)
 			}
