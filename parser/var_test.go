@@ -121,13 +121,13 @@ func TestVarSectionl(t *testing.T) {
 		`),
 		ast.VarSection{
 			&ast.VarDecl{
-				IdentList: asttest.NewIdentList(asttest.NewIdent("Str", asttest.NewIdentLocation(2, 4, 6, 7))),
+				IdentList: asttest.NewIdentList(asttest.NewIdent("Str", asttest.NewIdentLocation(2, 3, 6, 6))),
 				Type:      asttest.NewStringType("STRING", asttest.NewConstExpr(asttest.NewNumber("32"))),
 			},
 			&ast.VarDecl{
-				IdentList: asttest.NewIdentList(asttest.NewIdent("StrLen", asttest.NewIdentLocation(3, 4, 25, 10))),
-				Type:      &ast.OrdIdent{Ident: asttest.NewIdent("Byte", asttest.NewIdentLocation(3, 12, 33, 16))},
-				Absolute:  asttest.NewVarDeclAbsoluteIdent(asttest.NewIdent("Str", asttest.NewIdentLocation(3, 26, 47, 29))),
+				IdentList: asttest.NewIdentList(asttest.NewIdent("StrLen", asttest.NewIdentLocation(3, 3, 25, 9))),
+				Type:      &ast.OrdIdent{Ident: asttest.NewIdent("Byte", asttest.NewIdentLocation(3, 11, 33, 15))},
+				Absolute:  asttest.NewVarDeclAbsoluteIdent(asttest.NewIdent("Str", asttest.NewIdentLocation(3, 25, 47, 28))),
 			},
 		},
 	)
@@ -152,11 +152,11 @@ func TestVarSectionl(t *testing.T) {
 		`),
 		ast.VarSection{
 			{
-				IdentList: asttest.NewIdentList(asttest.NewIdent("Digit", asttest.NewIdentLocation(2, 5, 10, 10))),
+				IdentList: asttest.NewIdentList(asttest.NewIdent("Digit", asttest.NewIdentLocation(2, 4, 10, 9))),
 				Type:      &ast.SubrangeType{Low: asttest.NewConstExpr(asttest.NewNumber("0")), High: asttest.NewConstExpr(asttest.NewNumber("9"))}},
 			{
-				IdentList: asttest.NewIdentList(asttest.NewIdent("Okay", asttest.NewIdentLocation(3, 5, 26, 9))),
-				Type:      &ast.OrdIdent{Ident: asttest.NewIdent("Boolean", asttest.NewIdentLocation(3, 11, 32, 18))},
+				IdentList: asttest.NewIdentList(asttest.NewIdent("Okay", asttest.NewIdentLocation(3, 4, 26, 8))),
+				Type:      &ast.OrdIdent{Ident: asttest.NewIdent("Boolean", asttest.NewIdentLocation(3, 10, 32, 17))},
 			},
 		},
 	)

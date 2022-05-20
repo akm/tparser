@@ -19,15 +19,7 @@ func TestUnit(t *testing.T) {
 			if assert.NoError(t, err) {
 				asttest.ClearUnitDeclarationMap(res)
 				if !assert.Equal(t, expected, res) {
-					if !assert.Equal(t, expected.ImplementationSection, res.ImplementationSection) {
-						if !assert.Equal(t, expected.ImplementationSection.DeclSections, res.ImplementationSection.DeclSections) {
-							if !assert.Equal(t, expected.ImplementationSection.DeclSections[0], res.ImplementationSection.DeclSections[0]) {
-								ef := expected.ImplementationSection.DeclSections[0].(*ast.FunctionDecl)
-								af := res.ImplementationSection.DeclSections[0].(*ast.FunctionDecl)
-								assert.Equal(t, ef.Block, af.Block)
-							}
-						}
-					}
+					asttest.AssertUnit(t, expected, res)
 				}
 			}
 		})
@@ -67,7 +59,7 @@ end.`),
 					&ast.ExportedHeading{
 						FunctionHeading: &ast.FunctionHeading{
 							Type:  ast.FtProcedure,
-							Ident: asttest.NewIdent("CountUp", asttest.NewIdentLocation(3, 12, 29, 19)),
+							Ident: asttest.NewIdent("CountUp", asttest.NewIdentLocation(3, 11, 29, 18)),
 						},
 					},
 				},
@@ -75,9 +67,9 @@ end.`),
 			ImplementationSection: func() *ast.ImplementationSection {
 				declCnt := &ast.VarDecl{
 					IdentList: asttest.NewIdentList(
-						asttest.NewIdent("cnt", asttest.NewIdentLocation(6, 6, 58, 9)),
+						asttest.NewIdent("cnt", asttest.NewIdentLocation(6, 5, 58, 8)),
 					),
-					Type: asttest.NewOrdIdent(asttest.NewIdent("integer", asttest.NewIdentLocation(6, 11, 63, 18))),
+					Type: asttest.NewOrdIdent(asttest.NewIdent("integer", asttest.NewIdentLocation(6, 10, 63, 17))),
 				}
 				return &ast.ImplementationSection{
 					DeclSections: ast.DeclSections{
@@ -85,7 +77,7 @@ end.`),
 						&ast.FunctionDecl{
 							FunctionHeading: &ast.FunctionHeading{
 								Type:  ast.FtProcedure,
-								Ident: asttest.NewIdent("CountUp", asttest.NewIdentLocation(7, 12, 82, 19)),
+								Ident: asttest.NewIdent("CountUp", asttest.NewIdentLocation(7, 11, 82, 18)),
 							},
 							Block: &ast.Block{
 								Body: &ast.CompoundStmt{
@@ -94,7 +86,7 @@ end.`),
 											Body: &ast.AssignStatement{
 												Designator: asttest.NewDesignator(
 													asttest.NewQualId(
-														asttest.NewIdent("cnt", asttest.NewIdentLocation(9, 4, 99, 7)),
+														asttest.NewIdent("cnt", asttest.NewIdentLocation(9, 3, 99, 6)),
 														astcore.NewDeclaration(declCnt.IdentList[0], declCnt),
 													),
 												),
@@ -102,7 +94,7 @@ end.`),
 													&ast.SimpleExpression{
 														Term: &ast.Term{Factor: asttest.NewDesignatorFactor(
 															asttest.NewQualId(
-																asttest.NewIdent("cnt", asttest.NewIdentLocation(9, 11, 106, 14)),
+																asttest.NewIdent("cnt", asttest.NewIdentLocation(9, 10, 106, 13)),
 																astcore.NewDeclaration(declCnt.IdentList[0], declCnt),
 															),
 														)},
@@ -149,7 +141,7 @@ end.`),
 					&ast.ExportedHeading{
 						FunctionHeading: &ast.FunctionHeading{
 							Type:  ast.FtProcedure,
-							Ident: asttest.NewIdent("Process", asttest.NewIdentLocation(3, 12, 29, 19)),
+							Ident: asttest.NewIdent("Process", asttest.NewIdentLocation(3, 11, 29, 18)),
 						},
 					},
 				},
@@ -157,13 +149,13 @@ end.`),
 			ImplementationSection: func() *ast.ImplementationSection {
 				return &ast.ImplementationSection{
 					UsesClause: ast.UsesClause{
-						{Ident: asttest.NewIdent("networks", asttest.NewIdentLocation(5, 7, 58, 15))},
+						{Ident: asttest.NewIdent("networks", asttest.NewIdentLocation(5, 6, 58, 14))},
 					},
 					DeclSections: ast.DeclSections{
 						&ast.FunctionDecl{
 							FunctionHeading: &ast.FunctionHeading{
 								Type:  ast.FtProcedure,
-								Ident: asttest.NewIdent("Process", asttest.NewIdentLocation(6, 12, 78, 19)),
+								Ident: asttest.NewIdent("Process", asttest.NewIdentLocation(6, 11, 78, 18)),
 							},
 							Block: &ast.Block{
 								Body: &ast.CompoundStmt{
@@ -171,7 +163,7 @@ end.`),
 										{
 											Body: &ast.CallStatement{
 												Designator: asttest.NewDesignator(
-													asttest.NewQualId(asttest.NewIdent("Ping", asttest.NewIdentLocation(8, 4, 95, 8))),
+													asttest.NewQualId(asttest.NewIdent("Ping", asttest.NewIdentLocation(8, 3, 95, 7))),
 												),
 											},
 										},
@@ -187,7 +179,7 @@ end.`),
 					{
 						Body: &ast.CallStatement{
 							Designator: asttest.NewDesignator(
-								asttest.NewQualId(asttest.NewIdent("SetupNetwork", asttest.NewIdentLocation(12, 2, 122, 14))),
+								asttest.NewQualId(asttest.NewIdent("SetupNetwork", asttest.NewIdentLocation(12, 1, 122, 13))),
 							),
 						},
 					},
@@ -196,7 +188,7 @@ end.`),
 					{
 						Body: &ast.CallStatement{
 							Designator: asttest.NewDesignator(
-								asttest.NewQualId(asttest.NewIdent("TeardownNetwork", asttest.NewIdentLocation(15, 2, 150, 17))),
+								asttest.NewQualId(asttest.NewIdent("TeardownNetwork", asttest.NewIdentLocation(15, 1, 150, 16))),
 							),
 						},
 					},

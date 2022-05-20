@@ -183,7 +183,7 @@ func TestTypeDecl(t *testing.T) {
 		[]rune(`TTypeId1 = TType1`),
 		&ast.TypeDecl{
 			Ident: asttest.NewIdent("TTypeId1", asttest.NewIdentLocation(1, 1, 0, 1, 9, 8)),
-			Type:  &ast.TypeId{Ident: asttest.NewIdent("TType1", asttest.NewIdentLocation(1, 12, 11, 1, 17, 17))},
+			Type:  &ast.TypeId{Ident: asttest.NewIdent("TType1", asttest.NewIdentLocation(1, 12, 11, 1, 18, 17))},
 		},
 	)
 
@@ -194,7 +194,7 @@ func TestTypeDecl(t *testing.T) {
 			Ident: asttest.NewIdent("TTypeId1", asttest.NewIdentLocation(1, 1, 0, 1, 9, 8)),
 			Type: &ast.TypeId{
 				UnitId: ast.NewUnitId(asttest.NewIdent("U1", asttest.NewIdentLocation(1, 12, 11, 14))),
-				Ident:  asttest.NewIdent("TType1", asttest.NewIdentLocation(1, 15, 14, 1, 20, 20)),
+				Ident:  asttest.NewIdent("TType1", asttest.NewIdentLocation(1, 15, 14, 1, 21, 20)),
 			},
 		},
 	)
@@ -203,7 +203,7 @@ func TestTypeDecl(t *testing.T) {
 		[]rune(`TTypeId1 = TYPE TType1`),
 		&ast.TypeDecl{
 			Ident: asttest.NewIdent("TTypeId1", asttest.NewIdentLocation(1, 1, 0, 1, 9, 8)),
-			Type:  &ast.TypeId{Ident: asttest.NewIdent("TType1", asttest.NewIdentLocation(1, 17, 16, 1, 22, 22))},
+			Type:  &ast.TypeId{Ident: asttest.NewIdent("TType1", asttest.NewIdentLocation(1, 17, 16, 1, 23, 22))},
 		},
 	)
 }
@@ -225,7 +225,7 @@ func TestTypeId(t *testing.T) {
 	run(
 		"simple type",
 		[]rune(`TType1`),
-		&ast.TypeId{Ident: asttest.NewIdent("TType1", asttest.NewIdentLocation(1, 1, 0, 1, 6, 6))},
+		&ast.TypeId{Ident: asttest.NewIdent("TType1", asttest.NewIdentLocation(1, 1, 0, 1, 7, 6))},
 	)
 
 	run(
@@ -233,7 +233,7 @@ func TestTypeId(t *testing.T) {
 		[]rune(`U1.TType1`),
 		&ast.TypeId{
 			UnitId: ast.NewUnitId(asttest.NewIdent("U1", asttest.NewIdentLocation(1, 1, 0, 3))),
-			Ident:  asttest.NewIdent("TType1", asttest.NewIdentLocation(1, 4, 3, 1, 9, 9)),
+			Ident:  asttest.NewIdent("TType1", asttest.NewIdentLocation(1, 4, 3, 1, 10, 9)),
 		},
 	)
 }

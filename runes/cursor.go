@@ -4,11 +4,12 @@ type Cursor struct {
 	Text     *[]rune
 	Len      int
 	Position *Position
+	wasLF    bool
 }
 
 const CursorEOF = rune(0)
 
-func NewCuror(text *[]rune) *Cursor {
+func NewCursor(text *[]rune) *Cursor {
 	return &Cursor{
 		Text:     text,
 		Len:      len(*text),
@@ -36,16 +37,19 @@ func (c *Cursor) Seek(n int) rune {
 }
 
 func (c *Cursor) Next() rune {
+	if c.wasLF {
+		c.Position.nextLine()
+		c.wasLF = false
+	}
 	if c.Position.Index < c.Len {
 		c.Position.inc()
-	}
-	r := c.Seek(0)
-	if r == CursorEOF {
-		return CursorEOF
-	} else if r == '\n' {
-		c.Position.nextLine()
 	} else {
-		c.Position.next()
+		return CursorEOF
+	}
+	c.Position.next()
+	r := c.Seek(0)
+	if r == '\n' {
+		c.wasLF = true
 	}
 	return r
 }

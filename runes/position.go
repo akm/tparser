@@ -20,7 +20,7 @@ func (p *Position) inc() {
 
 func (p *Position) nextLine() {
 	p.Line++
-	p.Col = 1
+	p.Col = 0
 }
 
 func (p *Position) next() {
