@@ -85,6 +85,19 @@ func (m *UnitLoader) ProcessImplAndInit() error {
 	if err := m.Parser.ParseImplUses(m.Unit); err != nil {
 		return err
 	}
+	// defer m.Parser.StackContext()()
+
+	parentUnits := m.ctx.Parent.Units
+	localMap := astcore.NewDeclarationMap()
+	localMap.SetDecl(m.Unit)
+	maps := []astcore.DeclarationMap{localMap}
+	for _, unitRef := range m.Unit.ImplementationSection.UsesClause {
+		if unit := parentUnits.ByName(unitRef.Ident.Name); unit != nil {
+			localMap.SetDecl(unit)
+			maps = append(maps, unit.DeclarationMap)
+		}
+	}
+	m.ctx.DeclarationMap = astcore.NewCompositeDeclarationMap(maps...)
 
 	if err := m.Parser.ParseImplBody(m.Unit); err != nil {
 		return err
@@ -97,6 +110,14 @@ func (m *UnitLoader) ProcessImplAndInit() error {
 }
 
 type UnitLoaders []*UnitLoader
+
+func (m UnitLoaders) Units() ast.Units {
+	r := make(ast.Units, len(m))
+	for i, loader := range m {
+		r[i] = loader.Unit
+	}
+	return r
+}
 
 func (m UnitLoaders) UnitNames() ext.StringSet {
 	unitNames := ext.Strings{}
