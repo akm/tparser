@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -118,13 +119,13 @@ func (p *Parser) Current(pred token.Predicator) (*token.Token, error) {
 	return p.curr, nil
 }
 
-func (p *Parser) Validate(token *token.Token, predicates ...token.Predicator) error {
-	if token == nil {
+func (p *Parser) Validate(t *token.Token, predicates ...token.Predicator) error {
+	if t == nil {
 		return errors.Errorf("something wrong, token is nil")
 	}
 	for _, pred := range predicates {
-		if !pred.Predicate(token) {
-			return errors.Errorf("expects %s but was %s in %q", pred.Name(), token.String(), p.context.GetPath())
+		if !pred.Predicate(t) {
+			return p.TokenErrorf("expects "+pred.Name()+" but was %s", t)
 		}
 	}
 	return nil
@@ -154,6 +155,13 @@ func (p *Parser) Until(terminator token.Predicator, separator token.Predicator, 
 
 func (p *Parser) Logf(format string, args ...interface{}) {
 	p.logger.Printf(format, args...)
+}
+
+func (p *Parser) TokenErrorf(format string, t *token.Token, args ...interface{}) error {
+	fmtArgs := append([]interface{}{t.RawString()}, args...)
+	place := fmt.Sprintf("%s:%d,%d", p.context.GetPath(), t.Start.Line, t.Start.Col)
+	fmtArgs = append(fmtArgs, place)
+	return errors.Errorf(format+" at %s", fmtArgs...)
 }
 
 func (p *Parser) StackContext() func() {
