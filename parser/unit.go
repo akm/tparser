@@ -89,7 +89,15 @@ func (p *Parser) ParseUnitTail(res *ast.Unit) error {
 	if err != nil {
 		return err
 	}
+	res.ImplementationSection = impl
 
+	if err := p.ParseUnitEnd(res); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *Parser) ParseUnitEnd(res *ast.Unit) error {
 	if p.CurrentToken().Is(token.ReservedWord.HasKeyword("INITIALIZATION")) {
 		if initSection, err := p.ParseInitSection(); err != nil {
 			return err
@@ -104,7 +112,6 @@ func (p *Parser) ParseUnitTail(res *ast.Unit) error {
 	if _, err := p.Next(token.Symbol('.')); err != nil {
 		return err
 	}
-	res.ImplementationSection = impl
 	p.context.SetDecl(res)
 	return nil
 }
