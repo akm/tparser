@@ -19,7 +19,7 @@ type Tokenizer struct {
 
 func NewTokenizer(text *[]rune, flags TokeninzerFlag) *Tokenizer {
 	return &Tokenizer{
-		Cursor:      runes.NewCuror(text),
+		Cursor:      runes.NewCursor(text),
 		loadSpace:   flags&LoadSpace == LoadSpace,
 		loadComment: flags&LoadComment == LoadComment,
 	}

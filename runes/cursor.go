@@ -9,7 +9,7 @@ type Cursor struct {
 
 const CursorEOF = rune(0)
 
-func NewCuror(text *[]rune) *Cursor {
+func NewCursor(text *[]rune) *Cursor {
 	return &Cursor{
 		Text:     text,
 		Len:      len(*text),

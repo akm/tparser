@@ -24,7 +24,7 @@ func TestCursorCRLFTest(t *testing.T) {
 		c.Next()
 	}
 
-	c := runes.NewCuror(&source)
+	c := runes.NewCursor(&source)
 	assertAndNext(t, c, 'f', 1, 1, 0)
 	assertAndNext(t, c, 'o', 1, 2, 1)
 	assertAndNext(t, c, 'o', 1, 3, 2)
