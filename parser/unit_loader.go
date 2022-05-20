@@ -44,7 +44,7 @@ func (m *UnitLoader) LoadFile() error {
 
 func (m *UnitLoader) LoadHead() error {
 	m.Parser.NextToken()
-	if u, err := m.Parser.ParseUnitHead(); err != nil {
+	if u, err := m.Parser.ParseUnitIdentAndIntfUses(); err != nil {
 		return err
 	} else {
 		m.Unit = u

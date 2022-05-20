@@ -13,7 +13,7 @@ func (p *Parser) IsUnitIdentifier() bool {
 // ParseUnit method is not deleted for tests.
 // Don't use this method not for test.
 func (p *Parser) ParseUnit() (*ast.Unit, error) {
-	res, err := p.ParseUnitHead()
+	res, err := p.ParseUnitIdentAndIntfUses()
 	if err != nil {
 		return nil, err
 	}
@@ -26,7 +26,7 @@ func (p *Parser) ParseUnit() (*ast.Unit, error) {
 	return res, nil
 }
 
-func (p *Parser) ParseUnitHead() (*ast.Unit, error) {
+func (p *Parser) ParseUnitIdentAndIntfUses() (*ast.Unit, error) {
 	res, err := p.ParseUnitIdent()
 	if err != nil {
 		return nil, err
