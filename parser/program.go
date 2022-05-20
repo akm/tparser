@@ -97,7 +97,7 @@ func (p *Parser) LoadUnits(ctx *ProjectContext, uses ast.UsesClause) error {
 	ctx.DeclarationMap = astcore.NewCompositeDeclarationMap(declMaps...)
 
 	for _, loader := range sortedLoaders {
-		if err := loader.LoadTail(); err != nil {
+		if err := loader.ProcessImplAndInit(); err != nil {
 			return err
 		}
 	}

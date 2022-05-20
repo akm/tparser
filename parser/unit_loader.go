@@ -81,7 +81,7 @@ func (m *UnitLoader) ProcessIntfBody() error {
 	return nil
 }
 
-func (m *UnitLoader) LoadTail() error {
+func (m *UnitLoader) ProcessImplAndInit() error {
 	return m.Parser.ParseUnitTail(m.Unit)
 }
 
