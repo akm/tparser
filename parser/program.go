@@ -102,5 +102,10 @@ func (p *Parser) LoadUnits(ctx *ProjectContext, uses ast.UsesClause) error {
 		}
 	}
 
+	units := loaders.Units() // Don't use sortedLoaders for this
+	for _, u := range units {
+		ctx.DeclarationMap.SetDecl(u)
+	}
+
 	return nil
 }
