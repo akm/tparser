@@ -75,7 +75,7 @@ func (p *Parser) LoadUnits(ctx *ProjectContext, uses ast.UsesClause) error {
 		if err := loader.LoadFile(); err != nil {
 			return err
 		}
-		if err := loader.LoadHead(); err != nil {
+		if err := loader.ProcessIdentAndIntfUses(); err != nil {
 			return err
 		}
 		ctx.AddUnit(loader.Unit)

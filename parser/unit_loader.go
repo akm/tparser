@@ -42,7 +42,7 @@ func (m *UnitLoader) LoadFile() error {
 	return nil
 }
 
-func (m *UnitLoader) LoadHead() error {
+func (m *UnitLoader) ProcessIdentAndIntfUses() error {
 	m.Parser.NextToken()
 	if u, err := m.Parser.ParseUnitIdentAndIntfUses(); err != nil {
 		return err
