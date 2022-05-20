@@ -3,7 +3,6 @@ package parser
 import (
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/token"
-	"github.com/pkg/errors"
 )
 
 var stringType = token.PredicatorBy("StringType", ast.IsStringTypeName)
@@ -14,7 +13,7 @@ func (p *Parser) ParseStringType(required bool) (*ast.StringType, error) {
 		p.NextToken()
 		return &ast.StringType{Name: t.Value()}, nil
 	} else if required {
-		return nil, errors.Errorf("Unsupported token %+v for StringType", t)
+		return nil, p.TokenErrorf("Unsupported token %s for StringType", t)
 	} else {
 		return nil, nil
 	}

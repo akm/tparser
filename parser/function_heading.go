@@ -111,7 +111,7 @@ func (p *Parser) ParseExternalOptions() (*ast.ExternalOptions, error) {
 			v := int(val)
 			r.Index = &v
 		} else {
-			return nil, errors.Errorf("expects NAME or INDEX, but got %s %s", t.Type.String(), string(t.Raw()))
+			return nil, p.TokenErrorf("expects NAME or INDEX, but got %s (%s)", t, string(t.Raw()))
 		}
 	}
 
@@ -210,7 +210,7 @@ func (p *Parser) ParseFormalParm() (*ast.FormalParm, error) {
 		case "OUT":
 			r.Opt = &ast.FpoOut
 		default:
-			return nil, errors.Errorf("unexpected token %s", t)
+			return nil, p.TokenErrorf("unexpected token %s", t)
 		}
 		p.NextToken()
 	}

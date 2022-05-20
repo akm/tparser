@@ -3,7 +3,6 @@ package parser
 import (
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/token"
-	"github.com/pkg/errors"
 )
 
 func (p *Parser) IsUnitIdentifier() bool {
@@ -144,7 +143,7 @@ func (p *Parser) ParseInterfaceSectionDecls(res *ast.InterfaceSection) error {
 			return nil
 		}
 		if !t.Is(token.ReservedWord) {
-			return errors.Errorf("expects reserved word but got %s", t.String())
+			return p.TokenErrorf("expects reserved word but got %s", t)
 		}
 		switch t.Value() {
 		case "TYPE":
@@ -303,15 +302,15 @@ func (p *Parser) ParseQualId() (*ast.QualId, error) {
 		}
 		unitDecl := p.context.Get(name1.Value())
 		if unitDecl == nil {
-			return nil, errors.Errorf("undefined unit %s", name1.Value())
+			return nil, p.TokenErrorf("undefined unit %s", name1)
 		}
 		if !isUnitDeclaration(unitDecl) {
-			return nil, errors.Errorf("%s is not a unit", name1.Value())
+			return nil, p.TokenErrorf("%s is not a unit", name1)
 		}
 		unit := unitDecl.Node.(*ast.Unit)
 		decl := unit.DeclarationMap.Get(name2.Value())
 		if decl == nil {
-			return nil, errors.Errorf("undefined identifier %s in unit %s", name2.Value(), name1.Value())
+			return nil, p.TokenErrorf("undefined identifier %s in unit %s", name2, name1.Value())
 		}
 		p.NextToken()
 		return &ast.QualId{

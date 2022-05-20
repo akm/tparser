@@ -3,7 +3,6 @@ package parser
 import (
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/token"
-	"github.com/pkg/errors"
 )
 
 func (p *Parser) ParseExprList(terminator token.Predicator) (ast.ExprList, error) {
@@ -214,7 +213,7 @@ func (p *Parser) ParseFactor() (ast.Factor, error) {
 		return res, nil
 	}
 
-	return nil, errors.Errorf("unexpected token %s", t0)
+	return nil, p.TokenErrorf("unexpected token %s", t0)
 }
 
 func (p *Parser) ParseManifestConstant(t *token.Token, skipTypeCheck bool) (*ast.ValueFactor, error) {
@@ -222,7 +221,7 @@ func (p *Parser) ParseManifestConstant(t *token.Token, skipTypeCheck bool) (*ast
 		p.NextToken()
 		return &ast.ValueFactor{Value: t.Value()}, nil
 	} else {
-		return nil, errors.Errorf("unexpected token %s for ValueFactor", t)
+		return nil, p.TokenErrorf("unexpected token %s for ValueFactor", t)
 	}
 }
 
@@ -231,7 +230,7 @@ func (p *Parser) ParseStringFactor(t *token.Token, skipTypeCheck bool) (*ast.Str
 		p.NextToken()
 		return &ast.StringFactor{Value: t.Value()}, nil
 	} else {
-		return nil, errors.Errorf("unexpected token %s for StringFactor", t)
+		return nil, p.TokenErrorf("unexpected token %s for StringFactor", t)
 	}
 }
 
@@ -240,7 +239,7 @@ func (p *Parser) ParseNumberFactor(t *token.Token, skipTypeCheck bool) (*ast.Num
 		p.NextToken()
 		return &ast.NumberFactor{Value: t.Value()}, nil
 	} else {
-		return nil, errors.Errorf("unexpected token %s for NumberFactor", t)
+		return nil, p.TokenErrorf("unexpected token %s for NumberFactor", t)
 	}
 }
 
