@@ -193,6 +193,17 @@ func (p *Parser) ParseInterfaceSectionDecls(res *ast.InterfaceSection) error {
 }
 
 func (p *Parser) ParseImplementationSection() (*ast.ImplementationSection, error) {
+	res, err := p.ParseImplUses()
+	if err != nil {
+		return nil, err
+	}
+	if err := p.ParseImplBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func (p *Parser) ParseImplUses() (*ast.ImplementationSection, error) {
 	if _, err := p.Current(token.ReservedWord.HasKeyword("IMPLEMENTATION")); err != nil {
 		return nil, err
 	}
@@ -210,15 +221,18 @@ func (p *Parser) ParseImplementationSection() (*ast.ImplementationSection, error
 		p.context.AddUnitIdentifiers(usesClause.IdentList().Names()...)
 		p.NextToken()
 	}
+	return res, nil
+}
 
+func (p *Parser) ParseImplBody(res *ast.ImplementationSection) error {
 	if declSections, err := p.ParseDeclSections(); err != nil {
-		return nil, err
+		return err
 	} else if len(declSections) > 0 {
 		res.DeclSections = declSections
 	}
 
 	if exportsStmt, err := p.ParseExportsStmts(); err != nil {
-		return nil, err
+		return err
 	} else if exportsStmt != nil {
 		res.ExportsStmts = exportsStmt
 	}
@@ -227,7 +241,7 @@ func (p *Parser) ParseImplementationSection() (*ast.ImplementationSection, error
 		p.NextToken()
 	}
 
-	return res, nil
+	return nil
 }
 
 func (p *Parser) ParseInitSection() (*ast.InitSection, error) {
