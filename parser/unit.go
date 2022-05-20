@@ -20,9 +20,18 @@ func (p *Parser) ParseUnit() (*ast.Unit, error) {
 	if err := p.ParseUnitIntfBody(res); err != nil {
 		return nil, err
 	}
-	if err := p.ParseUnitTail(res); err != nil {
+
+	if err := p.ParseImplUses(res); err != nil {
 		return nil, err
 	}
+	if err := p.ParseImplBody(res); err != nil {
+		return nil, err
+	}
+
+	if err := p.ParseUnitEnd(res); err != nil {
+		return nil, err
+	}
+
 	return res, nil
 }
 
@@ -81,19 +90,6 @@ func (p *Parser) ParseUnitIntfBody(res *ast.Unit) error {
 		return err
 	}
 	res.DeclarationMap = p.context.GetDeclarationMap()
-	return nil
-}
-
-func (p *Parser) ParseUnitTail(res *ast.Unit) error {
-	impl, err := p.ParseImplementationSection()
-	if err != nil {
-		return err
-	}
-	res.ImplementationSection = impl
-
-	if err := p.ParseUnitEnd(res); err != nil {
-		return err
-	}
 	return nil
 }
 
@@ -199,49 +195,39 @@ func (p *Parser) ParseInterfaceSectionDecls(res *ast.InterfaceSection) error {
 	return nil
 }
 
-func (p *Parser) ParseImplementationSection() (*ast.ImplementationSection, error) {
-	res, err := p.ParseImplUses()
-	if err != nil {
-		return nil, err
-	}
-	if err := p.ParseImplBody(res); err != nil {
-		return nil, err
-	}
-	return res, nil
-}
-
-func (p *Parser) ParseImplUses() (*ast.ImplementationSection, error) {
+func (p *Parser) ParseImplUses(res *ast.Unit) error {
 	if _, err := p.Current(token.ReservedWord.HasKeyword("IMPLEMENTATION")); err != nil {
-		return nil, err
+		return err
 	}
 	p.NextToken()
 
 	defer p.StackContext()()
 
-	res := &ast.ImplementationSection{}
+	impl := &ast.ImplementationSection{}
 	if p.CurrentToken().Is(token.ReservedWord.HasKeyword("USES")) {
 		usesClause, err := p.ParseUsesClause()
 		if err != nil {
-			return nil, err
+			return err
 		}
-		res.UsesClause = usesClause
+		impl.UsesClause = usesClause
 		p.context.AddUnitIdentifiers(usesClause.IdentList().Names()...)
 		p.NextToken()
 	}
-	return res, nil
+	res.ImplementationSection = impl
+	return nil
 }
 
-func (p *Parser) ParseImplBody(res *ast.ImplementationSection) error {
+func (p *Parser) ParseImplBody(res *ast.Unit) error {
 	if declSections, err := p.ParseDeclSections(); err != nil {
 		return err
 	} else if len(declSections) > 0 {
-		res.DeclSections = declSections
+		res.ImplementationSection.DeclSections = declSections
 	}
 
 	if exportsStmt, err := p.ParseExportsStmts(); err != nil {
 		return err
 	} else if exportsStmt != nil {
-		res.ExportsStmts = exportsStmt
+		res.ImplementationSection.ExportsStmts = exportsStmt
 	}
 
 	if p.CurrentToken().Is(token.Symbol(';')) {

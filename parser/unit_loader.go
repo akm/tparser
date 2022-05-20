@@ -82,7 +82,18 @@ func (m *UnitLoader) ProcessIntfBody() error {
 }
 
 func (m *UnitLoader) ProcessImplAndInit() error {
-	return m.Parser.ParseUnitTail(m.Unit)
+	if err := m.Parser.ParseImplUses(m.Unit); err != nil {
+		return err
+	}
+
+	if err := m.Parser.ParseImplBody(m.Unit); err != nil {
+		return err
+	}
+	if err := m.Parser.ParseUnitEnd(m.Unit); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 type UnitLoaders []*UnitLoader
