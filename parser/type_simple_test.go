@@ -61,7 +61,9 @@ func TestSubrangeType(t *testing.T) {
 			parser.NextToken()
 			res, err := parser.ParseType()
 			if assert.NoError(t, err) {
-				assert.Equal(t, expected, res)
+				if !assert.Equal(t, expected, res) {
+					asttest.AssertType(t, expected, res)
+				}
 			}
 		})
 	}
@@ -71,7 +73,7 @@ func TestSubrangeType(t *testing.T) {
 		[]rune(`Green..White`),
 		&ast.SubrangeType{
 			Low:  asttest.NewConstExpr(asttest.NewIdent("Green", asttest.NewIdentLocation(1, 1, 0, 6))),
-			High: asttest.NewConstExpr(asttest.NewIdent("White", asttest.NewIdentLocation(1, 8, 7, 1, 12, 12))),
+			High: asttest.NewConstExpr(asttest.NewIdent("White", asttest.NewIdentLocation(1, 8, 7, 1, 13, 12))),
 		},
 	)
 	run(

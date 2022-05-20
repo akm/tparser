@@ -39,7 +39,7 @@ func TestQualIdInCompoundStmt(t *testing.T) {
 			parser.NextToken()
 			res, err := parser.ParseCompoundStmt(true)
 			if assert.NoError(t, err) {
-				assert.Equal(t, expected, res)
+				asttest.AssertCompoundStmt(t, expected, res)
 			}
 		})
 	}
@@ -56,11 +56,11 @@ end;`),
 						Designator: asttest.NewDesignator(
 							&ast.QualId{
 								UnitId: &ast.IdentRef{
-									Ident: asttest.NewIdent(unitFoo.Ident.Name, asttest.NewIdentLocation(2, 3, 8, 6)),
+									Ident: asttest.NewIdent(unitFoo.Ident.Name, asttest.NewIdentLocation(2, 2, 8, 5)),
 									Ref:   unitFoo.ToDeclarations()[0],
 								},
 								Ident: &ast.IdentRef{
-									Ident: asttest.NewIdent("Bar", asttest.NewIdentLocation(2, 7, 12, 10)),
+									Ident: asttest.NewIdent("Bar", asttest.NewIdentLocation(2, 6, 12, 9)),
 									Ref:   procBar.ToDeclarations()[0],
 								},
 							},

@@ -18,8 +18,9 @@ func TestProgram(t *testing.T) {
 				if clearLocations {
 					asttest.ClearLocations(t, res)
 				}
-				assert.Equal(t, expected, res)
-				assert.Equal(t, expected.ProgramBlock.Block, res.ProgramBlock.Block)
+				if !assert.Equal(t, expected, res) {
+					asttest.AssertProgram(t, expected, res)
+				}
 			}
 
 		})
@@ -39,7 +40,7 @@ end.`),
 							&ast.Statement{
 								Body: &ast.CallStatement{
 									Designator: asttest.NewDesignator(
-										asttest.NewIdent("writeln", asttest.NewIdentLocation(3, 4, 23, 3, 11, 30)),
+										asttest.NewIdent("writeln", asttest.NewIdentLocation(3, 3, 23, 3, 10, 30)),
 									),
 									ExprList: ast.ExprList{
 										asttest.NewExpression(asttest.NewString("'hello, world'")),
