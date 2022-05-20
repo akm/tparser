@@ -17,7 +17,7 @@ func (p *Parser) ParseUnit() (*ast.Unit, error) {
 	if err != nil {
 		return nil, err
 	}
-	if err := p.ParseUnitBody(res); err != nil {
+	if err := p.ParseUnitIntfBody(res); err != nil {
 		return nil, err
 	}
 	if err := p.ParseUnitTail(res); err != nil {
@@ -76,7 +76,7 @@ func (p *Parser) ParseUnitIntfUses(res *ast.Unit) error {
 	return nil
 }
 
-func (p *Parser) ParseUnitBody(res *ast.Unit) error {
+func (p *Parser) ParseUnitIntfBody(res *ast.Unit) error {
 	if err := p.ParseInterfaceSectionDecls(res.InterfaceSection); err != nil {
 		return err
 	}

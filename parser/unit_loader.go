@@ -73,7 +73,7 @@ func (m *UnitLoader) ProcessIntfBody() error {
 	m.ctx.DeclarationMap = astcore.NewCompositeDeclarationMap(maps...)
 
 	// Parse rest of interface Section (except USES clause)
-	if err := m.Parser.ParseUnitBody(m.Unit); err != nil {
+	if err := m.Parser.ParseUnitIntfBody(m.Unit); err != nil {
 		return err
 	}
 
