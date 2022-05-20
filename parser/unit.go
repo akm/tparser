@@ -27,6 +27,17 @@ func (p *Parser) ParseUnit() (*ast.Unit, error) {
 }
 
 func (p *Parser) ParseUnitHead() (*ast.Unit, error) {
+	res, err := p.ParseUnitIdent()
+	if err != nil {
+		return nil, err
+	}
+	if err := p.ParseUnitIntfUses(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func (p *Parser) ParseUnitIdent() (*ast.Unit, error) {
 	if _, err := p.Current(token.ReservedWord.HasKeyword("UNIT")); err != nil {
 		return nil, err
 	}
@@ -53,14 +64,16 @@ func (p *Parser) ParseUnitHead() (*ast.Unit, error) {
 		return nil, err
 	}
 	p.NextToken()
+	return res, nil
+}
 
+func (p *Parser) ParseUnitIntfUses(res *ast.Unit) error {
 	intf, err := p.ParseInterfaceSectionUses()
 	if err != nil {
-		return nil, err
+		return err
 	}
 	res.InterfaceSection = intf
-
-	return res, nil
+	return nil
 }
 
 func (p *Parser) ParseUnitBody(res *ast.Unit) error {
