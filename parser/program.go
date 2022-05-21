@@ -110,15 +110,15 @@ func (p *ProgramParser) ParseProgramBlock() (*ast.ProgramBlock, error) {
 }
 
 func (p *ProgramParser) LoadUnits(ctx *ProgramContext, uses ast.UsesClause) error {
-	loaders := UnitLoaders{}
+	parsers := UnitParsers{}
 	for _, unitRef := range uses {
 		path := unitRef.EffectivePath()
 		if path != "" {
-			loaders = append(loaders, NewUnitLoader(NewUnitContext(ctx, path)))
+			parsers = append(parsers, NewUnitParser(NewUnitContext(ctx, path)))
 		}
 	}
 
-	for _, loader := range loaders {
+	for _, loader := range parsers {
 		if err := loader.LoadFile(); err != nil {
 			return err
 		}
@@ -128,7 +128,7 @@ func (p *ProgramParser) LoadUnits(ctx *ProgramContext, uses ast.UsesClause) erro
 		ctx.AddUnit(loader.Unit)
 	}
 
-	sortedLoaders, err := loaders.Sort()
+	sortedLoaders, err := parsers.Sort()
 	if err != nil {
 		return err
 	}
@@ -140,7 +140,7 @@ func (p *ProgramParser) LoadUnits(ctx *ProgramContext, uses ast.UsesClause) erro
 	}
 
 	declMaps := []astcore.DeclMap{ctx.DeclMap}
-	declMaps = append(declMaps, loaders.DeclarationMaps()...)
+	declMaps = append(declMaps, parsers.DeclarationMaps()...)
 	ctx.DeclMap = astcore.NewCompositeDeclarationMap(declMaps...)
 
 	for _, loader := range sortedLoaders {
@@ -149,7 +149,7 @@ func (p *ProgramParser) LoadUnits(ctx *ProgramContext, uses ast.UsesClause) erro
 		}
 	}
 
-	units := loaders.Units() // Don't use sortedLoaders for this
+	units := parsers.Units() // Don't use sortedLoaders for this
 	for _, u := range units {
 		ctx.DeclMap.Set(u)
 	}

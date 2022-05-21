@@ -1,8 +1,18 @@
 package parser
 
 import (
+	"io/ioutil"
+	"os"
+	"strings"
+
 	"github.com/akm/tparser/ast"
+	"github.com/akm/tparser/ast/astcore"
+	"github.com/akm/tparser/ext"
 	"github.com/akm/tparser/token"
+	toposort "github.com/philopon/go-toposort"
+	"github.com/pkg/errors"
+	"golang.org/x/text/encoding/japanese"
+	"golang.org/x/text/transform"
 )
 
 func (p *Parser) IsUnitIdentifier() bool {
@@ -76,6 +86,25 @@ func NewUnitParser(ctx *UnitContext) *UnitParser {
 	return &UnitParser{Parser: NewParser(ctx), context: ctx}
 }
 
+func (p *UnitParser) LoadFile() error {
+	fp, err := os.Open(p.context.Path)
+	if err != nil {
+		return errors.Wrapf(err, "failed to open file: %q", p.context.Path)
+	}
+	defer fp.Close()
+
+	decoder := japanese.ShiftJIS.NewDecoder()
+	str, err := ioutil.ReadAll(transform.NewReader(fp, decoder))
+	if err != nil {
+		return err
+	}
+
+	runes := []rune(string(str))
+	p.SetText(&runes)
+	p.Parser.NextToken()
+	return nil
+}
+
 // ParseUnit method is not deleted for tests.
 // Don't use this method not for test.
 func (p *UnitParser) ParseUnit() (*ast.Unit, error) {
@@ -99,6 +128,11 @@ func (p *UnitParser) ParseUnit() (*ast.Unit, error) {
 	}
 
 	return res, nil
+}
+
+func (p *UnitParser) ProcessIdentAndIntfUses() error {
+	_, err := p.ParseUnitIdentAndIntfUses()
+	return err
 }
 
 func (p *UnitParser) ParseUnitIdentAndIntfUses() (*ast.Unit, error) {
@@ -149,6 +183,35 @@ func (p *UnitParser) ParseUnitIntfUses() error {
 		return err
 	}
 	p.Unit.InterfaceSection = intf
+	return nil
+}
+
+func (m *UnitParser) ProcessIntfBody() error {
+	units := ast.Units{}
+	parentUnits := m.context.Parent.Units
+	for _, unitRef := range m.Unit.InterfaceSection.UsesClause {
+		if u := parentUnits.ByName(unitRef.Ident.Name); u != nil {
+			units = append(units, u)
+		}
+	}
+	localMap := astcore.NewDeclarationMap()
+	localMap.Set(m.Unit)
+	maps := []astcore.DeclMap{localMap}
+	for _, unit := range units {
+		localMap.Set(unit)
+		// TODO declMapに追加する順番はこれでOK？
+		// 無関係のユニットAとBに、同じ名前の型や変数が定義されていて、USES A, B; となっていた場合
+		// コンテキスト上ではどちらが有効になるのかを確認する
+		maps = append(maps, unit.DeclarationMap)
+	}
+	m.context.DeclMap = astcore.NewCompositeDeclarationMap(maps...)
+
+	// Parse rest of interface Section (except USES clause)
+	if err := m.ParseUnitIntfBody(); err != nil {
+		return err
+	}
+
+	m.Unit.DeclarationMap = m.context.DeclMap
 	return nil
 }
 
@@ -263,6 +326,34 @@ func (p *UnitParser) ParseInterfaceSectionDecls() error {
 	return nil
 }
 
+func (m *UnitParser) ProcessImplAndInit() error {
+	if err := m.ParseImplUses(); err != nil {
+		return err
+	}
+	// defer m.Parser.StackContext()()
+
+	parentUnits := m.context.Parent.Units
+	localMap := astcore.NewDeclarationMap()
+	localMap.Set(m.Unit)
+	maps := []astcore.DeclMap{localMap}
+	for _, unitRef := range m.Unit.ImplementationSection.UsesClause {
+		if unit := parentUnits.ByName(unitRef.Ident.Name); unit != nil {
+			localMap.Set(unit)
+			maps = append(maps, unit.DeclarationMap)
+		}
+	}
+	m.context.DeclMap = astcore.NewCompositeDeclarationMap(maps...)
+
+	if err := m.ParseImplBody(); err != nil {
+		return err
+	}
+	if err := m.ParseUnitEnd(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (p *UnitParser) ParseImplUses() error {
 	if _, err := p.Current(token.ReservedWord.HasKeyword("IMPLEMENTATION")); err != nil {
 		return err
@@ -333,4 +424,74 @@ func (p *UnitParser) ParseInitSection() (*ast.InitSection, error) {
 	}
 
 	return res, nil
+}
+
+type UnitParsers []*UnitParser
+
+func (m UnitParsers) Units() ast.Units {
+	r := make(ast.Units, len(m))
+	for i, loader := range m {
+		r[i] = loader.Unit
+	}
+	return r
+}
+
+func (m UnitParsers) UnitNames() ext.StringSet {
+	unitNames := ext.Strings{}
+	for _, loader := range m {
+		name := strings.ToLower(loader.Unit.Name)
+		unitNames = append(unitNames, name)
+		for _, ref := range loader.Unit.InterfaceSection.UsesClause {
+			unitNames = append(unitNames, strings.ToLower(ref.Name))
+		}
+	}
+	return unitNames.Set()
+}
+
+func (m UnitParsers) Map() map[string]*UnitParser {
+	r := map[string]*UnitParser{}
+	for _, loader := range m {
+		name := strings.ToLower(loader.Unit.Name)
+		r[name] = loader
+	}
+	return r
+}
+
+func (m UnitParsers) Graph() *toposort.Graph {
+	unitNames := m.UnitNames().Slice()
+	graph := toposort.NewGraph(len(unitNames))
+	graph.AddNodes(unitNames...)
+
+	for _, loader := range m {
+		for _, unitRef := range loader.Unit.InterfaceSection.UsesClause {
+			graph.AddEdge(strings.ToLower(unitRef.Name), strings.ToLower(loader.Unit.Ident.Name))
+		}
+	}
+	return graph
+}
+
+func (m UnitParsers) Sort() (UnitParsers, error) {
+	loaderMap := m.Map()
+
+	graph := m.Graph()
+	order, ok := graph.Toposort()
+	if !ok {
+		return nil, errors.Errorf("cyclic dependency detected")
+	}
+
+	r := make(UnitParsers, 0, len(m))
+	for _, name := range order {
+		if loader, ok := loaderMap[name]; ok {
+			r = append(r, loader)
+		}
+	}
+	return r, nil
+}
+
+func (m UnitParsers) DeclarationMaps() []astcore.DeclMap {
+	r := make([]astcore.DeclMap, len(m))
+	for i, loader := range m {
+		r[i] = loader.Unit.DeclarationMap
+	}
+	return r
 }
