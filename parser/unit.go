@@ -66,9 +66,21 @@ func (p *Parser) ParseQualId() (*ast.QualId, error) {
 	}
 }
 
+type UnitParser struct {
+	*Parser
+	context *UnitContext
+}
+
+func NewUnitParser(text *[]rune, ctx *UnitContext) *UnitParser {
+	return &UnitParser{
+		Parser:  NewParser(text, ctx),
+		context: ctx,
+	}
+}
+
 // ParseUnit method is not deleted for tests.
 // Don't use this method not for test.
-func (p *Parser) ParseUnit() (*ast.Unit, error) {
+func (p *UnitParser) ParseUnit() (*ast.Unit, error) {
 	res, err := p.ParseUnitIdentAndIntfUses()
 	if err != nil {
 		return nil, err
@@ -91,7 +103,7 @@ func (p *Parser) ParseUnit() (*ast.Unit, error) {
 	return res, nil
 }
 
-func (p *Parser) ParseUnitIdentAndIntfUses() (*ast.Unit, error) {
+func (p *UnitParser) ParseUnitIdentAndIntfUses() (*ast.Unit, error) {
 	res, err := p.ParseUnitIdent()
 	if err != nil {
 		return nil, err
@@ -102,7 +114,7 @@ func (p *Parser) ParseUnitIdentAndIntfUses() (*ast.Unit, error) {
 	return res, nil
 }
 
-func (p *Parser) ParseUnitIdent() (*ast.Unit, error) {
+func (p *UnitParser) ParseUnitIdent() (*ast.Unit, error) {
 	if _, err := p.Current(token.ReservedWord.HasKeyword("UNIT")); err != nil {
 		return nil, err
 	}
@@ -132,7 +144,7 @@ func (p *Parser) ParseUnitIdent() (*ast.Unit, error) {
 	return res, nil
 }
 
-func (p *Parser) ParseUnitIntfUses(res *ast.Unit) error {
+func (p *UnitParser) ParseUnitIntfUses(res *ast.Unit) error {
 	intf, err := p.ParseInterfaceSectionUses()
 	if err != nil {
 		return err
@@ -141,7 +153,7 @@ func (p *Parser) ParseUnitIntfUses(res *ast.Unit) error {
 	return nil
 }
 
-func (p *Parser) ParseUnitIntfBody(res *ast.Unit) error {
+func (p *UnitParser) ParseUnitIntfBody(res *ast.Unit) error {
 	if err := p.ParseInterfaceSectionDecls(res.InterfaceSection); err != nil {
 		return err
 	}
@@ -149,7 +161,7 @@ func (p *Parser) ParseUnitIntfBody(res *ast.Unit) error {
 	return nil
 }
 
-func (p *Parser) ParseUnitEnd(res *ast.Unit) error {
+func (p *UnitParser) ParseUnitEnd(res *ast.Unit) error {
 	if p.CurrentToken().Is(token.ReservedWord.HasKeyword("INITIALIZATION")) {
 		if initSection, err := p.ParseInitSection(); err != nil {
 			return err
@@ -168,7 +180,7 @@ func (p *Parser) ParseUnitEnd(res *ast.Unit) error {
 	return nil
 }
 
-func (p *Parser) ParseInterfaceSectionUses() (*ast.InterfaceSection, error) {
+func (p *UnitParser) ParseInterfaceSectionUses() (*ast.InterfaceSection, error) {
 	if _, err := p.Current(token.ReservedWord.HasKeyword("INTERFACE")); err != nil {
 		return nil, err
 	}
@@ -186,7 +198,7 @@ func (p *Parser) ParseInterfaceSectionUses() (*ast.InterfaceSection, error) {
 	return res, nil
 }
 
-func (p *Parser) ParseInterfaceSectionDecls(res *ast.InterfaceSection) error {
+func (p *UnitParser) ParseInterfaceSectionDecls(res *ast.InterfaceSection) error {
 	res.InterfaceDecls = []ast.InterfaceDecl{}
 	defer func() {
 		if len(res.InterfaceDecls) == 0 {
@@ -251,7 +263,7 @@ func (p *Parser) ParseInterfaceSectionDecls(res *ast.InterfaceSection) error {
 	return nil
 }
 
-func (p *Parser) ParseImplUses(res *ast.Unit) error {
+func (p *UnitParser) ParseImplUses(res *ast.Unit) error {
 	if _, err := p.Current(token.ReservedWord.HasKeyword("IMPLEMENTATION")); err != nil {
 		return err
 	}
@@ -273,7 +285,7 @@ func (p *Parser) ParseImplUses(res *ast.Unit) error {
 	return nil
 }
 
-func (p *Parser) ParseImplBody(res *ast.Unit) error {
+func (p *UnitParser) ParseImplBody(res *ast.Unit) error {
 	if declSections, err := p.ParseDeclSections(); err != nil {
 		return err
 	} else if len(declSections) > 0 {
@@ -293,7 +305,7 @@ func (p *Parser) ParseImplBody(res *ast.Unit) error {
 	return nil
 }
 
-func (p *Parser) ParseInitSection() (*ast.InitSection, error) {
+func (p *UnitParser) ParseInitSection() (*ast.InitSection, error) {
 	if _, err := p.Current(token.ReservedWord.HasKeyword("INITIALIZATION")); err != nil {
 		return nil, err
 	}
@@ -321,16 +333,4 @@ func (p *Parser) ParseInitSection() (*ast.InitSection, error) {
 	}
 
 	return res, nil
-}
-
-type UnitParser struct {
-	*Parser
-	context *UnitContext
-}
-
-func NewUnitParser(text *[]rune, ctx *UnitContext) *UnitParser {
-	return &UnitParser{
-		Parser:  NewParser(text, ctx),
-		context: ctx,
-	}
 }
