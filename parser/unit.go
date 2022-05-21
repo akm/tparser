@@ -69,6 +69,7 @@ func (p *Parser) ParseQualId() (*ast.QualId, error) {
 type UnitParser struct {
 	*Parser
 	context *UnitContext
+	Unit    *ast.Unit
 }
 
 func NewUnitParser(ctx *UnitContext) *UnitParser {
@@ -82,18 +83,18 @@ func (p *UnitParser) ParseUnit() (*ast.Unit, error) {
 	if err != nil {
 		return nil, err
 	}
-	if err := p.ParseUnitIntfBody(res); err != nil {
+	if err := p.ParseUnitIntfBody(); err != nil {
 		return nil, err
 	}
 
-	if err := p.ParseImplUses(res); err != nil {
+	if err := p.ParseImplUses(); err != nil {
 		return nil, err
 	}
-	if err := p.ParseImplBody(res); err != nil {
+	if err := p.ParseImplBody(); err != nil {
 		return nil, err
 	}
 
-	if err := p.ParseUnitEnd(res); err != nil {
+	if err := p.ParseUnitEnd(); err != nil {
 		return nil, err
 	}
 
@@ -105,7 +106,7 @@ func (p *UnitParser) ParseUnitIdentAndIntfUses() (*ast.Unit, error) {
 	if err != nil {
 		return nil, err
 	}
-	if err := p.ParseUnitIntfUses(res); err != nil {
+	if err := p.ParseUnitIntfUses(); err != nil {
 		return nil, err
 	}
 	return res, nil
@@ -127,6 +128,7 @@ func (p *UnitParser) ParseUnitIdent() (*ast.Unit, error) {
 		Path:  p.context.GetPath(),
 		Ident: p.NewIdent(ident),
 	}
+	p.Unit = res
 
 	t := p.NextToken()
 	if t.Is(token.PortabilityDirective) {
@@ -141,29 +143,29 @@ func (p *UnitParser) ParseUnitIdent() (*ast.Unit, error) {
 	return res, nil
 }
 
-func (p *UnitParser) ParseUnitIntfUses(res *ast.Unit) error {
+func (p *UnitParser) ParseUnitIntfUses() error {
 	intf, err := p.ParseInterfaceSectionUses()
 	if err != nil {
 		return err
 	}
-	res.InterfaceSection = intf
+	p.Unit.InterfaceSection = intf
 	return nil
 }
 
-func (p *UnitParser) ParseUnitIntfBody(res *ast.Unit) error {
-	if err := p.ParseInterfaceSectionDecls(res.InterfaceSection); err != nil {
+func (p *UnitParser) ParseUnitIntfBody() error {
+	if err := p.ParseInterfaceSectionDecls(); err != nil {
 		return err
 	}
-	res.DeclarationMap = p.context.GetDeclarationMap()
+	p.Unit.DeclarationMap = p.context.GetDeclarationMap()
 	return nil
 }
 
-func (p *UnitParser) ParseUnitEnd(res *ast.Unit) error {
+func (p *UnitParser) ParseUnitEnd() error {
 	if p.CurrentToken().Is(token.ReservedWord.HasKeyword("INITIALIZATION")) {
 		if initSection, err := p.ParseInitSection(); err != nil {
 			return err
 		} else if initSection != nil {
-			res.InitSection = initSection
+			p.Unit.InitSection = initSection
 		}
 	}
 
@@ -173,7 +175,7 @@ func (p *UnitParser) ParseUnitEnd(res *ast.Unit) error {
 	if _, err := p.Next(token.Symbol('.')); err != nil {
 		return err
 	}
-	p.context.Set(res)
+	p.context.Set(p.Unit)
 	return nil
 }
 
@@ -195,7 +197,8 @@ func (p *UnitParser) ParseInterfaceSectionUses() (*ast.InterfaceSection, error) 
 	return res, nil
 }
 
-func (p *UnitParser) ParseInterfaceSectionDecls(res *ast.InterfaceSection) error {
+func (p *UnitParser) ParseInterfaceSectionDecls() error {
+	res := p.Unit.InterfaceSection
 	res.InterfaceDecls = []ast.InterfaceDecl{}
 	defer func() {
 		if len(res.InterfaceDecls) == 0 {
@@ -260,7 +263,7 @@ func (p *UnitParser) ParseInterfaceSectionDecls(res *ast.InterfaceSection) error
 	return nil
 }
 
-func (p *UnitParser) ParseImplUses(res *ast.Unit) error {
+func (p *UnitParser) ParseImplUses() error {
 	if _, err := p.Current(token.ReservedWord.HasKeyword("IMPLEMENTATION")); err != nil {
 		return err
 	}
@@ -278,21 +281,21 @@ func (p *UnitParser) ParseImplUses(res *ast.Unit) error {
 		p.context.AddUnitIdentifiers(usesClause.IdentList().Names()...)
 		p.NextToken()
 	}
-	res.ImplementationSection = impl
+	p.Unit.ImplementationSection = impl
 	return nil
 }
 
-func (p *UnitParser) ParseImplBody(res *ast.Unit) error {
+func (p *UnitParser) ParseImplBody() error {
 	if declSections, err := p.ParseDeclSections(); err != nil {
 		return err
 	} else if len(declSections) > 0 {
-		res.ImplementationSection.DeclSections = declSections
+		p.Unit.ImplementationSection.DeclSections = declSections
 	}
 
 	if exportsStmt, err := p.ParseExportsStmts(); err != nil {
 		return err
 	} else if exportsStmt != nil {
-		res.ImplementationSection.ExportsStmts = exportsStmt
+		p.Unit.ImplementationSection.ExportsStmts = exportsStmt
 	}
 
 	if p.CurrentToken().Is(token.Symbol(';')) {

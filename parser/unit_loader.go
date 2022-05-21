@@ -74,7 +74,7 @@ func (m *UnitLoader) ProcessIntfBody() error {
 	m.ctx.DeclMap = astcore.NewCompositeDeclarationMap(maps...)
 
 	// Parse rest of interface Section (except USES clause)
-	if err := m.UnitParser.ParseUnitIntfBody(m.Unit); err != nil {
+	if err := m.UnitParser.ParseUnitIntfBody(); err != nil {
 		return err
 	}
 
@@ -83,7 +83,7 @@ func (m *UnitLoader) ProcessIntfBody() error {
 }
 
 func (m *UnitLoader) ProcessImplAndInit() error {
-	if err := m.UnitParser.ParseImplUses(m.Unit); err != nil {
+	if err := m.UnitParser.ParseImplUses(); err != nil {
 		return err
 	}
 	// defer m.Parser.StackContext()()
@@ -100,10 +100,10 @@ func (m *UnitLoader) ProcessImplAndInit() error {
 	}
 	m.ctx.DeclMap = astcore.NewCompositeDeclarationMap(maps...)
 
-	if err := m.UnitParser.ParseImplBody(m.Unit); err != nil {
+	if err := m.UnitParser.ParseImplBody(); err != nil {
 		return err
 	}
-	if err := m.UnitParser.ParseUnitEnd(m.Unit); err != nil {
+	if err := m.UnitParser.ParseUnitEnd(); err != nil {
 		return err
 	}
 
