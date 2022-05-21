@@ -107,7 +107,7 @@ func (p *Parser) ParseUnitEnd(res *ast.Unit) error {
 	if _, err := p.Next(token.Symbol('.')); err != nil {
 		return err
 	}
-	p.context.SetDecl(res)
+	p.context.Set(res)
 	return nil
 }
 

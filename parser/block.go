@@ -171,6 +171,6 @@ func (p *Parser) ParseLabelDeclSection() (*ast.LabelDeclSection, error) {
 	}
 	p.NextToken()
 	r := &ast.LabelDeclSection{LabelId: ast.NewLabelId(p.NewIdent(t))}
-	p.context.SetDecl(r)
+	p.context.Set(r)
 	return r, nil
 }

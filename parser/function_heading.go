@@ -29,7 +29,7 @@ func (p *Parser) ParseExportedHeading() (*ast.ExportedHeading, error) {
 		return nil, err
 	}
 	r := &ast.ExportedHeading{FunctionHeading: functionHeading}
-	p.context.SetDecl(r)
+	p.context.Set(r)
 
 	p.NextToken()
 	if p.CurrentToken().Is(token.Directive) {
@@ -219,7 +219,7 @@ func (p *Parser) ParseFormalParm() (*ast.FormalParm, error) {
 		return nil, err
 	}
 	r.Parameter = parameter
-	p.context.SetDecl(r)
+	p.context.Set(r)
 	return r, nil
 }
 

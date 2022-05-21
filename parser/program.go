@@ -31,7 +31,7 @@ func (p *Parser) ParseProgram() (*ast.Program, error) {
 	if _, err := p.Current(token.Symbol('.')); err != nil {
 		return nil, err
 	}
-	p.context.SetDecl(res)
+	p.context.Set(res)
 	return res, nil
 }
 
@@ -104,7 +104,7 @@ func (p *Parser) LoadUnits(ctx *ProgramContext, uses ast.UsesClause) error {
 
 	units := loaders.Units() // Don't use sortedLoaders for this
 	for _, u := range units {
-		ctx.DeclarationMap.SetDecl(u)
+		ctx.DeclarationMap.Set(u)
 	}
 
 	return nil

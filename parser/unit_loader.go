@@ -61,10 +61,10 @@ func (m *UnitLoader) ProcessIntfBody() error {
 		}
 	}
 	localMap := astcore.NewDeclarationMap()
-	localMap.SetDecl(m.Unit)
+	localMap.Set(m.Unit)
 	maps := []astcore.DeclarationMap{localMap}
 	for _, unit := range units {
-		localMap.SetDecl(unit)
+		localMap.Set(unit)
 		// TODO declMapに追加する順番はこれでOK？
 		// 無関係のユニットAとBに、同じ名前の型や変数が定義されていて、USES A, B; となっていた場合
 		// コンテキスト上ではどちらが有効になるのかを確認する
@@ -89,11 +89,11 @@ func (m *UnitLoader) ProcessImplAndInit() error {
 
 	parentUnits := m.ctx.Parent.Units
 	localMap := astcore.NewDeclarationMap()
-	localMap.SetDecl(m.Unit)
+	localMap.Set(m.Unit)
 	maps := []astcore.DeclarationMap{localMap}
 	for _, unitRef := range m.Unit.ImplementationSection.UsesClause {
 		if unit := parentUnits.ByName(unitRef.Ident.Name); unit != nil {
-			localMap.SetDecl(unit)
+			localMap.Set(unit)
 			maps = append(maps, unit.DeclarationMap)
 		}
 	}

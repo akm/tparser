@@ -114,6 +114,6 @@ func (p *Parser) ParseEnumeratedTypeElement() (*ast.EnumeratedTypeElement, error
 		res.ConstExpr = expr
 	}
 
-	p.context.SetDecl(res)
+	p.context.Set(res)
 	return res, nil
 }
