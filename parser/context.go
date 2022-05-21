@@ -22,8 +22,8 @@ type Context interface {
 	astcore.DeclarationMap
 }
 
-// ProjectContext
-type ProjectContext struct {
+// ProgramContext
+type ProgramContext struct {
 	Path            string
 	unitIdentifiers ext.Strings // TO BE REMOVED
 	Units           ast.Units
@@ -31,10 +31,10 @@ type ProjectContext struct {
 }
 
 func NewContext(args ...interface{}) Context {
-	return NewProjectContext(args...)
+	return NewProgramContext(args...)
 }
 
-func NewProjectContext(args ...interface{}) *ProjectContext {
+func NewProgramContext(args ...interface{}) *ProgramContext {
 	var path string
 	var unitIdentifiers ext.Strings
 	var units ast.Units
@@ -62,7 +62,7 @@ func NewProjectContext(args ...interface{}) *ProjectContext {
 	if declarationMap == nil {
 		declarationMap = astcore.NewDeclarationMap()
 	}
-	return &ProjectContext{
+	return &ProgramContext{
 		Path:            path,
 		unitIdentifiers: unitIdentifiers,
 		Units:           units,
@@ -70,8 +70,8 @@ func NewProjectContext(args ...interface{}) *ProjectContext {
 	}
 }
 
-func (c *ProjectContext) Clone() Context {
-	return &ProjectContext{
+func (c *ProgramContext) Clone() Context {
+	return &ProgramContext{
 		Path:            c.Path,
 		unitIdentifiers: c.unitIdentifiers,
 		Units:           c.Units,
@@ -79,16 +79,16 @@ func (c *ProjectContext) Clone() Context {
 	}
 }
 
-func (c *ProjectContext) AddUnitIdentifiers(names ...string) {
+func (c *ProgramContext) AddUnitIdentifiers(names ...string) {
 	c.unitIdentifiers = append(c.unitIdentifiers, names...)
 }
 
-func (c *ProjectContext) IsUnitIdentifier(token *token.Token) bool {
+func (c *ProgramContext) IsUnitIdentifier(token *token.Token) bool {
 	s := token.Value()
 	return c.unitIdentifiers.Include(s) || isUnitDeclaration(c.DeclarationMap.Get(s)) || c.Units.ByName(s) != nil
 }
 
-func (c *ProjectContext) GetDeclarationMap() astcore.DeclarationMap {
+func (c *ProgramContext) GetDeclarationMap() astcore.DeclarationMap {
 	return c.DeclarationMap
 }
 
@@ -100,36 +100,36 @@ func isUnitDeclaration(decl *astcore.Declaration) bool {
 	return ok
 }
 
-func (c *ProjectContext) GetPath() string {
+func (c *ProgramContext) GetPath() string {
 	return c.Path
 }
 
-func (c *ProjectContext) SetPath(path string) {
+func (c *ProgramContext) SetPath(path string) {
 	c.Path = path
 }
 
-func (c *ProjectContext) ResolvePath(path string) string {
+func (c *ProgramContext) ResolvePath(path string) string {
 	dir := filepath.Dir(c.GetPath())
 	return filepath.Join(dir, path)
 }
 
-func (c *ProjectContext) AddUnit(unit *ast.Unit) {
+func (c *ProgramContext) AddUnit(unit *ast.Unit) {
 	c.Units = append(c.Units, unit)
 }
-func (c *ProjectContext) GetUnits() ast.Units {
+func (c *ProgramContext) GetUnits() ast.Units {
 	return c.Units
 }
 
 // UnitContext
 
 type UnitContext struct {
-	Parent          *ProjectContext
+	Parent          *ProgramContext
 	Path            string
 	unitIdentifiers ext.Strings // TO BE REMOVED
 	astcore.DeclarationMap
 }
 
-func NewUnitContext(parent *ProjectContext, args ...interface{}) *UnitContext {
+func NewUnitContext(parent *ProgramContext, args ...interface{}) *UnitContext {
 	var path string
 	var unitIdentifiers ext.Strings
 	var declarationMap astcore.DeclarationMap
@@ -217,7 +217,7 @@ func NewStackableContext(parent Context, args ...interface{}) Context {
 }
 
 func (c *StackableContext) Clone() Context {
-	return &ProjectContext{
+	return &ProgramContext{
 		unitIdentifiers: c.unitIdentifiers,
 		DeclarationMap:  c.declarationMap,
 	}

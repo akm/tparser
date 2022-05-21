@@ -38,7 +38,7 @@ func ParseProgram(path string) (*Program, error) {
 	// 	return nil, err
 	// }
 
-	ctx := NewProjectContext(path)
+	ctx := NewProgramContext(path)
 	p := NewParser(&runes, ctx)
 	p.NextToken()
 	res, err := p.ParseProgram()

@@ -45,7 +45,7 @@ func (p *Parser) ParseProgramBlock() (*ast.ProgramBlock, error) {
 		res.UsesClause = uses
 		p.NextToken()
 
-		ctx, ok := p.context.(*ProjectContext)
+		ctx, ok := p.context.(*ProgramContext)
 		if !ok {
 			panic(errors.Errorf("Something wrong. context is not ProjectContext"))
 		}
@@ -62,7 +62,7 @@ func (p *Parser) ParseProgramBlock() (*ast.ProgramBlock, error) {
 	return res, nil
 }
 
-func (p *Parser) LoadUnits(ctx *ProjectContext, uses ast.UsesClause) error {
+func (p *Parser) LoadUnits(ctx *ProgramContext, uses ast.UsesClause) error {
 	loaders := UnitLoaders{}
 	for _, unitRef := range uses {
 		path := unitRef.EffectivePath()
