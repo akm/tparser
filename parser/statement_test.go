@@ -1,17 +1,18 @@
-package parser
+package parser_test
 
 import (
 	"testing"
 
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/asttest"
+	"github.com/akm/tparser/parser"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestStatement(t *testing.T) {
 	run := func(name string, clearLocations bool, text []rune, expected *ast.Program) {
 		t.Run(name, func(t *testing.T) {
-			parser := NewParser(&text)
+			parser := parser.NewParser(&text)
 			parser.NextToken()
 			res, err := parser.ParseProgram()
 			if assert.NoError(t, err) {

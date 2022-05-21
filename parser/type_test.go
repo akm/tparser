@@ -1,4 +1,4 @@
-package parser
+package parser_test
 
 import (
 	"testing"
@@ -6,13 +6,14 @@ import (
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/asttest"
 	"github.com/akm/tparser/ext"
+	"github.com/akm/tparser/parser"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestUnitWithTypeSection(t *testing.T) {
 	run := func(name string, text []rune, expected *ast.Unit) {
 		t.Run(name, func(t *testing.T) {
-			parser := NewParser(&text)
+			parser := parser.NewParser(&text)
 			parser.NextToken()
 			res, err := parser.ParseUnit()
 			if assert.NoError(t, err) {
@@ -111,7 +112,7 @@ func TestUnitWithTypeSection(t *testing.T) {
 func TestTypeSection(t *testing.T) {
 	run := func(name string, text []rune, expected ast.TypeSection) {
 		t.Run(name, func(t *testing.T) {
-			parser := NewParser(&text)
+			parser := parser.NewParser(&text)
 			parser.NextToken()
 			res, err := parser.ParseTypeSection(true)
 			if assert.NoError(t, err) {
@@ -169,7 +170,7 @@ func TestTypeDecl(t *testing.T) {
 
 	run := func(name string, text []rune, expected *ast.TypeDecl) {
 		t.Run(name, func(t *testing.T) {
-			parser := NewParser(&text, NewContext(ext.Strings{u1.String()}))
+			parser := parser.NewParser(&text, parser.NewContext(ext.Strings{u1.String()}))
 			parser.NextToken()
 			res, err := parser.ParseTypeDecl()
 			if assert.NoError(t, err) {
@@ -213,7 +214,7 @@ func TestTypeId(t *testing.T) {
 
 	run := func(name string, text []rune, expected *ast.TypeId) {
 		t.Run(name, func(t *testing.T) {
-			parser := NewParser(&text, NewContext(ext.Strings{u1.String()}))
+			parser := parser.NewParser(&text, parser.NewContext(ext.Strings{u1.String()}))
 			parser.NextToken()
 			res, err := parser.ParseTypeForIdentifier()
 			if assert.NoError(t, err) {
@@ -241,7 +242,7 @@ func TestTypeId(t *testing.T) {
 func TestNamedType(t *testing.T) {
 	run := func(text []rune, expected ast.Type) {
 		t.Run(string(text), func(t *testing.T) {
-			parser := NewParser(&text)
+			parser := parser.NewParser(&text)
 			parser.NextToken()
 			res, err := parser.ParseType()
 			if assert.NoError(t, err) {

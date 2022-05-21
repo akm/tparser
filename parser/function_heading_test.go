@@ -1,4 +1,4 @@
-package parser
+package parser_test
 
 import (
 	"fmt"
@@ -8,6 +8,7 @@ import (
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/asttest"
 	"github.com/akm/tparser/ext"
+	"github.com/akm/tparser/parser"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -23,7 +24,7 @@ func TestExportHeading(t *testing.T) {
 		t.Run(text, func(t *testing.T) {
 			patterns = append(patterns, pattern{text, expected})
 			runes := []rune(text)
-			parser := NewParser(&runes, NewContext())
+			parser := parser.NewParser(&runes, parser.NewContext())
 			parser.NextToken()
 			res, err := parser.ParseExportedHeading()
 			if assert.NoError(t, err) {
@@ -421,7 +422,7 @@ func TestExportHeading(t *testing.T) {
 		IMPLEMENTATION
 		END.`, strings.Join(headings, "\n")))
 
-		parser := NewParser(&unitText)
+		parser := parser.NewParser(&unitText)
 		parser.NextToken()
 		res, err := parser.ParseUnit()
 		if assert.NoError(t, err) {
@@ -445,7 +446,7 @@ func TestFormalParameters(t *testing.T) {
 	run := func(text string, clearLocations bool, expected ast.FormalParameters) {
 		t.Run(text, func(t *testing.T) {
 			runes := []rune(text)
-			parser := NewParser(&runes, NewContext())
+			parser := parser.NewParser(&runes, parser.NewContext())
 			parser.NextToken()
 			res, err := parser.ParseFormalParameters()
 			if assert.NoError(t, err) {

@@ -1,4 +1,4 @@
-package parser
+package parser_test
 
 import (
 	"testing"
@@ -6,6 +6,7 @@ import (
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/astcore"
 	"github.com/akm/tparser/ast/asttest"
+	"github.com/akm/tparser/parser"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -35,7 +36,7 @@ func TestQualIdInCompoundStmt(t *testing.T) {
 
 	run := func(name string, text []rune, expected *ast.CompoundStmt) {
 		t.Run(name, func(t *testing.T) {
-			parser := NewParser(&text, NewContext(declMap, ast.Units{unitFoo}))
+			parser := parser.NewParser(&text, parser.NewContext(declMap, ast.Units{unitFoo}))
 			parser.NextToken()
 			res, err := parser.ParseCompoundStmt(true)
 			if assert.NoError(t, err) {
