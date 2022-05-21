@@ -38,7 +38,7 @@ func ParseProgram(path string) (*Program, error) {
 	// }
 
 	ctx := NewProgramContext(path)
-	p := NewParser(&runes, ctx)
+	p := NewProgramParser(&runes, ctx)
 	p.NextToken()
 	res, err := p.ParseProgram()
 	if err != nil {
@@ -151,4 +151,16 @@ func (p *Parser) LoadUnits(ctx *ProgramContext, uses ast.UsesClause) error {
 	}
 
 	return nil
+}
+
+type ProgramParser struct {
+	*Parser
+	context *ProgramContext
+}
+
+func NewProgramParser(runes *[]rune, ctx *ProgramContext) *ProgramParser {
+	return &ProgramParser{
+		Parser:  NewParser(runes, ctx),
+		context: ctx,
+	}
 }
