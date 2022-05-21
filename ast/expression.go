@@ -309,6 +309,10 @@ func NewDesignator(arg interface{}) *Designator {
 		return &Designator{QualId: NewQualId(nil, NewIdentRef(&v, nil))}
 	case *Ident:
 		return &Designator{QualId: NewQualId(nil, NewIdentRef(v, nil))}
+	case IdentRef:
+		return &Designator{QualId: NewQualId(nil, &v)}
+	case *IdentRef:
+		return &Designator{QualId: NewQualId(nil, v)}
 	case token.Token:
 		return NewDesignator(NewIdent(&v))
 	case *token.Token:
