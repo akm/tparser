@@ -37,6 +37,22 @@ func NewTestProgramParser(text *[]rune, origArgs ...interface{}) *parser.Program
 	return parser.NewProgramParser(text, ctx)
 }
 
+func NewTestUnitParser(text *[]rune, origArgs ...interface{}) *parser.UnitParser {
+	var ctx *parser.UnitContext
+	for _, origArg := range origArgs {
+		switch v := origArg.(type) {
+		case *parser.UnitContext:
+			ctx = v
+		default:
+			panic(errors.Errorf("Unsupported type %T (%v) is given for NewTestParser", origArg, origArg))
+		}
+	}
+	if ctx == nil {
+		ctx = NewTestUnitContext()
+	}
+	return parser.NewUnitParser(text, ctx)
+}
+
 func NewTestProgramContext(args ...interface{}) *parser.ProgramContext {
 	return parser.NewProgramContext(args...)
 }

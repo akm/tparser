@@ -422,7 +422,7 @@ func TestExportHeading(t *testing.T) {
 		IMPLEMENTATION
 		END.`, strings.Join(headings, "\n")))
 
-		parser := NewTestParser(&unitText)
+		parser := NewTestUnitParser(&unitText)
 		parser.NextToken()
 		res, err := parser.ParseUnit()
 		if assert.NoError(t, err) {
