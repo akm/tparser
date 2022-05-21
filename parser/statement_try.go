@@ -3,7 +3,6 @@ package parser
 import (
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/token"
-	"github.com/pkg/errors"
 )
 
 var tryStmtTerminator = token.Some(
@@ -42,7 +41,7 @@ func (p *Parser) ParseTryStmt() (ast.TryStmt, error) {
 			Statements2: finallyStmtList,
 		}, nil
 	} else {
-		return nil, errors.Errorf("expected 'except' or 'finally' but got %s", p.CurrentToken().RawString())
+		return nil, p.TokenErrorf("expected 'except' or 'finally' but got %s", p.CurrentToken())
 	}
 }
 

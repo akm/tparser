@@ -1,5 +1,7 @@
 package runes
 
+import "fmt"
+
 type Position struct {
 	Line  int
 	Col   int
@@ -30,4 +32,8 @@ func (p *Position) next() {
 func (p *Position) Clone() *Position {
 	r := *p
 	return &r
+}
+
+func (p *Position) String() string {
+	return fmt.Sprintf("%d,%d", p.Line, p.Col)
 }

@@ -1,6 +1,8 @@
 package astcore
 
 import (
+	"fmt"
+
 	"github.com/akm/tparser/runes"
 	"github.com/akm/tparser/token"
 	"github.com/pkg/errors"
@@ -15,6 +17,10 @@ type Location struct {
 
 func NewLocation(start, end *runes.Position) *Location {
 	return &Location{Start: start, End: end}
+}
+
+func (m *Location) String() string {
+	return fmt.Sprintf("%s(%s - %s)", m.Path, m.Start, m.End)
 }
 
 // - Ident

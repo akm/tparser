@@ -3,7 +3,6 @@ package parser
 import (
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/token"
-	"github.com/pkg/errors"
 )
 
 func (p *Parser) ParseRepeatStmt() (*ast.RepeatStmt, error) {
@@ -77,7 +76,7 @@ func (p *Parser) ParseForStmt() (*ast.ForStmt, error) {
 	case "DOWNTO":
 		down = true
 	default:
-		return nil, errors.Errorf("expected TO or DOWNTO, but got %s", p.CurrentToken().Value())
+		return nil, p.TokenErrorf("expected TO or DOWNTO, but got %s", p.CurrentToken())
 	}
 	p.NextToken()
 	terminal, err := p.ParseExpression()

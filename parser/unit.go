@@ -3,7 +3,6 @@ package parser
 import (
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/token"
-	"github.com/pkg/errors"
 )
 
 func (p *Parser) IsUnitIdentifier() bool {
@@ -13,20 +12,40 @@ func (p *Parser) IsUnitIdentifier() bool {
 // ParseUnit method is not deleted for tests.
 // Don't use this method not for test.
 func (p *Parser) ParseUnit() (*ast.Unit, error) {
-	res, err := p.ParseUnitHead()
+	res, err := p.ParseUnitIdentAndIntfUses()
 	if err != nil {
 		return nil, err
 	}
-	if err := p.ParseUnitBody(res); err != nil {
+	if err := p.ParseUnitIntfBody(res); err != nil {
 		return nil, err
 	}
-	if err := p.ParseUnitTail(res); err != nil {
+
+	if err := p.ParseImplUses(res); err != nil {
+		return nil, err
+	}
+	if err := p.ParseImplBody(res); err != nil {
+		return nil, err
+	}
+
+	if err := p.ParseUnitEnd(res); err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
+func (p *Parser) ParseUnitIdentAndIntfUses() (*ast.Unit, error) {
+	res, err := p.ParseUnitIdent()
+	if err != nil {
+		return nil, err
+	}
+	if err := p.ParseUnitIntfUses(res); err != nil {
 		return nil, err
 	}
 	return res, nil
 }
 
-func (p *Parser) ParseUnitHead() (*ast.Unit, error) {
+func (p *Parser) ParseUnitIdent() (*ast.Unit, error) {
 	if _, err := p.Current(token.ReservedWord.HasKeyword("UNIT")); err != nil {
 		return nil, err
 	}
@@ -53,17 +72,19 @@ func (p *Parser) ParseUnitHead() (*ast.Unit, error) {
 		return nil, err
 	}
 	p.NextToken()
-
-	intf, err := p.ParseInterfaceSectionUses()
-	if err != nil {
-		return nil, err
-	}
-	res.InterfaceSection = intf
-
 	return res, nil
 }
 
-func (p *Parser) ParseUnitBody(res *ast.Unit) error {
+func (p *Parser) ParseUnitIntfUses(res *ast.Unit) error {
+	intf, err := p.ParseInterfaceSectionUses()
+	if err != nil {
+		return err
+	}
+	res.InterfaceSection = intf
+	return nil
+}
+
+func (p *Parser) ParseUnitIntfBody(res *ast.Unit) error {
 	if err := p.ParseInterfaceSectionDecls(res.InterfaceSection); err != nil {
 		return err
 	}
@@ -71,12 +92,7 @@ func (p *Parser) ParseUnitBody(res *ast.Unit) error {
 	return nil
 }
 
-func (p *Parser) ParseUnitTail(res *ast.Unit) error {
-	impl, err := p.ParseImplementationSection()
-	if err != nil {
-		return err
-	}
-
+func (p *Parser) ParseUnitEnd(res *ast.Unit) error {
 	if p.CurrentToken().Is(token.ReservedWord.HasKeyword("INITIALIZATION")) {
 		if initSection, err := p.ParseInitSection(); err != nil {
 			return err
@@ -91,7 +107,6 @@ func (p *Parser) ParseUnitTail(res *ast.Unit) error {
 	if _, err := p.Next(token.Symbol('.')); err != nil {
 		return err
 	}
-	res.ImplementationSection = impl
 	p.context.SetDecl(res)
 	return nil
 }
@@ -128,7 +143,7 @@ func (p *Parser) ParseInterfaceSectionDecls(res *ast.InterfaceSection) error {
 			return nil
 		}
 		if !t.Is(token.ReservedWord) {
-			return errors.Errorf("expects reserved word but got %s", t.String())
+			return p.TokenErrorf("expects reserved word but got %s", t)
 		}
 		switch t.Value() {
 		case "TYPE":
@@ -179,42 +194,46 @@ func (p *Parser) ParseInterfaceSectionDecls(res *ast.InterfaceSection) error {
 	return nil
 }
 
-func (p *Parser) ParseImplementationSection() (*ast.ImplementationSection, error) {
+func (p *Parser) ParseImplUses(res *ast.Unit) error {
 	if _, err := p.Current(token.ReservedWord.HasKeyword("IMPLEMENTATION")); err != nil {
-		return nil, err
+		return err
 	}
 	p.NextToken()
 
 	defer p.StackContext()()
 
-	res := &ast.ImplementationSection{}
+	impl := &ast.ImplementationSection{}
 	if p.CurrentToken().Is(token.ReservedWord.HasKeyword("USES")) {
 		usesClause, err := p.ParseUsesClause()
 		if err != nil {
-			return nil, err
+			return err
 		}
-		res.UsesClause = usesClause
+		impl.UsesClause = usesClause
 		p.context.AddUnitIdentifiers(usesClause.IdentList().Names()...)
 		p.NextToken()
 	}
+	res.ImplementationSection = impl
+	return nil
+}
 
+func (p *Parser) ParseImplBody(res *ast.Unit) error {
 	if declSections, err := p.ParseDeclSections(); err != nil {
-		return nil, err
+		return err
 	} else if len(declSections) > 0 {
-		res.DeclSections = declSections
+		res.ImplementationSection.DeclSections = declSections
 	}
 
 	if exportsStmt, err := p.ParseExportsStmts(); err != nil {
-		return nil, err
+		return err
 	} else if exportsStmt != nil {
-		res.ExportsStmts = exportsStmt
+		res.ImplementationSection.ExportsStmts = exportsStmt
 	}
 
 	if p.CurrentToken().Is(token.Symbol(';')) {
 		p.NextToken()
 	}
 
-	return res, nil
+	return nil
 }
 
 func (p *Parser) ParseInitSection() (*ast.InitSection, error) {
@@ -283,15 +302,15 @@ func (p *Parser) ParseQualId() (*ast.QualId, error) {
 		}
 		unitDecl := p.context.Get(name1.Value())
 		if unitDecl == nil {
-			return nil, errors.Errorf("undefined unit %s", name1.Value())
+			return nil, p.TokenErrorf("undefined unit %s", name1)
 		}
 		if !isUnitDeclaration(unitDecl) {
-			return nil, errors.Errorf("%s is not a unit", name1.Value())
+			return nil, p.TokenErrorf("%s is not a unit", name1)
 		}
 		unit := unitDecl.Node.(*ast.Unit)
 		decl := unit.DeclarationMap.Get(name2.Value())
 		if decl == nil {
-			return nil, errors.Errorf("undefined identifier %s in unit %s", name2.Value(), name1.Value())
+			return nil, p.TokenErrorf("undefined identifier %s in unit %s", name2, name1.Value())
 		}
 		p.NextToken()
 		return &ast.QualId{

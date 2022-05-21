@@ -2,7 +2,6 @@ package parser
 
 import (
 	"github.com/akm/tparser/ast"
-	"github.com/pkg/errors"
 )
 
 func (p *Parser) ParseGoal() (ast.Goal, error) {
@@ -18,6 +17,6 @@ func (p *Parser) ParseGoal() (ast.Goal, error) {
 		return p.ParseUnit()
 	default:
 		// 	return p.ParseProgram() // PROGRAM is optional word
-		return nil, errors.Errorf("unexpected token: %v", token)
+		return nil, p.TokenErrorf("unexpected token: %s", token)
 	}
 }

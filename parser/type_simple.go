@@ -3,7 +3,6 @@ package parser
 import (
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/token"
-	"github.com/pkg/errors"
 )
 
 var realType = token.PredicatorBy("RealType", ast.IsRealTypeName)
@@ -14,7 +13,7 @@ func (p *Parser) ParseRealType(required bool) (*ast.RealType, error) {
 		p.NextToken()
 		return &ast.RealType{Ident: p.NewIdent(t)}, nil
 	} else if required {
-		return nil, errors.Errorf("Unsupported token %+v for RealType", t)
+		return nil, p.TokenErrorf("Unsupported token %s for RealType", t)
 	} else {
 		return nil, nil
 	}
@@ -28,7 +27,7 @@ func (p *Parser) ParseOrdIdent(required bool) (*ast.OrdIdent, error) {
 		p.NextToken()
 		return &ast.OrdIdent{Ident: p.NewIdent(t)}, nil
 	} else if required {
-		return nil, errors.Errorf("Unsupported token %+v for OrdIdent", t)
+		return nil, p.TokenErrorf("Unsupported token %s for OrdIdent", t)
 	} else {
 		return nil, nil
 	}
@@ -53,7 +52,7 @@ func (p *Parser) parseSubrangeTypeForIdentifier(required bool) (*ast.SubrangeTyp
 	} else {
 		defer rollback()
 		if required {
-			return nil, errors.Errorf("Unsupported token %+v, %+v for SubrangeType", t1, t2)
+			return nil, p.TokenErrorf("Unsupported token %s, %s for SubrangeType", t1, t2.RawString())
 		} else {
 			return nil, nil
 		}
@@ -93,7 +92,7 @@ func (p *Parser) ParseEnumeratedType() (ast.EnumeratedType, error) {
 		} else if t.Is(token.Symbol(',')) {
 			continue
 		} else {
-			return nil, errors.Errorf("Unsupported token %+v for EnumeratedType", t)
+			return nil, p.TokenErrorf("Unsupported token %s for EnumeratedType", t)
 		}
 	}
 	return res, nil

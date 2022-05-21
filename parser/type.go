@@ -3,7 +3,6 @@ package parser
 import (
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/token"
-	"github.com/pkg/errors"
 )
 
 func (p *Parser) ParseTypeSection(required bool) (ast.TypeSection, error) {
@@ -87,7 +86,7 @@ func (p *Parser) ParseType() (ast.Type, error) {
 	case token.ReservedWord:
 		return p.ParseStringOfStringType()
 	}
-	return nil, errors.Errorf("Unsupported Type token %+v", t1)
+	return nil, p.TokenErrorf("Unsupported Type token %s", t1)
 }
 
 func (p *Parser) ParseTypeForIdentifier() (ast.Type, error) {

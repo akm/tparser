@@ -42,9 +42,9 @@ func (m *UnitLoader) LoadFile() error {
 	return nil
 }
 
-func (m *UnitLoader) LoadHead() error {
+func (m *UnitLoader) ProcessIdentAndIntfUses() error {
 	m.Parser.NextToken()
-	if u, err := m.Parser.ParseUnitHead(); err != nil {
+	if u, err := m.Parser.ParseUnitIdentAndIntfUses(); err != nil {
 		return err
 	} else {
 		m.Unit = u
@@ -52,7 +52,7 @@ func (m *UnitLoader) LoadHead() error {
 	}
 }
 
-func (m *UnitLoader) LoadBody() error {
+func (m *UnitLoader) ProcessIntfBody() error {
 	units := ast.Units{}
 	parentUnits := m.ctx.Parent.Units
 	for _, unitRef := range m.Unit.InterfaceSection.UsesClause {
@@ -73,7 +73,7 @@ func (m *UnitLoader) LoadBody() error {
 	m.ctx.DeclarationMap = astcore.NewCompositeDeclarationMap(maps...)
 
 	// Parse rest of interface Section (except USES clause)
-	if err := m.Parser.ParseUnitBody(m.Unit); err != nil {
+	if err := m.Parser.ParseUnitIntfBody(m.Unit); err != nil {
 		return err
 	}
 
@@ -81,11 +81,43 @@ func (m *UnitLoader) LoadBody() error {
 	return nil
 }
 
-func (m *UnitLoader) LoadTail() error {
-	return m.Parser.ParseUnitTail(m.Unit)
+func (m *UnitLoader) ProcessImplAndInit() error {
+	if err := m.Parser.ParseImplUses(m.Unit); err != nil {
+		return err
+	}
+	// defer m.Parser.StackContext()()
+
+	parentUnits := m.ctx.Parent.Units
+	localMap := astcore.NewDeclarationMap()
+	localMap.SetDecl(m.Unit)
+	maps := []astcore.DeclarationMap{localMap}
+	for _, unitRef := range m.Unit.ImplementationSection.UsesClause {
+		if unit := parentUnits.ByName(unitRef.Ident.Name); unit != nil {
+			localMap.SetDecl(unit)
+			maps = append(maps, unit.DeclarationMap)
+		}
+	}
+	m.ctx.DeclarationMap = astcore.NewCompositeDeclarationMap(maps...)
+
+	if err := m.Parser.ParseImplBody(m.Unit); err != nil {
+		return err
+	}
+	if err := m.Parser.ParseUnitEnd(m.Unit); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 type UnitLoaders []*UnitLoader
+
+func (m UnitLoaders) Units() ast.Units {
+	r := make(ast.Units, len(m))
+	for i, loader := range m {
+		r[i] = loader.Unit
+	}
+	return r
+}
 
 func (m UnitLoaders) UnitNames() ext.StringSet {
 	unitNames := ext.Strings{}

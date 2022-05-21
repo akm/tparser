@@ -75,7 +75,7 @@ func (p *Parser) LoadUnits(ctx *ProjectContext, uses ast.UsesClause) error {
 		if err := loader.LoadFile(); err != nil {
 			return err
 		}
-		if err := loader.LoadHead(); err != nil {
+		if err := loader.ProcessIdentAndIntfUses(); err != nil {
 			return err
 		}
 		ctx.AddUnit(loader.Unit)
@@ -87,7 +87,7 @@ func (p *Parser) LoadUnits(ctx *ProjectContext, uses ast.UsesClause) error {
 	}
 
 	for _, loader := range sortedLoaders {
-		if err := loader.LoadBody(); err != nil {
+		if err := loader.ProcessIntfBody(); err != nil {
 			return err
 		}
 	}
@@ -97,9 +97,14 @@ func (p *Parser) LoadUnits(ctx *ProjectContext, uses ast.UsesClause) error {
 	ctx.DeclarationMap = astcore.NewCompositeDeclarationMap(declMaps...)
 
 	for _, loader := range sortedLoaders {
-		if err := loader.LoadTail(); err != nil {
+		if err := loader.ProcessImplAndInit(); err != nil {
 			return err
 		}
+	}
+
+	units := loaders.Units() // Don't use sortedLoaders for this
+	for _, u := range units {
+		ctx.DeclarationMap.SetDecl(u)
 	}
 
 	return nil
