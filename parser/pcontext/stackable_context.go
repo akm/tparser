@@ -46,9 +46,6 @@ func (c *StackableContext) Get(name string) *astcore.Declaration {
 	}
 	return c.parent.Get(name)
 }
-func (c *StackableContext) Set(d *astcore.Declaration) {
-	c.declarationMap.Set(d)
-}
 
 func (c *StackableContext) SetDecl(decl astcore.Decl) {
 	c.declarationMap.SetDecl(decl)
