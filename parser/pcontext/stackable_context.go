@@ -40,7 +40,7 @@ func (c *StackableContext) GetDeclarationMap() astcore.DeclarationMap {
 	return astcore.NewCompositeDeclarationMap(c.declarationMap, c.parent.GetDeclarationMap())
 }
 
-func (c *StackableContext) Get(name string) *astcore.Declaration {
+func (c *StackableContext) Get(name string) *astcore.Decl {
 	if r := c.declarationMap.Get(name); r != nil {
 		return r
 	}

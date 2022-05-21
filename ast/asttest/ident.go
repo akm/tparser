@@ -28,12 +28,12 @@ func NewIdent(arg interface{}, locations ...*ast.Location) *ast.Ident {
 
 func NewIdentRef(arg interface{}, args ...interface{}) *ast.IdentRef {
 	var location *ast.Location
-	var declaration *astcore.Declaration
+	var declaration *astcore.Decl
 	for _, i := range args {
 		switch v := i.(type) {
 		case *ast.Location:
 			location = v
-		case *astcore.Declaration:
+		case *astcore.Decl:
 			declaration = v
 		}
 	}

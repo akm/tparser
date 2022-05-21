@@ -5,7 +5,7 @@ import (
 	"github.com/akm/tparser/ast/astcore"
 )
 
-func IsUnitDeclaration(decl *astcore.Declaration) bool {
+func IsUnitDeclaration(decl *astcore.Decl) bool {
 	if decl == nil {
 		return false
 	}

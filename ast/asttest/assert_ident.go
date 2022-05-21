@@ -56,7 +56,7 @@ func AssertPosition(t *testing.T, expected, actual *astcore.Position) {
 	// DO nothing
 }
 
-func AssertDeclaration(t *testing.T, expected, actual *astcore.Declaration) {
+func AssertDeclaration(t *testing.T, expected, actual *astcore.Decl) {
 	if expected != nil {
 		if assert.NotNil(t, actual) {
 			if !assert.Equal(t, expected.Ident, actual.Ident) {

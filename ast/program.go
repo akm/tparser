@@ -30,8 +30,8 @@ func (m *Program) Children() Nodes {
 	res = append(res, m.ProgramBlock)
 	return res
 }
-func (m *Program) ToDeclarations() astcore.Declarations {
-	return astcore.Declarations{astcore.NewDeclaration(m.Ident, m)}
+func (m *Program) ToDeclarations() astcore.Decls {
+	return astcore.Decls{astcore.NewDeclaration(m.Ident, m)}
 }
 
 // - ProgramBlock

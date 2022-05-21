@@ -3,11 +3,11 @@ package astcore
 // Ident with reference to Declaration
 type IdentRef struct {
 	*Ident
-	Ref *Declaration
+	Ref *Decl
 	Node
 }
 
-func NewIdentRef(ident *Ident, ref *Declaration) *IdentRef {
+func NewIdentRef(ident *Ident, ref *Decl) *IdentRef {
 	return &IdentRef{Ident: ident, Ref: ref}
 }
 

@@ -209,8 +209,8 @@ func (m *EnumeratedTypeElement) Children() Nodes {
 	}
 	return r
 }
-func (m *EnumeratedTypeElement) ToDeclarations() astcore.Declarations {
-	return astcore.Declarations{astcore.NewDeclaration(m.Ident, m)}
+func (m *EnumeratedTypeElement) ToDeclarations() astcore.Decls {
+	return astcore.Decls{astcore.NewDeclaration(m.Ident, m)}
 }
 
 // - SubrangeType

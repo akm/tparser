@@ -5,11 +5,11 @@ import (
 )
 
 type DeclarationMap interface {
-	Get(name string) *Declaration
+	Get(name string) *Decl
 	Set(DeclNode)
 }
 
-type declarationMapImpl map[string]*Declaration
+type declarationMapImpl map[string]*Decl
 
 func NewDeclarationMap() DeclarationMap {
 	return make(declarationMapImpl)
@@ -21,7 +21,7 @@ func (m declarationMapImpl) Set(decl DeclNode) {
 	}
 }
 
-func (m declarationMapImpl) Get(name string) *Declaration {
+func (m declarationMapImpl) Get(name string) *Decl {
 	return m[m.regularize(name)]
 }
 
@@ -37,7 +37,7 @@ func NewCompositeDeclarationMap(maps ...DeclarationMap) *CompositeDeclarationMap
 	return &CompositeDeclarationMap{maps: maps}
 }
 
-func (c *CompositeDeclarationMap) Get(name string) *Declaration {
+func (c *CompositeDeclarationMap) Get(name string) *Decl {
 	for _, m := range c.maps {
 		if d := m.Get(name); d != nil {
 			return d

@@ -42,8 +42,8 @@ func (m *ConstantDecl) Children() Nodes {
 	return r
 }
 
-func (m *ConstantDecl) ToDeclarations() astcore.Declarations {
-	return astcore.Declarations{astcore.NewDeclaration(m.Ident, m)}
+func (m *ConstantDecl) ToDeclarations() astcore.Decls {
+	return astcore.Decls{astcore.NewDeclaration(m.Ident, m)}
 }
 
 // - ConstExpr

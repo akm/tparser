@@ -50,7 +50,7 @@ func (m *VarDecl) Children() Nodes {
 	return r
 }
 
-func (m *VarDecl) ToDeclarations() astcore.Declarations {
+func (m *VarDecl) ToDeclarations() astcore.Decls {
 	return astcore.NewDeclarations(m.IdentList, m)
 }
 
@@ -114,6 +114,6 @@ func (m *ThreadVarDecl) Children() Nodes {
 	return r
 }
 
-func (m *ThreadVarDecl) ToDeclarations() astcore.Declarations {
+func (m *ThreadVarDecl) ToDeclarations() astcore.Decls {
 	return astcore.NewDeclarations(m.IdentList, m)
 }

@@ -43,8 +43,8 @@ func (m *Unit) Children() Nodes {
 	return r
 }
 
-func (m *Unit) ToDeclarations() astcore.Declarations {
-	return astcore.Declarations{astcore.NewDeclaration(m.Ident, m)}
+func (m *Unit) ToDeclarations() astcore.Decls {
+	return astcore.Decls{astcore.NewDeclaration(m.Ident, m)}
 }
 
 type Units []*Unit
