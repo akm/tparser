@@ -1,7 +1,6 @@
 package pcontext
 
 import (
-	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/astcore"
 	"github.com/akm/tparser/ext"
 	"github.com/akm/tparser/token"
@@ -68,8 +67,4 @@ func (c *UnitContext) GetDeclarationMap() astcore.DeclarationMap {
 
 func (c *UnitContext) GetPath() string {
 	return c.Path
-}
-
-func (c *UnitContext) GetUnits() ast.Units {
-	panic(errors.Errorf("not implemented"))
 }

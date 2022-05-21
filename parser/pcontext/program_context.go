@@ -80,6 +80,3 @@ func (c *ProgramContext) GetPath() string {
 func (c *ProgramContext) AddUnit(unit *ast.Unit) {
 	c.Units = append(c.Units, unit)
 }
-func (c *ProgramContext) GetUnits() ast.Units {
-	return c.Units
-}
