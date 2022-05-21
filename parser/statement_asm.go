@@ -2,6 +2,7 @@ package parser
 
 import (
 	"github.com/akm/tparser/ast"
+	"github.com/akm/tparser/log"
 	"github.com/akm/tparser/token"
 )
 
@@ -11,7 +12,7 @@ func (p *Parser) ParseAssemblerStatement() (*ast.AssemblerStatement, error) {
 	}
 	p.NextToken()
 
-	p.logger.Printf("ParseAssemblerStatement start")
+	log.Printf("ParseAssemblerStatement start")
 
 	for {
 		if p.NextToken().Is(token.ReservedWord.HasKeyword("END")) {
@@ -20,7 +21,7 @@ func (p *Parser) ParseAssemblerStatement() (*ast.AssemblerStatement, error) {
 		}
 	}
 
-	p.logger.Printf("ParseAssemblerStatement done")
+	log.Printf("ParseAssemblerStatement done")
 
 	return &ast.AssemblerStatement{}, nil
 }

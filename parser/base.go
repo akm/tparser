@@ -3,10 +3,10 @@ package parser
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 
 	"github.com/akm/tparser/ast"
+	"github.com/akm/tparser/log"
 	"github.com/akm/tparser/token"
 	"github.com/pkg/errors"
 	"golang.org/x/text/encoding/japanese"
@@ -55,29 +55,15 @@ type Parser struct {
 	tokenizer *token.Tokenizer
 	curr      *token.Token
 	context   Context
-	logger    *log.Logger
 }
 
 func NewParser(text *[]rune, ctx Context, args ...interface{}) *Parser {
-	var logger *log.Logger
-	for _, arg := range args {
-		switch v := arg.(type) {
-		case *log.Logger:
-			logger = v
-		default:
-			panic(errors.Errorf("unexpected type %T (%v)", arg, arg))
-		}
-	}
 	if ctx == nil {
 		panic(errors.Errorf("context is required for NewParser"))
-	}
-	if logger == nil {
-		logger = log.New(os.Stderr, "", log.LstdFlags|log.Llongfile)
 	}
 	return &Parser{
 		tokenizer: token.NewTokenizer(text, 0),
 		context:   ctx,
-		logger:    logger,
 	}
 }
 
@@ -151,7 +137,7 @@ func (p *Parser) Until(terminator token.Predicator, separator token.Predicator, 
 }
 
 func (p *Parser) Logf(format string, args ...interface{}) {
-	p.logger.Printf(format, args...)
+	log.Printf(format, args...)
 }
 
 func (p *Parser) TokenErrorf(format string, t *token.Token, args ...interface{}) error {
