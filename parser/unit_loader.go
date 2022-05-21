@@ -16,7 +16,7 @@ import (
 
 type UnitLoader struct {
 	ctx *UnitContext
-	*Parser
+	*UnitParser
 	Unit *ast.Unit
 }
 
@@ -38,13 +38,13 @@ func (m *UnitLoader) LoadFile() error {
 	}
 
 	runes := []rune(string(str))
-	m.Parser = NewParser(&runes, m.ctx)
+	m.UnitParser = NewUnitParser(&runes, m.ctx)
 	return nil
 }
 
 func (m *UnitLoader) ProcessIdentAndIntfUses() error {
 	m.Parser.NextToken()
-	if u, err := m.Parser.ParseUnitIdentAndIntfUses(); err != nil {
+	if u, err := m.UnitParser.ParseUnitIdentAndIntfUses(); err != nil {
 		return err
 	} else {
 		m.Unit = u
@@ -73,7 +73,7 @@ func (m *UnitLoader) ProcessIntfBody() error {
 	m.ctx.DeclMap = astcore.NewCompositeDeclarationMap(maps...)
 
 	// Parse rest of interface Section (except USES clause)
-	if err := m.Parser.ParseUnitIntfBody(m.Unit); err != nil {
+	if err := m.UnitParser.ParseUnitIntfBody(m.Unit); err != nil {
 		return err
 	}
 
@@ -82,7 +82,7 @@ func (m *UnitLoader) ProcessIntfBody() error {
 }
 
 func (m *UnitLoader) ProcessImplAndInit() error {
-	if err := m.Parser.ParseImplUses(m.Unit); err != nil {
+	if err := m.UnitParser.ParseImplUses(m.Unit); err != nil {
 		return err
 	}
 	// defer m.Parser.StackContext()()
@@ -99,10 +99,10 @@ func (m *UnitLoader) ProcessImplAndInit() error {
 	}
 	m.ctx.DeclMap = astcore.NewCompositeDeclarationMap(maps...)
 
-	if err := m.Parser.ParseImplBody(m.Unit); err != nil {
+	if err := m.UnitParser.ParseImplBody(m.Unit); err != nil {
 		return err
 	}
-	if err := m.Parser.ParseUnitEnd(m.Unit); err != nil {
+	if err := m.UnitParser.ParseUnitEnd(m.Unit); err != nil {
 		return err
 	}
 

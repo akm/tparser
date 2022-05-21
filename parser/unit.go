@@ -322,3 +322,15 @@ func (p *Parser) ParseInitSection() (*ast.InitSection, error) {
 
 	return res, nil
 }
+
+type UnitParser struct {
+	*Parser
+	context *UnitContext
+}
+
+func NewUnitParser(text *[]rune, ctx *UnitContext) *UnitParser {
+	return &UnitParser{
+		Parser:  NewParser(text, ctx),
+		context: ctx,
+	}
+}
