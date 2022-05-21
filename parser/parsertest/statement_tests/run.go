@@ -11,7 +11,7 @@ import (
 
 func runProgram(t *testing.T, name string, clearLocations bool, text []rune, expected *ast.Program, callbacks ...func(expected, actual *ast.CompoundStmt)) {
 	t.Run(name, func(t *testing.T) {
-		parser := parsertest.NewTestParser(&text, parsertest.NewTestProgramContext())
+		parser := parsertest.NewTestProgramParser(&text)
 		parser.NextToken()
 		res, err := parser.ParseProgram()
 		if assert.NoError(t, err) {

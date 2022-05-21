@@ -11,7 +11,7 @@ import (
 func TestProgram(t *testing.T) {
 	run := func(name string, clearLocations bool, text []rune, expected *ast.Program) {
 		t.Run(name, func(t *testing.T) {
-			parser := NewTestParser(&text, NewTestProgramContext())
+			parser := NewTestProgramParser(&text)
 			parser.NextToken()
 			res, err := parser.ParseProgram()
 			if assert.NoError(t, err) {
