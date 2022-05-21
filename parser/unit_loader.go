@@ -38,7 +38,8 @@ func (m *UnitLoader) LoadFile() error {
 	}
 
 	runes := []rune(string(str))
-	m.UnitParser = NewUnitParser(&runes, m.ctx)
+	m.UnitParser = NewUnitParser(m.ctx)
+	m.UnitParser.SetText(&runes)
 	return nil
 }
 

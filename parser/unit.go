@@ -71,10 +71,8 @@ type UnitParser struct {
 	context *UnitContext
 }
 
-func NewUnitParser(text *[]rune, ctx *UnitContext) *UnitParser {
-	p := NewParser(ctx)
-	p.SetText(text)
-	return &UnitParser{Parser: p, context: ctx}
+func NewUnitParser(ctx *UnitContext) *UnitParser {
+	return &UnitParser{Parser: NewParser(ctx), context: ctx}
 }
 
 // ParseUnit method is not deleted for tests.
