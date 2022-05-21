@@ -12,14 +12,14 @@ type ProgramContext struct {
 	Path            string
 	unitIdentifiers ext.Strings // TO BE REMOVED
 	Units           ast.Units
-	astcore.DeclarationMap
+	astcore.DeclMap
 }
 
 func NewProgramContext(args ...interface{}) *ProgramContext {
 	var path string
 	var unitIdentifiers ext.Strings
 	var units ast.Units
-	var declarationMap astcore.DeclarationMap
+	var declarationMap astcore.DeclMap
 	for _, arg := range args {
 		switch v := arg.(type) {
 		case string:
@@ -28,7 +28,7 @@ func NewProgramContext(args ...interface{}) *ProgramContext {
 			unitIdentifiers = v
 		case ast.Units:
 			units = v
-		case astcore.DeclarationMap:
+		case astcore.DeclMap:
 			declarationMap = v
 		default:
 			panic(errors.Errorf("unexpected type %T (%v) is given for NewProjectContext", arg, arg))
@@ -47,7 +47,7 @@ func NewProgramContext(args ...interface{}) *ProgramContext {
 		Path:            path,
 		unitIdentifiers: unitIdentifiers,
 		Units:           units,
-		DeclarationMap:  declarationMap,
+		DeclMap:         declarationMap,
 	}
 }
 
@@ -56,7 +56,7 @@ func (c *ProgramContext) Clone() Context {
 		Path:            c.Path,
 		unitIdentifiers: c.unitIdentifiers,
 		Units:           c.Units,
-		DeclarationMap:  c.DeclarationMap,
+		DeclMap:         c.DeclMap,
 	}
 }
 
@@ -66,11 +66,11 @@ func (c *ProgramContext) AddUnitIdentifiers(names ...string) {
 
 func (c *ProgramContext) IsUnitIdentifier(t *token.Token) bool {
 	s := t.Value()
-	return c.unitIdentifiers.Include(s) || IsUnitDeclaration(c.DeclarationMap.Get(s)) || c.Units.ByName(s) != nil
+	return c.unitIdentifiers.Include(s) || IsUnitDeclaration(c.DeclMap.Get(s)) || c.Units.ByName(s) != nil
 }
 
-func (c *ProgramContext) GetDeclarationMap() astcore.DeclarationMap {
-	return c.DeclarationMap
+func (c *ProgramContext) GetDeclarationMap() astcore.DeclMap {
+	return c.DeclMap
 }
 
 func (c *ProgramContext) GetPath() string {

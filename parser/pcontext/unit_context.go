@@ -11,20 +11,20 @@ type UnitContext struct {
 	Parent          *ProgramContext
 	Path            string
 	unitIdentifiers ext.Strings // TO BE REMOVED
-	astcore.DeclarationMap
+	astcore.DeclMap
 }
 
 func NewUnitContext(parent *ProgramContext, args ...interface{}) *UnitContext {
 	var path string
 	var unitIdentifiers ext.Strings
-	var declarationMap astcore.DeclarationMap
+	var declarationMap astcore.DeclMap
 	for _, arg := range args {
 		switch v := arg.(type) {
 		case string:
 			path = v
 		case ext.Strings:
 			unitIdentifiers = v
-		case astcore.DeclarationMap:
+		case astcore.DeclMap:
 			declarationMap = v
 		default:
 			panic(errors.Errorf("unexpected type %T (%v) is given for NewUnitContext", arg, arg))
@@ -40,7 +40,7 @@ func NewUnitContext(parent *ProgramContext, args ...interface{}) *UnitContext {
 		Parent:          parent,
 		Path:            path,
 		unitIdentifiers: unitIdentifiers,
-		DeclarationMap:  declarationMap,
+		DeclMap:         declarationMap,
 	}
 }
 
@@ -49,7 +49,7 @@ func (c *UnitContext) Clone() Context {
 		Parent:          c.Parent,
 		Path:            c.Path,
 		unitIdentifiers: c.unitIdentifiers,
-		DeclarationMap:  c.DeclarationMap,
+		DeclMap:         c.DeclMap,
 	}
 }
 func (c *UnitContext) AddUnitIdentifiers(names ...string) {
@@ -58,11 +58,11 @@ func (c *UnitContext) AddUnitIdentifiers(names ...string) {
 
 func (c *UnitContext) IsUnitIdentifier(token *token.Token) bool {
 	s := token.Value()
-	return c.unitIdentifiers.Include(s) || IsUnitDeclaration(c.DeclarationMap.Get(s))
+	return c.unitIdentifiers.Include(s) || IsUnitDeclaration(c.DeclMap.Get(s))
 }
 
-func (c *UnitContext) GetDeclarationMap() astcore.DeclarationMap {
-	return c.DeclarationMap
+func (c *UnitContext) GetDeclarationMap() astcore.DeclMap {
+	return c.DeclMap
 }
 
 func (c *UnitContext) GetPath() string {

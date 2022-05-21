@@ -62,7 +62,7 @@ func (m *UnitLoader) ProcessIntfBody() error {
 	}
 	localMap := astcore.NewDeclarationMap()
 	localMap.Set(m.Unit)
-	maps := []astcore.DeclarationMap{localMap}
+	maps := []astcore.DeclMap{localMap}
 	for _, unit := range units {
 		localMap.Set(unit)
 		// TODO declMapに追加する順番はこれでOK？
@@ -70,14 +70,14 @@ func (m *UnitLoader) ProcessIntfBody() error {
 		// コンテキスト上ではどちらが有効になるのかを確認する
 		maps = append(maps, unit.DeclarationMap)
 	}
-	m.ctx.DeclarationMap = astcore.NewCompositeDeclarationMap(maps...)
+	m.ctx.DeclMap = astcore.NewCompositeDeclarationMap(maps...)
 
 	// Parse rest of interface Section (except USES clause)
 	if err := m.Parser.ParseUnitIntfBody(m.Unit); err != nil {
 		return err
 	}
 
-	m.Unit.DeclarationMap = m.ctx.DeclarationMap
+	m.Unit.DeclarationMap = m.ctx.DeclMap
 	return nil
 }
 
@@ -90,14 +90,14 @@ func (m *UnitLoader) ProcessImplAndInit() error {
 	parentUnits := m.ctx.Parent.Units
 	localMap := astcore.NewDeclarationMap()
 	localMap.Set(m.Unit)
-	maps := []astcore.DeclarationMap{localMap}
+	maps := []astcore.DeclMap{localMap}
 	for _, unitRef := range m.Unit.ImplementationSection.UsesClause {
 		if unit := parentUnits.ByName(unitRef.Ident.Name); unit != nil {
 			localMap.Set(unit)
 			maps = append(maps, unit.DeclarationMap)
 		}
 	}
-	m.ctx.DeclarationMap = astcore.NewCompositeDeclarationMap(maps...)
+	m.ctx.DeclMap = astcore.NewCompositeDeclarationMap(maps...)
 
 	if err := m.Parser.ParseImplBody(m.Unit); err != nil {
 		return err
@@ -171,8 +171,8 @@ func (m UnitLoaders) Sort() (UnitLoaders, error) {
 	return r, nil
 }
 
-func (m UnitLoaders) DeclarationMaps() []astcore.DeclarationMap {
-	r := make([]astcore.DeclarationMap, len(m))
+func (m UnitLoaders) DeclarationMaps() []astcore.DeclMap {
+	r := make([]astcore.DeclMap, len(m))
 	for i, loader := range m {
 		r[i] = loader.Unit.DeclarationMap
 	}

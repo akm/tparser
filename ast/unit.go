@@ -20,7 +20,7 @@ type Unit struct {
 	InterfaceSection      *InterfaceSection
 	ImplementationSection *ImplementationSection
 	InitSection           *InitSection // optional
-	DeclarationMap        astcore.DeclarationMap
+	DeclarationMap        astcore.DeclMap
 	Goal
 }
 

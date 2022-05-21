@@ -10,7 +10,7 @@ type StackableContext struct {
 	path            *string
 	parent          Context
 	unitIdentifiers ext.Strings
-	declarationMap  astcore.DeclarationMap
+	declarationMap  astcore.DeclMap
 }
 
 func NewStackableContext(parent Context, args ...interface{}) Context {
@@ -24,7 +24,7 @@ func NewStackableContext(parent Context, args ...interface{}) Context {
 func (c *StackableContext) Clone() Context {
 	return &ProgramContext{
 		unitIdentifiers: c.unitIdentifiers,
-		DeclarationMap:  c.declarationMap,
+		DeclMap:         c.declarationMap,
 	}
 }
 
@@ -36,7 +36,7 @@ func (c *StackableContext) IsUnitIdentifier(token *token.Token) bool {
 	return c.unitIdentifiers.Include(token.Value()) || c.parent.IsUnitIdentifier(token)
 }
 
-func (c *StackableContext) GetDeclarationMap() astcore.DeclarationMap {
+func (c *StackableContext) GetDeclarationMap() astcore.DeclMap {
 	return astcore.NewCompositeDeclarationMap(c.declarationMap, c.parent.GetDeclarationMap())
 }
 

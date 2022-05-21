@@ -9,7 +9,7 @@ type Context interface {
 	Clone() Context
 	AddUnitIdentifiers(names ...string)
 	IsUnitIdentifier(token *token.Token) bool
-	GetDeclarationMap() astcore.DeclarationMap
+	GetDeclarationMap() astcore.DeclMap
 	GetPath() string
-	astcore.DeclarationMap
+	astcore.DeclMap
 }

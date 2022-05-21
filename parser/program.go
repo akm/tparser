@@ -92,9 +92,9 @@ func (p *Parser) LoadUnits(ctx *ProgramContext, uses ast.UsesClause) error {
 		}
 	}
 
-	declMaps := []astcore.DeclarationMap{ctx.DeclarationMap}
+	declMaps := []astcore.DeclMap{ctx.DeclMap}
 	declMaps = append(declMaps, loaders.DeclarationMaps()...)
-	ctx.DeclarationMap = astcore.NewCompositeDeclarationMap(declMaps...)
+	ctx.DeclMap = astcore.NewCompositeDeclarationMap(declMaps...)
 
 	for _, loader := range sortedLoaders {
 		if err := loader.ProcessImplAndInit(); err != nil {
@@ -104,7 +104,7 @@ func (p *Parser) LoadUnits(ctx *ProgramContext, uses ast.UsesClause) error {
 
 	units := loaders.Units() // Don't use sortedLoaders for this
 	for _, u := range units {
-		ctx.DeclarationMap.Set(u)
+		ctx.DeclMap.Set(u)
 	}
 
 	return nil
