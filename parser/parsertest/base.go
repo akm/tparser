@@ -16,11 +16,15 @@ func NewTestParser(text *[]rune, origArgs ...interface{}) *parser.Parser {
 		}
 	}
 	if ctx == nil {
-		ctx = NewTestProgramContext()
+		ctx = NewTestUnitContext()
 	}
 	return parser.NewParser(text, ctx, args...)
 }
 
 func NewTestProgramContext(args ...interface{}) *parser.ProgramContext {
 	return parser.NewProgramContext(args...)
+}
+
+func NewTestUnitContext(args ...interface{}) *parser.UnitContext {
+	return parser.NewUnitContext(NewTestProgramContext(), args...)
 }
