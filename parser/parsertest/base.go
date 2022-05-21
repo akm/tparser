@@ -18,7 +18,9 @@ func NewTestParser(text *[]rune, origArgs ...interface{}) *parser.Parser {
 	if ctx == nil {
 		ctx = NewTestUnitContext()
 	}
-	return parser.NewParser(text, ctx)
+	p := parser.NewParser(ctx)
+	p.SetText(text)
+	return p
 }
 
 func NewTestProgramParser(text *[]rune, origArgs ...interface{}) *parser.ProgramParser {

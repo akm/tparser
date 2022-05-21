@@ -54,11 +54,10 @@ type ProgramParser struct {
 	context *ProgramContext
 }
 
-func NewProgramParser(runes *[]rune, ctx *ProgramContext) *ProgramParser {
-	return &ProgramParser{
-		Parser:  NewParser(runes, ctx),
-		context: ctx,
-	}
+func NewProgramParser(text *[]rune, ctx *ProgramContext) *ProgramParser {
+	p := NewParser(ctx)
+	p.SetText(text)
+	return &ProgramParser{Parser: p, context: ctx}
 }
 
 func (p *ProgramParser) ParseProgram() (*ast.Program, error) {

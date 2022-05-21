@@ -14,14 +14,15 @@ type Parser struct {
 	context   Context
 }
 
-func NewParser(text *[]rune, ctx Context) *Parser {
+func NewParser(ctx Context) *Parser {
 	if ctx == nil {
 		panic(errors.Errorf("context is required for NewParser"))
 	}
-	return &Parser{
-		tokenizer: token.NewTokenizer(text, 0),
-		context:   ctx,
-	}
+	return &Parser{context: ctx}
+}
+
+func (p *Parser) SetText(text *[]rune) {
+	p.tokenizer = token.NewTokenizer(text, 0)
 }
 
 func (p *Parser) RollbackPoint() func() {
