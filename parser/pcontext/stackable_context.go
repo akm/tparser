@@ -1,11 +1,9 @@
 package pcontext
 
 import (
-	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/astcore"
 	"github.com/akm/tparser/ext"
 	"github.com/akm/tparser/token"
-	"github.com/pkg/errors"
 )
 
 type StackableContext struct {
@@ -68,8 +66,4 @@ func (c *StackableContext) GetPath() string {
 
 func (c *StackableContext) SetPath(path string) {
 	c.path = &path
-}
-
-func (c *StackableContext) AddUnit(unit *ast.Unit) {
-	panic(errors.Errorf("unexpected call of AddUnit"))
 }

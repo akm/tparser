@@ -1,7 +1,6 @@
 package pcontext
 
 import (
-	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/astcore"
 	"github.com/akm/tparser/token"
 )
@@ -13,6 +12,5 @@ type Context interface {
 	GetDeclarationMap() astcore.DeclarationMap
 	GetPath() string
 	SetPath(path string)
-	AddUnit(unit *ast.Unit)
 	astcore.DeclarationMap
 }

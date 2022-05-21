@@ -74,9 +74,6 @@ func (c *UnitContext) SetPath(path string) {
 	c.Path = path
 }
 
-func (c *UnitContext) AddUnit(unit *ast.Unit) {
-	panic(errors.Errorf("not implemented"))
-}
 func (c *UnitContext) GetUnits() ast.Units {
 	panic(errors.Errorf("not implemented"))
 }
