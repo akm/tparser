@@ -443,7 +443,7 @@ func (m *ExceptionBlockHandler) Children() Nodes {
 type ExceptionBlockHandlerDecl struct {
 	Ident *Ident
 	Type  Type
-	astcore.Decl
+	astcore.DeclNode
 }
 
 func (m *ExceptionBlockHandlerDecl) Children() Nodes {

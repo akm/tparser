@@ -32,7 +32,7 @@ type TypeDecl struct {
 	*Ident
 	Type                 Type
 	PortabilityDirective *PortabilityDirective
-	astcore.Decl
+	astcore.DeclNode
 }
 
 func (m *TypeDecl) Children() Nodes {

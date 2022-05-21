@@ -132,7 +132,7 @@ func (m DeclSections) Children() Nodes {
 type LabelDeclSection struct {
 	*LabelId
 	DeclSection
-	astcore.Decl
+	astcore.DeclNode
 }
 
 func (*LabelDeclSection) canBeDeclSection() {}

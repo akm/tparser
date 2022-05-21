@@ -33,7 +33,7 @@ type VarDecl struct {
 	Absolute             VarDeclAbsolute
 	ConstExpr            *ConstExpr
 	PortabilityDirective *PortabilityDirective
-	astcore.Decl
+	astcore.DeclNode
 }
 
 func (m *VarDecl) Children() Nodes {
@@ -103,7 +103,7 @@ func (s ThreadVarSection) Children() Nodes {
 type ThreadVarDecl struct {
 	IdentList
 	Type Type
-	astcore.Decl
+	astcore.DeclNode
 }
 
 func (m *ThreadVarDecl) Children() Nodes {

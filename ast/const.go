@@ -30,7 +30,7 @@ type ConstantDecl struct {
 	Type                 Type
 	ConstExpr            *ConstExpr
 	PortabilityDirective *PortabilityDirective
-	astcore.Decl
+	astcore.DeclNode
 }
 
 func (m *ConstantDecl) Children() Nodes {

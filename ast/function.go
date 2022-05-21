@@ -25,7 +25,7 @@ type ProcedureDeclSection interface {
 //   Block ';'
 //   ```
 type FunctionDecl struct {
-	astcore.Decl
+	astcore.DeclNode
 	*FunctionHeading
 	Directives           []Directive
 	ExternalOptions      *ExternalOptions

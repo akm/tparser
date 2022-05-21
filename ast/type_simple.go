@@ -197,7 +197,7 @@ func (m EnumeratedType) Children() Nodes {
 }
 
 type EnumeratedTypeElement struct {
-	astcore.Decl
+	astcore.DeclNode
 	*Ident
 	ConstExpr *ConstExpr
 }

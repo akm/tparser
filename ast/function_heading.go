@@ -18,7 +18,7 @@ type ExportedHeading struct {
 	*FunctionHeading
 	Directives      []Directive
 	ExternalOptions *ExternalOptions
-	astcore.Decl
+	astcore.DeclNode
 	InterfaceDecl
 }
 
@@ -95,7 +95,7 @@ var (
 type FormalParm struct {
 	Opt *FormalParmOption
 	*Parameter
-	astcore.Decl
+	astcore.DeclNode
 }
 
 func (m *FormalParm) Children() Nodes {
