@@ -6,7 +6,6 @@ import (
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/asttest"
 	"github.com/akm/tparser/ext"
-	"github.com/akm/tparser/parser"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -170,7 +169,7 @@ func TestTypeDecl(t *testing.T) {
 
 	run := func(name string, text []rune, expected *ast.TypeDecl) {
 		t.Run(name, func(t *testing.T) {
-			parser := NewTestParser(&text, parser.NewContext(ext.Strings{u1.String()}))
+			parser := NewTestUnitParser(&text, NewTestUnitContext(ext.Strings{u1.String()}))
 			parser.NextToken()
 			res, err := parser.ParseTypeDecl()
 			if assert.NoError(t, err) {
@@ -214,7 +213,7 @@ func TestTypeId(t *testing.T) {
 
 	run := func(name string, text []rune, expected *ast.TypeId) {
 		t.Run(name, func(t *testing.T) {
-			parser := NewTestParser(&text, parser.NewContext(ext.Strings{u1.String()}))
+			parser := NewTestParser(&text, NewTestUnitContext(ext.Strings{u1.String()}))
 			parser.NextToken()
 			res, err := parser.ParseTypeForIdentifier()
 			if assert.NoError(t, err) {
