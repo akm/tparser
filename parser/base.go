@@ -57,7 +57,7 @@ type Parser struct {
 	context   Context
 }
 
-func NewParser(text *[]rune, ctx Context, args ...interface{}) *Parser {
+func NewParser(text *[]rune, ctx Context) *Parser {
 	if ctx == nil {
 		panic(errors.Errorf("context is required for NewParser"))
 	}
