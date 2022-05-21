@@ -77,10 +77,6 @@ func (c *ProgramContext) GetPath() string {
 	return c.Path
 }
 
-func (c *ProgramContext) SetPath(path string) {
-	c.Path = path
-}
-
 func (c *ProgramContext) AddUnit(unit *ast.Unit) {
 	c.Units = append(c.Units, unit)
 }

@@ -63,7 +63,3 @@ func (c *StackableContext) GetPath() string {
 	}
 	return c.parent.GetPath()
 }
-
-func (c *StackableContext) SetPath(path string) {
-	c.path = &path
-}

@@ -11,6 +11,5 @@ type Context interface {
 	IsUnitIdentifier(token *token.Token) bool
 	GetDeclarationMap() astcore.DeclarationMap
 	GetPath() string
-	SetPath(path string)
 	astcore.DeclarationMap
 }
