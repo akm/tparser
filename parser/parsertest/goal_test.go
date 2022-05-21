@@ -5,7 +5,6 @@ import (
 
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/asttest"
-	"github.com/akm/tparser/parser"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -15,7 +14,7 @@ func TestGoal(t *testing.T) {
 	implementation
 	end.`)
 
-	parser := parser.NewParser(&text)
+	parser := NewTestParser(&text)
 	res, err := parser.ParseGoal()
 	if assert.NoError(t, err) {
 		asttest.ClearUnitDeclarationMaps(t, res)

@@ -6,14 +6,14 @@ import (
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/astcore"
 	"github.com/akm/tparser/ast/asttest"
-	"github.com/akm/tparser/parser"
+	"github.com/akm/tparser/parser/parsertest"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestRaiseStmt(t *testing.T) {
 	runWithFunc := func(t *testing.T, name string, text []rune, expected *ast.FunctionDecl) {
 		t.Run(name, func(t *testing.T) {
-			parser := parser.NewParser(&text)
+			parser := parsertest.NewTestParser(&text)
 			parser.NextToken()
 			res, err := parser.ParseProcedureDeclSection()
 			if assert.NoError(t, err) {
@@ -229,7 +229,7 @@ end;
 
 	runWithStatement := func(t *testing.T, name string, text []rune, expected *ast.Statement) {
 		t.Run(name, func(t *testing.T) {
-			parser := parser.NewParser(&text)
+			parser := parsertest.NewTestParser(&text)
 			parser.NextToken()
 			res, err := parser.ParseStatement()
 			if assert.NoError(t, err) {

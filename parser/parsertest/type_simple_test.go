@@ -5,14 +5,13 @@ import (
 
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/asttest"
-	"github.com/akm/tparser/parser"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestEnumeratedType(t *testing.T) {
 	run := func(name string, text []rune, expected ast.Type) {
 		t.Run(name, func(t *testing.T) {
-			parser := parser.NewParser(&text)
+			parser := NewTestParser(&text)
 			parser.NextToken()
 			res, err := parser.ParseType()
 			if assert.NoError(t, err) {
@@ -58,7 +57,7 @@ func TestEnumeratedType(t *testing.T) {
 func TestSubrangeType(t *testing.T) {
 	run := func(name string, text []rune, expected ast.Type) {
 		t.Run(name, func(t *testing.T) {
-			parser := parser.NewParser(&text)
+			parser := NewTestParser(&text)
 			parser.NextToken()
 			res, err := parser.ParseType()
 			if assert.NoError(t, err) {

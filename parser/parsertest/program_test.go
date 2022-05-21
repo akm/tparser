@@ -5,14 +5,13 @@ import (
 
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/asttest"
-	"github.com/akm/tparser/parser"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestProgram(t *testing.T) {
 	run := func(name string, clearLocations bool, text []rune, expected *ast.Program) {
 		t.Run(name, func(t *testing.T) {
-			parser := parser.NewParser(&text)
+			parser := NewTestParser(&text)
 			parser.NextToken()
 			res, err := parser.ParseProgram()
 			if assert.NoError(t, err) {

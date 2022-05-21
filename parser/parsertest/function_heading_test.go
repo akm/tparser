@@ -24,7 +24,7 @@ func TestExportHeading(t *testing.T) {
 		t.Run(text, func(t *testing.T) {
 			patterns = append(patterns, pattern{text, expected})
 			runes := []rune(text)
-			parser := parser.NewParser(&runes, parser.NewContext())
+			parser := NewTestParser(&runes, parser.NewContext())
 			parser.NextToken()
 			res, err := parser.ParseExportedHeading()
 			if assert.NoError(t, err) {
@@ -422,7 +422,7 @@ func TestExportHeading(t *testing.T) {
 		IMPLEMENTATION
 		END.`, strings.Join(headings, "\n")))
 
-		parser := parser.NewParser(&unitText)
+		parser := NewTestParser(&unitText)
 		parser.NextToken()
 		res, err := parser.ParseUnit()
 		if assert.NoError(t, err) {
@@ -446,7 +446,7 @@ func TestFormalParameters(t *testing.T) {
 	run := func(text string, clearLocations bool, expected ast.FormalParameters) {
 		t.Run(text, func(t *testing.T) {
 			runes := []rune(text)
-			parser := parser.NewParser(&runes, parser.NewContext())
+			parser := NewTestParser(&runes, parser.NewContext())
 			parser.NextToken()
 			res, err := parser.ParseFormalParameters()
 			if assert.NoError(t, err) {

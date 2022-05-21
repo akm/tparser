@@ -5,14 +5,14 @@ import (
 
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/asttest"
-	"github.com/akm/tparser/parser"
+	"github.com/akm/tparser/parser/parsertest"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestAssemblerStatement(t *testing.T) {
 	runBlock := func(t *testing.T, name string, text []rune, expected *ast.Block) {
 		t.Run(name, func(t *testing.T) {
-			parser := parser.NewParser(&text)
+			parser := parsertest.NewTestParser(&text)
 			parser.NextToken()
 			res, err := parser.ParseBlock()
 			if assert.NoError(t, err) {
@@ -85,7 +85,7 @@ end;
 
 	runWithFunc := func(t *testing.T, name string, text []rune, expected *ast.FunctionDecl) {
 		t.Run(name, func(t *testing.T) {
-			parser := parser.NewParser(&text)
+			parser := parsertest.NewTestParser(&text)
 			parser.NextToken()
 			res, err := parser.ParseProcedureDeclSection()
 			if assert.NoError(t, err) {

@@ -36,7 +36,7 @@ func TestQualIdInCompoundStmt(t *testing.T) {
 
 	run := func(name string, text []rune, expected *ast.CompoundStmt) {
 		t.Run(name, func(t *testing.T) {
-			parser := parser.NewParser(&text, parser.NewContext(declMap, ast.Units{unitFoo}))
+			parser := NewTestParser(&text, parser.NewContext(declMap, ast.Units{unitFoo}))
 			parser.NextToken()
 			res, err := parser.ParseCompoundStmt(true)
 			if assert.NoError(t, err) {

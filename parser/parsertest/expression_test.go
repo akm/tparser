@@ -6,14 +6,13 @@ import (
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/asttest"
 	"github.com/akm/tparser/ext"
-	"github.com/akm/tparser/parser"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestExpression(t *testing.T) {
 	run := func(name string, clearLocations bool, text []rune, expected *ast.Expression) {
 		t.Run(name, func(t *testing.T) {
-			parser := parser.NewParser(&text)
+			parser := NewTestParser(&text)
 			parser.NextToken()
 			res, err := parser.ParseExpression()
 			if assert.NoError(t, err) {
@@ -736,7 +735,7 @@ func TestExpression(t *testing.T) {
 func TestSimpleExpression(t *testing.T) {
 	run := func(name string, text []rune, expected *ast.SimpleExpression) {
 		t.Run(name, func(t *testing.T) {
-			parser := parser.NewParser(&text)
+			parser := NewTestParser(&text)
 			parser.NextToken()
 			res, err := parser.ParseSimpleExpression()
 			if assert.NoError(t, err) {
@@ -762,7 +761,7 @@ func TestSimpleExpression(t *testing.T) {
 func TestSetConstructor(t *testing.T) {
 	run := func(name string, text []rune, expected *ast.SetConstructor) {
 		t.Run(name, func(t *testing.T) {
-			parser := parser.NewParser(&text)
+			parser := NewTestParser(&text)
 			parser.NextToken()
 			res, err := parser.ParseSetConstructor()
 			if assert.NoError(t, err) {
@@ -787,7 +786,7 @@ func TestSetConstructor(t *testing.T) {
 func TestFactor(t *testing.T) {
 	run := func(name string, text []rune, expected ast.Factor) {
 		t.Run(name, func(t *testing.T) {
-			parser := parser.NewParser(&text)
+			parser := NewTestParser(&text)
 			parser.NextToken()
 			res, err := parser.ParseFactor()
 			if assert.NoError(t, err) {

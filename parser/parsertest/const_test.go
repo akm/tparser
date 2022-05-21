@@ -5,14 +5,13 @@ import (
 
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/asttest"
-	"github.com/akm/tparser/parser"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestUnitWithConstSection(t *testing.T) {
 	run := func(name string, text []rune, expected *ast.Unit) {
 		t.Run(name, func(t *testing.T) {
-			parser := parser.NewParser(&text)
+			parser := NewTestParser(&text)
 			parser.NextToken()
 			res, err := parser.ParseUnit()
 			if assert.NoError(t, err) {
@@ -53,7 +52,7 @@ func TestUnitWithConstSection(t *testing.T) {
 func TestConstSectionl(t *testing.T) {
 	run := func(name string, text []rune, expected ast.ConstSection) {
 		t.Run(name, func(t *testing.T) {
-			parser := parser.NewParser(&text)
+			parser := NewTestParser(&text)
 			parser.NextToken()
 			res, err := parser.ParseConstSection(true)
 			if assert.NoError(t, err) {

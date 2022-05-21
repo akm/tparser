@@ -4,14 +4,13 @@ import (
 	"testing"
 
 	"github.com/akm/tparser/ast/asttest"
-	"github.com/akm/tparser/parser"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestIdentClausee(t *testing.T) {
 	text := []rune(`U1,U2,U3;`)
 
-	parser := parser.NewParser(&text)
+	parser := NewTestParser(&text)
 	parser.NextToken()
 	res, err := parser.ParseIdentList(';')
 	if assert.NoError(t, err) {
