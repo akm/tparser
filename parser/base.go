@@ -58,13 +58,10 @@ type Parser struct {
 	logger    *log.Logger
 }
 
-func NewParser(text *[]rune, args ...interface{}) *Parser {
-	var ctx Context
+func NewParser(text *[]rune, ctx Context, args ...interface{}) *Parser {
 	var logger *log.Logger
 	for _, arg := range args {
 		switch v := arg.(type) {
-		case Context:
-			ctx = v
 		case *log.Logger:
 			logger = v
 		default:
@@ -72,7 +69,7 @@ func NewParser(text *[]rune, args ...interface{}) *Parser {
 		}
 	}
 	if ctx == nil {
-		ctx = NewContext()
+		panic(errors.Errorf("context is required for NewParser"))
 	}
 	if logger == nil {
 		logger = log.New(os.Stderr, "", log.LstdFlags|log.Llongfile)
