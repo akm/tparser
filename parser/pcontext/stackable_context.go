@@ -54,9 +54,6 @@ func (c *StackableContext) SetDecl(decl astcore.Decl) {
 	c.declarationMap.SetDecl(decl)
 }
 
-func (c *StackableContext) Keys() ext.Strings {
-	return append(c.declarationMap.Keys(), c.parent.Keys()...)
-}
 func (c *StackableContext) GetPath() string {
 	if c.path != nil {
 		return *c.path

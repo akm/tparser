@@ -2,15 +2,12 @@ package astcore
 
 import (
 	"strings"
-
-	"github.com/akm/tparser/ext"
 )
 
 type DeclarationMap interface {
 	Get(name string) *Declaration
 	Set(*Declaration)
 	SetDecl(Decl)
-	Keys() ext.Strings
 }
 
 type declarationMapImpl map[string]*Declaration
@@ -37,14 +34,6 @@ func (m declarationMapImpl) regularize(name string) string {
 	return strings.ToLower(name)
 }
 
-func (m declarationMapImpl) Keys() ext.Strings {
-	keys := ext.Strings{}
-	for k := range m {
-		keys = append(keys, k)
-	}
-	return keys
-}
-
 type CompositeDeclarationMap struct {
 	maps []DeclarationMap
 }
@@ -68,12 +57,4 @@ func (c *CompositeDeclarationMap) Set(d *Declaration) {
 
 func (c *CompositeDeclarationMap) SetDecl(decl Decl) {
 	c.maps[0].SetDecl(decl)
-}
-
-func (c *CompositeDeclarationMap) Keys() ext.Strings {
-	r := ext.Strings{}
-	for _, m := range c.maps {
-		r = append(r, m.Keys()...)
-	}
-	return r
 }
