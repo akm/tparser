@@ -1,8 +1,6 @@
 package pcontext
 
 import (
-	"path/filepath"
-
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/astcore"
 	"github.com/akm/tparser/ext"
@@ -66,11 +64,6 @@ func (c *StackableContext) GetPath() string {
 		return *c.path
 	}
 	return c.parent.GetPath()
-}
-
-func (c *StackableContext) ResolvePath(path string) string {
-	dir := filepath.Dir(c.GetPath())
-	return filepath.Join(dir, path)
 }
 
 func (c *StackableContext) SetPath(path string) {

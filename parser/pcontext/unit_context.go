@@ -1,8 +1,6 @@
 package pcontext
 
 import (
-	"path/filepath"
-
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/astcore"
 	"github.com/akm/tparser/ext"
@@ -74,11 +72,6 @@ func (c *UnitContext) GetPath() string {
 
 func (c *UnitContext) SetPath(path string) {
 	c.Path = path
-}
-
-func (c *UnitContext) ResolvePath(path string) string {
-	dir := filepath.Dir(c.GetPath())
-	return filepath.Join(dir, path)
 }
 
 func (c *UnitContext) AddUnit(unit *ast.Unit) {

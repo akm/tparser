@@ -13,7 +13,6 @@ type Context interface {
 	GetDeclarationMap() astcore.DeclarationMap
 	GetPath() string
 	SetPath(path string)
-	ResolvePath(path string) string
 	AddUnit(unit *ast.Unit)
 	astcore.DeclarationMap
 }
