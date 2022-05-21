@@ -7,7 +7,6 @@ import (
 
 type Context interface {
 	Clone() Context
-	AddUnitIdentifiers(names ...string)
 	IsUnitIdentifier(token *token.Token) bool
 	GetDeclarationMap() astcore.DeclMap
 	GetPath() string
