@@ -7,7 +7,6 @@ import (
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/astcore"
 	"github.com/akm/tparser/token"
-	"github.com/pkg/errors"
 	"golang.org/x/text/encoding/japanese"
 	"golang.org/x/text/transform"
 )
@@ -50,7 +49,19 @@ func ParseProgram(path string) (*Program, error) {
 	}, nil
 }
 
-func (p *Parser) ParseProgram() (*ast.Program, error) {
+type ProgramParser struct {
+	*Parser
+	context *ProgramContext
+}
+
+func NewProgramParser(runes *[]rune, ctx *ProgramContext) *ProgramParser {
+	return &ProgramParser{
+		Parser:  NewParser(runes, ctx),
+		context: ctx,
+	}
+}
+
+func (p *ProgramParser) ParseProgram() (*ast.Program, error) {
 	if _, err := p.Current(token.ReservedWord.HasKeyword("PROGRAM")); err != nil {
 		return nil, err
 	}
@@ -78,7 +89,7 @@ func (p *Parser) ParseProgram() (*ast.Program, error) {
 	return res, nil
 }
 
-func (p *Parser) ParseProgramBlock() (*ast.ProgramBlock, error) {
+func (p *ProgramParser) ParseProgramBlock() (*ast.ProgramBlock, error) {
 	res := &ast.ProgramBlock{}
 	if p.CurrentToken().Is(token.ReservedWord.HasKeyword("USES")) {
 		uses, err := p.ParseUsesClause()
@@ -88,12 +99,7 @@ func (p *Parser) ParseProgramBlock() (*ast.ProgramBlock, error) {
 		res.UsesClause = uses
 		p.NextToken()
 
-		ctx, ok := p.context.(*ProgramContext)
-		if !ok {
-			panic(errors.Errorf("Something wrong. context is not ProjectContext"))
-		}
-
-		if err := p.LoadUnits(ctx, uses); err != nil {
+		if err := p.LoadUnits(p.context, uses); err != nil {
 			return nil, err
 		}
 	}
@@ -105,7 +111,7 @@ func (p *Parser) ParseProgramBlock() (*ast.ProgramBlock, error) {
 	return res, nil
 }
 
-func (p *Parser) LoadUnits(ctx *ProgramContext, uses ast.UsesClause) error {
+func (p *ProgramParser) LoadUnits(ctx *ProgramContext, uses ast.UsesClause) error {
 	loaders := UnitLoaders{}
 	for _, unitRef := range uses {
 		path := unitRef.EffectivePath()
@@ -151,16 +157,4 @@ func (p *Parser) LoadUnits(ctx *ProgramContext, uses ast.UsesClause) error {
 	}
 
 	return nil
-}
-
-type ProgramParser struct {
-	*Parser
-	context *ProgramContext
-}
-
-func NewProgramParser(runes *[]rune, ctx *ProgramContext) *ProgramParser {
-	return &ProgramParser{
-		Parser:  NewParser(runes, ctx),
-		context: ctx,
-	}
 }
