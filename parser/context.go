@@ -15,7 +15,7 @@ var (
 	NewProgramContext   = pcontext.NewProgramContext
 	NewUnitContext      = pcontext.NewUnitContext
 	NewStackableContext = pcontext.NewStackableContext
-	IsUnitDeclaration   = pcontext.IsUnitDeclaration
+	IsUsesClauseItem    = pcontext.IsUsesClauseItem
 )
 
 func NewContext(args ...interface{}) Context {

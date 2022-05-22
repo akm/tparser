@@ -79,7 +79,7 @@ func (c *UnitContext) ImportUnitDecls(usesClause ast.UsesClause) error {
 
 func (c *UnitContext) IsUnitIdentifier(token *token.Token) bool {
 	s := token.Value()
-	return c.unitIdentifiers.Include(s) || IsUnitDeclaration(c.DeclMap.Get(s))
+	return c.unitIdentifiers.Include(s) || IsUsesClauseItem(c.DeclMap.Get(s))
 }
 
 func (c *UnitContext) GetDeclarationMap() astcore.DeclMap {

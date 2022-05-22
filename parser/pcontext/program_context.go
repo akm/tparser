@@ -52,7 +52,7 @@ func (c *ProgramContext) Clone() Context {
 
 func (c *ProgramContext) IsUnitIdentifier(t *token.Token) bool {
 	s := t.Value()
-	return IsUnitDeclaration(c.DeclMap.Get(s)) || c.Units.ByName(s) != nil
+	return IsUsesClauseItem(c.DeclMap.Get(s)) || c.Units.ByName(s) != nil
 }
 
 func (c *ProgramContext) GetDeclarationMap() astcore.DeclMap {
