@@ -17,7 +17,12 @@ func NewDeclarationMap() DeclMap {
 
 func (m DeclMapImpl) Set(decl DeclNode) error {
 	for _, i := range decl.ToDeclarations() {
-		m[m.regularize(i.Ident.Name)] = i
+		s := m.regularize(i.Ident.Name)
+		// if s == "bar" && fmt.Sprintf("%T", i.Node) == "*ast.Unit" {
+		// 	err := errors.Errorf("bar found")
+		// 	fmt.Printf("%+v\n", err)
+		// }
+		m[s] = i
 	}
 	return nil
 }
