@@ -35,14 +35,6 @@ func (s UsesClause) Children() Nodes {
 	return r
 }
 
-func (s UsesClause) ToDeclarations() astcore.Decls {
-	r := make(astcore.Decls, len(s))
-	for idx, i := range s {
-		r[idx] = astcore.NewDeclaration(i.Ident, i)
-	}
-	return r
-}
-
 func (s UsesClause) Find(name string) *UsesClauseItem {
 	k := strings.ToLower(name)
 	for _, u := range s {
@@ -57,6 +49,7 @@ type UsesClauseItem struct {
 	*Ident
 	Path *string
 	Unit *Unit
+	astcore.DeclNode
 }
 
 func NewUnitRef(name interface{}, paths ...string) *UsesClauseItem {
@@ -96,4 +89,8 @@ func (m *UsesClauseItem) UnquotedPath() string {
 func (m *UsesClauseItem) EffectivePath() string {
 	origPath := m.UnquotedPath()
 	return strings.ReplaceAll(origPath, "\\", string([]rune{filepath.Separator}))
+}
+
+func (m *UsesClauseItem) ToDeclarations() astcore.Decls {
+	return astcore.Decls{astcore.NewDeclaration(m.Ident, m)}
 }
