@@ -122,6 +122,24 @@ func (p *UnitParser) ParseUnitIntfUses() error {
 	return nil
 }
 
+func (p *UnitParser) ParseInterfaceSectionUses() (*ast.InterfaceSection, error) {
+	if _, err := p.Current(token.ReservedWord.HasKeyword("INTERFACE")); err != nil {
+		return nil, err
+	}
+	res := &ast.InterfaceSection{}
+	t := p.NextToken()
+	if t.Is(token.ReservedWord.HasKeyword("USES")) {
+		usesClause, err := p.ParseUsesClause()
+		if err != nil {
+			return nil, err
+		}
+		res.UsesClause = usesClause
+		p.context.ImportUnitDecls(usesClause)
+		p.NextToken()
+	}
+	return res, nil
+}
+
 func (m *UnitParser) ProcessIntfBody() error {
 	units := ast.Units{}
 	parentUnits := m.context.Parent.Units
@@ -182,24 +200,6 @@ func (p *UnitParser) ParseUnitEnd() error {
 		return err
 	}
 	return nil
-}
-
-func (p *UnitParser) ParseInterfaceSectionUses() (*ast.InterfaceSection, error) {
-	if _, err := p.Current(token.ReservedWord.HasKeyword("INTERFACE")); err != nil {
-		return nil, err
-	}
-	res := &ast.InterfaceSection{}
-	t := p.NextToken()
-	if t.Is(token.ReservedWord.HasKeyword("USES")) {
-		usesClause, err := p.ParseUsesClause()
-		if err != nil {
-			return nil, err
-		}
-		res.UsesClause = usesClause
-		p.context.ImportUnitDecls(usesClause)
-		p.NextToken()
-	}
-	return res, nil
 }
 
 func (p *UnitParser) ParseInterfaceSectionDecls() error {
