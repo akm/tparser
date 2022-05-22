@@ -7,6 +7,7 @@ import (
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/astcore"
 	"github.com/akm/tparser/token"
+	"github.com/pkg/errors"
 	"golang.org/x/text/encoding/japanese"
 	"golang.org/x/text/transform"
 )
@@ -83,7 +84,9 @@ func (p *ProgramParser) ParseProgram() (*ast.Program, error) {
 	if _, err := p.Current(token.Symbol('.')); err != nil {
 		return nil, err
 	}
-	p.context.Set(res)
+	if err := p.context.Set(res); err != nil {
+		return nil, err
+	}
 	return res, nil
 }
 
@@ -151,7 +154,14 @@ func (p *ProgramParser) LoadUnits(ctx *ProgramContext, uses ast.UsesClause) erro
 
 	units := parsers.Units() // Don't use sortedLoaders for this
 	for _, u := range units {
-		ctx.DeclMap.Set(u)
+		usesItem := uses.Find(u.Ident.Name)
+		if usesItem == nil {
+			return errors.Errorf("UsesClauseItem not found for %s", u.Ident.Name)
+		}
+		usesItem.Unit = u
+		if err := ctx.DeclMap.Set(usesItem); err != nil {
+			return err
+		}
 	}
 
 	return nil

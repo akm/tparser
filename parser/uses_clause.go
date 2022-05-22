@@ -16,7 +16,7 @@ func (p *Parser) ParseUsesClause() (ast.UsesClause, error) {
 		if err != nil {
 			return err
 		}
-		ref := &ast.UnitRef{Ident: p.NewIdent(t)}
+		item := &ast.UsesClauseItem{Ident: p.NewIdent(t)}
 		t2 := p.NextToken()
 		if t2.Is(token.ReservedWord.HasKeyword("IN")) {
 			t := p.NextToken()
@@ -24,13 +24,17 @@ func (p *Parser) ParseUsesClause() (ast.UsesClause, error) {
 			if err != nil {
 				return err
 			}
-			ref.Path = &strFactor.Value
+			item.Path = &strFactor.Value
 		}
-		r = append(r, ref)
+		r = append(r, item)
 		return nil
 	}); err != nil {
 		return nil, err
 	}
-	p.context.Set(r)
+	for _, i := range r {
+		if err := p.context.Set(i); err != nil {
+			return nil, err
+		}
+	}
 	return r, nil
 }

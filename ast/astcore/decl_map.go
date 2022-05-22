@@ -6,26 +6,32 @@ import (
 
 type DeclMap interface {
 	Get(name string) *Decl
-	Set(DeclNode)
+	Set(DeclNode) error
 }
 
-type declMapImpl map[string]*Decl
+type DeclMapImpl map[string]*Decl
 
 func NewDeclarationMap() DeclMap {
-	return make(declMapImpl)
+	return make(DeclMapImpl)
 }
 
-func (m declMapImpl) Set(decl DeclNode) {
+func (m DeclMapImpl) Set(decl DeclNode) error {
 	for _, i := range decl.ToDeclarations() {
-		m[m.regularize(i.Ident.Name)] = i
+		s := m.regularize(i.Ident.Name)
+		// if s == "bar" && fmt.Sprintf("%T", i.Node) == "*ast.Unit" {
+		// 	err := errors.Errorf("bar found")
+		// 	fmt.Printf("%+v\n", err)
+		// }
+		m[s] = i
 	}
+	return nil
 }
 
-func (m declMapImpl) Get(name string) *Decl {
+func (m DeclMapImpl) Get(name string) *Decl {
 	return m[m.regularize(name)]
 }
 
-func (m declMapImpl) regularize(name string) string {
+func (m DeclMapImpl) regularize(name string) string {
 	return strings.ToLower(name)
 }
 
@@ -46,6 +52,6 @@ func (c *CompositeDeclMap) Get(name string) *Decl {
 	return nil
 }
 
-func (c *CompositeDeclMap) Set(decl DeclNode) {
-	c.maps[0].Set(decl)
+func (c *CompositeDeclMap) Set(decl DeclNode) error {
+	return c.maps[0].Set(decl)
 }

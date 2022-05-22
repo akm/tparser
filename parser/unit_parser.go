@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"github.com/akm/tparser/ast"
-	"github.com/akm/tparser/ast/astcore"
 	"github.com/akm/tparser/token"
 	"github.com/pkg/errors"
 	"golang.org/x/text/encoding/japanese"
@@ -122,25 +121,31 @@ func (p *UnitParser) ParseUnitIntfUses() error {
 	return nil
 }
 
-func (m *UnitParser) ProcessIntfBody() error {
-	units := ast.Units{}
-	parentUnits := m.context.Parent.Units
-	for _, unitRef := range m.Unit.InterfaceSection.UsesClause {
-		if u := parentUnits.ByName(unitRef.Ident.Name); u != nil {
-			units = append(units, u)
+func (p *UnitParser) ParseInterfaceSectionUses() (*ast.InterfaceSection, error) {
+	if _, err := p.Current(token.ReservedWord.HasKeyword("INTERFACE")); err != nil {
+		return nil, err
+	}
+	res := &ast.InterfaceSection{}
+	t := p.NextToken()
+	if t.Is(token.ReservedWord.HasKeyword("USES")) {
+		usesClause, err := p.ParseUsesClause()
+		if err != nil {
+			return nil, err
 		}
+		res.UsesClause = usesClause
+		p.NextToken()
 	}
-	localMap := astcore.NewDeclarationMap()
-	localMap.Set(m.Unit)
-	maps := []astcore.DeclMap{localMap}
-	for _, unit := range units {
-		localMap.Set(unit)
-		// TODO declMapに追加する順番はこれでOK？
-		// 無関係のユニットAとBに、同じ名前の型や変数が定義されていて、USES A, B; となっていた場合
-		// コンテキスト上ではどちらが有効になるのかを確認する
-		maps = append(maps, unit.DeclarationMap)
+	return res, nil
+}
+
+func (m *UnitParser) ProcessIntfBody() error {
+	// Import decls after resovling unit load order and parsing units which this unit uses.
+	if err := m.context.ImportUnitDecls(m.Unit.InterfaceSection.UsesClause); err != nil {
+		return err
 	}
-	m.context.DeclMap = astcore.NewCompositeDeclarationMap(maps...)
+	if err := m.context.Set(m.Unit); err != nil {
+		return err
+	}
 
 	// Parse rest of interface Section (except USES clause)
 	if err := m.ParseUnitIntfBody(); err != nil {
@@ -174,26 +179,7 @@ func (p *UnitParser) ParseUnitEnd() error {
 	if _, err := p.Next(token.Symbol('.')); err != nil {
 		return err
 	}
-	p.context.Set(p.Unit)
 	return nil
-}
-
-func (p *UnitParser) ParseInterfaceSectionUses() (*ast.InterfaceSection, error) {
-	if _, err := p.Current(token.ReservedWord.HasKeyword("INTERFACE")); err != nil {
-		return nil, err
-	}
-	res := &ast.InterfaceSection{}
-	t := p.NextToken()
-	if t.Is(token.ReservedWord.HasKeyword("USES")) {
-		usesClause, err := p.ParseUsesClause()
-		if err != nil {
-			return nil, err
-		}
-		res.UsesClause = usesClause
-		p.context.AddUnitIdentifiers(usesClause.IdentList().Names()...)
-		p.NextToken()
-	}
-	return res, nil
 }
 
 func (p *UnitParser) ParseInterfaceSectionDecls() error {
@@ -268,17 +254,9 @@ func (m *UnitParser) ProcessImplAndInit() error {
 	}
 	// defer m.Parser.StackContext()()
 
-	parentUnits := m.context.Parent.Units
-	localMap := astcore.NewDeclarationMap()
-	localMap.Set(m.Unit)
-	maps := []astcore.DeclMap{localMap}
-	for _, unitRef := range m.Unit.ImplementationSection.UsesClause {
-		if unit := parentUnits.ByName(unitRef.Ident.Name); unit != nil {
-			localMap.Set(unit)
-			maps = append(maps, unit.DeclarationMap)
-		}
+	if err := m.context.ImportUnitDecls(m.Unit.ImplementationSection.UsesClause); err != nil {
+		return err
 	}
-	m.context.DeclMap = astcore.NewCompositeDeclarationMap(maps...)
 
 	if err := m.ParseImplBody(); err != nil {
 		return err
@@ -296,8 +274,6 @@ func (p *UnitParser) ParseImplUses() error {
 	}
 	p.NextToken()
 
-	defer p.StackContext()()
-
 	impl := &ast.ImplementationSection{}
 	if p.CurrentToken().Is(token.ReservedWord.HasKeyword("USES")) {
 		usesClause, err := p.ParseUsesClause()
@@ -305,7 +281,6 @@ func (p *UnitParser) ParseImplUses() error {
 			return err
 		}
 		impl.UsesClause = usesClause
-		p.context.AddUnitIdentifiers(usesClause.IdentList().Names()...)
 		p.NextToken()
 	}
 	p.Unit.ImplementationSection = impl

@@ -19,7 +19,7 @@ func AssertUsesClause(t *testing.T, expected ast.UsesClause, actual ast.UsesClau
 	}
 }
 
-func AssertUnitRef(t *testing.T, expected, actual *ast.UnitRef) {
+func AssertUnitRef(t *testing.T, expected, actual *ast.UsesClauseItem) {
 	if !assert.Equal(t, expected.Ident, actual.Ident) {
 		AssertIdent(t, expected.Ident, actual.Ident)
 	}

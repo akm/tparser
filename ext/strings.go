@@ -95,3 +95,11 @@ func (s Strings) Map(f func(string) string) Strings {
 func (s Strings) ToUpper() Strings {
 	return s.Map(strings.ToUpper)
 }
+
+func (s Strings) Reverse() Strings {
+	r := make(Strings, len(s))
+	for i, v := range s {
+		r[len(s)-i-1] = v
+	}
+	return r
+}

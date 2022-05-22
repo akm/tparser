@@ -128,6 +128,7 @@ func TestLoadExample1Project(t *testing.T) {
 
 	actualUnitBar.DeclarationMap = nil
 	t.Run("bar.pas", func(t *testing.T) {
+		asttest.ClearUsesItemsUnit(t, actualUnitBar)
 		if !assert.Equal(t, expectedUnitBar, actualUnitBar) {
 			asttest.AssertUnit(t, expectedUnitBar, actualUnitBar)
 		}
@@ -140,6 +141,9 @@ func TestLoadExample1Project(t *testing.T) {
 		},
 	}
 
+	fooToSysUtils := &ast.UsesClauseItem{Ident: asttest.NewIdent("SysUtils", asttest.NewIdentLocation(9, 6, 71, 14))}
+	fooToBar := &ast.UsesClauseItem{Ident: asttest.NewIdent("bar", asttest.NewIdentLocation(9, 16, 81, 19))}
+
 	expectedUnitFoo := &ast.Unit{
 		Path:  "foo.pas",
 		Ident: asttest.NewIdent("foo", asttest.NewIdentLocation(1, 6, 5, 9)),
@@ -148,8 +152,8 @@ func TestLoadExample1Project(t *testing.T) {
 		},
 		ImplementationSection: &ast.ImplementationSection{
 			UsesClause: ast.UsesClause{
-				{Ident: asttest.NewIdent("SysUtils", asttest.NewIdentLocation(9, 6, 71, 14))},
-				{Ident: asttest.NewIdent("bar", asttest.NewIdentLocation(9, 16, 81, 19))},
+				fooToSysUtils,
+				fooToBar,
 			},
 			DeclSections: ast.DeclSections{
 				&ast.FunctionDecl{
@@ -164,7 +168,7 @@ func TestLoadExample1Project(t *testing.T) {
 									Body: &ast.CallStatement{
 										Designator: asttest.NewDesignator(
 											asttest.NewQualId(
-												asttest.NewIdentRef("Inc", asttest.NewIdentLocation(13, 4, 119, 7), astcore.NewDeclaration(declInc.Ident, declInc)),
+												asttest.NewIdentRef("Inc", asttest.NewIdentLocation(13, 4, 119, 7), declInc.ToDeclarations()[0]),
 											),
 										),
 									},
@@ -181,8 +185,8 @@ func TestLoadExample1Project(t *testing.T) {
 												&ast.DesignatorFactor{
 													Designator: asttest.NewDesignator(
 														&ast.QualId{
-															UnitId: asttest.NewIdentRef("bar", asttest.NewIdentLocation(14, 13, 137, 16), astcore.NewDeclaration(expectedUnitBar.Ident, expectedUnitBar)),
-															Ident:  asttest.NewIdentRef("Get", asttest.NewIdentLocation(14, 17, 141, 20), astcore.NewDeclaration(declGet.Ident, declGet)),
+															UnitId: asttest.NewIdentRef("bar", asttest.NewIdentLocation(14, 13, 137, 16), fooToBar.ToDeclarations()[0]),
+															Ident:  asttest.NewIdentRef("Get", asttest.NewIdentLocation(14, 17, 141, 20), declGet.ToDeclarations()[0]),
 														},
 													),
 												},
@@ -194,8 +198,8 @@ func TestLoadExample1Project(t *testing.T) {
 									Body: &ast.CallStatement{
 										Designator: asttest.NewDesignator(
 											&ast.QualId{
-												UnitId: asttest.NewIdentRef("bar", asttest.NewIdentLocation(15, 4, 152, 7), astcore.NewDeclaration(expectedUnitBar.Ident, expectedUnitBar)),
-												Ident:  asttest.NewIdentRef("Inc", asttest.NewIdentLocation(15, 8, 156, 11), astcore.NewDeclaration(declInc.Ident, declInc)),
+												UnitId: asttest.NewIdentRef("bar", asttest.NewIdentLocation(15, 4, 152, 7), fooToBar.ToDeclarations()[0]),
+												Ident:  asttest.NewIdentRef("Inc", asttest.NewIdentLocation(15, 8, 156, 11), declInc.ToDeclarations()[0]),
 											},
 										),
 									},
@@ -212,8 +216,8 @@ func TestLoadExample1Project(t *testing.T) {
 												&ast.DesignatorFactor{
 													Designator: asttest.NewDesignator(
 														asttest.NewQualId(
-															asttest.NewIdentRef("bar", asttest.NewIdentLocation(16, 13, 174, 16), astcore.NewDeclaration(expectedUnitBar.Ident, expectedUnitBar)),
-															asttest.NewIdentRef("Get", asttest.NewIdentLocation(16, 17, 178, 20), astcore.NewDeclaration(declGet.Ident, declGet)),
+															asttest.NewIdentRef("bar", asttest.NewIdentLocation(16, 13, 174, 16), fooToBar.ToDeclarations()[0]),
+															asttest.NewIdentRef("Get", asttest.NewIdentLocation(16, 17, 178, 20), declGet.ToDeclarations()[0]),
 														),
 													),
 												},
@@ -231,10 +235,20 @@ func TestLoadExample1Project(t *testing.T) {
 
 	actualUnitFoo.DeclarationMap = nil
 	t.Run("foo.pas", func(t *testing.T) {
+		asttest.ClearUsesItemsUnit(t, actualUnitFoo)
 		if !assert.Equal(t, expectedUnitFoo, actualUnitFoo) {
 			asttest.AssertUnit(t, expectedUnitFoo, actualUnitFoo)
 		}
 	})
+
+	example1ToFoo := &ast.UsesClauseItem{
+		Ident: asttest.NewIdent("foo", asttest.NewIdentLocation(5, 3, 60, 6)),
+		Path:  ext.StringPtr("'foo.pas'"),
+	}
+	example1ToBar := &ast.UsesClauseItem{
+		Ident: asttest.NewIdent("bar", asttest.NewIdentLocation(6, 3, 81, 6)),
+		Path:  ext.StringPtr("'subdir1\\bar.pas'"),
+	}
 
 	expectedProg := &parser.Program{
 		Program: &ast.Program{
@@ -243,14 +257,8 @@ func TestLoadExample1Project(t *testing.T) {
 			ProgramBlock: &ast.ProgramBlock{
 				UsesClause: ast.UsesClause{
 					{Ident: asttest.NewIdent("SysUtils", asttest.NewIdentLocation(4, 3, 47, 11))},
-					{
-						Ident: asttest.NewIdent("foo", asttest.NewIdentLocation(5, 3, 60, 6)),
-						Path:  ext.StringPtr("'foo.pas'"),
-					},
-					{
-						Ident: asttest.NewIdent("bar", asttest.NewIdentLocation(6, 3, 81, 6)),
-						Path:  ext.StringPtr("'subdir1\\bar.pas'"),
-					},
+					example1ToFoo,
+					example1ToBar,
 				},
 				Block: &ast.Block{
 					Body: &ast.CompoundStmt{
@@ -259,7 +267,7 @@ func TestLoadExample1Project(t *testing.T) {
 								Body: &ast.CallStatement{
 									Designator: asttest.NewDesignator(
 										&ast.QualId{
-											UnitId: asttest.NewIdentRef("foo", asttest.NewIdentLocation(9, 4, 120, 7), astcore.NewDeclaration(expectedUnitFoo.Ident, expectedUnitFoo)),
+											UnitId: asttest.NewIdentRef("foo", asttest.NewIdentLocation(9, 4, 120, 7), example1ToFoo.ToDeclarations()[0]),
 											Ident:  asttest.NewIdentRef("Process", asttest.NewIdentLocation(9, 8, 124, 15), astcore.NewDeclaration(declProcess.Ident, declProcess)),
 										},
 									),
@@ -283,8 +291,10 @@ func TestLoadExample1Project(t *testing.T) {
 	}
 
 	t.Run("example1.dpr", func(t *testing.T) {
+		asttest.ClearUsesItemsUnit(t, actualProg)
 		if !assert.Equal(t, expectedProg, actualProg) {
 			asttest.AssertProgram(t, expectedProg.Program, actualProg.Program)
+			// asttest.AssertUnits(t, expectedProg.Units, actualProg.Units)
 		}
 	})
 

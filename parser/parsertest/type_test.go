@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	"github.com/akm/tparser/ast"
+	"github.com/akm/tparser/ast/astcore"
 	"github.com/akm/tparser/ast/asttest"
-	"github.com/akm/tparser/ext"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -164,12 +164,34 @@ func TestTypeSection(t *testing.T) {
 	)
 }
 
+func newDeclMapWithU1() astcore.DeclMap {
+	u1 := &ast.Unit{
+		Ident: asttest.NewIdent("U1"),
+		InterfaceSection: &ast.InterfaceSection{
+			InterfaceDecls: ast.InterfaceDecls{
+				ast.TypeSection{
+					{Ident: asttest.NewIdent("TType1"), Type: &ast.TypeId{Ident: asttest.NewIdent("String")}},
+				},
+			},
+		},
+	}
+
+	usesClauseItemToU1 := &ast.UsesClauseItem{
+		Ident: asttest.NewIdent("U1"),
+		Unit:  u1,
+	}
+
+	declMap := astcore.DeclMapImpl{"u1": usesClauseItemToU1.ToDeclarations()[0]}
+	return declMap
+}
+
 func TestTypeDecl(t *testing.T) {
-	u1 := asttest.NewUnitId("U1")
+	declMap := newDeclMapWithU1()
+	assert.NotNil(t, declMap.Get("U1"))
 
 	run := func(name string, text []rune, expected *ast.TypeDecl) {
 		t.Run(name, func(t *testing.T) {
-			parser := NewTestUnitParser(&text, NewTestUnitContext(ext.Strings{u1.String()}))
+			parser := NewTestUnitParser(&text, NewTestUnitContext(declMap))
 			parser.NextToken()
 			res, err := parser.ParseTypeDecl()
 			if assert.NoError(t, err) {
@@ -209,11 +231,12 @@ func TestTypeDecl(t *testing.T) {
 }
 
 func TestTypeId(t *testing.T) {
-	u1 := asttest.NewUnitId("U1")
+	declMap := newDeclMapWithU1()
+	assert.NotNil(t, declMap.Get("U1"))
 
 	run := func(name string, text []rune, expected *ast.TypeId) {
 		t.Run(name, func(t *testing.T) {
-			parser := NewTestParser(&text, NewTestUnitContext(ext.Strings{u1.String()}))
+			parser := NewTestParser(&text, NewTestUnitContext(declMap))
 			parser.NextToken()
 			res, err := parser.ParseTypeForIdentifier()
 			if assert.NoError(t, err) {
