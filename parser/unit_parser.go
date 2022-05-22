@@ -179,9 +179,6 @@ func (p *UnitParser) ParseUnitEnd() error {
 	if _, err := p.Next(token.Symbol('.')); err != nil {
 		return err
 	}
-	if err := p.context.Set(p.Unit); err != nil { // TODO remove?
-		return err
-	}
 	return nil
 }
 

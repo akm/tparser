@@ -65,9 +65,7 @@ func (c *UnitContext) ImportUnitDecls(usesClause ast.UsesClause) error {
 	localMap := astcore.NewDeclarationMap()
 	maps := []astcore.DeclMap{localMap, c.DeclMap}
 	for _, unit := range units {
-		if err := localMap.Set(unit); err != nil {
-			return err
-		}
+
 		// TODO declMapに追加する順番はこれでOK？
 		// 無関係のユニットAとBに、同じ名前の型や変数が定義されていて、USES A, B; となっていた場合
 		// コンテキスト上ではどちらが有効になるのかを確認する
