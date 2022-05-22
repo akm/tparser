@@ -1,6 +1,7 @@
 package pcontext
 
 import (
+	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/astcore"
 	"github.com/akm/tparser/ext"
 	"github.com/akm/tparser/token"
@@ -52,8 +53,8 @@ func (c *UnitContext) Clone() Context {
 		DeclMap:         c.DeclMap,
 	}
 }
-func (c *UnitContext) AddUnitIdentifiers(names ...string) {
-	c.unitIdentifiers = append(c.unitIdentifiers, names...)
+func (c *UnitContext) AddUnitIdentifiers(usesClause ast.UsesClause) {
+	c.unitIdentifiers = append(c.unitIdentifiers, usesClause.IdentList().Names()...)
 }
 
 func (c *UnitContext) IsUnitIdentifier(token *token.Token) bool {
