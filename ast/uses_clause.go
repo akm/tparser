@@ -43,6 +43,16 @@ func (s UsesClause) ToDeclarations() astcore.Decls {
 	return r
 }
 
+func (s UsesClause) Find(name string) *UsesClauseItem {
+	k := strings.ToLower(name)
+	for _, u := range s {
+		if strings.ToLower(u.Ident.Name) == k {
+			return u
+		}
+	}
+	return nil
+}
+
 type UsesClauseItem struct {
 	*Ident
 	Path *string
