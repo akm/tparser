@@ -9,24 +9,24 @@ type DeclMap interface {
 	Set(DeclNode) error
 }
 
-type declMapImpl map[string]*Decl
+type DeclMapImpl map[string]*Decl
 
 func NewDeclarationMap() DeclMap {
-	return make(declMapImpl)
+	return make(DeclMapImpl)
 }
 
-func (m declMapImpl) Set(decl DeclNode) error {
+func (m DeclMapImpl) Set(decl DeclNode) error {
 	for _, i := range decl.ToDeclarations() {
 		m[m.regularize(i.Ident.Name)] = i
 	}
 	return nil
 }
 
-func (m declMapImpl) Get(name string) *Decl {
+func (m DeclMapImpl) Get(name string) *Decl {
 	return m[m.regularize(name)]
 }
 
-func (m declMapImpl) regularize(name string) string {
+func (m DeclMapImpl) regularize(name string) string {
 	return strings.ToLower(name)
 }
 
