@@ -46,6 +46,7 @@ func (s UsesClause) ToDeclarations() astcore.Decls {
 type UsesClauseItem struct {
 	*Ident
 	Path *string
+	Unit *Unit
 }
 
 func NewUnitRef(name interface{}, paths ...string) *UsesClauseItem {
