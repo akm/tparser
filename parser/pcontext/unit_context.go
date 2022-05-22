@@ -3,54 +3,44 @@ package pcontext
 import (
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/astcore"
-	"github.com/akm/tparser/ext"
 	"github.com/akm/tparser/token"
 	"github.com/pkg/errors"
 )
 
 type UnitContext struct {
-	Parent          *ProgramContext
-	Path            string
-	unitIdentifiers ext.Strings // TO BE REMOVED
+	Parent *ProgramContext
+	Path   string
 	astcore.DeclMap
 }
 
 func NewUnitContext(parent *ProgramContext, args ...interface{}) *UnitContext {
 	var path string
-	var unitIdentifiers ext.Strings
 	var declarationMap astcore.DeclMap
 	for _, arg := range args {
 		switch v := arg.(type) {
 		case string:
 			path = v
-		case ext.Strings:
-			unitIdentifiers = v
 		case astcore.DeclMap:
 			declarationMap = v
 		default:
 			panic(errors.Errorf("unexpected type %T (%v) is given for NewUnitContext", arg, arg))
 		}
 	}
-	if unitIdentifiers == nil {
-		unitIdentifiers = ext.Strings{}
-	}
 	if declarationMap == nil {
 		declarationMap = astcore.NewDeclarationMap()
 	}
 	return &UnitContext{
-		Parent:          parent,
-		Path:            path,
-		unitIdentifiers: unitIdentifiers,
-		DeclMap:         declarationMap,
+		Parent:  parent,
+		Path:    path,
+		DeclMap: declarationMap,
 	}
 }
 
 func (c *UnitContext) Clone() Context {
 	return &UnitContext{
-		Parent:          c.Parent,
-		Path:            c.Path,
-		unitIdentifiers: c.unitIdentifiers,
-		DeclMap:         c.DeclMap,
+		Parent:  c.Parent,
+		Path:    c.Path,
+		DeclMap: c.DeclMap,
 	}
 }
 func (c *UnitContext) ImportUnitDecls(usesClause ast.UsesClause) error {
@@ -77,9 +67,6 @@ func (c *UnitContext) ImportUnitDecls(usesClause ast.UsesClause) error {
 
 func (c *UnitContext) IsUnitIdentifier(token *token.Token) bool {
 	s := token.Value()
-	if c.unitIdentifiers.Include(s) {
-		return true
-	}
 	decl := c.Get(s)
 	if decl == nil {
 		return false
