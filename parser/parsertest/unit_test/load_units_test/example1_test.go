@@ -128,6 +128,7 @@ func TestLoadExample1Project(t *testing.T) {
 
 	actualUnitBar.DeclarationMap = nil
 	t.Run("bar.pas", func(t *testing.T) {
+		asttest.ClearUsesItemsUnit(t, actualUnitBar)
 		if !assert.Equal(t, expectedUnitBar, actualUnitBar) {
 			asttest.AssertUnit(t, expectedUnitBar, actualUnitBar)
 		}
@@ -231,6 +232,7 @@ func TestLoadExample1Project(t *testing.T) {
 
 	actualUnitFoo.DeclarationMap = nil
 	t.Run("foo.pas", func(t *testing.T) {
+		asttest.ClearUsesItemsUnit(t, actualUnitFoo)
 		if !assert.Equal(t, expectedUnitFoo, actualUnitFoo) {
 			asttest.AssertUnit(t, expectedUnitFoo, actualUnitFoo)
 		}
