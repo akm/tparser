@@ -283,6 +283,7 @@ func TestLoadExample1Project(t *testing.T) {
 	}
 
 	t.Run("example1.dpr", func(t *testing.T) {
+		asttest.ClearUsesItemsUnit(t, actualProg)
 		if !assert.Equal(t, expectedProg, actualProg) {
 			asttest.AssertProgram(t, expectedProg.Program, actualProg.Program)
 		}
