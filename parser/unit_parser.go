@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"github.com/akm/tparser/ast"
-	"github.com/akm/tparser/ast/astcore"
 	"github.com/akm/tparser/token"
 	"github.com/pkg/errors"
 	"golang.org/x/text/encoding/japanese"
@@ -134,35 +133,19 @@ func (p *UnitParser) ParseInterfaceSectionUses() (*ast.InterfaceSection, error) 
 			return nil, err
 		}
 		res.UsesClause = usesClause
-		p.context.ImportUnitDecls(usesClause)
 		p.NextToken()
 	}
 	return res, nil
 }
 
 func (m *UnitParser) ProcessIntfBody() error {
-	units := ast.Units{}
-	parentUnits := m.context.Parent.Units
-	for _, unitRef := range m.Unit.InterfaceSection.UsesClause {
-		if u := parentUnits.ByName(unitRef.Ident.Name); u != nil {
-			units = append(units, u)
-		}
-	}
-	localMap := astcore.NewDeclarationMap()
-	if err := localMap.Set(m.Unit); err != nil {
+	// Import decls after resovling unit load order and parsing units which this unit uses.
+	if err := m.context.ImportUnitDecls(m.Unit.InterfaceSection.UsesClause); err != nil {
 		return err
 	}
-	maps := []astcore.DeclMap{localMap}
-	for _, unit := range units {
-		if err := localMap.Set(unit); err != nil {
-			return err
-		}
-		// TODO declMapに追加する順番はこれでOK？
-		// 無関係のユニットAとBに、同じ名前の型や変数が定義されていて、USES A, B; となっていた場合
-		// コンテキスト上ではどちらが有効になるのかを確認する
-		maps = append(maps, unit.DeclarationMap)
+	if err := m.context.Set(m.Unit); err != nil {
+		return err
 	}
-	m.context.DeclMap = astcore.NewCompositeDeclarationMap(maps...)
 
 	// Parse rest of interface Section (except USES clause)
 	if err := m.ParseUnitIntfBody(); err != nil {
@@ -274,21 +257,9 @@ func (m *UnitParser) ProcessImplAndInit() error {
 	}
 	// defer m.Parser.StackContext()()
 
-	parentUnits := m.context.Parent.Units
-	localMap := astcore.NewDeclarationMap()
-	if err := localMap.Set(m.Unit); err != nil {
+	if err := m.context.ImportUnitDecls(m.Unit.ImplementationSection.UsesClause); err != nil {
 		return err
 	}
-	maps := []astcore.DeclMap{localMap}
-	for _, unitRef := range m.Unit.ImplementationSection.UsesClause {
-		if unit := parentUnits.ByName(unitRef.Ident.Name); unit != nil {
-			if err := localMap.Set(unit); err != nil {
-				return err
-			}
-			maps = append(maps, unit.DeclarationMap)
-		}
-	}
-	m.context.DeclMap = astcore.NewCompositeDeclarationMap(maps...)
 
 	if err := m.ParseImplBody(); err != nil {
 		return err
@@ -315,7 +286,6 @@ func (p *UnitParser) ParseImplUses() error {
 			return err
 		}
 		impl.UsesClause = usesClause
-		p.context.ImportUnitDecls(usesClause)
 		p.NextToken()
 	}
 	p.Unit.ImplementationSection = impl

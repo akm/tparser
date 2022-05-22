@@ -53,8 +53,27 @@ func (c *UnitContext) Clone() Context {
 		DeclMap:         c.DeclMap,
 	}
 }
-func (c *UnitContext) ImportUnitDecls(usesClause ast.UsesClause) {
-	c.unitIdentifiers = append(c.unitIdentifiers, usesClause.IdentList().Names()...)
+func (c *UnitContext) ImportUnitDecls(usesClause ast.UsesClause) error {
+	units := ast.Units{}
+	parentUnits := c.Parent.Units
+	for _, unitRef := range usesClause {
+		if u := parentUnits.ByName(unitRef.Ident.Name); u != nil {
+			units = append(units, u)
+		}
+	}
+	localMap := astcore.NewDeclarationMap()
+	maps := []astcore.DeclMap{localMap, c.DeclMap}
+	for _, unit := range units {
+		if err := localMap.Set(unit); err != nil {
+			return err
+		}
+		// TODO declMapに追加する順番はこれでOK？
+		// 無関係のユニットAとBに、同じ名前の型や変数が定義されていて、USES A, B; となっていた場合
+		// コンテキスト上ではどちらが有効になるのかを確認する
+		maps = append(maps, unit.DeclarationMap)
+	}
+	c.DeclMap = astcore.NewCompositeDeclarationMap(maps...)
+	return nil
 }
 
 func (c *UnitContext) IsUnitIdentifier(token *token.Token) bool {
