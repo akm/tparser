@@ -32,7 +32,7 @@ func NewQualId(args ...interface{}) *ast.QualId {
 			return NewQualId(NewIdent(args[0]))
 		}
 	case 2:
-		if declaration, ok := args[1].(*astcore.Declaration); ok {
+		if declaration, ok := args[1].(*astcore.Decl); ok {
 			ident := NewIdent(args[0])
 			return ast.NewQualId(nil, ast.NewIdentRef(ident, declaration))
 		}

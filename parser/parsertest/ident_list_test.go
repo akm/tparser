@@ -1,4 +1,4 @@
-package parser
+package parsertest
 
 import (
 	"testing"
@@ -10,7 +10,7 @@ import (
 func TestIdentClausee(t *testing.T) {
 	text := []rune(`U1,U2,U3;`)
 
-	parser := NewParser(&text)
+	parser := NewTestParser(&text)
 	parser.NextToken()
 	res, err := parser.ParseIdentList(';')
 	if assert.NoError(t, err) {

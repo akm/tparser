@@ -1,4 +1,4 @@
-package parser
+package parsertest
 
 import (
 	"testing"
@@ -11,7 +11,7 @@ import (
 func TestEnumeratedType(t *testing.T) {
 	run := func(name string, text []rune, expected ast.Type) {
 		t.Run(name, func(t *testing.T) {
-			parser := NewParser(&text)
+			parser := NewTestParser(&text)
 			parser.NextToken()
 			res, err := parser.ParseType()
 			if assert.NoError(t, err) {
@@ -57,7 +57,7 @@ func TestEnumeratedType(t *testing.T) {
 func TestSubrangeType(t *testing.T) {
 	run := func(name string, text []rune, expected ast.Type) {
 		t.Run(name, func(t *testing.T) {
-			parser := NewParser(&text)
+			parser := NewTestParser(&text)
 			parser.NextToken()
 			res, err := parser.ParseType()
 			if assert.NoError(t, err) {

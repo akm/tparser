@@ -1,4 +1,4 @@
-package parser
+package parsertest
 
 import (
 	"testing"
@@ -11,7 +11,7 @@ import (
 func TestUnitWithConstSection(t *testing.T) {
 	run := func(name string, text []rune, expected *ast.Unit) {
 		t.Run(name, func(t *testing.T) {
-			parser := NewParser(&text)
+			parser := NewTestUnitParser(&text)
 			parser.NextToken()
 			res, err := parser.ParseUnit()
 			if assert.NoError(t, err) {
@@ -52,7 +52,7 @@ func TestUnitWithConstSection(t *testing.T) {
 func TestConstSectionl(t *testing.T) {
 	run := func(name string, text []rune, expected ast.ConstSection) {
 		t.Run(name, func(t *testing.T) {
-			parser := NewParser(&text)
+			parser := NewTestParser(&text)
 			parser.NextToken()
 			res, err := parser.ParseConstSection(true)
 			if assert.NoError(t, err) {

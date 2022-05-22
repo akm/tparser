@@ -35,8 +35,8 @@ func (s UsesClause) Children() Nodes {
 	return r
 }
 
-func (s UsesClause) ToDeclarations() astcore.Declarations {
-	r := make(astcore.Declarations, len(s))
+func (s UsesClause) ToDeclarations() astcore.Decls {
+	r := make(astcore.Decls, len(s))
 	for idx, i := range s {
 		r[idx] = astcore.NewDeclaration(i.Ident, i)
 	}

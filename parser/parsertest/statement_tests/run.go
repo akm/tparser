@@ -5,13 +5,13 @@ import (
 
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/asttest"
-	"github.com/akm/tparser/parser"
+	"github.com/akm/tparser/parser/parsertest"
 	"github.com/stretchr/testify/assert"
 )
 
 func runProgram(t *testing.T, name string, clearLocations bool, text []rune, expected *ast.Program, callbacks ...func(expected, actual *ast.CompoundStmt)) {
 	t.Run(name, func(t *testing.T) {
-		parser := parser.NewParser(&text)
+		parser := parsertest.NewTestProgramParser(&text)
 		parser.NextToken()
 		res, err := parser.ParseProgram()
 		if assert.NoError(t, err) {
@@ -19,14 +19,7 @@ func runProgram(t *testing.T, name string, clearLocations bool, text []rune, exp
 				asttest.ClearLocations(t, res)
 			}
 			if !assert.Equal(t, expected, res) {
-				assert.Equal(t, expected.ProgramBlock.UsesClause, res.ProgramBlock.UsesClause)
-				if !assert.Equal(t, expected.ProgramBlock.Block, res.ProgramBlock.Block) {
-					assert.Equal(t, expected.ProgramBlock.Block.DeclSections, res.ProgramBlock.Block.DeclSections)
-					assert.Equal(t, expected.ProgramBlock.Block.ExportsStmts1, res.ProgramBlock.Block.ExportsStmts1)
-					if !assert.Equal(t, expected.ProgramBlock.Block.Body, res.ProgramBlock.Block.Body) {
-					}
-					assert.Equal(t, expected.ProgramBlock.Block.ExportsStmts2, res.ProgramBlock.Block.ExportsStmts2)
-				}
+				asttest.AssertProgram(t, expected, res)
 			}
 		}
 	})
@@ -34,7 +27,7 @@ func runProgram(t *testing.T, name string, clearLocations bool, text []rune, exp
 
 func runSatement(t *testing.T, name string, clearLocations bool, text []rune, expected *ast.Statement, callbacks ...func(expected, actual *ast.Statement)) {
 	t.Run(name, func(t *testing.T) {
-		parser := parser.NewParser(&text)
+		parser := parsertest.NewTestParser(&text)
 		parser.NextToken()
 		res, err := parser.ParseStatement()
 		if assert.NoError(t, err) {

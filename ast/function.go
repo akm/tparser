@@ -25,7 +25,7 @@ type ProcedureDeclSection interface {
 //   Block ';'
 //   ```
 type FunctionDecl struct {
-	astcore.Decl
+	astcore.DeclNode
 	*FunctionHeading
 	Directives           []Directive
 	ExternalOptions      *ExternalOptions
@@ -38,6 +38,6 @@ func (*FunctionDecl) isProcedureDeclSection() {}
 func (m *FunctionDecl) Children() Nodes {
 	return Nodes{m.FunctionHeading, m.Block}
 }
-func (m *FunctionDecl) ToDeclarations() astcore.Declarations {
-	return astcore.Declarations{astcore.NewDeclaration(m.Ident, m)}
+func (m *FunctionDecl) ToDeclarations() astcore.Decls {
+	return astcore.Decls{astcore.NewDeclaration(m.Ident, m)}
 }

@@ -154,7 +154,7 @@ func (m *AssignStatement) Children() Nodes {
 //   ```
 type InheritedStatement struct {
 	SimpleStatement
-	Ref *astcore.Declaration // reference to the ancestor method
+	Ref *astcore.Decl // reference to the ancestor method
 }
 
 func (*InheritedStatement) isStatementBody()   {}
@@ -168,7 +168,7 @@ func (*InheritedStatement) Children() Nodes    { return Nodes{} }
 type GotoStatement struct {
 	SimpleStatement
 	LabelId *LabelId
-	Ref     *astcore.Declaration
+	Ref     *astcore.Decl
 }
 
 func (*GotoStatement) isStatementBody()   {}
@@ -443,7 +443,7 @@ func (m *ExceptionBlockHandler) Children() Nodes {
 type ExceptionBlockHandlerDecl struct {
 	Ident *Ident
 	Type  Type
-	astcore.Decl
+	astcore.DeclNode
 }
 
 func (m *ExceptionBlockHandlerDecl) Children() Nodes {
@@ -455,8 +455,8 @@ func (m *ExceptionBlockHandlerDecl) Children() Nodes {
 	return r
 }
 
-func (m *ExceptionBlockHandlerDecl) ToDeclarations() astcore.Declarations {
-	return astcore.Declarations{astcore.NewDeclaration(m.Ident, m)}
+func (m *ExceptionBlockHandlerDecl) ToDeclarations() astcore.Decls {
+	return astcore.Decls{astcore.NewDeclaration(m.Ident, m)}
 }
 
 // - TryFinallyStmt

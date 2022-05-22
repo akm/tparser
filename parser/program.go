@@ -1,13 +1,65 @@
 package parser
 
 import (
+	"io/ioutil"
+	"os"
+
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/astcore"
 	"github.com/akm/tparser/token"
-	"github.com/pkg/errors"
+	"golang.org/x/text/encoding/japanese"
+	"golang.org/x/text/transform"
 )
 
-func (p *Parser) ParseProgram() (*ast.Program, error) {
+type Program struct {
+	*ast.Program
+	Units ast.Units
+}
+
+func ParseProgram(path string) (*Program, error) {
+	fp, err := os.Open(path)
+	if err != nil {
+		panic(err)
+	}
+	defer fp.Close()
+
+	decoder := japanese.ShiftJIS.NewDecoder()
+	str, err := ioutil.ReadAll(transform.NewReader(fp, decoder))
+	if err != nil {
+		return nil, err
+	}
+
+	runes := []rune(string(str))
+
+	// absPath, err := filepath.Abs(path)
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	ctx := NewProgramContext(path)
+	p := NewProgramParser(ctx)
+	p.SetText(&runes)
+	p.NextToken()
+	res, err := p.ParseProgram()
+	if err != nil {
+		return nil, err
+	}
+	return &Program{
+		Program: res,
+		Units:   ctx.Units,
+	}, nil
+}
+
+type ProgramParser struct {
+	*Parser
+	context *ProgramContext
+}
+
+func NewProgramParser(ctx *ProgramContext) *ProgramParser {
+	return &ProgramParser{Parser: NewParser(ctx), context: ctx}
+}
+
+func (p *ProgramParser) ParseProgram() (*ast.Program, error) {
 	if _, err := p.Current(token.ReservedWord.HasKeyword("PROGRAM")); err != nil {
 		return nil, err
 	}
@@ -31,11 +83,11 @@ func (p *Parser) ParseProgram() (*ast.Program, error) {
 	if _, err := p.Current(token.Symbol('.')); err != nil {
 		return nil, err
 	}
-	p.context.SetDecl(res)
+	p.context.Set(res)
 	return res, nil
 }
 
-func (p *Parser) ParseProgramBlock() (*ast.ProgramBlock, error) {
+func (p *ProgramParser) ParseProgramBlock() (*ast.ProgramBlock, error) {
 	res := &ast.ProgramBlock{}
 	if p.CurrentToken().Is(token.ReservedWord.HasKeyword("USES")) {
 		uses, err := p.ParseUsesClause()
@@ -45,12 +97,7 @@ func (p *Parser) ParseProgramBlock() (*ast.ProgramBlock, error) {
 		res.UsesClause = uses
 		p.NextToken()
 
-		ctx, ok := p.context.(*ProjectContext)
-		if !ok {
-			panic(errors.Errorf("Something wrong. context is not ProjectContext"))
-		}
-
-		if err := p.LoadUnits(ctx, uses); err != nil {
+		if err := p.LoadUnits(p.context, uses); err != nil {
 			return nil, err
 		}
 	}
@@ -62,16 +109,16 @@ func (p *Parser) ParseProgramBlock() (*ast.ProgramBlock, error) {
 	return res, nil
 }
 
-func (p *Parser) LoadUnits(ctx *ProjectContext, uses ast.UsesClause) error {
-	loaders := UnitLoaders{}
+func (p *ProgramParser) LoadUnits(ctx *ProgramContext, uses ast.UsesClause) error {
+	parsers := UnitParsers{}
 	for _, unitRef := range uses {
 		path := unitRef.EffectivePath()
 		if path != "" {
-			loaders = append(loaders, NewUnitLoader(NewUnitContext(ctx, path)))
+			parsers = append(parsers, NewUnitParser(NewUnitContext(ctx, path)))
 		}
 	}
 
-	for _, loader := range loaders {
+	for _, loader := range parsers {
 		if err := loader.LoadFile(); err != nil {
 			return err
 		}
@@ -81,7 +128,7 @@ func (p *Parser) LoadUnits(ctx *ProjectContext, uses ast.UsesClause) error {
 		ctx.AddUnit(loader.Unit)
 	}
 
-	sortedLoaders, err := loaders.Sort()
+	sortedLoaders, err := parsers.Sort()
 	if err != nil {
 		return err
 	}
@@ -92,9 +139,9 @@ func (p *Parser) LoadUnits(ctx *ProjectContext, uses ast.UsesClause) error {
 		}
 	}
 
-	declMaps := []astcore.DeclarationMap{ctx.DeclarationMap}
-	declMaps = append(declMaps, loaders.DeclarationMaps()...)
-	ctx.DeclarationMap = astcore.NewCompositeDeclarationMap(declMaps...)
+	declMaps := []astcore.DeclMap{ctx.DeclMap}
+	declMaps = append(declMaps, parsers.DeclarationMaps()...)
+	ctx.DeclMap = astcore.NewCompositeDeclarationMap(declMaps...)
 
 	for _, loader := range sortedLoaders {
 		if err := loader.ProcessImplAndInit(); err != nil {
@@ -102,9 +149,9 @@ func (p *Parser) LoadUnits(ctx *ProjectContext, uses ast.UsesClause) error {
 		}
 	}
 
-	units := loaders.Units() // Don't use sortedLoaders for this
+	units := parsers.Units() // Don't use sortedLoaders for this
 	for _, u := range units {
-		ctx.DeclarationMap.SetDecl(u)
+		ctx.DeclMap.Set(u)
 	}
 
 	return nil

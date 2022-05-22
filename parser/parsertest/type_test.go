@@ -1,4 +1,4 @@
-package parser
+package parsertest
 
 import (
 	"testing"
@@ -12,7 +12,7 @@ import (
 func TestUnitWithTypeSection(t *testing.T) {
 	run := func(name string, text []rune, expected *ast.Unit) {
 		t.Run(name, func(t *testing.T) {
-			parser := NewParser(&text)
+			parser := NewTestUnitParser(&text)
 			parser.NextToken()
 			res, err := parser.ParseUnit()
 			if assert.NoError(t, err) {
@@ -111,7 +111,7 @@ func TestUnitWithTypeSection(t *testing.T) {
 func TestTypeSection(t *testing.T) {
 	run := func(name string, text []rune, expected ast.TypeSection) {
 		t.Run(name, func(t *testing.T) {
-			parser := NewParser(&text)
+			parser := NewTestParser(&text)
 			parser.NextToken()
 			res, err := parser.ParseTypeSection(true)
 			if assert.NoError(t, err) {
@@ -169,7 +169,7 @@ func TestTypeDecl(t *testing.T) {
 
 	run := func(name string, text []rune, expected *ast.TypeDecl) {
 		t.Run(name, func(t *testing.T) {
-			parser := NewParser(&text, NewContext(ext.Strings{u1.String()}))
+			parser := NewTestUnitParser(&text, NewTestUnitContext(ext.Strings{u1.String()}))
 			parser.NextToken()
 			res, err := parser.ParseTypeDecl()
 			if assert.NoError(t, err) {
@@ -213,7 +213,7 @@ func TestTypeId(t *testing.T) {
 
 	run := func(name string, text []rune, expected *ast.TypeId) {
 		t.Run(name, func(t *testing.T) {
-			parser := NewParser(&text, NewContext(ext.Strings{u1.String()}))
+			parser := NewTestParser(&text, NewTestUnitContext(ext.Strings{u1.String()}))
 			parser.NextToken()
 			res, err := parser.ParseTypeForIdentifier()
 			if assert.NoError(t, err) {
@@ -241,7 +241,7 @@ func TestTypeId(t *testing.T) {
 func TestNamedType(t *testing.T) {
 	run := func(text []rune, expected ast.Type) {
 		t.Run(string(text), func(t *testing.T) {
-			parser := NewParser(&text)
+			parser := NewTestParser(&text)
 			parser.NextToken()
 			res, err := parser.ParseType()
 			if assert.NoError(t, err) {

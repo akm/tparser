@@ -132,13 +132,13 @@ func (m DeclSections) Children() Nodes {
 type LabelDeclSection struct {
 	*LabelId
 	DeclSection
-	astcore.Decl
+	astcore.DeclNode
 }
 
 func (*LabelDeclSection) canBeDeclSection() {}
 func (m *LabelDeclSection) Children() Nodes { return Nodes{m.LabelId} }
-func (m *LabelDeclSection) ToDeclarations() astcore.Declarations {
-	return astcore.Declarations{astcore.NewDeclaration(m.LabelId, m)}
+func (m *LabelDeclSection) ToDeclarations() astcore.Decls {
+	return astcore.Decls{astcore.NewDeclaration(m.LabelId, m)}
 }
 
 type LabelId = Ident

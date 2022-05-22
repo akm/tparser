@@ -32,15 +32,15 @@ type TypeDecl struct {
 	*Ident
 	Type                 Type
 	PortabilityDirective *PortabilityDirective
-	astcore.Decl
+	astcore.DeclNode
 }
 
 func (m *TypeDecl) Children() Nodes {
 	return Nodes{m.Ident, m.Type}
 }
 
-func (m *TypeDecl) ToDeclarations() astcore.Declarations {
-	return astcore.Declarations{astcore.NewDeclaration(m.Ident, m)}
+func (m *TypeDecl) ToDeclarations() astcore.Decls {
+	return astcore.Decls{astcore.NewDeclaration(m.Ident, m)}
 }
 
 // - Type
@@ -81,13 +81,13 @@ type TypeId struct {
 	Type
 	UnitId *UnitId
 	Ident  *Ident
-	Ref    *astcore.Declaration // Actual Type object
+	Ref    *astcore.Decl // Actual Type object
 }
 
 func NewTypeId(unitIdOrIdent interface{}, args ...interface{}) *TypeId {
-	var ref *astcore.Declaration
+	var ref *astcore.Decl
 	if len(args) > 0 {
-		if v, ok := args[len(args)-1].(*astcore.Declaration); ok {
+		if v, ok := args[len(args)-1].(*astcore.Decl); ok {
 			ref = v
 			args = args[:len(args)-1]
 		}

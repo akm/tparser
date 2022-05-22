@@ -55,7 +55,7 @@ func (p *Parser) ParseTypeDecl() (*ast.TypeDecl, error) {
 		return nil, err
 	}
 	res.Type = typ
-	p.context.SetDecl(res)
+	p.context.Set(res)
 
 	{
 		t := p.CurrentToken()

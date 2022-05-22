@@ -7,7 +7,7 @@ import "github.com/akm/tparser/ast/astcore"
 //   (Program | Package | Library | Unit)
 //   ```
 type Goal interface {
-	astcore.Decl
+	astcore.DeclNode
 	isGoal()
 	GetPath() string
 }

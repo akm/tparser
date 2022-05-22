@@ -7,9 +7,9 @@ import (
 )
 
 func NewTypeId(unitIdOrIdent interface{}, args ...interface{}) *ast.TypeId {
-	var ref *astcore.Declaration
+	var ref *astcore.Decl
 	if len(args) > 0 {
-		if v, ok := args[len(args)-1].(*astcore.Declaration); ok {
+		if v, ok := args[len(args)-1].(*astcore.Decl); ok {
 			ref = v
 			args = args[:len(args)-1]
 		}

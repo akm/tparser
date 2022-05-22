@@ -18,7 +18,7 @@ type ExportedHeading struct {
 	*FunctionHeading
 	Directives      []Directive
 	ExternalOptions *ExternalOptions
-	astcore.Decl
+	astcore.DeclNode
 	InterfaceDecl
 }
 
@@ -32,8 +32,8 @@ const (
 	FtFunction
 )
 
-func (m *ExportedHeading) ToDeclarations() astcore.Declarations {
-	return astcore.Declarations{astcore.NewDeclaration(m.Ident, m)}
+func (m *ExportedHeading) ToDeclarations() astcore.Decls {
+	return astcore.Decls{astcore.NewDeclaration(m.Ident, m)}
 }
 
 // - FunctionHeading
@@ -95,7 +95,7 @@ var (
 type FormalParm struct {
 	Opt *FormalParmOption
 	*Parameter
-	astcore.Decl
+	astcore.DeclNode
 }
 
 func (m *FormalParm) Children() Nodes {
@@ -140,7 +140,7 @@ func NewFormalParm(name interface{}, args ...interface{}) *FormalParm {
 	}
 }
 
-func (m *FormalParm) ToDeclarations() astcore.Declarations {
+func (m *FormalParm) ToDeclarations() astcore.Decls {
 	return astcore.NewDeclarations(m.IdentList, m)
 }
 

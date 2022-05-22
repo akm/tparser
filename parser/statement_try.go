@@ -2,6 +2,7 @@ package parser
 
 import (
 	"github.com/akm/tparser/ast"
+	"github.com/akm/tparser/log"
 	"github.com/akm/tparser/token"
 )
 
@@ -125,13 +126,13 @@ func (p *Parser) ParseExceptionBlockHandler() (*ast.ExceptionBlockHandler, error
 	// p.logger.Printf("p.context.DeclarationMap.Keys(): %+v\n", p.context.DeclarationMap.Keys())
 
 	if decl := p.context.Get(t.RawString()); decl != nil {
-		p.logger.Printf("decl: %+v\n", *decl)
-		p.logger.Printf("decl.Node: %+v\n", decl.Node)
+		log.Printf("decl: %+v\n", *decl)
+		log.Printf("decl.Node: %+v\n", decl.Node)
 		if _, ok := decl.Node.(*ast.TypeDecl); ok {
-			p.logger.Printf("decl is Node\n")
+			log.Printf("decl is Node\n")
 			hasIdent = false
 		} else {
-			p.logger.Printf("decl is NOT Node\n")
+			log.Printf("decl is NOT Node\n")
 		}
 	}
 	decl := &ast.ExceptionBlockHandlerDecl{}
@@ -148,7 +149,7 @@ func (p *Parser) ParseExceptionBlockHandler() (*ast.ExceptionBlockHandler, error
 	}
 	decl.Type = typ
 	if decl.Ident != nil {
-		p.context.SetDecl(decl)
+		p.context.Set(decl)
 	}
 
 	res := &ast.ExceptionBlockHandler{Decl: decl}

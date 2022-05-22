@@ -6,14 +6,14 @@ import (
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/astcore"
 	"github.com/akm/tparser/ast/asttest"
-	"github.com/akm/tparser/parser"
+	"github.com/akm/tparser/parser/parsertest"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestUnit(t *testing.T) {
 	run := func(name string, text []rune, expected *ast.Unit) {
 		t.Run(name, func(t *testing.T) {
-			parser := parser.NewParser(&text)
+			parser := parsertest.NewTestUnitParser(&text)
 			parser.NextToken()
 			res, err := parser.ParseUnit()
 			if assert.NoError(t, err) {
@@ -202,7 +202,7 @@ end.`),
 func TestInterfaceSection(t *testing.T) {
 	run := func(name string, text []rune, expected *ast.InterfaceSection) {
 		t.Run(name, func(t *testing.T) {
-			parser := parser.NewParser(&text)
+			parser := parsertest.NewTestUnitParser(&text)
 			parser.NextToken()
 			res, err := parser.ParseInterfaceSectionUses()
 			if assert.NoError(t, err) {

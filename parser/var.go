@@ -69,7 +69,7 @@ func (p *Parser) ParseVarDecl() (*ast.VarDecl, error) {
 		}
 		res.ConstExpr = expr
 	}
-	p.context.SetDecl(res)
+	p.context.Set(res)
 	return res, nil
 }
 
@@ -118,7 +118,7 @@ func (p *Parser) ParseThreadVarDecl() (*ast.ThreadVarDecl, error) {
 		return nil, err
 	}
 	res.Type = typ
-	p.context.SetDecl(res)
+	p.context.Set(res)
 
 	// p.NextToken()
 	return res, nil
