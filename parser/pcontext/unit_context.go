@@ -56,8 +56,9 @@ func (c *UnitContext) Clone() Context {
 func (c *UnitContext) ImportUnitDecls(usesClause ast.UsesClause) error {
 	units := ast.Units{}
 	parentUnits := c.Parent.Units
-	for _, unitRef := range usesClause {
-		if u := parentUnits.ByName(unitRef.Ident.Name); u != nil {
+	for _, unitItem := range usesClause {
+		if u := parentUnits.ByName(unitItem.Ident.Name); u != nil {
+			unitItem.Unit = u
 			units = append(units, u)
 		}
 	}
