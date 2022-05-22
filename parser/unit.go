@@ -47,10 +47,10 @@ func (p *Parser) ParseQualId() (*ast.QualId, error) {
 		if unitDecl == nil {
 			return nil, p.TokenErrorf("undefined unit %s", name1)
 		}
-		if !IsUsesClauseItem(unitDecl) {
+		usesClauseItem, ok := unitDecl.Node.(*ast.UsesClauseItem)
+		if !ok {
 			return nil, p.TokenErrorf("%s is not a unit but was %T (%+v)", name1, unitDecl.Node, unitDecl.Node)
 		}
-		usesClauseItem := unitDecl.Node.(*ast.UsesClauseItem)
 		unit := usesClauseItem.Unit
 		if unit == nil {
 			return nil, p.TokenErrorf("%s is used in uses clause but not found", name1)

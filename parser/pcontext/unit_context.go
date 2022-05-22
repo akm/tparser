@@ -71,8 +71,9 @@ func (c *UnitContext) IsUnitIdentifier(token *token.Token) bool {
 	if decl == nil {
 		return false
 	}
+	_, ok := decl.Node.(*ast.UsesClauseItem)
 	// log.Printf("UnitContext.IsUnitIdentifier(%s) decl.Node: %T %+v", s, decl.Node, decl.Node)
-	return IsUsesClauseItem(decl)
+	return ok
 }
 
 func (c *UnitContext) GetDeclarationMap() astcore.DeclMap {
