@@ -48,7 +48,7 @@ func (p *Parser) ParseQualId() (*ast.QualId, error) {
 			return nil, p.TokenErrorf("undefined unit %s", name1)
 		}
 		if !IsUsesClauseItem(unitDecl) {
-			return nil, p.TokenErrorf("%s is not a unit", name1)
+			return nil, p.TokenErrorf("%s is not a unit but was %T (%+v)", name1, unitDecl.Node, unitDecl.Node)
 		}
 		usesClauseItem := unitDecl.Node.(*ast.UsesClauseItem)
 		unit := usesClauseItem.Unit
