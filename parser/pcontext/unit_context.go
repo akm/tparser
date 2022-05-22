@@ -53,7 +53,7 @@ func (c *UnitContext) Clone() Context {
 		DeclMap:         c.DeclMap,
 	}
 }
-func (c *UnitContext) AddUnitIdentifiers(usesClause ast.UsesClause) {
+func (c *UnitContext) ImportUnitDecls(usesClause ast.UsesClause) {
 	c.unitIdentifiers = append(c.unitIdentifiers, usesClause.IdentList().Names()...)
 }
 

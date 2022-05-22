@@ -196,7 +196,7 @@ func (p *UnitParser) ParseInterfaceSectionUses() (*ast.InterfaceSection, error) 
 			return nil, err
 		}
 		res.UsesClause = usesClause
-		p.context.AddUnitIdentifiers(usesClause)
+		p.context.ImportUnitDecls(usesClause)
 		p.NextToken()
 	}
 	return res, nil
@@ -315,7 +315,7 @@ func (p *UnitParser) ParseImplUses() error {
 			return err
 		}
 		impl.UsesClause = usesClause
-		p.context.AddUnitIdentifiers(usesClause)
+		p.context.ImportUnitDecls(usesClause)
 		p.NextToken()
 	}
 	p.Unit.ImplementationSection = impl
