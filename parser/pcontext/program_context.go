@@ -57,7 +57,8 @@ func (c *ProgramContext) IsUnitIdentifier(t *token.Token) bool {
 			return true
 		}
 	}
-	return c.Units.ByName(s) != nil
+	// return c.Units.ByName(s) != nil
+	return false
 }
 
 func (c *ProgramContext) GetDeclarationMap() astcore.DeclMap {
