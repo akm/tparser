@@ -47,7 +47,7 @@ func (p *Parser) ParseTypeDecl() (*ast.TypeDecl, error) {
 	}
 	t := p.NextToken()
 	if t.Is(token.ReservedWord.HasKeyword("TYPE")) {
-		// ignore
+		// TODO res.Typed = true
 		p.NextToken()
 	}
 	typ, err := p.ParseType()
