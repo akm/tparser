@@ -131,10 +131,14 @@ func (m *UnitParser) ProcessIntfBody() error {
 		}
 	}
 	localMap := astcore.NewDeclarationMap()
-	localMap.Set(m.Unit)
+	if err := localMap.Set(m.Unit); err != nil {
+		return err
+	}
 	maps := []astcore.DeclMap{localMap}
 	for _, unit := range units {
-		localMap.Set(unit)
+		if err := localMap.Set(unit); err != nil {
+			return err
+		}
 		// TODO declMapに追加する順番はこれでOK？
 		// 無関係のユニットAとBに、同じ名前の型や変数が定義されていて、USES A, B; となっていた場合
 		// コンテキスト上ではどちらが有効になるのかを確認する
@@ -174,7 +178,9 @@ func (p *UnitParser) ParseUnitEnd() error {
 	if _, err := p.Next(token.Symbol('.')); err != nil {
 		return err
 	}
-	p.context.Set(p.Unit)
+	if err := p.context.Set(p.Unit); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -270,11 +276,15 @@ func (m *UnitParser) ProcessImplAndInit() error {
 
 	parentUnits := m.context.Parent.Units
 	localMap := astcore.NewDeclarationMap()
-	localMap.Set(m.Unit)
+	if err := localMap.Set(m.Unit); err != nil {
+		return err
+	}
 	maps := []astcore.DeclMap{localMap}
 	for _, unitRef := range m.Unit.ImplementationSection.UsesClause {
 		if unit := parentUnits.ByName(unitRef.Ident.Name); unit != nil {
-			localMap.Set(unit)
+			if err := localMap.Set(unit); err != nil {
+				return err
+			}
 			maps = append(maps, unit.DeclarationMap)
 		}
 	}

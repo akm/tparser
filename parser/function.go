@@ -29,7 +29,9 @@ func (p *Parser) ParseProcedureDeclSection() (*ast.FunctionDecl, error) {
 		return nil, err
 	}
 	res := &ast.FunctionDecl{FunctionHeading: functionHeading}
-	p.context.Set(res)
+	if err := p.context.Set(res); err != nil {
+		return nil, err
+	}
 
 	p.NextToken()
 	if p.CurrentToken().Is(token.Directive) {

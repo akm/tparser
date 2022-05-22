@@ -32,7 +32,7 @@ func TestQualIdInCompoundStmt(t *testing.T) {
 	}
 
 	declMap := astcore.NewDeclarationMap()
-	declMap.Set(unitFoo)
+	assert.NoError(t, declMap.Set(unitFoo))
 
 	run := func(name string, text []rune, expected *ast.CompoundStmt) {
 		t.Run(name, func(t *testing.T) {

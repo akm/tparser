@@ -42,7 +42,9 @@ func (p *Parser) ParseConstantDecl() (*ast.ConstantDecl, error) {
 		return nil, err
 	}
 	res.Ident = p.NewIdent(ident)
-	p.context.Set(res)
+	if err := p.context.Set(res); err != nil {
+		return nil, err
+	}
 
 	p.NextToken()
 	if p.CurrentToken().Is(token.Symbol(':')) {

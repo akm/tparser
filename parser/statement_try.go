@@ -149,7 +149,9 @@ func (p *Parser) ParseExceptionBlockHandler() (*ast.ExceptionBlockHandler, error
 	}
 	decl.Type = typ
 	if decl.Ident != nil {
-		p.context.Set(decl)
+		if err := p.context.Set(decl); err != nil {
+			return nil, err
+		}
 	}
 
 	res := &ast.ExceptionBlockHandler{Decl: decl}

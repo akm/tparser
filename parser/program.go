@@ -83,7 +83,9 @@ func (p *ProgramParser) ParseProgram() (*ast.Program, error) {
 	if _, err := p.Current(token.Symbol('.')); err != nil {
 		return nil, err
 	}
-	p.context.Set(res)
+	if err := p.context.Set(res); err != nil {
+		return nil, err
+	}
 	return res, nil
 }
 
@@ -151,7 +153,9 @@ func (p *ProgramParser) LoadUnits(ctx *ProgramContext, uses ast.UsesClause) erro
 
 	units := parsers.Units() // Don't use sortedLoaders for this
 	for _, u := range units {
-		ctx.DeclMap.Set(u)
+		if err := ctx.DeclMap.Set(u); err != nil {
+			return err
+		}
 	}
 
 	return nil
