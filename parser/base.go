@@ -104,11 +104,3 @@ func (p *Parser) TokenErrorf(format string, t *token.Token, args ...interface{})
 	fmtArgs = append(fmtArgs, place)
 	return errors.Errorf(format+" at %s", fmtArgs...)
 }
-
-func (p *Parser) StackContext() func() {
-	var backup Context
-	p.context, backup = NewStackableContext(p.context), p.context
-	return func() {
-		p.context = backup
-	}
-}

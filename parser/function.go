@@ -6,8 +6,6 @@ import (
 )
 
 func (p *Parser) ParseProcedureDeclSection() (*ast.FunctionDecl, error) {
-	defer p.StackContext()()
-
 	var functionHeading *ast.FunctionHeading
 	switch p.CurrentToken().Value() {
 	case "PROCEDURE":

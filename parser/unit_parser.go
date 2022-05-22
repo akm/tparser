@@ -274,8 +274,6 @@ func (p *UnitParser) ParseImplUses() error {
 	}
 	p.NextToken()
 
-	defer p.StackContext()()
-
 	impl := &ast.ImplementationSection{}
 	if p.CurrentToken().Is(token.ReservedWord.HasKeyword("USES")) {
 		usesClause, err := p.ParseUsesClause()
