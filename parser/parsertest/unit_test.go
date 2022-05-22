@@ -31,8 +31,13 @@ func TestQualIdInCompoundStmt(t *testing.T) {
 		DeclarationMap: unitFooDeclMap,
 	}
 
+	usesClauseItemToFoo := &ast.UsesClauseItem{
+		Ident: asttest.NewIdent("foo"),
+		Unit:  unitFoo,
+	}
+
 	declMap := astcore.NewDeclarationMap()
-	assert.NoError(t, declMap.Set(unitFoo))
+	assert.NoError(t, declMap.Set(usesClauseItemToFoo))
 
 	run := func(name string, text []rune, expected *ast.CompoundStmt) {
 		t.Run(name, func(t *testing.T) {
@@ -58,7 +63,7 @@ end;`),
 							&ast.QualId{
 								UnitId: &ast.IdentRef{
 									Ident: asttest.NewIdent(unitFoo.Ident.Name, asttest.NewIdentLocation(2, 2, 8, 5)),
-									Ref:   unitFoo.ToDeclarations()[0],
+									Ref:   usesClauseItemToFoo.ToDeclarations()[0],
 								},
 								Ident: &ast.IdentRef{
 									Ident: asttest.NewIdent("Bar", asttest.NewIdentLocation(2, 6, 12, 9)),
