@@ -153,6 +153,9 @@ func (p *ProgramParser) LoadUnits(ctx *ProgramContext, uses ast.UsesClause) erro
 
 	units := parsers.Units() // Don't use sortedLoaders for this
 	for _, u := range units {
+		if usesItem := uses.Find(u.Ident.Name); usesItem != nil {
+			usesItem.Unit = u
+		}
 		if err := ctx.DeclMap.Set(u); err != nil {
 			return err
 		}
