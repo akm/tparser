@@ -17,7 +17,7 @@ import (
 // directory path, in single quotation marks; directory paths can be absolute
 // or relative. Examples:
 //     uses Windows, Messages, SysUtils, Strings in 'C:\Classes\Strings.pas', Classes;
-type UsesClause []*UnitRef
+type UsesClause []*UsesClauseItem
 
 func (s UsesClause) IdentList() IdentList {
 	var ids IdentList
@@ -43,12 +43,12 @@ func (s UsesClause) ToDeclarations() astcore.Decls {
 	return r
 }
 
-type UnitRef struct {
+type UsesClauseItem struct {
 	*Ident
 	Path *string
 }
 
-func NewUnitRef(name interface{}, paths ...string) *UnitRef {
+func NewUnitRef(name interface{}, paths ...string) *UsesClauseItem {
 	var nameIdent *Ident
 	switch v := name.(type) {
 	case Ident:
@@ -60,7 +60,7 @@ func NewUnitRef(name interface{}, paths ...string) *UnitRef {
 	default:
 		panic(errors.Errorf("invalid type %T", name))
 	}
-	r := &UnitRef{Ident: nameIdent}
+	r := &UsesClauseItem{Ident: nameIdent}
 	if len(paths) > 1 {
 		panic(errors.Errorf("too many paths: %v for NewUnitPath", paths))
 	}
@@ -71,18 +71,18 @@ func NewUnitRef(name interface{}, paths ...string) *UnitRef {
 	return r
 }
 
-func (m *UnitRef) Children() Nodes {
+func (m *UsesClauseItem) Children() Nodes {
 	return Nodes{m.Ident}
 }
 
-func (m *UnitRef) UnquotedPath() string {
+func (m *UsesClauseItem) UnquotedPath() string {
 	if m.Path == nil {
 		return ""
 	}
 	return strings.TrimSuffix(strings.TrimPrefix(*m.Path, "'"), "'")
 }
 
-func (m *UnitRef) EffectivePath() string {
+func (m *UsesClauseItem) EffectivePath() string {
 	origPath := m.UnquotedPath()
 	return strings.ReplaceAll(origPath, "\\", string([]rune{filepath.Separator}))
 }

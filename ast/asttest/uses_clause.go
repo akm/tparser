@@ -4,7 +4,7 @@ import (
 	"github.com/akm/tparser/ast"
 )
 
-func NewUnitRef(name interface{}, paths ...string) *ast.UnitRef {
+func NewUnitRef(name interface{}, paths ...string) *ast.UsesClauseItem {
 	switch v := name.(type) {
 	case string:
 		return ast.NewUnitRef(NewIdent(v), paths...)
