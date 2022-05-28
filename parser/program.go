@@ -100,7 +100,7 @@ func (p *ProgramParser) ParseProgramBlock() (*ast.ProgramBlock, error) {
 		res.UsesClause = uses
 		p.NextToken()
 
-		if err := p.LoadUnits(p.context, uses); err != nil {
+		if err := p.LoadUnits(uses); err != nil {
 			return nil, err
 		}
 	}
@@ -112,12 +112,12 @@ func (p *ProgramParser) ParseProgramBlock() (*ast.ProgramBlock, error) {
 	return res, nil
 }
 
-func (p *ProgramParser) LoadUnits(ctx *ProgramContext, uses ast.UsesClause) error {
+func (p *ProgramParser) LoadUnits(uses ast.UsesClause) error {
 	parsers := UnitParsers{}
 	for _, unitRef := range uses {
 		path := unitRef.EffectivePath()
 		if path != "" {
-			parsers = append(parsers, NewUnitParser(NewUnitContext(ctx, path)))
+			parsers = append(parsers, NewUnitParser(NewUnitContext(p.context, path)))
 		}
 	}
 
@@ -128,7 +128,7 @@ func (p *ProgramParser) LoadUnits(ctx *ProgramContext, uses ast.UsesClause) erro
 		if err := loader.ProcessIdentAndIntfUses(); err != nil {
 			return err
 		}
-		ctx.AddUnit(loader.Unit)
+		p.context.AddUnit(loader.Unit)
 	}
 
 	sortedLoaders, err := parsers.Sort()
@@ -142,9 +142,9 @@ func (p *ProgramParser) LoadUnits(ctx *ProgramContext, uses ast.UsesClause) erro
 		}
 	}
 
-	declMaps := []astcore.DeclMap{ctx.DeclMap}
+	declMaps := []astcore.DeclMap{p.context.DeclMap}
 	declMaps = append(declMaps, parsers.DeclMaps()...)
-	ctx.DeclMap = astcore.NewCompositeDeclMap(declMaps...)
+	p.context.DeclMap = astcore.NewCompositeDeclMap(declMaps...)
 
 	for _, loader := range sortedLoaders {
 		if err := loader.ProcessImplAndInit(); err != nil {
