@@ -64,7 +64,7 @@ func NewQualId(args ...interface{}) *ast.QualId {
 	}
 }
 
-func ClearUnitDeclarationMap(u *ast.Unit) {
+func ClearUnitDeclMap(u *ast.Unit) {
 	u.DeclarationMap = nil
 }
 
@@ -72,7 +72,7 @@ func ClearUnitDeclarationMaps(t *testing.T, node ast.Node) {
 	err := astcore.WalkDown(node, func(n ast.Node) error {
 		switch v := n.(type) {
 		case *ast.Unit:
-			ClearUnitDeclarationMap(v)
+			ClearUnitDeclMap(v)
 		}
 		return nil
 	})
