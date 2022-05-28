@@ -151,8 +151,6 @@ func (m *UnitParser) ProcessIntfBody() error {
 	if err := m.ParseUnitIntfBody(); err != nil {
 		return err
 	}
-
-	m.Unit.DeclMap = m.context.DeclMap
 	return nil
 }
 
