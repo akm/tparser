@@ -143,7 +143,7 @@ func (p *ProgramParser) LoadUnits(ctx *ProgramContext, uses ast.UsesClause) erro
 	}
 
 	declMaps := []astcore.DeclMap{ctx.DeclMap}
-	declMaps = append(declMaps, parsers.DeclarationMaps()...)
+	declMaps = append(declMaps, parsers.DeclMaps()...)
 	ctx.DeclMap = astcore.NewCompositeDeclMap(declMaps...)
 
 	for _, loader := range sortedLoaders {
