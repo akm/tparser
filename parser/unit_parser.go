@@ -161,7 +161,7 @@ func (p *UnitParser) ParseUnitIntfBody() error {
 	if err := p.ParseInterfaceSectionDecls(); err != nil {
 		return err
 	}
-	p.Unit.DeclarationMap = p.context.GetDeclarationMap()
+	p.Unit.DeclarationMap = p.context.DeclMap
 	return nil
 }
 

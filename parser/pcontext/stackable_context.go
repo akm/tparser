@@ -28,10 +28,6 @@ func (c *StackableContext) IsUnitIdentifier(token *token.Token) bool {
 	return c.parent.IsUnitIdentifier(token)
 }
 
-func (c *StackableContext) GetDeclarationMap() astcore.DeclMap {
-	return astcore.NewCompositeDeclarationMap(c.declarationMap, c.parent.GetDeclarationMap())
-}
-
 func (c *StackableContext) Get(name string) *astcore.Decl {
 	if r := c.declarationMap.Get(name); r != nil {
 		return r

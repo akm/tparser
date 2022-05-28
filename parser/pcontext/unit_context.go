@@ -76,10 +76,6 @@ func (c *UnitContext) IsUnitIdentifier(token *token.Token) bool {
 	return ok
 }
 
-func (c *UnitContext) GetDeclarationMap() astcore.DeclMap {
-	return c.DeclMap
-}
-
 func (c *UnitContext) GetPath() string {
 	return c.Path
 }
