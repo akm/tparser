@@ -61,7 +61,7 @@ func (c *UnitContext) ImportUnitDecls(usesClause ast.UsesClause) error {
 		// コンテキスト上ではどちらが有効になるのかを確認する
 		maps = append(maps, unit.DeclarationMap)
 	}
-	c.DeclMap = astcore.NewCompositeDeclarationMap(maps...)
+	c.DeclMap = astcore.NewCompositeDeclMap(maps...)
 	return nil
 }
 

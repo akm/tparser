@@ -64,7 +64,7 @@ type CompositeDeclMap struct {
 	maps []DeclMap
 }
 
-func NewCompositeDeclarationMap(maps ...DeclMap) *CompositeDeclMap {
+func NewCompositeDeclMap(maps ...DeclMap) *CompositeDeclMap {
 	return &CompositeDeclMap{maps: maps}
 }
 

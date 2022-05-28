@@ -144,7 +144,7 @@ func (p *ProgramParser) LoadUnits(ctx *ProgramContext, uses ast.UsesClause) erro
 
 	declMaps := []astcore.DeclMap{ctx.DeclMap}
 	declMaps = append(declMaps, parsers.DeclarationMaps()...)
-	ctx.DeclMap = astcore.NewCompositeDeclarationMap(declMaps...)
+	ctx.DeclMap = astcore.NewCompositeDeclMap(declMaps...)
 
 	for _, loader := range sortedLoaders {
 		if err := loader.ProcessImplAndInit(); err != nil {
