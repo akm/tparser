@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/akm/tparser/ast"
+	"github.com/akm/tparser/ast/astcore"
 	"github.com/akm/tparser/token"
 	"github.com/pkg/errors"
 	"golang.org/x/text/encoding/japanese"
@@ -158,7 +159,15 @@ func (p *UnitParser) ParseUnitIntfBody() error {
 	if err := p.ParseInterfaceSectionDecls(); err != nil {
 		return err
 	}
-	p.Unit.DeclMap = p.context.DeclMap
+	declMap := astcore.NewDeclMap()
+	for _, decl := range p.Unit.InterfaceSection.InterfaceDecls {
+		declNodes := decl.GetDeclNodes()
+		for _, declNode := range declNodes {
+			declMap.Set(declNode)
+		}
+	}
+	p.Unit.DeclMap = declMap
+
 	return nil
 }
 
