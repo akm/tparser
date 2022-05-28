@@ -170,7 +170,7 @@ func TestVarReferringType(t *testing.T) {
 			res, err := parser.ParseUnit()
 			if assert.NoError(t, err) {
 				asttest.ClearLocations(t, res)
-				asttest.ClearUnitDeclarationMaps(t, res)
+				asttest.ClearUnitDeclMaps(t, res)
 				assert.Equal(t, expected, res)
 			}
 		})
