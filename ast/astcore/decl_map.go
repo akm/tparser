@@ -35,6 +35,26 @@ func (m DeclMapImpl) regularize(name string) string {
 	return strings.ToLower(name)
 }
 
+type ChainedDeclMap struct {
+	Parent DeclMap
+	Impl   DeclMapImpl
+}
+
+func NewChainedDeclMap(parent DeclMap) *ChainedDeclMap {
+	return &ChainedDeclMap{Parent: parent, Impl: DeclMapImpl{}}
+}
+
+func (m *ChainedDeclMap) Get(name string) *Decl {
+	if d := m.Impl.Get(name); d != nil {
+		return d
+	}
+	return m.Parent.Get(name)
+}
+
+func (m *ChainedDeclMap) Set(n DeclNode) error {
+	return m.Impl.Set(n)
+}
+
 type CompositeDeclMap struct {
 	maps []DeclMap
 }
