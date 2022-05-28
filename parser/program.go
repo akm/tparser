@@ -53,6 +53,7 @@ func ParseProgram(path string) (*Program, error) {
 
 type ProgramParser struct {
 	*Parser
+	Program *ast.Program
 	context *ProgramContext
 }
 
@@ -72,6 +73,8 @@ func (p *ProgramParser) ParseProgram() (*ast.Program, error) {
 		Path:  p.context.GetPath(),
 		Ident: p.NewIdent(ident),
 	}
+	p.Program = res
+	// p.context.DeclMap.Set(res)
 	if _, err := p.Next(token.Symbol(';')); err != nil {
 		return nil, err
 	}
@@ -82,9 +85,6 @@ func (p *ProgramParser) ParseProgram() (*ast.Program, error) {
 	}
 	res.ProgramBlock = block
 	if _, err := p.Current(token.Symbol('.')); err != nil {
-		return nil, err
-	}
-	if err := p.context.Set(res); err != nil {
 		return nil, err
 	}
 	return res, nil
@@ -142,17 +142,13 @@ func (p *ProgramParser) LoadUnits(uses ast.UsesClause) error {
 		}
 	}
 
-	localMap := astcore.NewDeclMap()
-	maps := []astcore.DeclMap{localMap}
-	maps = append(maps, parsers.DeclMaps().Reverse()...)
-	maps = append(maps, p.context.DeclMap)
-	p.context.DeclMap = astcore.NewCompositeDeclMap(maps...)
-
 	for _, loader := range sortedLoaders {
 		if err := loader.ProcessImplAndInit(); err != nil {
 			return err
 		}
 	}
+
+	usesMap := astcore.NewDeclMap()
 
 	units := parsers.Units() // Don't use sortedLoaders for this
 	for _, u := range units {
@@ -161,8 +157,16 @@ func (p *ProgramParser) LoadUnits(uses ast.UsesClause) error {
 			return errors.Errorf("UsesClauseItem not found for %s", u.Ident.Name)
 		}
 		usesItem.Unit = u
-		localMap.Set(usesItem)
+		usesMap.Set(usesItem)
 	}
+
+	localMap := astcore.NewDeclMap()
+	maps := []astcore.DeclMap{localMap, usesMap}
+	maps = append(maps, parsers.DeclMaps().Reverse()...)
+	maps = append(maps, p.context.DeclMap)
+	p.context.DeclMap = astcore.NewCompositeDeclMap(maps...)
+	p.Program.DeclMap = localMap
+	localMap.Set(p.Program)
 
 	return nil
 }
