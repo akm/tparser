@@ -14,7 +14,7 @@ type StackableContext struct {
 func NewStackableContext(parent Context, args ...interface{}) Context {
 	return &StackableContext{
 		parent:         parent,
-		declarationMap: astcore.NewDeclarationMap(),
+		declarationMap: astcore.NewDeclMap(),
 	}
 }
 

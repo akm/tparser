@@ -18,7 +18,7 @@ func TestQualIdInCompoundStmt(t *testing.T) {
 		},
 	}
 
-	unitFooDeclMap := astcore.NewDeclarationMap()
+	unitFooDeclMap := astcore.NewDeclMap()
 	unitFooDeclMap.Set(procBar)
 
 	unitFoo := &ast.Unit{
@@ -36,7 +36,7 @@ func TestQualIdInCompoundStmt(t *testing.T) {
 		Unit:  unitFoo,
 	}
 
-	declMap := astcore.NewDeclarationMap()
+	declMap := astcore.NewDeclMap()
 	assert.NoError(t, declMap.Set(usesClauseItemToFoo))
 
 	run := func(name string, text []rune, expected *ast.CompoundStmt) {

@@ -13,7 +13,7 @@ type DeclMap interface {
 
 type DeclMapImpl map[string]*Decl
 
-func NewDeclarationMap() DeclMap {
+func NewDeclMap() DeclMap {
 	return make(DeclMapImpl)
 }
 

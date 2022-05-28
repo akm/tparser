@@ -33,7 +33,7 @@ func NewProgramContext(args ...interface{}) *ProgramContext {
 		units = ast.Units{}
 	}
 	if declarationMap == nil {
-		declarationMap = astcore.NewDeclarationMap()
+		declarationMap = astcore.NewDeclMap()
 	}
 	return &ProgramContext{
 		Path:    path,

@@ -27,7 +27,7 @@ func NewUnitContext(parent *ProgramContext, args ...interface{}) *UnitContext {
 		}
 	}
 	if declarationMap == nil {
-		declarationMap = astcore.NewDeclarationMap()
+		declarationMap = astcore.NewDeclMap()
 	}
 	return &UnitContext{
 		Parent:  parent,
@@ -52,7 +52,7 @@ func (c *UnitContext) ImportUnitDecls(usesClause ast.UsesClause) error {
 			units = append(units, u)
 		}
 	}
-	localMap := astcore.NewDeclarationMap()
+	localMap := astcore.NewDeclMap()
 	maps := []astcore.DeclMap{localMap, c.DeclMap}
 	for _, unit := range units {
 
