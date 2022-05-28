@@ -105,6 +105,7 @@ func (m *InterfaceSection) Children() Nodes {
 type InterfaceDecl interface {
 	Node
 	canBeInterfaceDecl()
+	GetDeclNodes() astcore.DeclNodes
 }
 
 type InterfaceDecls []InterfaceDecl

@@ -17,6 +17,13 @@ func (s VarSection) Children() Nodes {
 	}
 	return r
 }
+func (s VarSection) GetDeclNodes() astcore.DeclNodes {
+	r := make(astcore.DeclNodes, len(s))
+	for i, m := range s {
+		r[i] = m
+	}
+	return r
+}
 
 // - VarDecl
 //   - (On Windows)
@@ -96,6 +103,13 @@ func (s ThreadVarSection) Children() Nodes {
 	r := make(Nodes, len(s))
 	for idx, i := range s {
 		r[idx] = i
+	}
+	return r
+}
+func (s ThreadVarSection) GetDeclNodes() astcore.DeclNodes {
+	r := make(astcore.DeclNodes, len(s))
+	for i, m := range s {
+		r[i] = m
 	}
 	return r
 }

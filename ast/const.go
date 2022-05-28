@@ -17,6 +17,13 @@ func (s ConstSection) Children() Nodes {
 	}
 	return r
 }
+func (s ConstSection) GetDeclNodes() astcore.DeclNodes {
+	r := make(astcore.DeclNodes, len(s))
+	for i, m := range s {
+		r[i] = m
+	}
+	return r
+}
 
 // - ConstantDecl
 //   ```
