@@ -2,6 +2,8 @@ package astcore
 
 import (
 	"strings"
+
+	"github.com/pkg/errors"
 )
 
 type DeclMap interface {
@@ -22,6 +24,9 @@ func (m DeclMapImpl) Set(decl DeclNode) error {
 		// 	err := errors.Errorf("bar found")
 		// 	fmt.Printf("%+v\n", err)
 		// }
+		if _, ok := m[s]; ok {
+			return errors.Errorf("duplicate declaration: %s", i.Ident.Name)
+		}
 		m[s] = i
 	}
 	return nil
