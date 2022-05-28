@@ -10,6 +10,8 @@ import (
 )
 
 func (p *Parser) ParseExportedHeading() (*ast.ExportedHeading, error) {
+	defer p.context.StackDeclMap()()
+
 	var functionHeading *ast.FunctionHeading
 	switch p.CurrentToken().Value() {
 	case "PROCEDURE":
