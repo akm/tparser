@@ -161,6 +161,7 @@ func (p *ProgramParser) LoadUnits(uses ast.UsesClause) error {
 			return errors.Errorf("UsesClauseItem not found for %s", u.Ident.Name)
 		}
 		usesItem.Unit = u
+		localMap.Set(usesItem)
 	}
 
 	return nil
