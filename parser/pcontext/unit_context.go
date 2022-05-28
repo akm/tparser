@@ -27,7 +27,7 @@ func NewUnitContext(parent *ProgramContext, args ...interface{}) *UnitContext {
 		}
 	}
 	if declarationMap == nil {
-		declarationMap = astcore.NewDeclarationMap()
+		declarationMap = astcore.NewDeclMap()
 	}
 	return &UnitContext{
 		Parent:  parent,
@@ -52,16 +52,16 @@ func (c *UnitContext) ImportUnitDecls(usesClause ast.UsesClause) error {
 			units = append(units, u)
 		}
 	}
-	localMap := astcore.NewDeclarationMap()
+	localMap := astcore.NewDeclMap()
 	maps := []astcore.DeclMap{localMap, c.DeclMap}
 	for _, unit := range units {
 
 		// TODO declMapに追加する順番はこれでOK？
 		// 無関係のユニットAとBに、同じ名前の型や変数が定義されていて、USES A, B; となっていた場合
 		// コンテキスト上ではどちらが有効になるのかを確認する
-		maps = append(maps, unit.DeclarationMap)
+		maps = append(maps, unit.DeclMap)
 	}
-	c.DeclMap = astcore.NewCompositeDeclarationMap(maps...)
+	c.DeclMap = astcore.NewCompositeDeclMap(maps...)
 	return nil
 }
 
@@ -76,10 +76,14 @@ func (c *UnitContext) IsUnitIdentifier(token *token.Token) bool {
 	return ok
 }
 
-func (c *UnitContext) GetDeclarationMap() astcore.DeclMap {
-	return c.DeclMap
-}
-
 func (c *UnitContext) GetPath() string {
 	return c.Path
+}
+
+func (c *UnitContext) StackDeclMap() func() {
+	var backup astcore.DeclMap
+	c.DeclMap, backup = astcore.NewChainedDeclMap(c.DeclMap), c.DeclMap
+	return func() {
+		c.DeclMap = backup
+	}
 }

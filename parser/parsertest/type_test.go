@@ -16,7 +16,7 @@ func TestUnitWithTypeSection(t *testing.T) {
 			parser.NextToken()
 			res, err := parser.ParseUnit()
 			if assert.NoError(t, err) {
-				asttest.ClearUnitDeclarationMap(res)
+				asttest.ClearUnitDeclMap(res)
 				asttest.ClearLocations(t, res)
 				if !assert.Equal(t, expected, res) {
 					if !assert.Equal(t, expected.InterfaceSection.InterfaceDecls, res.InterfaceSection.InterfaceDecls) {
@@ -186,11 +186,11 @@ func newDeclMapWithU1() astcore.DeclMap {
 }
 
 func TestTypeDecl(t *testing.T) {
-	declMap := newDeclMapWithU1()
-	assert.NotNil(t, declMap.Get("U1"))
 
 	run := func(name string, text []rune, expected *ast.TypeDecl) {
 		t.Run(name, func(t *testing.T) {
+			declMap := newDeclMapWithU1()
+			assert.NotNil(t, declMap.Get("U1"))
 			parser := NewTestUnitParser(&text, NewTestUnitContext(declMap))
 			parser.NextToken()
 			res, err := parser.ParseTypeDecl()

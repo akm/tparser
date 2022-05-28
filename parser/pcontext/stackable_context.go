@@ -14,7 +14,7 @@ type StackableContext struct {
 func NewStackableContext(parent Context, args ...interface{}) Context {
 	return &StackableContext{
 		parent:         parent,
-		declarationMap: astcore.NewDeclarationMap(),
+		declarationMap: astcore.NewDeclMap(),
 	}
 }
 
@@ -26,10 +26,6 @@ func (c *StackableContext) Clone() Context {
 
 func (c *StackableContext) IsUnitIdentifier(token *token.Token) bool {
 	return c.parent.IsUnitIdentifier(token)
-}
-
-func (c *StackableContext) GetDeclarationMap() astcore.DeclMap {
-	return astcore.NewCompositeDeclarationMap(c.declarationMap, c.parent.GetDeclarationMap())
 }
 
 func (c *StackableContext) Get(name string) *astcore.Decl {
@@ -48,4 +44,12 @@ func (c *StackableContext) GetPath() string {
 		return *c.path
 	}
 	return c.parent.GetPath()
+}
+
+func (c *StackableContext) StackDeclMap() func() {
+	var backup astcore.DeclMap
+	c.declarationMap, backup = astcore.NewChainedDeclMap(c.declarationMap), c.declarationMap
+	return func() {
+		c.declarationMap = backup
+	}
 }

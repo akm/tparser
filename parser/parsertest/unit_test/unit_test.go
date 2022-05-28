@@ -17,7 +17,7 @@ func TestUnit(t *testing.T) {
 			parser.NextToken()
 			res, err := parser.ParseUnit()
 			if assert.NoError(t, err) {
-				asttest.ClearUnitDeclarationMap(res)
+				asttest.ClearUnitDeclMap(res)
 				if !assert.Equal(t, expected, res) {
 					asttest.AssertUnit(t, expected, res)
 				}

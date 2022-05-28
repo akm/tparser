@@ -33,7 +33,7 @@ func NewProgramContext(args ...interface{}) *ProgramContext {
 		units = ast.Units{}
 	}
 	if declarationMap == nil {
-		declarationMap = astcore.NewDeclarationMap()
+		declarationMap = astcore.NewDeclMap()
 	}
 	return &ProgramContext{
 		Path:    path,
@@ -61,14 +61,18 @@ func (c *ProgramContext) IsUnitIdentifier(t *token.Token) bool {
 	return false
 }
 
-func (c *ProgramContext) GetDeclarationMap() astcore.DeclMap {
-	return c.DeclMap
-}
-
 func (c *ProgramContext) GetPath() string {
 	return c.Path
 }
 
 func (c *ProgramContext) AddUnit(unit *ast.Unit) {
 	c.Units = append(c.Units, unit)
+}
+
+func (c *ProgramContext) StackDeclMap() func() {
+	var backup astcore.DeclMap
+	c.DeclMap, backup = astcore.NewChainedDeclMap(c.DeclMap), c.DeclMap
+	return func() {
+		c.DeclMap = backup
+	}
 }

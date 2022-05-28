@@ -143,8 +143,8 @@ func (p *ProgramParser) LoadUnits(ctx *ProgramContext, uses ast.UsesClause) erro
 	}
 
 	declMaps := []astcore.DeclMap{ctx.DeclMap}
-	declMaps = append(declMaps, parsers.DeclarationMaps()...)
-	ctx.DeclMap = astcore.NewCompositeDeclarationMap(declMaps...)
+	declMaps = append(declMaps, parsers.DeclMaps()...)
+	ctx.DeclMap = astcore.NewCompositeDeclMap(declMaps...)
 
 	for _, loader := range sortedLoaders {
 		if err := loader.ProcessImplAndInit(); err != nil {
@@ -159,9 +159,6 @@ func (p *ProgramParser) LoadUnits(ctx *ProgramContext, uses ast.UsesClause) erro
 			return errors.Errorf("UsesClauseItem not found for %s", u.Ident.Name)
 		}
 		usesItem.Unit = u
-		if err := ctx.DeclMap.Set(usesItem); err != nil {
-			return err
-		}
 	}
 
 	return nil

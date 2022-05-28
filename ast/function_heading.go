@@ -24,6 +24,9 @@ type ExportedHeading struct {
 
 func (*ExportedHeading) canBeInterfaceDecl() {}
 func (m *ExportedHeading) Children() Nodes   { return Nodes{m.FunctionHeading} }
+func (m *ExportedHeading) GetDeclNodes() astcore.DeclNodes {
+	return astcore.DeclNodes{m}
+}
 
 type FunctionType uint
 

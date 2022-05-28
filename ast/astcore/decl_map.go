@@ -2,6 +2,8 @@ package astcore
 
 import (
 	"strings"
+
+	"github.com/pkg/errors"
 )
 
 type DeclMap interface {
@@ -11,7 +13,7 @@ type DeclMap interface {
 
 type DeclMapImpl map[string]*Decl
 
-func NewDeclarationMap() DeclMap {
+func NewDeclMap() DeclMap {
 	return make(DeclMapImpl)
 }
 
@@ -22,6 +24,9 @@ func (m DeclMapImpl) Set(decl DeclNode) error {
 		// 	err := errors.Errorf("bar found")
 		// 	fmt.Printf("%+v\n", err)
 		// }
+		if _, ok := m[s]; ok {
+			return errors.Errorf("duplicate declaration: %s", i.Ident.Name)
+		}
 		m[s] = i
 	}
 	return nil
@@ -35,11 +40,31 @@ func (m DeclMapImpl) regularize(name string) string {
 	return strings.ToLower(name)
 }
 
+type ChainedDeclMap struct {
+	Parent DeclMap
+	Impl   DeclMapImpl
+}
+
+func NewChainedDeclMap(parent DeclMap) *ChainedDeclMap {
+	return &ChainedDeclMap{Parent: parent, Impl: DeclMapImpl{}}
+}
+
+func (m *ChainedDeclMap) Get(name string) *Decl {
+	if d := m.Impl.Get(name); d != nil {
+		return d
+	}
+	return m.Parent.Get(name)
+}
+
+func (m *ChainedDeclMap) Set(n DeclNode) error {
+	return m.Impl.Set(n)
+}
+
 type CompositeDeclMap struct {
 	maps []DeclMap
 }
 
-func NewCompositeDeclarationMap(maps ...DeclMap) *CompositeDeclMap {
+func NewCompositeDeclMap(maps ...DeclMap) *CompositeDeclMap {
 	return &CompositeDeclMap{maps: maps}
 }
 
@@ -54,4 +79,14 @@ func (c *CompositeDeclMap) Get(name string) *Decl {
 
 func (c *CompositeDeclMap) Set(decl DeclNode) error {
 	return c.maps[0].Set(decl)
+}
+
+type DeclMaps []DeclMap
+
+func (s DeclMaps) Reverse() DeclMaps {
+	r := make(DeclMaps, len(s))
+	for i, m := range s {
+		r[len(s)-i-1] = m
+	}
+	return r
 }

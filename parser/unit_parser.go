@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/akm/tparser/ast"
+	"github.com/akm/tparser/ast/astcore"
 	"github.com/akm/tparser/token"
 	"github.com/pkg/errors"
 	"golang.org/x/text/encoding/japanese"
@@ -151,8 +152,6 @@ func (m *UnitParser) ProcessIntfBody() error {
 	if err := m.ParseUnitIntfBody(); err != nil {
 		return err
 	}
-
-	m.Unit.DeclarationMap = m.context.DeclMap
 	return nil
 }
 
@@ -160,7 +159,15 @@ func (p *UnitParser) ParseUnitIntfBody() error {
 	if err := p.ParseInterfaceSectionDecls(); err != nil {
 		return err
 	}
-	p.Unit.DeclarationMap = p.context.GetDeclarationMap()
+	declMap := astcore.NewDeclMap()
+	for _, decl := range p.Unit.InterfaceSection.InterfaceDecls {
+		declNodes := decl.GetDeclNodes()
+		for _, declNode := range declNodes {
+			declMap.Set(declNode)
+		}
+	}
+	p.Unit.DeclMap = declMap
+
 	return nil
 }
 
@@ -273,6 +280,7 @@ func (p *UnitParser) ParseImplUses() error {
 		return err
 	}
 	p.NextToken()
+	p.context.StackDeclMap()
 
 	impl := &ast.ImplementationSection{}
 	if p.CurrentToken().Is(token.ReservedWord.HasKeyword("USES")) {

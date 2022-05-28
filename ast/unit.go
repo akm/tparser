@@ -20,7 +20,7 @@ type Unit struct {
 	InterfaceSection      *InterfaceSection
 	ImplementationSection *ImplementationSection
 	InitSection           *InitSection // optional
-	DeclarationMap        astcore.DeclMap
+	DeclMap               astcore.DeclMap
 	Goal
 }
 
@@ -57,6 +57,14 @@ func (s Units) ByName(name string) *Unit {
 		}
 	}
 	return nil
+}
+
+func (s Units) DeclMaps() astcore.DeclMaps {
+	r := make(astcore.DeclMaps, len(s))
+	for i, m := range s {
+		r[i] = m.DeclMap
+	}
+	return r
 }
 
 // - InterfaceSection
@@ -97,6 +105,7 @@ func (m *InterfaceSection) Children() Nodes {
 type InterfaceDecl interface {
 	Node
 	canBeInterfaceDecl()
+	GetDeclNodes() astcore.DeclNodes
 }
 
 type InterfaceDecls []InterfaceDecl

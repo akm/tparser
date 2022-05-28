@@ -20,6 +20,13 @@ func (s TypeSection) Children() Nodes {
 	}
 	return r
 }
+func (s TypeSection) GetDeclNodes() astcore.DeclNodes {
+	r := make(astcore.DeclNodes, len(s))
+	for i, m := range s {
+		r[i] = m
+	}
+	return r
+}
 
 // - TypeDecl
 //   ```

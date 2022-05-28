@@ -8,7 +8,7 @@ import (
 type Context interface {
 	Clone() Context
 	IsUnitIdentifier(token *token.Token) bool
-	GetDeclarationMap() astcore.DeclMap
 	GetPath() string
+	StackDeclMap() func()
 	astcore.DeclMap
 }
