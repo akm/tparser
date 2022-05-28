@@ -61,7 +61,7 @@ end;`),
 					Body: &ast.CallStatement{
 						Designator: asttest.NewDesignator(
 							&ast.QualId{
-								UnitId: &ast.IdentRef{
+								NamespaceId: &ast.IdentRef{
 									Ident: asttest.NewIdent(unitFoo.Ident.Name, asttest.NewIdentLocation(2, 2, 8, 5)),
 									Ref:   usesClauseItemToFoo.ToDeclarations()[0],
 								},

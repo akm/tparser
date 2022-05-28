@@ -196,21 +196,29 @@ func NewUnitId(name interface{}) *UnitId {
 
 // - QualId
 //   ```
-//   [UnitId '.'] Ident
+//   [NamespaceId '.'] Ident
+//   ```
+//
+// - NamespaceId
+//   ```
+//   <unit-identifier>
+//   ```
+//   ```
+//   <program-identifier>
 //   ```
 type QualId struct {
-	UnitId *IdentRef
-	Ident  *IdentRef
+	NamespaceId *IdentRef
+	Ident       *IdentRef
 }
 
 func NewQualId(unitId *IdentRef, ident *IdentRef) *QualId {
-	return &QualId{UnitId: unitId, Ident: ident}
+	return &QualId{NamespaceId: unitId, Ident: ident}
 }
 
 func (m *QualId) Children() Nodes {
 	r := Nodes{}
-	if m.UnitId != nil {
-		r = append(r, m.UnitId)
+	if m.NamespaceId != nil {
+		r = append(r, m.NamespaceId)
 	}
 	r = append(r, m.Ident)
 	return r

@@ -68,8 +68,8 @@ func (p *Parser) ParseQualId() (*ast.QualId, error) {
 		}
 		p.NextToken()
 		return &ast.QualId{
-			UnitId: &ast.IdentRef{Ident: ast.NewIdent(name1), Ref: unitDecl},
-			Ident:  &ast.IdentRef{Ident: ast.NewIdent(name2), Ref: decl},
+			NamespaceId: &ast.IdentRef{Ident: ast.NewIdent(name1), Ref: unitDecl},
+			Ident:       &ast.IdentRef{Ident: ast.NewIdent(name2), Ref: decl},
 		}, nil
 	} else {
 		p.NextToken()

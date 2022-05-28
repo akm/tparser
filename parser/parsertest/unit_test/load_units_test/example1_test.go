@@ -185,8 +185,8 @@ func TestLoadExample1Project(t *testing.T) {
 												&ast.DesignatorFactor{
 													Designator: asttest.NewDesignator(
 														&ast.QualId{
-															UnitId: asttest.NewIdentRef("bar", asttest.NewIdentLocation(14, 13, 137, 16), fooToBar.ToDeclarations()[0]),
-															Ident:  asttest.NewIdentRef("Get", asttest.NewIdentLocation(14, 17, 141, 20), declGet.ToDeclarations()[0]),
+															NamespaceId: asttest.NewIdentRef("bar", asttest.NewIdentLocation(14, 13, 137, 16), fooToBar.ToDeclarations()[0]),
+															Ident:       asttest.NewIdentRef("Get", asttest.NewIdentLocation(14, 17, 141, 20), declGet.ToDeclarations()[0]),
 														},
 													),
 												},
@@ -198,8 +198,8 @@ func TestLoadExample1Project(t *testing.T) {
 									Body: &ast.CallStatement{
 										Designator: asttest.NewDesignator(
 											&ast.QualId{
-												UnitId: asttest.NewIdentRef("bar", asttest.NewIdentLocation(15, 4, 152, 7), fooToBar.ToDeclarations()[0]),
-												Ident:  asttest.NewIdentRef("Inc", asttest.NewIdentLocation(15, 8, 156, 11), declInc.ToDeclarations()[0]),
+												NamespaceId: asttest.NewIdentRef("bar", asttest.NewIdentLocation(15, 4, 152, 7), fooToBar.ToDeclarations()[0]),
+												Ident:       asttest.NewIdentRef("Inc", asttest.NewIdentLocation(15, 8, 156, 11), declInc.ToDeclarations()[0]),
 											},
 										),
 									},
@@ -267,8 +267,8 @@ func TestLoadExample1Project(t *testing.T) {
 								Body: &ast.CallStatement{
 									Designator: asttest.NewDesignator(
 										&ast.QualId{
-											UnitId: asttest.NewIdentRef("foo", asttest.NewIdentLocation(9, 4, 120, 7), example1ToFoo.ToDeclarations()[0]),
-											Ident:  asttest.NewIdentRef("Process", asttest.NewIdentLocation(9, 8, 124, 15), astcore.NewDeclaration(declProcess.Ident, declProcess)),
+											NamespaceId: asttest.NewIdentRef("foo", asttest.NewIdentLocation(9, 4, 120, 7), example1ToFoo.ToDeclarations()[0]),
+											Ident:       asttest.NewIdentRef("Process", asttest.NewIdentLocation(9, 8, 124, 15), astcore.NewDeclaration(declProcess.Ident, declProcess)),
 										},
 									),
 								},
