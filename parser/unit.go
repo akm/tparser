@@ -55,7 +55,7 @@ func (p *Parser) ParseQualId() (*ast.QualId, error) {
 		if unit == nil {
 			return nil, p.TokenErrorf("%s is used in uses clause but not found", name1)
 		}
-		decl := unit.DeclarationMap.Get(name2.Value())
+		decl := unit.DeclMap.Get(name2.Value())
 		if decl == nil {
 			return nil, p.TokenErrorf("undefined identifier %s in unit %s", name2, name1.Value())
 		}

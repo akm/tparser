@@ -153,7 +153,7 @@ func (m *UnitParser) ProcessIntfBody() error {
 		return err
 	}
 
-	m.Unit.DeclarationMap = m.context.DeclMap
+	m.Unit.DeclMap = m.context.DeclMap
 	return nil
 }
 
@@ -161,7 +161,7 @@ func (p *UnitParser) ParseUnitIntfBody() error {
 	if err := p.ParseInterfaceSectionDecls(); err != nil {
 		return err
 	}
-	p.Unit.DeclarationMap = p.context.DeclMap
+	p.Unit.DeclMap = p.context.DeclMap
 	return nil
 }
 

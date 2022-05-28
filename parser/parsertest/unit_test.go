@@ -28,7 +28,7 @@ func TestQualIdInCompoundStmt(t *testing.T) {
 				procBar,
 			},
 		},
-		DeclarationMap: unitFooDeclMap,
+		DeclMap: unitFooDeclMap,
 	}
 
 	usesClauseItemToFoo := &ast.UsesClauseItem{

@@ -65,7 +65,7 @@ func NewQualId(args ...interface{}) *ast.QualId {
 }
 
 func ClearUnitDeclMap(u *ast.Unit) {
-	u.DeclarationMap = nil
+	u.DeclMap = nil
 }
 
 func ClearUnitDeclMaps(t *testing.T, node ast.Node) {

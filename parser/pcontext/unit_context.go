@@ -59,7 +59,7 @@ func (c *UnitContext) ImportUnitDecls(usesClause ast.UsesClause) error {
 		// TODO declMapに追加する順番はこれでOK？
 		// 無関係のユニットAとBに、同じ名前の型や変数が定義されていて、USES A, B; となっていた場合
 		// コンテキスト上ではどちらが有効になるのかを確認する
-		maps = append(maps, unit.DeclarationMap)
+		maps = append(maps, unit.DeclMap)
 	}
 	c.DeclMap = astcore.NewCompositeDeclMap(maps...)
 	return nil
