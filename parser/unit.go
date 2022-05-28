@@ -12,7 +12,18 @@ func (p *Parser) IsUnitIdentifier(t *token.Token) bool {
 		return false
 	}
 	_, ok := decl.Node.(*ast.UsesClauseItem)
-	// log.Printf("UnitContext.IsUnitIdentifier(%s) decl.Node: %T %+v", s, decl.Node, decl.Node)
+	// log.Printf("Parser.IsUnitIdentifier(%s) decl.Node: %T %+v", s, decl.Node, decl.Node)
+	return ok
+}
+
+func (p *Parser) IsNamespaceIdentifier(t *token.Token) bool {
+	s := t.Value()
+	decl := p.context.Get(s)
+	if decl == nil {
+		return false
+	}
+	_, ok := decl.Node.(ast.Namespace)
+	// log.Printf("Parser.IsNamespaceIdentifier(%s) decl.Node: %T %+v", s, decl.Node, decl.Node)
 	return ok
 }
 
