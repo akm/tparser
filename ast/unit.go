@@ -59,6 +59,14 @@ func (s Units) ByName(name string) *Unit {
 	return nil
 }
 
+func (s Units) DeclMaps() astcore.DeclMaps {
+	r := make(astcore.DeclMaps, len(s))
+	for i, m := range s {
+		r[i] = m.DeclMap
+	}
+	return r
+}
+
 // - InterfaceSection
 //   ```
 //   INTERFACE
