@@ -14,7 +14,11 @@ type Program struct {
 	Path string
 	*Ident
 	// IdentList    *IdentList // Borland’s Object Pascal compiler ignores these parameters.
+
 	ProgramBlock *ProgramBlock
+	DeclMap      astcore.DeclMap
+
+	Namespace
 	Goal
 }
 
@@ -32,6 +36,14 @@ func (m *Program) Children() Nodes {
 }
 func (m *Program) ToDeclarations() astcore.Decls {
 	return astcore.Decls{astcore.NewDeclaration(m.Ident, m)}
+}
+
+func (m *Program) GetIdent() *Ident {
+	return m.Ident
+}
+
+func (m *Program) GetDeclMap() astcore.DeclMap {
+	return m.DeclMap
 }
 
 // - ProgramBlock

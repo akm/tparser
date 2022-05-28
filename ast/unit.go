@@ -21,6 +21,8 @@ type Unit struct {
 	ImplementationSection *ImplementationSection
 	InitSection           *InitSection // optional
 	DeclMap               astcore.DeclMap
+
+	Namespace
 	Goal
 }
 
@@ -45,6 +47,14 @@ func (m *Unit) Children() Nodes {
 
 func (m *Unit) ToDeclarations() astcore.Decls {
 	return astcore.Decls{astcore.NewDeclaration(m.Ident, m)}
+}
+
+func (m *Unit) GetIdent() *Ident {
+	return m.Ident
+}
+
+func (m *Unit) GetDeclMap() astcore.DeclMap {
+	return m.DeclMap
 }
 
 type Units []*Unit
