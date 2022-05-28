@@ -80,3 +80,13 @@ func (c *CompositeDeclMap) Get(name string) *Decl {
 func (c *CompositeDeclMap) Set(decl DeclNode) error {
 	return c.maps[0].Set(decl)
 }
+
+type DeclMaps []DeclMap
+
+func (s DeclMaps) Reverse() DeclMaps {
+	r := make(DeclMaps, len(s))
+	for i, m := range s {
+		r[len(s)-i-1] = m
+	}
+	return r
+}
