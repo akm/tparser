@@ -159,9 +159,6 @@ func (p *ProgramParser) LoadUnits(ctx *ProgramContext, uses ast.UsesClause) erro
 			return errors.Errorf("UsesClauseItem not found for %s", u.Ident.Name)
 		}
 		usesItem.Unit = u
-		if err := ctx.DeclMap.Set(usesItem); err != nil {
-			return err
-		}
 	}
 
 	return nil
