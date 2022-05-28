@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/akm/tparser/ast"
+	"github.com/akm/tparser/ast/astcore"
 	"github.com/akm/tparser/token"
 	"github.com/pkg/errors"
 	"golang.org/x/text/encoding/japanese"
@@ -273,6 +274,7 @@ func (p *UnitParser) ParseImplUses() error {
 		return err
 	}
 	p.NextToken()
+	p.context.DeclMap = astcore.NewChainedDeclMap(p.context.DeclMap)
 
 	impl := &ast.ImplementationSection{}
 	if p.CurrentToken().Is(token.ReservedWord.HasKeyword("USES")) {
