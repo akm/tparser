@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestLoadExample1Project(t *testing.T) {
+func TestSameIdent(t *testing.T) {
 	actualProject1, err := parser.ParseProgram("Project1.dpr")
 	if !assert.NoError(t, err) {
 		return
@@ -288,6 +288,7 @@ func TestLoadExample1Project(t *testing.T) {
 		}
 	})
 	t.Run("Project1", func(t *testing.T) {
+		actualProject1.DeclMap = nil
 		if !assert.Equal(t, expectedProject1, actualProject1) {
 			asttest.AssertProgram(t, expectedProject1.Program, actualProject1.Program)
 		}
