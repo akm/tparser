@@ -5,3 +5,5 @@ type DeclNode interface {
 	Node
 	ToDeclarations() Decls
 }
+
+type DeclNodes []DeclNode
