@@ -142,9 +142,11 @@ func (p *ProgramParser) LoadUnits(uses ast.UsesClause) error {
 		}
 	}
 
-	declMaps := []astcore.DeclMap{p.context.DeclMap}
-	declMaps = append(declMaps, parsers.DeclMaps()...)
-	p.context.DeclMap = astcore.NewCompositeDeclMap(declMaps...)
+	localMap := astcore.NewDeclMap()
+	maps := []astcore.DeclMap{localMap}
+	maps = append(maps, parsers.DeclMaps().Reverse()...)
+	maps = append(maps, p.context.DeclMap)
+	p.context.DeclMap = astcore.NewCompositeDeclMap(maps...)
 
 	for _, loader := range sortedLoaders {
 		if err := loader.ProcessImplAndInit(); err != nil {
