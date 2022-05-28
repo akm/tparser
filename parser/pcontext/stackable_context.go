@@ -45,3 +45,11 @@ func (c *StackableContext) GetPath() string {
 	}
 	return c.parent.GetPath()
 }
+
+func (c *StackableContext) StackDeclMap() func() {
+	var backup astcore.DeclMap
+	c.declarationMap, backup = astcore.NewChainedDeclMap(c.declarationMap), c.declarationMap
+	return func() {
+		c.declarationMap = backup
+	}
+}

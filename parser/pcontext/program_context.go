@@ -68,3 +68,11 @@ func (c *ProgramContext) GetPath() string {
 func (c *ProgramContext) AddUnit(unit *ast.Unit) {
 	c.Units = append(c.Units, unit)
 }
+
+func (c *ProgramContext) StackDeclMap() func() {
+	var backup astcore.DeclMap
+	c.DeclMap, backup = astcore.NewChainedDeclMap(c.DeclMap), c.DeclMap
+	return func() {
+		c.DeclMap = backup
+	}
+}

@@ -79,3 +79,11 @@ func (c *UnitContext) IsUnitIdentifier(token *token.Token) bool {
 func (c *UnitContext) GetPath() string {
 	return c.Path
 }
+
+func (c *UnitContext) StackDeclMap() func() {
+	var backup astcore.DeclMap
+	c.DeclMap, backup = astcore.NewChainedDeclMap(c.DeclMap), c.DeclMap
+	return func() {
+		c.DeclMap = backup
+	}
+}

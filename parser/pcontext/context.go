@@ -9,5 +9,6 @@ type Context interface {
 	Clone() Context
 	IsUnitIdentifier(token *token.Token) bool
 	GetPath() string
+	StackDeclMap() func()
 	astcore.DeclMap
 }
