@@ -108,7 +108,7 @@ func (p *Parser) ParseTypeForIdentifier() (ast.Type, error) {
 }
 
 func (p *Parser) parseTypeIdWithUnit() (*ast.TypeId, error) {
-	if !p.IsUnitIdentifier() {
+	if !p.IsUnitIdentifier(p.CurrentToken()) {
 		return nil, nil
 	}
 	unitId := ast.NewUnitId(p.CurrentToken())

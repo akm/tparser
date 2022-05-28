@@ -72,8 +72,8 @@ func (m UnitParsers) Sort() (UnitParsers, error) {
 	return r, nil
 }
 
-func (m UnitParsers) DeclMaps() []astcore.DeclMap {
-	r := make([]astcore.DeclMap, len(m))
+func (m UnitParsers) DeclMaps() astcore.DeclMaps {
+	r := make(astcore.DeclMaps, len(m))
 	for i, loader := range m {
 		r[i] = loader.Unit.DeclMap
 	}

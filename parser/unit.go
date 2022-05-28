@@ -5,8 +5,26 @@ import (
 	"github.com/akm/tparser/token"
 )
 
-func (p *Parser) IsUnitIdentifier() bool {
-	return p.context.IsUnitIdentifier(p.CurrentToken())
+func (p *Parser) IsUnitIdentifier(t *token.Token) bool {
+	s := t.Value()
+	decl := p.context.Get(s)
+	if decl == nil {
+		return false
+	}
+	_, ok := decl.Node.(*ast.UsesClauseItem)
+	// log.Printf("Parser.IsUnitIdentifier(%s) decl.Node: %T %+v", s, decl.Node, decl.Node)
+	return ok
+}
+
+func (p *Parser) IsNamespaceIdentifier(t *token.Token) bool {
+	s := t.Value()
+	decl := p.context.Get(s)
+	if decl == nil {
+		return false
+	}
+	_, ok := decl.Node.(ast.Namespace)
+	// log.Printf("Parser.IsNamespaceIdentifier(%s) decl.Node: %T %+v", s, decl.Node, decl.Node)
+	return ok
 }
 
 func (p *Parser) ParseQualIds() (ast.QualIds, error) {
@@ -35,7 +53,7 @@ func (p *Parser) ParseQualId() (*ast.QualId, error) {
 		return nil, err
 	}
 	name1 := p.CurrentToken()
-	if p.context.IsUnitIdentifier(name1) {
+	if p.IsNamespaceIdentifier(name1) || p.IsUnitIdentifier(name1) {
 		if _, err := p.Next(token.Symbol('.')); err != nil {
 			return nil, err
 		}
@@ -43,26 +61,31 @@ func (p *Parser) ParseQualId() (*ast.QualId, error) {
 		if err != nil {
 			return nil, err
 		}
-		unitDecl := p.context.Get(name1.Value())
-		if unitDecl == nil {
+		namespaceDecl := p.context.Get(name1.Value())
+		if namespaceDecl == nil {
 			return nil, p.TokenErrorf("undefined unit %s", name1)
 		}
-		usesClauseItem, ok := unitDecl.Node.(*ast.UsesClauseItem)
-		if !ok {
-			return nil, p.TokenErrorf("%s is not a unit but was %T (%+v)", name1, unitDecl.Node, unitDecl.Node)
+		var namespace ast.Namespace
+		if usesClauseItem, ok := namespaceDecl.Node.(*ast.UsesClauseItem); ok {
+			unit := usesClauseItem.Unit
+			if unit == nil {
+				return nil, p.TokenErrorf("%s is used in uses clause but not found", name1)
+			}
+			namespace = unit
+		} else if program, ok := namespaceDecl.Node.(*ast.Program); ok {
+			namespace = program
+		} else {
+			return nil, p.TokenErrorf("%s is neither unit nor program ", name1)
 		}
-		unit := usesClauseItem.Unit
-		if unit == nil {
-			return nil, p.TokenErrorf("%s is used in uses clause but not found", name1)
-		}
-		decl := unit.DeclMap.Get(name2.Value())
+
+		decl := namespace.GetDeclMap().Get(name2.Value())
 		if decl == nil {
 			return nil, p.TokenErrorf("undefined identifier %s in unit %s", name2, name1.Value())
 		}
 		p.NextToken()
 		return &ast.QualId{
-			UnitId: &ast.IdentRef{Ident: ast.NewIdent(name1), Ref: unitDecl},
-			Ident:  &ast.IdentRef{Ident: ast.NewIdent(name2), Ref: decl},
+			NamespaceId: &ast.IdentRef{Ident: ast.NewIdent(name1), Ref: namespaceDecl},
+			Ident:       &ast.IdentRef{Ident: ast.NewIdent(name2), Ref: decl},
 		}, nil
 	} else {
 		p.NextToken()

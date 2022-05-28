@@ -3,7 +3,6 @@ package pcontext
 import (
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/astcore"
-	"github.com/akm/tparser/token"
 	"github.com/pkg/errors"
 )
 
@@ -52,28 +51,13 @@ func (c *UnitContext) ImportUnitDecls(usesClause ast.UsesClause) error {
 			units = append(units, u)
 		}
 	}
+	// NewCompositeDeclMap は 先頭から最後に向かって検索するので、mapsにはその順序でDeclMapを追加する
 	localMap := astcore.NewDeclMap()
-	maps := []astcore.DeclMap{localMap, c.DeclMap}
-	for _, unit := range units {
-
-		// TODO declMapに追加する順番はこれでOK？
-		// 無関係のユニットAとBに、同じ名前の型や変数が定義されていて、USES A, B; となっていた場合
-		// コンテキスト上ではどちらが有効になるのかを確認する
-		maps = append(maps, unit.DeclMap)
-	}
+	maps := []astcore.DeclMap{localMap}
+	maps = append(maps, units.DeclMaps().Reverse()...)
+	maps = append(maps, c.DeclMap)
 	c.DeclMap = astcore.NewCompositeDeclMap(maps...)
 	return nil
-}
-
-func (c *UnitContext) IsUnitIdentifier(token *token.Token) bool {
-	s := token.Value()
-	decl := c.Get(s)
-	if decl == nil {
-		return false
-	}
-	_, ok := decl.Node.(*ast.UsesClauseItem)
-	// log.Printf("UnitContext.IsUnitIdentifier(%s) decl.Node: %T %+v", s, decl.Node, decl.Node)
-	return ok
 }
 
 func (c *UnitContext) GetPath() string {

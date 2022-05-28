@@ -21,6 +21,8 @@ type Unit struct {
 	ImplementationSection *ImplementationSection
 	InitSection           *InitSection // optional
 	DeclMap               astcore.DeclMap
+
+	Namespace
 	Goal
 }
 
@@ -45,6 +47,14 @@ func (m *Unit) Children() Nodes {
 
 func (m *Unit) ToDeclarations() astcore.Decls {
 	return astcore.Decls{astcore.NewDeclaration(m.Ident, m)}
+}
+
+func (m *Unit) GetIdent() *Ident {
+	return m.Ident
+}
+
+func (m *Unit) GetDeclMap() astcore.DeclMap {
+	return m.DeclMap
 }
 
 type Units []*Unit
@@ -186,21 +196,29 @@ func NewUnitId(name interface{}) *UnitId {
 
 // - QualId
 //   ```
-//   [UnitId '.'] Ident
+//   [NamespaceId '.'] Ident
+//   ```
+//
+// - NamespaceId
+//   ```
+//   <unit-identifier>
+//   ```
+//   ```
+//   <program-identifier>
 //   ```
 type QualId struct {
-	UnitId *IdentRef
-	Ident  *IdentRef
+	NamespaceId *IdentRef
+	Ident       *IdentRef
 }
 
 func NewQualId(unitId *IdentRef, ident *IdentRef) *QualId {
-	return &QualId{UnitId: unitId, Ident: ident}
+	return &QualId{NamespaceId: unitId, Ident: ident}
 }
 
 func (m *QualId) Children() Nodes {
 	r := Nodes{}
-	if m.UnitId != nil {
-		r = append(r, m.UnitId)
+	if m.NamespaceId != nil {
+		r = append(r, m.NamespaceId)
 	}
 	r = append(r, m.Ident)
 	return r

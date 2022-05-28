@@ -2,7 +2,6 @@ package pcontext
 
 import (
 	"github.com/akm/tparser/ast/astcore"
-	"github.com/akm/tparser/token"
 )
 
 type StackableContext struct {
@@ -22,10 +21,6 @@ func (c *StackableContext) Clone() Context {
 	return &ProgramContext{
 		DeclMap: c.declarationMap,
 	}
-}
-
-func (c *StackableContext) IsUnitIdentifier(token *token.Token) bool {
-	return c.parent.IsUnitIdentifier(token)
 }
 
 func (c *StackableContext) Get(name string) *astcore.Decl {

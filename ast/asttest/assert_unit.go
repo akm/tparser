@@ -105,8 +105,8 @@ func AssertUnitId(t *testing.T, expected, actual *ast.UnitId) {
 }
 
 func AssertQualId(t *testing.T, expected, actual *ast.QualId) {
-	if !assert.Equal(t, expected.UnitId, actual.UnitId) {
-		AssertIdentRef(t, expected.UnitId, actual.UnitId)
+	if !assert.Equal(t, expected.NamespaceId, actual.NamespaceId) {
+		AssertIdentRef(t, expected.NamespaceId, actual.NamespaceId)
 	}
 	if !assert.Equal(t, expected.Ident, actual.Ident) {
 		AssertIdentRef(t, expected.Ident, actual.Ident)
