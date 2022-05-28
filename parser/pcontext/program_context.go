@@ -3,7 +3,6 @@ package pcontext
 import (
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/astcore"
-	"github.com/akm/tparser/token"
 	"github.com/pkg/errors"
 )
 
@@ -48,17 +47,6 @@ func (c *ProgramContext) Clone() Context {
 		Units:   c.Units,
 		DeclMap: c.DeclMap,
 	}
-}
-
-func (c *ProgramContext) IsUnitIdentifier(t *token.Token) bool {
-	s := t.Value()
-	if decl := c.DeclMap.Get(s); decl != nil {
-		if _, ok := decl.Node.(*ast.UsesClauseItem); ok {
-			return true
-		}
-	}
-	// return c.Units.ByName(s) != nil
-	return false
 }
 
 func (c *ProgramContext) GetPath() string {

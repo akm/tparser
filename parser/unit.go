@@ -5,8 +5,15 @@ import (
 	"github.com/akm/tparser/token"
 )
 
-func (p *Parser) IsUnitIdentifier() bool {
-	return p.context.IsUnitIdentifier(p.CurrentToken())
+func (p *Parser) IsUnitIdentifier(t *token.Token) bool {
+	s := t.Value()
+	decl := p.context.Get(s)
+	if decl == nil {
+		return false
+	}
+	_, ok := decl.Node.(*ast.UsesClauseItem)
+	// log.Printf("UnitContext.IsUnitIdentifier(%s) decl.Node: %T %+v", s, decl.Node, decl.Node)
+	return ok
 }
 
 func (p *Parser) ParseQualIds() (ast.QualIds, error) {
@@ -35,7 +42,7 @@ func (p *Parser) ParseQualId() (*ast.QualId, error) {
 		return nil, err
 	}
 	name1 := p.CurrentToken()
-	if p.context.IsUnitIdentifier(name1) {
+	if p.IsUnitIdentifier(name1) {
 		if _, err := p.Next(token.Symbol('.')); err != nil {
 			return nil, err
 		}

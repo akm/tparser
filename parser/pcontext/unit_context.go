@@ -3,7 +3,6 @@ package pcontext
 import (
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/astcore"
-	"github.com/akm/tparser/token"
 	"github.com/pkg/errors"
 )
 
@@ -63,17 +62,6 @@ func (c *UnitContext) ImportUnitDecls(usesClause ast.UsesClause) error {
 	}
 	c.DeclMap = astcore.NewCompositeDeclMap(maps...)
 	return nil
-}
-
-func (c *UnitContext) IsUnitIdentifier(token *token.Token) bool {
-	s := token.Value()
-	decl := c.Get(s)
-	if decl == nil {
-		return false
-	}
-	_, ok := decl.Node.(*ast.UsesClauseItem)
-	// log.Printf("UnitContext.IsUnitIdentifier(%s) decl.Node: %T %+v", s, decl.Node, decl.Node)
-	return ok
 }
 
 func (c *UnitContext) GetPath() string {
