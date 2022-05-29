@@ -175,7 +175,11 @@ func (m *UnitParser) ProcessImplAndInit() error {
 		return err
 	}
 
-	m.context.ImportUnitDecls(m.Unit.ImplementationSection.UsesClause)
+	m.context.AssignUnits(m.Unit.ImplementationSection.UsesClause)
+	unitsUsedByImpl := m.Unit.ImplementationSection.UsesClause.Units().Compact()
+	// m.context.ImportUnitDecls(m.Unit.ImplementationSection.UsesClause)
+
+	originalContextDeclMap := m.context.DeclMap
 
 	// Insert implLocalDeclMap to m.Unit.DeclMap
 	originalUnitDeclMap := m.Unit.DeclMap
@@ -184,7 +188,9 @@ func (m *UnitParser) ProcessImplAndInit() error {
 	defer func() { m.Unit.DeclMap = originalUnitDeclMap }()
 
 	// Insert implLocalDeclMap to m.context.DeclMap
-	m.context.DeclMap = astcore.NewCompositeDeclMap(implLocalDeclMap, m.context.DeclMap)
+	maps := []astcore.DeclMap{implLocalDeclMap, originalContextDeclMap}
+	maps = append(maps, unitsUsedByImpl.DeclMaps().Reverse()...)
+	m.context.DeclMap = astcore.NewCompositeDeclMap(maps...)
 
 	if err := m.ParseImplBody(); err != nil {
 		return err
