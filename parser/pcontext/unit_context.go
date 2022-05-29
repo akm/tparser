@@ -44,6 +44,16 @@ func (c *UnitContext) Clone() Context {
 }
 
 func (c *UnitContext) ImportUnitDecls(usesClause ast.UsesClause) {
+	units := c.UnitsForUses(usesClause)
+	// NewCompositeDeclMap は 先頭から最後に向かって検索するので、mapsにはその順序でDeclMapを追加する
+	localMap := astcore.NewDeclMap()
+	maps := []astcore.DeclMap{localMap}
+	maps = append(maps, units.DeclMaps().Reverse()...)
+	maps = append(maps, c.DeclMap)
+	c.DeclMap = astcore.NewCompositeDeclMap(maps...)
+}
+
+func (c *UnitContext) UnitsForUses(usesClause ast.UsesClause) ast.Units {
 	units := ast.Units{}
 	parentUnits := c.Parent.Units
 	for _, unitItem := range usesClause {
@@ -52,12 +62,7 @@ func (c *UnitContext) ImportUnitDecls(usesClause ast.UsesClause) {
 			units = append(units, u)
 		}
 	}
-	// NewCompositeDeclMap は 先頭から最後に向かって検索するので、mapsにはその順序でDeclMapを追加する
-	localMap := astcore.NewDeclMap()
-	maps := []astcore.DeclMap{localMap}
-	maps = append(maps, units.DeclMaps().Reverse()...)
-	maps = append(maps, c.DeclMap)
-	c.DeclMap = astcore.NewCompositeDeclMap(maps...)
+	return units
 }
 
 func (c *UnitContext) GetPath() string {
