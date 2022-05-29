@@ -42,7 +42,8 @@ func (c *UnitContext) Clone() Context {
 		DeclMap: c.DeclMap,
 	}
 }
-func (c *UnitContext) ImportUnitDecls(usesClause ast.UsesClause) error {
+
+func (c *UnitContext) ImportUnitDecls(usesClause ast.UsesClause) {
 	units := ast.Units{}
 	parentUnits := c.Parent.Units
 	for _, unitItem := range usesClause {
@@ -57,7 +58,6 @@ func (c *UnitContext) ImportUnitDecls(usesClause ast.UsesClause) error {
 	maps = append(maps, units.DeclMaps().Reverse()...)
 	maps = append(maps, c.DeclMap)
 	c.DeclMap = astcore.NewCompositeDeclMap(maps...)
-	return nil
 }
 
 func (c *UnitContext) GetPath() string {

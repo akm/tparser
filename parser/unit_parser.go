@@ -141,9 +141,8 @@ func (p *UnitParser) ParseInterfaceSectionUses() (*ast.InterfaceSection, error) 
 
 func (m *UnitParser) ProcessIntfBody() error {
 	// Import decls after resovling unit load order and parsing units which this unit uses.
-	if err := m.context.ImportUnitDecls(m.Unit.InterfaceSection.UsesClause); err != nil {
-		return err
-	}
+	m.context.ImportUnitDecls(m.Unit.InterfaceSection.UsesClause)
+
 	if err := m.context.Set(m.Unit); err != nil {
 		return err
 	}
@@ -176,9 +175,7 @@ func (m *UnitParser) ProcessImplAndInit() error {
 		return err
 	}
 
-	if err := m.context.ImportUnitDecls(m.Unit.ImplementationSection.UsesClause); err != nil {
-		return err
-	}
+	m.context.ImportUnitDecls(m.Unit.ImplementationSection.UsesClause)
 
 	// Insert implLocalDeclMap to m.Unit.DeclMap
 	originalUnitDeclMap := m.Unit.DeclMap
