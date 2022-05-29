@@ -180,6 +180,15 @@ func (m *UnitParser) ProcessImplAndInit() error {
 		return err
 	}
 
+	// Insert implLocalDeclMap to m.Unit.DeclMap
+	originalUnitDeclMap := m.Unit.DeclMap
+	implLocalDeclMap := astcore.NewDeclMap()
+	m.Unit.DeclMap = astcore.NewCompositeDeclMap(implLocalDeclMap, originalUnitDeclMap)
+	defer func() { m.Unit.DeclMap = originalUnitDeclMap }()
+
+	// Insert implLocalDeclMap to m.context.DeclMap
+	m.context.DeclMap = astcore.NewCompositeDeclMap(implLocalDeclMap, m.context.DeclMap)
+
 	if err := m.ParseImplBody(); err != nil {
 		return err
 	}
