@@ -141,6 +141,9 @@ func TestSameIdent(t *testing.T) {
 		},
 	}
 
+	expectUnit2Unit1InImpl := asttest.NewUnitRef("Unit1")
+	expectUnit2Unit1InImpl.Unit = expectUnit1
+
 	expectUnit2 := &ast.Unit{
 		Path:  "Unit2.pas",
 		Ident: asttest.NewIdent("Unit2"),
@@ -151,19 +154,37 @@ func TestSameIdent(t *testing.T) {
 				},
 			},
 		},
-		ImplementationSection: &ast.ImplementationSection{},
+		ImplementationSection: &ast.ImplementationSection{
+			UsesClause: ast.UsesClause{expectUnit2Unit1InImpl},
+		},
 		InitSection: &ast.InitSection{
 			InitializationStmts: ast.StmtList{
 				writeln("-- Unit2 Initialization----"),
 				writeln(expectUnit2Foo),
 				writeln(expectUnit2Bar),
-				writeln(expectUnit2Unit1),
+				// writeln(expectUnit2Unit1),
+				writeln(asttest.NewQualId(
+					asttest.NewIdentRef("Unit1", expectUnit2Unit1InImpl.ToDeclarations()[0]),
+					asttest.NewIdentRef("Foo", expectUnit1Foo.ToDeclarations()[0]),
+				)),
+				writeln(asttest.NewQualId(
+					asttest.NewIdentRef("Unit1", expectUnit2Unit1InImpl.ToDeclarations()[0]),
+					asttest.NewIdentRef("Bar", expectUnit1Bar.ToDeclarations()[0]),
+				)),
 			},
 			FinalizationStmts: ast.StmtList{
 				writeln("-- Unit2 Finalization----"),
 				writeln(expectUnit2Foo),
 				writeln(expectUnit2Bar),
-				writeln(expectUnit2Unit1),
+				// writeln(expectUnit2Unit1),
+				writeln(asttest.NewQualId(
+					asttest.NewIdentRef("Unit1", expectUnit2Unit1InImpl.ToDeclarations()[0]),
+					asttest.NewIdentRef("Foo", expectUnit1Foo.ToDeclarations()[0]),
+				)),
+				writeln(asttest.NewQualId(
+					asttest.NewIdentRef("Unit1", expectUnit2Unit1InImpl.ToDeclarations()[0]),
+					asttest.NewIdentRef("Bar", expectUnit1Bar.ToDeclarations()[0]),
+				)),
 				readln(),
 			},
 		},
