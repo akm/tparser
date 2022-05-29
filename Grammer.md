@@ -4,9 +4,9 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
 
 | Mark | State       | Count |
 | :--: | ----------- | ----: |
-|  🔖  | TODO        |    44 |
+|  🔖  | TODO        |    43 |
 |  🚧  | In progress |     7 |
-|  ✔️  | Done        |    74 |
+|  ✔️  | Done        |    75 |
 
 - Goal 🚧
   ```
@@ -81,7 +81,7 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
   FunctionHeading ';' [Directive]
   ```
-- ImplementationSection 🔖
+- ImplementationSection ✔️
   ```
   IMPLEMENTATION
   [UsesClause]
