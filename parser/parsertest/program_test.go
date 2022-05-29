@@ -25,26 +25,20 @@ func TestProgram(t *testing.T) {
 
 		})
 	}
-	run(
-		"hello world", false,
-		[]rune(`PROGRAM Hello;
-begin
-  writeln('hello, world');
-end.`),
-		&ast.Program{
-			Ident: asttest.NewIdent("Hello", asttest.NewIdentLocation(1, 9, 8, 14)),
-			ProgramBlock: &ast.ProgramBlock{
-				Block: &ast.Block{
-					Body: &ast.CompoundStmt{
-						StmtList: ast.StmtList{
-							&ast.Statement{
-								Body: &ast.CallStatement{
-									Designator: asttest.NewDesignator(
-										asttest.NewIdent("writeln", asttest.NewIdentLocation(3, 3, 23, 3, 10, 30)),
-									),
-									ExprList: ast.ExprList{
-										asttest.NewExpression(asttest.NewString("'hello, world'")),
-									},
+
+	helloWorldProgram := &ast.Program{
+		Ident: asttest.NewIdent("Hello", asttest.NewIdentLocation(1, 9, 8, 14)),
+		ProgramBlock: &ast.ProgramBlock{
+			Block: &ast.Block{
+				Body: &ast.CompoundStmt{
+					StmtList: ast.StmtList{
+						&ast.Statement{
+							Body: &ast.CallStatement{
+								Designator: asttest.NewDesignator(
+									asttest.NewIdent("writeln", asttest.NewIdentLocation(3, 3, 23, 3, 10, 30)),
+								),
+								ExprList: ast.ExprList{
+									asttest.NewExpression(asttest.NewString("'hello, world'")),
 								},
 							},
 						},
@@ -52,6 +46,23 @@ end.`),
 				},
 			},
 		},
+	}
+	run(
+		"hello world", false,
+		[]rune(`PROGRAM Hello;
+begin
+  writeln('hello, world');
+end.`),
+		helloWorldProgram,
+	)
+
+	run(
+		"hello world omitting semi-colon", false,
+		[]rune(`PROGRAM Hello;
+begin
+  writeln('hello, world')
+end.`),
+		helloWorldProgram,
 	)
 
 	run(
