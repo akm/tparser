@@ -100,7 +100,10 @@ func (p *Parser) Logf(format string, args ...interface{}) {
 
 func (p *Parser) TokenErrorf(format string, t *token.Token, args ...interface{}) error {
 	fmtArgs := append([]interface{}{t.RawString()}, args...)
-	place := fmt.Sprintf("%s:%d:%d", p.context.GetPath(), t.Start.Line, t.Start.Col)
-	fmtArgs = append(fmtArgs, place)
+	fmtArgs = append(fmtArgs, p.PlaceString(t))
 	return errors.Errorf(format+" at %s", fmtArgs...)
+}
+
+func (p *Parser) PlaceString(t *token.Token) string {
+	return fmt.Sprintf("%s:%d:%d", p.context.GetPath(), t.Start.Line, t.Start.Col)
 }
