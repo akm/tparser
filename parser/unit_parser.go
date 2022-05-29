@@ -259,7 +259,6 @@ func (m *UnitParser) ProcessImplAndInit() error {
 	if err := m.ParseImplUses(); err != nil {
 		return err
 	}
-	// defer m.Parser.StackContext()()
 
 	if err := m.context.ImportUnitDecls(m.Unit.ImplementationSection.UsesClause); err != nil {
 		return err
