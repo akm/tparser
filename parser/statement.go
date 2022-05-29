@@ -37,6 +37,10 @@ func (p *Parser) ParseStmtList(terminator token.Predicator) (ast.StmtList, error
 		if err != nil {
 			return nil, err
 		}
+		if p.CurrentToken().Is(terminator) {
+			res = append(res, statement)
+			break
+		}
 		if _, err := p.Current(token.Symbol(';')); err != nil {
 			return nil, err
 		}
