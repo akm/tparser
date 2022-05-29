@@ -171,6 +171,65 @@ func (p *UnitParser) ParseUnitIntfBody() error {
 	return nil
 }
 
+func (m *UnitParser) ProcessImplAndInit() error {
+	if err := m.ParseImplUses(); err != nil {
+		return err
+	}
+
+	if err := m.context.ImportUnitDecls(m.Unit.ImplementationSection.UsesClause); err != nil {
+		return err
+	}
+
+	if err := m.ParseImplBody(); err != nil {
+		return err
+	}
+	if err := m.ParseUnitEnd(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (p *UnitParser) ParseImplUses() error {
+	if _, err := p.Current(token.ReservedWord.HasKeyword("IMPLEMENTATION")); err != nil {
+		return err
+	}
+	p.NextToken()
+	p.context.StackDeclMap()
+
+	impl := &ast.ImplementationSection{}
+	if p.CurrentToken().Is(token.ReservedWord.HasKeyword("USES")) {
+		usesClause, err := p.ParseUsesClause()
+		if err != nil {
+			return err
+		}
+		impl.UsesClause = usesClause
+		p.NextToken()
+	}
+	p.Unit.ImplementationSection = impl
+	return nil
+}
+
+func (p *UnitParser) ParseImplBody() error {
+	if declSections, err := p.ParseDeclSections(); err != nil {
+		return err
+	} else if len(declSections) > 0 {
+		p.Unit.ImplementationSection.DeclSections = declSections
+	}
+
+	if exportsStmt, err := p.ParseExportsStmts(); err != nil {
+		return err
+	} else if exportsStmt != nil {
+		p.Unit.ImplementationSection.ExportsStmts = exportsStmt
+	}
+
+	if p.CurrentToken().Is(token.Symbol(';')) {
+		p.NextToken()
+	}
+
+	return nil
+}
+
 func (p *UnitParser) ParseUnitEnd() error {
 	if p.CurrentToken().Is(token.ReservedWord.HasKeyword("INITIALIZATION")) {
 		if initSection, err := p.ParseInitSection(); err != nil {
@@ -252,65 +311,6 @@ func (p *UnitParser) ParseInterfaceSectionDecls() error {
 		}
 		break
 	}
-	return nil
-}
-
-func (m *UnitParser) ProcessImplAndInit() error {
-	if err := m.ParseImplUses(); err != nil {
-		return err
-	}
-
-	if err := m.context.ImportUnitDecls(m.Unit.ImplementationSection.UsesClause); err != nil {
-		return err
-	}
-
-	if err := m.ParseImplBody(); err != nil {
-		return err
-	}
-	if err := m.ParseUnitEnd(); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (p *UnitParser) ParseImplUses() error {
-	if _, err := p.Current(token.ReservedWord.HasKeyword("IMPLEMENTATION")); err != nil {
-		return err
-	}
-	p.NextToken()
-	p.context.StackDeclMap()
-
-	impl := &ast.ImplementationSection{}
-	if p.CurrentToken().Is(token.ReservedWord.HasKeyword("USES")) {
-		usesClause, err := p.ParseUsesClause()
-		if err != nil {
-			return err
-		}
-		impl.UsesClause = usesClause
-		p.NextToken()
-	}
-	p.Unit.ImplementationSection = impl
-	return nil
-}
-
-func (p *UnitParser) ParseImplBody() error {
-	if declSections, err := p.ParseDeclSections(); err != nil {
-		return err
-	} else if len(declSections) > 0 {
-		p.Unit.ImplementationSection.DeclSections = declSections
-	}
-
-	if exportsStmt, err := p.ParseExportsStmts(); err != nil {
-		return err
-	} else if exportsStmt != nil {
-		p.Unit.ImplementationSection.ExportsStmts = exportsStmt
-	}
-
-	if p.CurrentToken().Is(token.Symbol(';')) {
-		p.NextToken()
-	}
-
 	return nil
 }
 
