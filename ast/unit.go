@@ -77,6 +77,16 @@ func (s Units) DeclMaps() astcore.DeclMaps {
 	return r
 }
 
+func (s Units) Compact() Units {
+	r := Units{}
+	for _, i := range s {
+		if i != nil {
+			r = append(r, i)
+		}
+	}
+	return r
+}
+
 // - InterfaceSection
 //   ```
 //   INTERFACE

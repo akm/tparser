@@ -72,10 +72,10 @@ func (p *Parser) ParseQualId() (*ast.QualId, error) {
 				return nil, p.TokenErrorf("%s is used in uses clause but not found", name1)
 			}
 			namespace = unit
-		} else if program, ok := namespaceDecl.Node.(*ast.Program); ok {
+		} else if program, ok := namespaceDecl.Node.(ast.Namespace); ok {
 			namespace = program
 		} else {
-			return nil, p.TokenErrorf("%s is neither unit nor program ", name1)
+			return nil, p.TokenErrorf("%s is neither unit nor program but was %T", name1, namespaceDecl.Node)
 		}
 
 		decl := namespace.GetDeclMap().Get(name2.Value())

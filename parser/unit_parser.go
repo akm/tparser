@@ -141,9 +141,8 @@ func (p *UnitParser) ParseInterfaceSectionUses() (*ast.InterfaceSection, error) 
 
 func (m *UnitParser) ProcessIntfBody() error {
 	// Import decls after resovling unit load order and parsing units which this unit uses.
-	if err := m.context.ImportUnitDecls(m.Unit.InterfaceSection.UsesClause); err != nil {
-		return err
-	}
+	m.context.ImportUnitDecls(m.Unit.InterfaceSection.UsesClause)
+
 	if err := m.context.Set(m.Unit); err != nil {
 		return err
 	}
@@ -167,6 +166,78 @@ func (p *UnitParser) ParseUnitIntfBody() error {
 		}
 	}
 	p.Unit.DeclMap = declMap
+
+	return nil
+}
+
+func (m *UnitParser) ProcessImplAndInit() error {
+	if err := m.ParseImplUses(); err != nil {
+		return err
+	}
+
+	m.context.AssignUnits(m.Unit.ImplementationSection.UsesClause)
+	unitsUsedByImpl := m.Unit.ImplementationSection.UsesClause.Units().Compact()
+	// m.context.ImportUnitDecls(m.Unit.ImplementationSection.UsesClause)
+
+	originalContextDeclMap := m.context.DeclMap
+
+	// Insert implLocalDeclMap to m.Unit.DeclMap
+	originalUnitDeclMap := m.Unit.DeclMap
+	implLocalDeclMap := astcore.NewDeclMap()
+	m.Unit.DeclMap = astcore.NewCompositeDeclMap(implLocalDeclMap, originalUnitDeclMap)
+	defer func() { m.Unit.DeclMap = originalUnitDeclMap }()
+
+	// Insert implLocalDeclMap to m.context.DeclMap
+	maps := []astcore.DeclMap{implLocalDeclMap, originalContextDeclMap}
+	maps = append(maps, unitsUsedByImpl.DeclMaps().Reverse()...)
+	m.context.DeclMap = astcore.NewCompositeDeclMap(maps...)
+
+	if err := m.ParseImplBody(); err != nil {
+		return err
+	}
+	if err := m.ParseUnitEnd(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (p *UnitParser) ParseImplUses() error {
+	if _, err := p.Current(token.ReservedWord.HasKeyword("IMPLEMENTATION")); err != nil {
+		return err
+	}
+	p.NextToken()
+	p.context.StackDeclMap()
+
+	impl := &ast.ImplementationSection{}
+	if p.CurrentToken().Is(token.ReservedWord.HasKeyword("USES")) {
+		usesClause, err := p.ParseUsesClause()
+		if err != nil {
+			return err
+		}
+		impl.UsesClause = usesClause
+		p.NextToken()
+	}
+	p.Unit.ImplementationSection = impl
+	return nil
+}
+
+func (p *UnitParser) ParseImplBody() error {
+	if declSections, err := p.ParseDeclSections(); err != nil {
+		return err
+	} else if len(declSections) > 0 {
+		p.Unit.ImplementationSection.DeclSections = declSections
+	}
+
+	if exportsStmt, err := p.ParseExportsStmts(); err != nil {
+		return err
+	} else if exportsStmt != nil {
+		p.Unit.ImplementationSection.ExportsStmts = exportsStmt
+	}
+
+	if p.CurrentToken().Is(token.Symbol(';')) {
+		p.NextToken()
+	}
 
 	return nil
 }
@@ -252,66 +323,6 @@ func (p *UnitParser) ParseInterfaceSectionDecls() error {
 		}
 		break
 	}
-	return nil
-}
-
-func (m *UnitParser) ProcessImplAndInit() error {
-	if err := m.ParseImplUses(); err != nil {
-		return err
-	}
-	// defer m.Parser.StackContext()()
-
-	if err := m.context.ImportUnitDecls(m.Unit.ImplementationSection.UsesClause); err != nil {
-		return err
-	}
-
-	if err := m.ParseImplBody(); err != nil {
-		return err
-	}
-	if err := m.ParseUnitEnd(); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (p *UnitParser) ParseImplUses() error {
-	if _, err := p.Current(token.ReservedWord.HasKeyword("IMPLEMENTATION")); err != nil {
-		return err
-	}
-	p.NextToken()
-	p.context.StackDeclMap()
-
-	impl := &ast.ImplementationSection{}
-	if p.CurrentToken().Is(token.ReservedWord.HasKeyword("USES")) {
-		usesClause, err := p.ParseUsesClause()
-		if err != nil {
-			return err
-		}
-		impl.UsesClause = usesClause
-		p.NextToken()
-	}
-	p.Unit.ImplementationSection = impl
-	return nil
-}
-
-func (p *UnitParser) ParseImplBody() error {
-	if declSections, err := p.ParseDeclSections(); err != nil {
-		return err
-	} else if len(declSections) > 0 {
-		p.Unit.ImplementationSection.DeclSections = declSections
-	}
-
-	if exportsStmt, err := p.ParseExportsStmts(); err != nil {
-		return err
-	} else if exportsStmt != nil {
-		p.Unit.ImplementationSection.ExportsStmts = exportsStmt
-	}
-
-	if p.CurrentToken().Is(token.Symbol(';')) {
-		p.NextToken()
-	}
-
 	return nil
 }
 

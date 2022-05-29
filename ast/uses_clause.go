@@ -45,6 +45,14 @@ func (s UsesClause) Find(name string) *UsesClauseItem {
 	return nil
 }
 
+func (s UsesClause) Units() Units {
+	r := make(Units, len(s))
+	for i, m := range s {
+		r[i] = m.Unit
+	}
+	return r
+}
+
 type UsesClauseItem struct {
 	*Ident
 	Path *string
