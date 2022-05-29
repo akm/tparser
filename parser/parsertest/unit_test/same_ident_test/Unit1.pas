@@ -17,13 +17,20 @@ implementation
 initialization
   Writeln('-- Unit1 Initialization----');
   Writeln(Foo);
+  Writeln(Unit1.Foo);
+  // Writeln(Unit1.Unit1.Foo);
   Writeln(Bar);
+  Writeln(Unit4.Foo);
+  Writeln(Unit4.Bar);
+  // Writeln(Unit1.Unit4.Foo);
+  // Writeln(Unit1.Unit4.Bar);
   Writeln(Unit2);
 
 finalization
   Writeln('-- Unit1 Finalization----');
   Writeln(Foo);
   Writeln(Bar);
+  // Writeln(Baz);
   Writeln(Unit2);
   Readln;
 
