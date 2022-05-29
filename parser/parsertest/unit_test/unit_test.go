@@ -38,6 +38,48 @@ func TestUnit(t *testing.T) {
 		},
 	)
 
+	unitWithInitSection := &ast.Unit{
+		Ident:                 asttest.NewIdent("U1", asttest.NewIdentLocation(1, 6, 5, 8)),
+		InterfaceSection:      &ast.InterfaceSection{},
+		ImplementationSection: &ast.ImplementationSection{},
+		InitSection: &ast.InitSection{
+			InitializationStmts: ast.StmtList{
+				&ast.Statement{
+					Body: &ast.CallStatement{
+						Designator: asttest.NewDesignator(
+							asttest.NewIdentRef(
+								"Readln",
+								asttest.NewIdentLocation(5, 2, 50, 8),
+							),
+						),
+					},
+				},
+			},
+		},
+	}
+
+	run(
+		"unit with initialization",
+		[]rune(`UNIT U1;
+interface
+implementation
+initialization
+	Readln;
+end.`),
+		unitWithInitSection,
+	)
+
+	run(
+		"unit with initialization omitting semicolon",
+		[]rune(`UNIT U1;
+interface
+implementation
+initialization
+	Readln
+end.`),
+		unitWithInitSection,
+	)
+
 	run(
 		"CountUp",
 		[]rune(`UNIT U1;
