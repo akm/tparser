@@ -62,3 +62,5 @@ type ConstExpr = Expression
 func NewConstExpr(arg interface{}) *ConstExpr {
 	return NewExpression(arg)
 }
+
+type ConstExprs = ExprList
