@@ -1,0 +1,158 @@
+package parsertest
+
+import (
+	"testing"
+
+	"github.com/akm/tparser/ast"
+	"github.com/akm/tparser/ast/astcore"
+	"github.com/akm/tparser/ast/asttest"
+	"github.com/akm/tparser/parser"
+	"github.com/stretchr/testify/assert"
+)
+
+func TestStrucArray(t *testing.T) {
+	run := func(name string, text []rune, expected ast.Type, funcs ...func() interface{}) {
+		t.Run(name, func(t *testing.T) {
+			args := make([]interface{}, len(funcs))
+			for i, f := range funcs {
+				args[i] = f()
+			}
+			parser := NewTestParser(&text, args...)
+			parser.NextToken()
+			res, err := parser.ParseType()
+			if assert.NoError(t, err) {
+				asttest.ClearLocations(t, res)
+				assert.Equal(t, expected, res)
+			}
+		})
+	}
+
+	run(
+		"Char array",
+		[]rune(`array[1..100] of Char`),
+		&ast.ArrayType{
+			IndexTypes: []ast.Type{
+				&ast.SubrangeType{
+					Low:  asttest.NewConstExpr(asttest.NewNumber("1")),
+					High: asttest.NewConstExpr(asttest.NewNumber("100")),
+				},
+			},
+			BaseType: &ast.OrdIdent{Ident: asttest.NewIdent("Char")},
+		},
+	)
+
+	run(
+		"Matrix by array of array",
+		[]rune(`array[1..10] of array[1..50] of Real`),
+		&ast.ArrayType{
+			IndexTypes: []ast.Type{
+				&ast.SubrangeType{
+					Low:  asttest.NewConstExpr(asttest.NewNumber("1")),
+					High: asttest.NewConstExpr(asttest.NewNumber("10")),
+				},
+			},
+			BaseType: &ast.ArrayType{
+				IndexTypes: []ast.Type{
+					&ast.SubrangeType{
+						Low:  asttest.NewConstExpr(asttest.NewNumber("1")),
+						High: asttest.NewConstExpr(asttest.NewNumber("50")),
+					},
+				},
+				BaseType: &ast.RealType{Ident: asttest.NewIdent("Real")},
+			},
+		},
+	)
+
+	run(
+		"Matrix by array with 2 indexes",
+		[]rune(`array[1..10, 1..50] of Real`),
+		&ast.ArrayType{
+			IndexTypes: []ast.Type{
+				&ast.SubrangeType{
+					Low:  asttest.NewConstExpr(asttest.NewNumber("1")),
+					High: asttest.NewConstExpr(asttest.NewNumber("10")),
+				},
+				&ast.SubrangeType{
+					Low:  asttest.NewConstExpr(asttest.NewNumber("1")),
+					High: asttest.NewConstExpr(asttest.NewNumber("50")),
+				},
+			},
+			BaseType: &ast.RealType{Ident: asttest.NewIdent("Real")},
+		},
+	)
+
+	tshoeSizeDecl := &ast.TypeDecl{
+		Ident: asttest.NewIdent("TShoeSize"),
+		Type: &ast.SubrangeType{
+			Low:  asttest.NewConstExpr(asttest.NewNumber("24")),
+			High: asttest.NewConstExpr(asttest.NewNumber("27")),
+		},
+	}
+	tshoeSizeContext := func() interface{} {
+		declMap := astcore.NewDeclMap()
+		assert.NoError(t, declMap.Set(tshoeSizeDecl))
+		r := parser.NewContext(declMap)
+		return r
+	}
+
+	run(
+		"array with 3 complicated indexes",
+		[]rune(`packed array[Boolean,1..10,TShoeSize] of Integer`),
+		&ast.ArrayType{
+			Packed: true,
+			IndexTypes: []ast.Type{
+				&ast.OrdIdent{Ident: asttest.NewIdent("Boolean")},
+				&ast.SubrangeType{
+					Low:  asttest.NewConstExpr(asttest.NewNumber("1")),
+					High: asttest.NewConstExpr(asttest.NewNumber("10")),
+				},
+				&ast.TypeId{
+					Ident: asttest.NewIdent("TShoeSize"),
+					Ref:   tshoeSizeDecl.ToDeclarations()[0],
+				},
+			},
+			BaseType: &ast.OrdIdent{Ident: asttest.NewIdent("Integer")},
+		},
+		tshoeSizeContext,
+	)
+
+	run(
+		"nested arrays",
+		[]rune(`packed array[Boolean] of packed array[1..10] of packed array[TShoeSize] of Integer`),
+		&ast.ArrayType{
+			Packed: true,
+			IndexTypes: []ast.Type{
+				&ast.OrdIdent{Ident: asttest.NewIdent("Boolean")},
+			},
+			BaseType: &ast.ArrayType{
+				Packed: true,
+				IndexTypes: []ast.Type{
+					&ast.SubrangeType{
+						Low:  asttest.NewConstExpr(asttest.NewNumber("1")),
+						High: asttest.NewConstExpr(asttest.NewNumber("10")),
+					},
+				},
+				BaseType: &ast.ArrayType{
+					Packed: true,
+					IndexTypes: []ast.Type{
+						&ast.TypeId{
+							Ident: asttest.NewIdent("TShoeSize"),
+							Ref:   tshoeSizeDecl.ToDeclarations()[0],
+						},
+					},
+					BaseType: &ast.OrdIdent{Ident: asttest.NewIdent("Integer")},
+				},
+			},
+		},
+		tshoeSizeContext,
+	)
+
+	run(
+		"dynamic arrays",
+		[]rune(`array of Real`),
+		&ast.ArrayType{
+			IndexTypes: nil,
+			BaseType:   &ast.RealType{Ident: asttest.NewIdent("Real")},
+		},
+	)
+}
