@@ -3,6 +3,7 @@ package parser
 import (
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/token"
+	"github.com/pkg/errors"
 )
 
 func (p *Parser) ParseStrucType() (ast.StrucType, error) {
@@ -39,13 +40,20 @@ func (p *Parser) ParseArrayType() (*ast.ArrayType, error) {
 
 	if p.CurrentToken().Is(token.Symbol('[')) {
 		p.NextToken()
-		indexes := []ast.Type{}
+		indexes := []ast.OrdinalType{}
 		if err := p.Until(token.Symbol(']'), token.Symbol(','), func() error {
+			t0 := p.CurrentToken()
 			typ, err := p.ParseType()
 			if err != nil {
 				return err
 			}
-			indexes = append(indexes, typ)
+			if ordinalType, ok := typ.(ast.OrdinalType); !ok {
+				return errors.Errorf("Expected OrdinalType, got %T at %s", typ, p.PlaceString(t0))
+			} else if !ordinalType.IsOrdinalType() {
+				return errors.Errorf("Expected OrdinalType, got %T at %s", typ, p.PlaceString(t0))
+			} else {
+				indexes = append(indexes, ordinalType)
+			}
 			return nil
 		}); err != nil {
 			return nil, err
