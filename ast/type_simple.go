@@ -81,8 +81,9 @@ func (m *RealType) Children() Nodes { return Nodes{m.Ident} }
 //   ```
 
 type OrdinalType interface {
+	IsOrdinalType() bool
+	// implements
 	SimpleType
-	isOrdinalType()
 }
 
 // - OrdIdent
@@ -170,10 +171,10 @@ func NewOrdIdent(name interface{}) *OrdIdent {
 	}
 }
 
-func (*OrdIdent) isType()           {}
-func (*OrdIdent) isSimpleType()     {}
-func (*OrdIdent) isOrdinalType()    {}
-func (m *OrdIdent) Children() Nodes { return Nodes{m.Ident} }
+func (*OrdIdent) isType()             {}
+func (*OrdIdent) isSimpleType()       {}
+func (*OrdIdent) IsOrdinalType() bool { return true }
+func (m *OrdIdent) Children() Nodes   { return Nodes{m.Ident} }
 
 // - EnumeratedType
 //   ```
@@ -185,9 +186,9 @@ func (m *OrdIdent) Children() Nodes { return Nodes{m.Ident} }
 //   ```
 type EnumeratedType []*EnumeratedTypeElement // must implement OrdinalType
 
-func (EnumeratedType) isType()        {}
-func (EnumeratedType) isSimpleType()  {}
-func (EnumeratedType) isOrdinalType() {}
+func (EnumeratedType) isType()             {}
+func (EnumeratedType) isSimpleType()       {}
+func (EnumeratedType) IsOrdinalType() bool { return true }
 func (m EnumeratedType) Children() Nodes {
 	r := make(Nodes, len(m))
 	for i, e := range m {
@@ -223,7 +224,7 @@ type SubrangeType struct {
 	High *ConstExpr
 }
 
-func (*SubrangeType) isType()           {}
-func (*SubrangeType) isSimpleType()     {}
-func (*SubrangeType) isOrdinalType()    {}
-func (m *SubrangeType) Children() Nodes { return Nodes{m.Low, m.High} }
+func (*SubrangeType) isType()             {}
+func (*SubrangeType) isSimpleType()       {}
+func (*SubrangeType) IsOrdinalType() bool { return true }
+func (m *SubrangeType) Children() Nodes   { return Nodes{m.Low, m.High} }
