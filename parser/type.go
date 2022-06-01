@@ -86,7 +86,12 @@ func (p *Parser) ParseType() (ast.Type, error) {
 	case token.NumeralInt, token.NumeralReal, token.CharacterString:
 		return p.ParseConstSubrageType()
 	case token.ReservedWord:
-		return p.ParseStringOfStringType()
+		switch t1.Value() {
+		case "PACKED", "ARRAY":
+			return p.ParseStrucType()
+		default:
+			return p.ParseStringOfStringType()
+		}
 	}
 	return nil, p.TokenErrorf("Unsupported Type token %s", t1)
 }
