@@ -19,8 +19,7 @@ type StrucType interface {
 //   ARRAY ['[' OrdinalType ','... ']'] OF Type [PortabilityDirective]
 //   ```
 type ArrayType struct {
-	// IndexTypes []OrdinalType
-	IndexTypes []Type // OrdinalType or TypeId to OrdinalType
+	IndexTypes []OrdinalType
 	BaseType   Type
 	Packed     bool
 	// implements
