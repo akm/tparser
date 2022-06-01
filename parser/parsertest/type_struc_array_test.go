@@ -31,7 +31,7 @@ func TestStrucArray(t *testing.T) {
 		"Char array",
 		[]rune(`array[1..100] of Char`),
 		&ast.ArrayType{
-			IndexTypes: []ast.Type{
+			IndexTypes: []ast.OrdinalType{
 				&ast.SubrangeType{
 					Low:  asttest.NewConstExpr(asttest.NewNumber("1")),
 					High: asttest.NewConstExpr(asttest.NewNumber("100")),
@@ -45,14 +45,14 @@ func TestStrucArray(t *testing.T) {
 		"Matrix by array of array",
 		[]rune(`array[1..10] of array[1..50] of Real`),
 		&ast.ArrayType{
-			IndexTypes: []ast.Type{
+			IndexTypes: []ast.OrdinalType{
 				&ast.SubrangeType{
 					Low:  asttest.NewConstExpr(asttest.NewNumber("1")),
 					High: asttest.NewConstExpr(asttest.NewNumber("10")),
 				},
 			},
 			BaseType: &ast.ArrayType{
-				IndexTypes: []ast.Type{
+				IndexTypes: []ast.OrdinalType{
 					&ast.SubrangeType{
 						Low:  asttest.NewConstExpr(asttest.NewNumber("1")),
 						High: asttest.NewConstExpr(asttest.NewNumber("50")),
@@ -67,7 +67,7 @@ func TestStrucArray(t *testing.T) {
 		"Matrix by array with 2 indexes",
 		[]rune(`array[1..10, 1..50] of Real`),
 		&ast.ArrayType{
-			IndexTypes: []ast.Type{
+			IndexTypes: []ast.OrdinalType{
 				&ast.SubrangeType{
 					Low:  asttest.NewConstExpr(asttest.NewNumber("1")),
 					High: asttest.NewConstExpr(asttest.NewNumber("10")),
@@ -100,7 +100,7 @@ func TestStrucArray(t *testing.T) {
 		[]rune(`packed array[Boolean,1..10,TShoeSize] of Integer`),
 		&ast.ArrayType{
 			Packed: true,
-			IndexTypes: []ast.Type{
+			IndexTypes: []ast.OrdinalType{
 				&ast.OrdIdent{Ident: asttest.NewIdent("Boolean")},
 				&ast.SubrangeType{
 					Low:  asttest.NewConstExpr(asttest.NewNumber("1")),
@@ -121,12 +121,12 @@ func TestStrucArray(t *testing.T) {
 		[]rune(`packed array[Boolean] of packed array[1..10] of packed array[TShoeSize] of Integer`),
 		&ast.ArrayType{
 			Packed: true,
-			IndexTypes: []ast.Type{
+			IndexTypes: []ast.OrdinalType{
 				&ast.OrdIdent{Ident: asttest.NewIdent("Boolean")},
 			},
 			BaseType: &ast.ArrayType{
 				Packed: true,
-				IndexTypes: []ast.Type{
+				IndexTypes: []ast.OrdinalType{
 					&ast.SubrangeType{
 						Low:  asttest.NewConstExpr(asttest.NewNumber("1")),
 						High: asttest.NewConstExpr(asttest.NewNumber("10")),
@@ -134,7 +134,7 @@ func TestStrucArray(t *testing.T) {
 				},
 				BaseType: &ast.ArrayType{
 					Packed: true,
-					IndexTypes: []ast.Type{
+					IndexTypes: []ast.OrdinalType{
 						&ast.TypeId{
 							Ident: asttest.NewIdent("TShoeSize"),
 							Ref:   tshoeSizeDecl.ToDeclarations()[0],
