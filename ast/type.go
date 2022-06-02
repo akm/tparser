@@ -112,8 +112,6 @@ func NewTypeId(unitIdOrIdent interface{}, args ...interface{}) *TypeId {
 	}
 }
 
-func (*TypeId) isType()       {}
-func (*TypeId) isSimpleType() {}
 func (m *TypeId) Children() Nodes {
 	r := Nodes{}
 	if m.UnitId != nil {
@@ -121,6 +119,25 @@ func (m *TypeId) Children() Nodes {
 	}
 	r = append(r, m.Ident)
 	return r
+}
+
+func (*TypeId) isType() {}
+func (m *TypeId) IsSimpleType() bool {
+	if m.Ref == nil {
+		return false
+	}
+	if m.Ref.Node == nil {
+		return false
+	}
+	decl, ok := m.Ref.Node.(*TypeDecl)
+	if !ok {
+		return false
+	}
+	simpleType, ok := decl.Type.(SimpleType)
+	if !ok {
+		return false
+	}
+	return simpleType.IsSimpleType()
 }
 
 func (m *TypeId) IsOrdinalType() bool {
