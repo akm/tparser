@@ -23,3 +23,21 @@ func runType(t *testing.T, name string, text []rune, expected ast.Type, funcs ..
 		}
 	})
 }
+
+func runTypeDecl(t *testing.T, name string, text []rune, expected *ast.TypeDecl, funcs ...func() interface{}) {
+	t.Run(name, func(t *testing.T) {
+		args := make([]interface{}, len(funcs))
+		for i, f := range funcs {
+			args[i] = f()
+		}
+		parser := NewTestParser(&text, args...)
+		parser.NextToken()
+		res, err := parser.ParseTypeDecl()
+		if assert.NoError(t, err) {
+			asttest.ClearLocations(t, res)
+			if !assert.Equal(t, expected, res) {
+				asttest.AssertTypeDecl(t, expected, res)
+			}
+		}
+	})
+}
