@@ -3,7 +3,6 @@ package parser
 import (
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/token"
-	"github.com/pkg/errors"
 )
 
 func (p *Parser) ParseStrucType() (ast.StrucType, error) {
@@ -51,18 +50,11 @@ func (p *Parser) ParseArrayType() (*ast.ArrayType, error) {
 		p.NextToken()
 		indexes := []ast.OrdinalType{}
 		if err := p.Until(token.Symbol(']'), token.Symbol(','), func() error {
-			t0 := p.CurrentToken()
-			typ, err := p.ParseType()
+			ordinalType, err := p.ParseTypeAsOrdinalType()
 			if err != nil {
 				return err
 			}
-			if ordinalType, ok := typ.(ast.OrdinalType); !ok {
-				return errors.Errorf("Expected OrdinalType, got %T at %s", typ, p.PlaceString(t0))
-			} else if !ordinalType.IsOrdinalType() {
-				return errors.Errorf("Expected OrdinalType, got %T at %s", typ, p.PlaceString(t0))
-			} else {
-				indexes = append(indexes, ordinalType)
-			}
+			indexes = append(indexes, ordinalType)
 			return nil
 		}); err != nil {
 			return nil, err
@@ -104,17 +96,10 @@ func (p *Parser) ParseSetType() (*ast.SetType, error) {
 	}
 	p.NextToken()
 
-	t0 := p.CurrentToken()
-	typ, err := p.ParseType()
+	ordinalType, err := p.ParseTypeAsOrdinalType()
 	if err != nil {
 		return nil, err
 	}
-	if ordinalType, ok := typ.(ast.OrdinalType); !ok {
-		return nil, errors.Errorf("Expected OrdinalType, got %T at %s", typ, p.PlaceString(t0))
-	} else if !ordinalType.IsOrdinalType() {
-		return nil, errors.Errorf("Expected OrdinalType, got %T at %s", typ, p.PlaceString(t0))
-	} else {
-		r.OrdinalType = ordinalType
-	}
+	r.OrdinalType = ordinalType
 	return r, nil
 }
