@@ -97,14 +97,25 @@ func (m *RecType) Children() Nodes {
 //   FieldDecl ';'... [VariantSection] [';']
 //   ```
 type FieldList struct {
-	FieldDecl      *FieldDecl
+	FieldDecls     FieldDecls
 	VariantSection *VariantSection
 	// implements
 	Node
 }
 
 func (m *FieldList) Children() Nodes {
-	return Nodes{m.FieldDecl, m.VariantSection}
+	return Nodes{m.FieldDecls, m.VariantSection}
+}
+
+// implements Node
+type FieldDecls []*FieldDecl
+
+func (s FieldDecls) Children() Nodes {
+	r := make(Nodes, len(s))
+	for i, m := range s {
+		r[i] = m
+	}
+	return r
 }
 
 // - FieldDecl
@@ -133,7 +144,7 @@ func (m *FieldDecl) ToDeclarations() astcore.Decls {
 //   ```
 type VariantSection struct {
 	Ident       *Ident
-	TypeId      *TypeId
+	TypeId      OrdinalType
 	RecVariants RecVariants
 	// implements
 	Node
