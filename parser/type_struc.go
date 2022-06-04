@@ -142,7 +142,7 @@ func (p *Parser) ParseFieldList(terminator token.Predicator) (*ast.FieldList, er
 	casePred := token.ReservedWord.HasKeyword("CASE")
 	fieldDecls := ast.FieldDecls{}
 	if err := p.Until(terminator, token.Symbol(';'), func() error {
-		if p.CurrentToken().Is(casePred) {
+		if p.CurrentToken().Is(casePred) || p.CurrentToken().Is(terminator) {
 			return QuitUntil
 		}
 		fieldDecl, err := p.ParseFieldDecl(terminator)
