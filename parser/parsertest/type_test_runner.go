@@ -26,7 +26,7 @@ func (tt *TypeTest) newParser(text *[]rune) *parser.Parser {
 	for i, f := range tt.funcs {
 		args[i] = f()
 	}
-	r := NewTestParser(&tt.text, args...)
+	r := NewTestParser(text, args...)
 	r.NextToken()
 	return r
 }
