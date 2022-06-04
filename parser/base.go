@@ -72,9 +72,20 @@ func (p *Parser) Validate(t *token.Token, predicates ...token.Predicator) error 
 	return nil
 }
 
+type QuitUntilType struct{}
+
+func (*QuitUntilType) Error() string {
+	return "quit until"
+}
+
+var QuitUntil = &QuitUntilType{}
+
 func (p *Parser) Until(terminator token.Predicator, separator token.Predicator, fn func() error) error {
 	for {
 		if err := fn(); err != nil {
+			if err == QuitUntil {
+				return nil
+			}
 			return err
 		}
 		token := p.CurrentToken()
