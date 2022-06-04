@@ -8,36 +8,71 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func runType(t *testing.T, name string, text []rune, expected ast.Type, funcs ...func() interface{}) {
-	t.Run(name, func(t *testing.T) {
-		args := make([]interface{}, len(funcs))
-		for i, f := range funcs {
+type TypeTest struct {
+	t        *testing.T
+	name     string
+	text     []rune
+	expected ast.Type
+	funcs    []func() interface{}
+}
+
+func NewTypeTest(t *testing.T, name string, text []rune, expected ast.Type, funcs ...func() interface{}) *TypeTest {
+	return &TypeTest{t: t, name: name, text: text, expected: expected, funcs: funcs}
+}
+
+func (tt *TypeTest) Run() *TypeTest {
+	tt.t.Run(tt.name, func(t *testing.T) {
+		args := make([]interface{}, len(tt.funcs))
+		for i, f := range tt.funcs {
 			args[i] = f()
 		}
-		parser := NewTestParser(&text, args...)
+		parser := NewTestParser(&tt.text, args...)
 		parser.NextToken()
 		res, err := parser.ParseType()
 		if assert.NoError(t, err) {
 			asttest.ClearLocations(t, res)
-			assert.Equal(t, expected, res)
+			assert.Equal(t, tt.expected, res)
 		}
 	})
+	return tt
 }
 
-func runTypeDecl(t *testing.T, name string, text []rune, expected *ast.TypeDecl, funcs ...func() interface{}) {
-	t.Run(name, func(t *testing.T) {
-		args := make([]interface{}, len(funcs))
-		for i, f := range funcs {
+func (tt *TypeTest) RunTypeSection(declName string) *TypeTest {
+	tt.t.Run(tt.name+" in type section", func(t *testing.T) {
+		args := make([]interface{}, len(tt.funcs))
+		for i, f := range tt.funcs {
 			args[i] = f()
 		}
-		parser := NewTestParser(&text, args...)
+		expectedSection := ast.TypeSection{{Ident: asttest.NewIdent(declName), Type: tt.expected}}
+		sectionStr := "type " + declName + " = " + string(tt.text) + ";"
+		sectionRunes := []rune(sectionStr)
+		parser := NewTestParser(&sectionRunes, args...)
 		parser.NextToken()
-		res, err := parser.ParseTypeDecl()
+		res, err := parser.ParseTypeSection(true)
 		if assert.NoError(t, err) {
 			asttest.ClearLocations(t, res)
-			if !assert.Equal(t, expected, res) {
-				asttest.AssertTypeDecl(t, expected, res)
-			}
+			assert.Equal(t, expectedSection, res)
 		}
 	})
+	return tt
+}
+
+func (tt *TypeTest) RunVarSection(declName string) *TypeTest {
+	tt.t.Run(tt.name+" in var section", func(t *testing.T) {
+		args := make([]interface{}, len(tt.funcs))
+		for i, f := range tt.funcs {
+			args[i] = f()
+		}
+		expectedSection := ast.VarSection{{IdentList: asttest.NewIdentList(declName), Type: tt.expected}}
+		sectionStr := "var " + declName + ": " + string(tt.text) + ";"
+		sectionRunes := []rune(sectionStr)
+		parser := NewTestParser(&sectionRunes, args...)
+		parser.NextToken()
+		res, err := parser.ParseVarSection(true)
+		if assert.NoError(t, err) {
+			asttest.ClearLocations(t, res)
+			assert.Equal(t, expectedSection, res)
+		}
+	})
+	return tt
 }

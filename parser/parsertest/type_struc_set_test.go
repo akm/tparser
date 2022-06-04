@@ -25,7 +25,7 @@ func TestStrucSet(t *testing.T) {
 		return r
 	}
 
-	runType(t,
+	NewTypeTest(t,
 		"Set with TypeId",
 		[]rune(`set of TSomeInts`),
 		&ast.SetType{
@@ -35,9 +35,9 @@ func TestStrucSet(t *testing.T) {
 			},
 		},
 		tsomeIntsContext,
-	)
+	).Run().RunTypeSection("TIntSet")
 
-	runType(t,
+	NewTypeTest(t,
 		"Set with subrange type",
 		[]rune(`set of 1..250`),
 		&ast.SetType{
@@ -46,9 +46,9 @@ func TestStrucSet(t *testing.T) {
 				High: asttest.NewConstExpr(asttest.NewNumber("250")),
 			},
 		},
-	)
+	).Run().RunTypeSection("TIntSet")
 
-	runType(t,
+	NewTypeTest(t,
 		"Set with a to z",
 		[]rune(`set of 'a'..'z'`),
 		&ast.SetType{
@@ -57,17 +57,17 @@ func TestStrucSet(t *testing.T) {
 				High: asttest.NewConstExpr(asttest.NewString("'z'")),
 			},
 		},
-	)
+	).Run().RunVarSection("MySet")
 
-	runType(t,
+	NewTypeTest(t,
 		"Set of Byte",
 		[]rune(`set of Byte`),
 		&ast.SetType{
 			OrdinalType: &ast.OrdIdent{Ident: asttest.NewIdent("Byte")},
 		},
-	)
+	).Run()
 
-	runType(t,
+	NewTypeTest(t,
 		"Set of enumerated type",
 		[]rune(`set of (Club, Diamond, Heart, Spade)`),
 		&ast.SetType{
@@ -78,13 +78,13 @@ func TestStrucSet(t *testing.T) {
 				{Ident: asttest.NewIdent("Spade")},
 			},
 		},
-	)
+	).Run()
 
-	runType(t,
+	NewTypeTest(t,
 		"Set of Char",
 		[]rune(`set of Char`),
 		&ast.SetType{
 			OrdinalType: &ast.OrdIdent{Ident: asttest.NewIdent("Char")},
 		},
-	)
+	).Run()
 }

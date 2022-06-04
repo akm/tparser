@@ -11,11 +11,7 @@ import (
 )
 
 func TestStrucArray(t *testing.T) {
-	run := func(name string, text []rune, expected ast.Type, funcs ...func() interface{}) {
-		runType(t, name, text, expected, funcs...)
-	}
-
-	run(
+	NewTypeTest(t,
 		"Char array",
 		[]rune(`array[1..100] of Char`),
 		&ast.ArrayType{
@@ -27,9 +23,9 @@ func TestStrucArray(t *testing.T) {
 			},
 			BaseType: &ast.OrdIdent{Ident: asttest.NewIdent("Char")},
 		},
-	)
+	).Run().RunVarSection("MyArray")
 
-	run(
+	NewTypeTest(t,
 		"Matrix by array of array",
 		[]rune(`array[1..10] of array[1..50] of Real`),
 		&ast.ArrayType{
@@ -49,9 +45,9 @@ func TestStrucArray(t *testing.T) {
 				BaseType: &ast.RealType{Ident: asttest.NewIdent("Real")},
 			},
 		},
-	)
+	).Run().RunTypeSection("TMatrix")
 
-	run(
+	NewTypeTest(t,
 		"Matrix by array with 2 indexes",
 		[]rune(`array[1..10, 1..50] of Real`),
 		&ast.ArrayType{
@@ -67,7 +63,7 @@ func TestStrucArray(t *testing.T) {
 			},
 			BaseType: &ast.RealType{Ident: asttest.NewIdent("Real")},
 		},
-	)
+	).Run().RunTypeSection("TMatrix")
 
 	tshoeSizeDecl := &ast.TypeDecl{
 		Ident: asttest.NewIdent("TShoeSize"),
@@ -83,7 +79,7 @@ func TestStrucArray(t *testing.T) {
 		return r
 	}
 
-	run(
+	NewTypeTest(t,
 		"array with 3 complicated indexes",
 		[]rune(`packed array[Boolean,1..10,TShoeSize] of Integer`),
 		&ast.ArrayType{
@@ -102,9 +98,9 @@ func TestStrucArray(t *testing.T) {
 			BaseType: &ast.OrdIdent{Ident: asttest.NewIdent("Integer")},
 		},
 		tshoeSizeContext,
-	)
+	).Run()
 
-	run(
+	NewTypeTest(t,
 		"nested arrays",
 		[]rune(`packed array[Boolean] of packed array[1..10] of packed array[TShoeSize] of Integer`),
 		&ast.ArrayType{
@@ -133,18 +129,18 @@ func TestStrucArray(t *testing.T) {
 			},
 		},
 		tshoeSizeContext,
-	)
+	).Run()
 
-	run(
+	NewTypeTest(t,
 		"dynamic arrays",
 		[]rune(`array of Real`),
 		&ast.ArrayType{
 			IndexTypes: nil,
 			BaseType:   &ast.RealType{Ident: asttest.NewIdent("Real")},
 		},
-	)
+	).Run().RunVarSection("MyFlexibleArray")
 
-	run(
+	NewTypeTest(t,
 		"multidementional dynamic arrays",
 		[]rune(`array of array of string`),
 		&ast.ArrayType{
@@ -154,5 +150,5 @@ func TestStrucArray(t *testing.T) {
 				BaseType:   &ast.StringType{Name: "STRING"},
 			},
 		},
-	)
+	).Run().RunTypeSection("TMessageGrid")
 }
