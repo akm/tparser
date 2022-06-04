@@ -104,7 +104,11 @@ type FieldList struct {
 }
 
 func (m *FieldList) Children() Nodes {
-	return Nodes{m.FieldDecls, m.VariantSection}
+	r := Nodes{m.FieldDecls}
+	if m.VariantSection != nil {
+		r = append(r, m.VariantSection)
+	}
+	return r
 }
 
 // implements Node
@@ -151,7 +155,11 @@ type VariantSection struct {
 }
 
 func (m *VariantSection) Children() Nodes {
-	return Nodes{m.TypeId, m.RecVariants}
+	r := Nodes{m.TypeId}
+	if m.RecVariants != nil {
+		r = append(r, m.RecVariants)
+	}
+	return r
 }
 
 // implements Node
