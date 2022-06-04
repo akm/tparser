@@ -22,6 +22,15 @@ func (p *Parser) ParseStrucType() (ast.StrucType, error) {
 			r.Packed = packed
 		}
 		return r, nil
+	case "SET":
+		r, err := p.ParseSetType()
+		if err != nil {
+			return nil, err
+		}
+		if !r.Packed && packed {
+			r.Packed = packed
+		}
+		return r, nil
 	default:
 		return nil, p.TokenErrorf("Unsupported StrucType token %s", p.CurrentToken())
 	}
@@ -77,5 +86,35 @@ func (p *Parser) ParseArrayType() (*ast.ArrayType, error) {
 		p.NextToken()
 	}
 
+	return r, nil
+}
+
+func (p *Parser) ParseSetType() (*ast.SetType, error) {
+	r := &ast.SetType{Packed: false}
+	if p.CurrentToken().Is(token.ReservedWord.HasKeyword("PACKED")) {
+		r.Packed = true
+		p.NextToken()
+	}
+	if _, err := p.Current(token.ReservedWord.HasKeyword("SET")); err != nil {
+		return nil, p.TokenErrorf("Expected SET, got %s", p.CurrentToken())
+	}
+	p.NextToken()
+	if _, err := p.Current(token.ReservedWord.HasKeyword("OF")); err != nil {
+		return nil, p.TokenErrorf("Expected OF, got %s", p.CurrentToken())
+	}
+	p.NextToken()
+
+	t0 := p.CurrentToken()
+	typ, err := p.ParseType()
+	if err != nil {
+		return nil, err
+	}
+	if ordinalType, ok := typ.(ast.OrdinalType); !ok {
+		return nil, errors.Errorf("Expected OrdinalType, got %T at %s", typ, p.PlaceString(t0))
+	} else if !ordinalType.IsOrdinalType() {
+		return nil, errors.Errorf("Expected OrdinalType, got %T at %s", typ, p.PlaceString(t0))
+	} else {
+		r.OrdinalType = ordinalType
+	}
 	return r, nil
 }
