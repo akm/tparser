@@ -23,6 +23,13 @@ func (p *Parser) ParseVarSection(required bool) (ast.VarSection, error) {
 		if err != nil {
 			return nil, err
 		}
+		{
+			t := p.CurrentToken()
+			if t.Is(token.ReservedWord) || t.Is(token.EOF) {
+				res = append(res, decl)
+				break
+			}
+		}
 		if _, err := p.Current(token.Symbol(';')); err != nil {
 			return nil, err
 		}
