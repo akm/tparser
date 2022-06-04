@@ -143,4 +143,16 @@ func TestStrucArray(t *testing.T) {
 			BaseType:   &ast.RealType{Ident: asttest.NewIdent("Real")},
 		},
 	)
+
+	run(
+		"multidementional dynamic arrays",
+		[]rune(`array of array of string`),
+		&ast.ArrayType{
+			IndexTypes: nil,
+			BaseType: &ast.ArrayType{
+				IndexTypes: nil,
+				BaseType:   &ast.StringType{Name: "STRING"},
+			},
+		},
+	)
 }
