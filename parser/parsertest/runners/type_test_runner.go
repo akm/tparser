@@ -10,6 +10,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func RunTypeTest(t *testing.T, name string, text []rune, expected ast.Type, args ...interface{}) {
+	NewTypeTestRunner(t, name, text, expected, args...).Run()
+}
+
 type TypeTestRunner struct {
 	t              *testing.T
 	Name           string

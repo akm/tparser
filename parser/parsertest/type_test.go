@@ -263,15 +263,7 @@ func TestTypeId(t *testing.T) {
 
 func TestNamedType(t *testing.T) {
 	run := func(text []rune, expected ast.Type) {
-		t.Run(string(text), func(t *testing.T) {
-			parser := NewTestParser(&text)
-			parser.NextToken()
-			res, err := parser.ParseType()
-			if assert.NoError(t, err) {
-				asttest.ClearLocations(t, res)
-				assert.Equal(t, expected, res)
-			}
-		})
+		RunTypeTest(t, string(text), text, expected)
 	}
 
 	run([]rune(`INTEGER`), &ast.OrdIdent{Ident: asttest.NewIdent("INTEGER")})

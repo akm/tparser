@@ -21,4 +21,7 @@ var NewTypeSectionTestRunner = runners.NewTypeSectionTestRunner
 // type_test_runner.go
 type TypeTestRunner = runners.TypeTestRunner
 
-var NewTypeTestRunner = runners.NewTypeTestRunner
+var (
+	NewTypeTestRunner = runners.NewTypeTestRunner
+	RunTypeTest       = runners.RunTypeTest
+)
