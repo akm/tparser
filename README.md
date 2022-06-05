@@ -11,3 +11,15 @@ See [Grammer.md](./Grammer.md).
 ```
 go test ./...
 ```
+
+## Status
+
+
+| Mark | State       | Count | Percentage |
+| :--: | ----------- | ----: |---------:|
+|  🔖  | TODO        |    33 |  27.0% |
+|  🚧  | In progress |     6 | 4.9% |
+|  ✔️  | Done        |    83 | **68.0%** |
+|     | Total        | 122 |  100.0%  |
+
+See [Grammer.md](./Grammer.md) for more details.
