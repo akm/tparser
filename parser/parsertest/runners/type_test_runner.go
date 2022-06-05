@@ -15,6 +15,7 @@ type TypeTestRunner struct {
 	Name           string
 	Text           *[]rune
 	Expected       ast.Type
+	ClearLocations bool
 	ParserArgFuncs []func() interface{}
 	RunnerFuncs    []TypeTestRunnerFunc
 }
@@ -41,10 +42,14 @@ func NewTypeTestRunner(t *testing.T, name string, text []rune, expected ast.Type
 		Expected:       expected,
 		ParserArgFuncs: parserArgFuncs,
 		RunnerFuncs:    runnerFuncs,
+		ClearLocations: true,
 	}
 }
 
 func (tt *TypeTestRunner) newParser(text *[]rune) *parser.Parser {
+	for _, fn := range tt.RunnerFuncs {
+		fn(tt)
+	}
 	args := make([]interface{}, len(tt.ParserArgFuncs))
 	for i, f := range tt.ParserArgFuncs {
 		args[i] = f()
@@ -59,7 +64,9 @@ func (tt *TypeTestRunner) Run() *TypeTestRunner {
 		p := tt.newParser(tt.Text)
 		res, err := p.ParseType()
 		if assert.NoError(t, err) {
-			asttest.ClearLocations(t, res)
+			if tt.ClearLocations {
+				asttest.ClearLocations(t, res)
+			}
 			assert.Equal(t, tt.Expected, res)
 		}
 	})
