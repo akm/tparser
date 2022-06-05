@@ -13,6 +13,9 @@ var (
 	NewTestUnitContext    = runners.NewTestUnitContext
 )
 
+// type_test_runner.go
+type BaseTestRunner = runners.BaseTestRunner
+
 // type_section_test_runner.go
 type TypeSectionTestRunner = runners.TypeSectionTestRunner
 

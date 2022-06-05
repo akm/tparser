@@ -43,7 +43,7 @@ func TestEnumeratedType(t *testing.T) {
 
 func TestSubrangeType(t *testing.T) {
 	run := func(name string, text []rune, expected ast.Type) {
-		RunTypeTest(t, name, text, expected, func(tt *TypeTestRunner) {
+		RunTypeTest(t, name, text, expected, func(tt *BaseTestRunner) {
 			tt.ClearLocations = false
 		})
 	}

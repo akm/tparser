@@ -23,18 +23,13 @@ type TypeTestRunner struct {
 func NewTypeTestRunner(t *testing.T, name string, text []rune, expected ast.Type, args ...interface{}) *TypeTestRunner {
 	parserArgFuncs, rest1 := FilterParserArgFuncs(args)
 	baseRunnerFuncs, rest2 := FilterBaseTestRunnerFuncs(rest1)
-	runnerFuncs, rest3 := FilterTypeTestRunnerFuncs(rest2)
-	if len(rest3) > 0 {
-		panic(errors.Errorf("unexpected arguments: %v", rest3))
+	if len(rest2) > 0 {
+		panic(errors.Errorf("unexpected arguments: %v", rest2))
 	}
-	r := &TypeTestRunner{
+	return &TypeTestRunner{
 		BaseTestRunner: NewBaseTestRunner(t, name, &text, true, parserArgFuncs, baseRunnerFuncs),
 		Expected:       expected,
 	}
-	for _, f := range runnerFuncs {
-		f(r)
-	}
-	return r
 }
 
 func (tt *TypeTestRunner) Run() *TypeTestRunner {
@@ -79,20 +74,4 @@ func (tt *TypeTestRunner) RunVarSection(declName string) *TypeTestRunner {
 	)
 	sectRunner.Run()
 	return tt
-}
-
-type TypeTestRunnerFunc = func(*TypeTestRunner)
-type TypeTestRunnerFuncs []TypeTestRunnerFunc
-
-func FilterTypeTestRunnerFuncs(args []interface{}) (TypeTestRunnerFuncs, []interface{}) {
-	r := TypeTestRunnerFuncs{}
-	rest := []interface{}{}
-	for _, arg := range args {
-		if v, ok := arg.(TypeTestRunnerFunc); ok {
-			r = append(r, v)
-		} else {
-			rest = append(rest, arg)
-		}
-	}
-	return r, rest
 }
