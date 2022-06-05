@@ -12,17 +12,11 @@ import (
 
 func TestUnit(t *testing.T) {
 	run := func(name string, text []rune, expected *ast.Unit) {
-		t.Run(name, func(t *testing.T) {
-			parser := parsertest.NewTestUnitParser(&text)
-			parser.NextToken()
-			res, err := parser.ParseUnit()
-			if assert.NoError(t, err) {
-				asttest.ClearUnitDeclMap(res)
-				if !assert.Equal(t, expected, res) {
-					asttest.AssertUnit(t, expected, res)
-				}
-			}
-		})
+		parsertest.RunUnitTest(t, name, text, expected,
+			func(tt *parsertest.UnitTestRunner) {
+				tt.ClearLocations = false
+			},
+		)
 	}
 
 	run(

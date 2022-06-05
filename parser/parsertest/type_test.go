@@ -10,26 +10,8 @@ import (
 )
 
 func TestUnitWithTypeSection(t *testing.T) {
-	run := func(name string, text []rune, expected *ast.Unit) {
-		t.Run(name, func(t *testing.T) {
-			parser := NewTestUnitParser(&text)
-			parser.NextToken()
-			res, err := parser.ParseUnit()
-			if assert.NoError(t, err) {
-				asttest.ClearUnitDeclMap(res)
-				asttest.ClearLocations(t, res)
-				if !assert.Equal(t, expected, res) {
-					if !assert.Equal(t, expected.InterfaceSection.InterfaceDecls, res.InterfaceSection.InterfaceDecls) {
-						assert.Equal(t, expected.InterfaceSection.InterfaceDecls[0], res.InterfaceSection.InterfaceDecls[0])
-						assert.Equal(t, expected.InterfaceSection.InterfaceDecls[1], res.InterfaceSection.InterfaceDecls[1])
-					}
-				}
-			}
-		})
-	}
-
 	unit2 := asttest.NewUnitId("Unit2")
-	run(
+	RunUnitTest(t,
 		"2 type declarations",
 		[]rune(`
 		UNIT Unit1;
@@ -54,7 +36,8 @@ func TestUnitWithTypeSection(t *testing.T) {
 			ImplementationSection: &ast.ImplementationSection{},
 		},
 	)
-	run(
+
+	RunUnitTest(t,
 		"2 type sections",
 		[]rune(`
 		UNIT Unit1;

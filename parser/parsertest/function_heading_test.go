@@ -408,7 +408,7 @@ func TestExportHeading(t *testing.T) {
 	// {text: "function MyFunction(X, Y: Real = 3.5): Real;"}, // syntax error
 	// {text: "procedure MyProcedure(I: Integer = 1; S: string);"} // syntax error
 
-	t.Run("FunctionHeadings in unit", func(t *testing.T) {
+	{
 		headings := make([]string, len(patterns))
 		decls := make([]ast.InterfaceDecl, len(patterns))
 		for i, ptn := range patterns {
@@ -416,30 +416,23 @@ func TestExportHeading(t *testing.T) {
 			decls[i] = ptn.expected
 		}
 
-		unitText := []rune(fmt.Sprintf(`UNIT Unit1;
-		INTERFACE
-		%s
-		IMPLEMENTATION
-		END.`, strings.Join(headings, "\n")))
-
-		parser := NewTestUnitParser(&unitText)
-		parser.NextToken()
-		res, err := parser.ParseUnit()
-		if assert.NoError(t, err) {
-			asttest.ClearUnitDeclMap(res)
-			asttest.ClearLocations(t, res)
-			assert.Equal(t,
-				&ast.Unit{
-					Ident: asttest.NewIdent("Unit1"),
-					InterfaceSection: &ast.InterfaceSection{
-						InterfaceDecls: decls,
-					},
-					ImplementationSection: &ast.ImplementationSection{},
+		RunUnitTest(t, "FunctionHeadings in unit",
+			[]rune(fmt.Sprintf(`
+UNIT Unit1;
+INTERFACE
+%s
+IMPLEMENTATION
+END.`, strings.Join(headings, "\n"))),
+			&ast.Unit{
+				Ident: asttest.NewIdent("Unit1"),
+				InterfaceSection: &ast.InterfaceSection{
+					InterfaceDecls: decls,
 				},
-				res,
-			)
-		}
-	})
+				ImplementationSection: &ast.ImplementationSection{},
+			},
+		)
+
+	}
 }
 
 func TestFormalParameters(t *testing.T) {

@@ -10,20 +10,7 @@ import (
 )
 
 func TestUnitWithVarSection(t *testing.T) {
-	run := func(name string, text []rune, expected *ast.Unit) {
-		t.Run(name, func(t *testing.T) {
-			parser := NewTestUnitParser(&text)
-			parser.NextToken()
-			res, err := parser.ParseUnit()
-			if assert.NoError(t, err) {
-				asttest.ClearUnitDeclMap(res)
-				asttest.ClearLocations(t, res)
-				assert.Equal(t, expected, res)
-			}
-		})
-	}
-
-	run(
+	RunUnitTest(t,
 		"2 var declarations",
 		[]rune(`
 		UNIT Unit1;
@@ -46,7 +33,7 @@ func TestUnitWithVarSection(t *testing.T) {
 			ImplementationSection: &ast.ImplementationSection{},
 		},
 	)
-	run(
+	RunUnitTest(t,
 		"2 var sections",
 		[]rune(`
 		UNIT Unit1;
@@ -78,7 +65,7 @@ func TestUnitWithVarSection(t *testing.T) {
 			ImplementationSection: &ast.ImplementationSection{},
 		},
 	)
-	run(
+	RunUnitTest(t,
 		"threadvar",
 		[]rune(`
 		UNIT Unit1;
@@ -163,22 +150,9 @@ func TestVarSectionl(t *testing.T) {
 }
 
 func TestVarReferringType(t *testing.T) {
-	run := func(name string, text []rune, expected *ast.Unit) {
-		t.Run(name, func(t *testing.T) {
-			parser := NewTestUnitParser(&text)
-			parser.NextToken()
-			res, err := parser.ParseUnit()
-			if assert.NoError(t, err) {
-				asttest.ClearLocations(t, res)
-				asttest.ClearUnitDeclMaps(t, res)
-				assert.Equal(t, expected, res)
-			}
-		})
-	}
-
 	typeDecl := &ast.TypeDecl{Ident: asttest.NewIdent("TMyInteger1"), Type: &ast.OrdIdent{Ident: asttest.NewIdent("INTEGER")}}
 
-	run(
+	RunUnitTest(t,
 		"reference from var to type in unit",
 		[]rune(`
 		UNIT Unit1;
