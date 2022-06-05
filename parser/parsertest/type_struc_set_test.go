@@ -25,7 +25,7 @@ func TestStrucSet(t *testing.T) {
 		return r
 	}
 
-	NewTypeTest(t,
+	NewTypeTestRunner(t,
 		"Set with TypeId",
 		[]rune(`set of TSomeInts`),
 		&ast.SetType{
@@ -37,7 +37,7 @@ func TestStrucSet(t *testing.T) {
 		tsomeIntsContext,
 	).Run().RunTypeSection("TIntSet")
 
-	NewTypeTest(t,
+	NewTypeTestRunner(t,
 		"Set with subrange type",
 		[]rune(`set of 1..250`),
 		&ast.SetType{
@@ -48,7 +48,7 @@ func TestStrucSet(t *testing.T) {
 		},
 	).Run().RunTypeSection("TIntSet")
 
-	NewTypeTest(t,
+	NewTypeTestRunner(t,
 		"Set with a to z",
 		[]rune(`set of 'a'..'z'`),
 		&ast.SetType{
@@ -59,7 +59,7 @@ func TestStrucSet(t *testing.T) {
 		},
 	).Run().RunVarSection("MySet")
 
-	NewTypeTest(t,
+	NewTypeTestRunner(t,
 		"Set of Byte",
 		[]rune(`set of Byte`),
 		&ast.SetType{
@@ -67,7 +67,7 @@ func TestStrucSet(t *testing.T) {
 		},
 	).Run()
 
-	NewTypeTest(t,
+	NewTypeTestRunner(t,
 		"Set of enumerated type",
 		[]rune(`set of (Club, Diamond, Heart, Spade)`),
 		&ast.SetType{
@@ -80,7 +80,7 @@ func TestStrucSet(t *testing.T) {
 		},
 	).Run()
 
-	NewTypeTest(t,
+	NewTypeTestRunner(t,
 		"Set of Char",
 		[]rune(`set of Char`),
 		&ast.SetType{

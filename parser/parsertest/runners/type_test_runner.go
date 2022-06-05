@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type TypeTest struct {
+type TypeTestRunner struct {
 	t        *testing.T
 	name     string
 	text     []rune
@@ -17,11 +17,11 @@ type TypeTest struct {
 	funcs    []func() interface{}
 }
 
-func NewTypeTest(t *testing.T, name string, text []rune, expected ast.Type, funcs ...func() interface{}) *TypeTest {
-	return &TypeTest{t: t, name: name, text: text, expected: expected, funcs: funcs}
+func NewTypeTestRunner(t *testing.T, name string, text []rune, expected ast.Type, funcs ...func() interface{}) *TypeTestRunner {
+	return &TypeTestRunner{t: t, name: name, text: text, expected: expected, funcs: funcs}
 }
 
-func (tt *TypeTest) newParser(text *[]rune) *parser.Parser {
+func (tt *TypeTestRunner) newParser(text *[]rune) *parser.Parser {
 	args := make([]interface{}, len(tt.funcs))
 	for i, f := range tt.funcs {
 		args[i] = f()
@@ -31,7 +31,7 @@ func (tt *TypeTest) newParser(text *[]rune) *parser.Parser {
 	return r
 }
 
-func (tt *TypeTest) Run() *TypeTest {
+func (tt *TypeTestRunner) Run() *TypeTestRunner {
 	tt.t.Run(tt.name, func(t *testing.T) {
 		p := tt.newParser(&tt.text)
 		res, err := p.ParseType()
@@ -43,7 +43,7 @@ func (tt *TypeTest) Run() *TypeTest {
 	return tt
 }
 
-func (tt *TypeTest) RunTypeSection(declName string) *TypeTest {
+func (tt *TypeTestRunner) RunTypeSection(declName string) *TypeTestRunner {
 	tt.t.Run(tt.name+" in type section", func(t *testing.T) {
 		expectedSection := ast.TypeSection{{Ident: asttest.NewIdent(declName), Type: tt.expected}}
 		sectionStr := "type " + declName + " = " + string(tt.text) + ";"
@@ -58,7 +58,7 @@ func (tt *TypeTest) RunTypeSection(declName string) *TypeTest {
 	return tt
 }
 
-func (tt *TypeTest) RunVarSection(declName string) *TypeTest {
+func (tt *TypeTestRunner) RunVarSection(declName string) *TypeTestRunner {
 	tt.t.Run(tt.name+" in var section", func(t *testing.T) {
 		expectedSection := ast.VarSection{{IdentList: asttest.NewIdentList(declName), Type: tt.expected}}
 		sectionStr := "var " + declName + ": " + string(tt.text) + ";"

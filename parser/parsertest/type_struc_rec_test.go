@@ -8,7 +8,7 @@ import (
 )
 
 func TestStrucRecType(t *testing.T) {
-	NewTypeTest(t,
+	NewTypeTestRunner(t,
 		"TDateRec",
 		[]rune(`
 record
@@ -54,7 +54,7 @@ end
 		},
 	).Run().RunTypeSection("TDateRec")
 
-	NewTypeTest(t,
+	NewTypeTestRunner(t,
 		"S",
 		[]rune(`
 record
@@ -78,7 +78,7 @@ end
 		},
 	).Run().RunVarSection("S")
 
-	NewTypeTest(t,
+	NewTypeTestRunner(t,
 		"TEmployee",
 		[]rune(`
 record
@@ -133,7 +133,7 @@ end
 		},
 	).Run().RunTypeSection("TEmployee")
 
-	NewTypeTest(t,
+	NewTypeTestRunner(t,
 		"TPerson",
 		[]rune(`
 record
