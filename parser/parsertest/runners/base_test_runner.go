@@ -79,6 +79,14 @@ func FilterParserArgFuncs(args []interface{}) (ParserArgFuncs, []interface{}) {
 	return r, rest
 }
 
+func (s ParserArgFuncs) Interfaces() []interface{} {
+	r := make([]interface{}, len(s))
+	for i, f := range s {
+		r[i] = f
+	}
+	return r
+}
+
 type BaseTestRunnerFunc = func(*BaseTestRunner)
 type BaseTestRunnerFuncs []BaseTestRunnerFunc
 
