@@ -40,6 +40,15 @@ func (p *Parser) ParseStrucType() (ast.StrucType, error) {
 			r.Packed = packed
 		}
 		return r, nil
+	case "FILE":
+		r, err := p.ParseFileType()
+		if err != nil {
+			return nil, err
+		}
+		if !r.Packed && packed {
+			r.Packed = packed
+		}
+		return r, nil
 	default:
 		return nil, p.TokenErrorf("Unsupported StrucType token %s", p.CurrentToken())
 	}
@@ -269,4 +278,27 @@ func (p *Parser) ParseRecVariant() (*ast.RecVariant, error) {
 		ConstExprs: constExprs,
 		FieldList:  fieldList,
 	}, nil
+}
+
+func (p *Parser) ParseFileType() (*ast.FileType, error) {
+	r := &ast.FileType{Packed: false}
+	if p.CurrentToken().Is(token.ReservedWord.HasKeyword("PACKED")) {
+		r.Packed = true
+		p.NextToken()
+	}
+	if _, err := p.Current(token.ReservedWord.HasKeyword("FILE")); err != nil {
+		return nil, p.TokenErrorf("Expected FILE, got %s", p.CurrentToken())
+	}
+	p.NextToken()
+	if _, err := p.Current(token.ReservedWord.HasKeyword("OF")); err != nil {
+		return nil, p.TokenErrorf("Expected OF, got %s", p.CurrentToken())
+	}
+	p.NextToken()
+
+	typeId, err := p.ParseTypeId()
+	if err != nil {
+		return nil, err
+	}
+	r.TypeId = typeId
+	return r, nil
 }

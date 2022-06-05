@@ -94,7 +94,7 @@ func (p *Parser) ParseType() (ast.Type, error) {
 		return p.ParseConstSubrageType()
 	case token.ReservedWord:
 		switch t1.Value() {
-		case "PACKED", "ARRAY", "SET", "RECORD":
+		case "PACKED", "ARRAY", "SET", "RECORD", "FILE":
 			return p.ParseStrucType()
 		default:
 			return p.ParseStringOfStringType()
