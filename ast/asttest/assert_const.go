@@ -37,3 +37,15 @@ func AssertConstantDecl(t *testing.T, expected, actual *ast.ConstantDecl) {
 func AssertConstExpr(t *testing.T, expected, actual *ast.ConstExpr) {
 	AssertExpression(t, expected, actual)
 }
+
+func AssertConstExprs(t *testing.T, expected, actual ast.ConstExprs) {
+	if !assert.Equal(t, len(expected), len(actual)) {
+		return
+	}
+	for i, exp := range expected {
+		act := actual[i]
+		if !assert.Equal(t, exp, act) {
+			AssertConstExpr(t, exp, act)
+		}
+	}
+}

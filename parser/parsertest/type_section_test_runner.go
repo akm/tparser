@@ -37,7 +37,9 @@ func (tt *TypeSectionTest) Run() *TypeSectionTest {
 		res, err := p.ParseTypeSection(true)
 		if assert.NoError(t, err) {
 			asttest.ClearLocations(t, res)
-			assert.Equal(t, tt.expected, res)
+			if !assert.Equal(t, tt.expected, res) {
+				asttest.AssertTypeSection(t, tt.expected, res)
+			}
 		}
 	})
 	return tt
