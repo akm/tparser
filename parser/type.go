@@ -23,6 +23,13 @@ func (p *Parser) ParseTypeSection(required bool) (ast.TypeSection, error) {
 		if err != nil {
 			return nil, err
 		}
+		{
+			t := p.CurrentToken()
+			if t.Is(token.ReservedWord) || t.Is(token.EOF) {
+				res = append(res, decl)
+				break
+			}
+		}
 		if _, err := p.Current(token.Symbol(';')); err != nil {
 			return nil, err
 		}
@@ -86,7 +93,12 @@ func (p *Parser) ParseType() (ast.Type, error) {
 	case token.NumeralInt, token.NumeralReal, token.CharacterString:
 		return p.ParseConstSubrageType()
 	case token.ReservedWord:
-		return p.ParseStringOfStringType()
+		switch t1.Value() {
+		case "PACKED", "ARRAY", "SET":
+			return p.ParseStrucType()
+		default:
+			return p.ParseStringOfStringType()
+		}
 	}
 	return nil, p.TokenErrorf("Unsupported Type token %s", t1)
 }

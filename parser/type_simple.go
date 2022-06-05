@@ -3,6 +3,7 @@ package parser
 import (
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/token"
+	"github.com/pkg/errors"
 )
 
 var realType = token.PredicatorBy("RealType", ast.IsRealTypeName)
@@ -118,4 +119,19 @@ func (p *Parser) ParseEnumeratedTypeElement() (*ast.EnumeratedTypeElement, error
 		return nil, err
 	}
 	return res, nil
+}
+
+func (p *Parser) ParseTypeAsOrdinalType() (ast.OrdinalType, error) {
+	t0 := p.CurrentToken()
+	typ, err := p.ParseType()
+	if err != nil {
+		return nil, err
+	}
+	if ordinalType, ok := typ.(ast.OrdinalType); !ok {
+		return nil, errors.Errorf("Expected OrdinalType, got %T at %s", typ, p.PlaceString(t0))
+	} else if !ordinalType.IsOrdinalType() {
+		return nil, errors.Errorf("Expected OrdinalType, got %T at %s", typ, p.PlaceString(t0))
+	} else {
+		return ordinalType, nil
+	}
 }
