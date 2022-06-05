@@ -6,7 +6,6 @@ import (
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/astcore"
 	"github.com/akm/tparser/ast/asttest"
-	"github.com/akm/tparser/parser"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 )
@@ -34,8 +33,8 @@ func NewTypeTestRunner(t *testing.T, name string, text []rune, expected ast.Type
 
 func (tt *TypeTestRunner) Run() *TypeTestRunner {
 	tt.BaseTestRunner.Run(
-		func(p *parser.Parser) (astcore.Node, error) {
-			return p.ParseType()
+		func() (astcore.Node, error) {
+			return tt.NewParser().ParseType()
 		},
 		func(t *testing.T, actual astcore.Node) {
 			if !assert.Equal(t, tt.Expected, actual) {

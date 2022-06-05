@@ -6,7 +6,6 @@ import (
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/astcore"
 	"github.com/akm/tparser/ast/asttest"
-	"github.com/akm/tparser/parser"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 )
@@ -30,8 +29,8 @@ func NewTypeSectionTestRunner(t *testing.T, name string, text []rune, expected a
 
 func (tt *TypeSectionTestRunner) Run() *TypeSectionTestRunner {
 	tt.BaseTestRunner.Run(
-		func(p *parser.Parser) (astcore.Node, error) {
-			return p.ParseTypeSection(true)
+		func() (astcore.Node, error) {
+			return tt.NewParser().ParseTypeSection(true)
 		},
 		func(t *testing.T, actual astcore.Node) {
 			if !assert.Equal(t, tt.Expected, actual) {

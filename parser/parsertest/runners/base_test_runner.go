@@ -46,11 +46,11 @@ func (tt *BaseTestRunner) NewParser() *parser.Parser {
 }
 
 func (tt *BaseTestRunner) Run(
-	parseFunc func(*parser.Parser) (astcore.Node, error),
+	parseFunc func() (astcore.Node, error),
 	assertFunc func(t *testing.T, actual astcore.Node),
 ) {
 	tt.T.Run(tt.Name, func(t *testing.T) {
-		res, err := parseFunc(tt.NewParser())
+		res, err := parseFunc()
 		if assert.NoError(t, err) {
 			if tt.ClearLocations {
 				asttest.ClearLocations(t, res)
