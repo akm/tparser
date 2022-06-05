@@ -28,3 +28,11 @@ var (
 	NewTypeTestRunner = runners.NewTypeTestRunner
 	RunTypeTest       = runners.RunTypeTest
 )
+
+// unit_test_runner.go
+type UnitTestRunner = runners.UnitTestRunner
+
+var (
+	NewUnitTestRunner = runners.NewUnitTestRunner
+	RunUnitTest       = runners.RunUnitTest
+)
