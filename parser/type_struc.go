@@ -149,7 +149,6 @@ func (p *Parser) ParseFieldList(terminator token.Predicator) (*ast.FieldList, er
 		if err != nil {
 			return err
 		}
-		log.Printf("fieldDecl: %s", fieldDecl.String())
 		fieldDecls = append(fieldDecls, fieldDecl)
 		return nil
 	}); err != nil {
