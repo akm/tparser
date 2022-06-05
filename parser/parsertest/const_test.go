@@ -9,20 +9,7 @@ import (
 )
 
 func TestUnitWithConstSection(t *testing.T) {
-	run := func(name string, text []rune, expected *ast.Unit) {
-		t.Run(name, func(t *testing.T) {
-			parser := NewTestUnitParser(&text)
-			parser.NextToken()
-			res, err := parser.ParseUnit()
-			if assert.NoError(t, err) {
-				asttest.ClearUnitDeclMap(res)
-				asttest.ClearLocations(t, res)
-				assert.Equal(t, expected, res)
-			}
-		})
-	}
-
-	run(
+	RunUnitTest(t,
 		"const declaration in unit",
 		[]rune(`
 		UNIT Unit1;

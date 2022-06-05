@@ -5,13 +5,10 @@ import (
 
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/asttest"
+	"github.com/akm/tparser/parser/parsertest"
 )
 
 func TestWithStmt(t *testing.T) {
-	run := func(name string, text []rune, expected *ast.Program) {
-		runProgram(t, name, true, text, expected)
-	}
-
 	// TODO Add TDate record type definition and check references to the fields
 	// type TDate = record
 	// 	Day: Integer;
@@ -19,7 +16,7 @@ func TestWithStmt(t *testing.T) {
 	// 	Year: Integer;
 	// end;
 
-	run(
+	parsertest.RunProgramTest(t,
 		"example1",
 		[]rune(`PROGRAM WithExample1;
 var OrderDate: TDate;

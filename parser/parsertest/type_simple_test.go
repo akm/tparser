@@ -5,23 +5,10 @@ import (
 
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/asttest"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestEnumeratedType(t *testing.T) {
-	run := func(name string, text []rune, expected ast.Type) {
-		t.Run(name, func(t *testing.T) {
-			parser := NewTestParser(&text)
-			parser.NextToken()
-			res, err := parser.ParseType()
-			if assert.NoError(t, err) {
-				asttest.ClearLocations(t, res)
-				assert.Equal(t, expected, res)
-			}
-		})
-	}
-
-	run(
+	RunTypeTest(t,
 		"card",
 		[]rune(`(Club, Diamond, Heart, Spade)`),
 		ast.EnumeratedType{
@@ -32,7 +19,7 @@ func TestEnumeratedType(t *testing.T) {
 		},
 	)
 
-	run(
+	RunTypeTest(t,
 		"Enumerated types with explicitly assigned ordinality",
 		[]rune(`(Small = 5, Medium = 10, Large = Small + Medium)`),
 		func() ast.EnumeratedType {
@@ -56,15 +43,8 @@ func TestEnumeratedType(t *testing.T) {
 
 func TestSubrangeType(t *testing.T) {
 	run := func(name string, text []rune, expected ast.Type) {
-		t.Run(name, func(t *testing.T) {
-			parser := NewTestParser(&text)
-			parser.NextToken()
-			res, err := parser.ParseType()
-			if assert.NoError(t, err) {
-				if !assert.Equal(t, expected, res) {
-					asttest.AssertType(t, expected, res)
-				}
-			}
+		RunTypeTest(t, name, text, expected, func(tt *BaseTestRunner) {
+			tt.ClearLocations = false
 		})
 	}
 

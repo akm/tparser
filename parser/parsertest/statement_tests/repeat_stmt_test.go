@@ -5,14 +5,11 @@ import (
 
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/asttest"
+	"github.com/akm/tparser/parser/parsertest"
 )
 
 func TestRepeatStmt(t *testing.T) {
-	run := func(name string, text []rune, expected *ast.Statement) {
-		runSatement(t, name, true, text, expected)
-	}
-
-	run(
+	parsertest.RunStatementTest(t,
 		"simple1",
 		[]rune(`
 repeat
@@ -60,7 +57,7 @@ until J = 0;
 		},
 	)
 
-	run(
+	parsertest.RunStatementTest(t,
 		"simple1",
 		[]rune(`
 repeat

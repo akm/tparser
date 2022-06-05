@@ -10,26 +10,8 @@ import (
 )
 
 func TestUnitWithTypeSection(t *testing.T) {
-	run := func(name string, text []rune, expected *ast.Unit) {
-		t.Run(name, func(t *testing.T) {
-			parser := NewTestUnitParser(&text)
-			parser.NextToken()
-			res, err := parser.ParseUnit()
-			if assert.NoError(t, err) {
-				asttest.ClearUnitDeclMap(res)
-				asttest.ClearLocations(t, res)
-				if !assert.Equal(t, expected, res) {
-					if !assert.Equal(t, expected.InterfaceSection.InterfaceDecls, res.InterfaceSection.InterfaceDecls) {
-						assert.Equal(t, expected.InterfaceSection.InterfaceDecls[0], res.InterfaceSection.InterfaceDecls[0])
-						assert.Equal(t, expected.InterfaceSection.InterfaceDecls[1], res.InterfaceSection.InterfaceDecls[1])
-					}
-				}
-			}
-		})
-	}
-
 	unit2 := asttest.NewUnitId("Unit2")
-	run(
+	RunUnitTest(t,
 		"2 type declarations",
 		[]rune(`
 		UNIT Unit1;
@@ -54,7 +36,8 @@ func TestUnitWithTypeSection(t *testing.T) {
 			ImplementationSection: &ast.ImplementationSection{},
 		},
 	)
-	run(
+
+	RunUnitTest(t,
 		"2 type sections",
 		[]rune(`
 		UNIT Unit1;
@@ -109,25 +92,14 @@ func TestUnitWithTypeSection(t *testing.T) {
 }
 
 func TestTypeSection(t *testing.T) {
-	run := func(name string, text []rune, expected ast.TypeSection) {
-		t.Run(name, func(t *testing.T) {
-			parser := NewTestParser(&text)
-			parser.NextToken()
-			res, err := parser.ParseTypeSection(true)
-			if assert.NoError(t, err) {
-				asttest.ClearLocations(t, res)
-				assert.Equal(t, expected, res)
-			}
-		})
-	}
-
-	run("simple type declaration",
+	RunTypeSection(t,
+		"simple type declaration",
 		[]rune(`TYPE TTypeId1 = TType1;`),
 		ast.TypeSection{
 			{Ident: asttest.NewIdent("TTypeId1"), Type: &ast.TypeId{Ident: asttest.NewIdent("TType1")}},
 		},
 	)
-	run(
+	RunTypeSection(t,
 		"2 type declarations",
 		[]rune(`TYPE TTypeId1 = TType1;
 			TTypeId2 = (tsClick, tsClack, tsClock);`),
@@ -140,7 +112,7 @@ func TestTypeSection(t *testing.T) {
 			}},
 		},
 	)
-	run(
+	RunTypeSection(t,
 		"type declaration with RealType",
 		[]rune(`TYPE TRealType1 = REAL;`),
 		ast.TypeSection{
@@ -150,7 +122,7 @@ func TestTypeSection(t *testing.T) {
 			},
 		},
 	)
-	run(
+	RunTypeSection(t,
 		"several type declaration",
 		[]rune(`TYPE
 			TMyInteger1 = INTEGER;
@@ -263,15 +235,7 @@ func TestTypeId(t *testing.T) {
 
 func TestNamedType(t *testing.T) {
 	run := func(text []rune, expected ast.Type) {
-		t.Run(string(text), func(t *testing.T) {
-			parser := NewTestParser(&text)
-			parser.NextToken()
-			res, err := parser.ParseType()
-			if assert.NoError(t, err) {
-				asttest.ClearLocations(t, res)
-				assert.Equal(t, expected, res)
-			}
-		})
+		RunTypeTest(t, string(text), text, expected)
 	}
 
 	run([]rune(`INTEGER`), &ast.OrdIdent{Ident: asttest.NewIdent("INTEGER")})

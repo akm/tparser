@@ -1,4 +1,4 @@
-package parsertest
+package runners
 
 import (
 	"github.com/akm/tparser/parser"

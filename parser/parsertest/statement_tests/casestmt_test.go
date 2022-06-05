@@ -5,14 +5,11 @@ import (
 
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/asttest"
+	"github.com/akm/tparser/parser/parsertest"
 )
 
 func TestCaseStmt(t *testing.T) {
-	run := func(name string, text []rune, expected *ast.Statement) {
-		runSatement(t, name, true, text, expected)
-	}
-
-	run(
+	parsertest.RunStatementTest(t,
 		"without ELSE",
 		[]rune(`
 case MyColor of
@@ -71,7 +68,7 @@ end;
 		},
 	)
 
-	run(
+	parsertest.RunStatementTest(t,
 		"with ELSE",
 		[]rune(`
 case Selection of
@@ -124,7 +121,7 @@ end;
 		},
 	)
 
-	run(
+	parsertest.RunStatementTest(t,
 		"with Subranges",
 		[]rune(`
 case I of

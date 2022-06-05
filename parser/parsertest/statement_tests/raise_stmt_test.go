@@ -227,21 +227,9 @@ end;
 		},
 	)
 
-	runWithStatement := func(t *testing.T, name string, text []rune, expected *ast.Statement) {
-		t.Run(name, func(t *testing.T) {
-			parser := parsertest.NewTestParser(&text)
-			parser.NextToken()
-			res, err := parser.ParseStatement()
-			if assert.NoError(t, err) {
-				asttest.ClearLocations(t, res)
-				assert.Equal(t, expected, res)
-			}
-		})
-	}
-
 	// See https://docwiki.embarcadero.com/RADStudio/Sydney/en/Exceptions_(Delphi)#Raising_and_Handling_Exceptions
 	// raise Exception.Create('Missing parameter') at @MyFunction;
-	runWithStatement(t, "raise with at",
+	parsertest.RunStatementTest(t, "raise with at",
 		[]rune(
 			`raise Exception.Create('Missing parameter') at @MyFunction;`,
 		),

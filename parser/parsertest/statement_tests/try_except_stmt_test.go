@@ -6,14 +6,11 @@ import (
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/astcore"
 	"github.com/akm/tparser/ast/asttest"
+	"github.com/akm/tparser/parser/parsertest"
 )
 
 func TestTryExceptStmt(t *testing.T) {
-	run := func(name string, text []rune, expected *ast.Statement) {
-		runSatement(t, name, true, text, expected)
-	}
-
-	run(
+	parsertest.RunStatementTest(t,
 		"without ExceptionBlockHandlers",
 		[]rune(`
 try
@@ -75,8 +72,8 @@ end;
 		Type:  asttest.NewTypeId("Exception"),
 	}
 
-	runProgram(t,
-		"with 1 ExceptionBlockHandler", true,
+	parsertest.RunProgramTest(t,
+		"with 1 ExceptionBlockHandler",
 		[]rune(`PROGRAM OneExceptionBlockHandler;
 type
 	EZeroDivide = Exception;
@@ -133,8 +130,8 @@ end.
 		),
 	)
 
-	runProgram(t,
-		"with 3 ExceptionBlockHandlers without else", true,
+	parsertest.RunProgramTest(t,
+		"with 3 ExceptionBlockHandlers without else",
 		[]rune(`PROGRAM ThreeExceptionBlockHandlersWithoutElse;
 type
 	EZeroDivide = Exception;
@@ -215,8 +212,8 @@ end.
 		),
 	)
 
-	runProgram(t,
-		"with 3 ExceptionBlockHandlers with else", true,
+	parsertest.RunProgramTest(t,
+		"with 3 ExceptionBlockHandlers with else",
 		[]rune(`PROGRAM ThreeExceptionBlockHandlersWithElse;
 type
 	EZeroDivide = Exception;
@@ -319,9 +316,8 @@ end.
 		),
 	}
 
-	runProgram(t,
+	parsertest.RunProgramTest(t,
 		"with 1 ExceptionBlockHandler with ident",
-		true,
 		[]rune(`PROGRAM ExceptionBlockHandlerWithIdent;
 type Exception = Error;
 begin

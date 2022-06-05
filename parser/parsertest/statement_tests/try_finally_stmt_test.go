@@ -5,6 +5,7 @@ import (
 
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/asttest"
+	"github.com/akm/tparser/parser/parsertest"
 )
 
 func TestTryFinallyStmt(t *testing.T) {
@@ -21,8 +22,8 @@ func TestTryFinallyStmt(t *testing.T) {
 		}
 	}
 
-	runProgram(t,
-		"basic", true,
+	parsertest.RunProgramTest(t,
+		"basic",
 		[]rune(`PROGRAM TryFinallyStmtTest;
 begin
 	Reset(F);

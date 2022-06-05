@@ -11,7 +11,7 @@ import (
 )
 
 func TestStrucArray(t *testing.T) {
-	NewTypeTest(t,
+	NewTypeTestRunner(t,
 		"Char array",
 		[]rune(`array[1..100] of Char`),
 		&ast.ArrayType{
@@ -25,7 +25,7 @@ func TestStrucArray(t *testing.T) {
 		},
 	).Run().RunVarSection("MyArray")
 
-	NewTypeTest(t,
+	NewTypeTestRunner(t,
 		"Matrix by array of array",
 		[]rune(`array[1..10] of array[1..50] of Real`),
 		&ast.ArrayType{
@@ -47,7 +47,7 @@ func TestStrucArray(t *testing.T) {
 		},
 	).Run().RunTypeSection("TMatrix")
 
-	NewTypeTest(t,
+	NewTypeTestRunner(t,
 		"Matrix by array with 2 indexes",
 		[]rune(`array[1..10, 1..50] of Real`),
 		&ast.ArrayType{
@@ -79,7 +79,7 @@ func TestStrucArray(t *testing.T) {
 		return r
 	}
 
-	NewTypeTest(t,
+	NewTypeTestRunner(t,
 		"array with 3 complicated indexes",
 		[]rune(`packed array[Boolean,1..10,TShoeSize] of Integer`),
 		&ast.ArrayType{
@@ -100,7 +100,7 @@ func TestStrucArray(t *testing.T) {
 		tshoeSizeContext,
 	).Run()
 
-	NewTypeTest(t,
+	NewTypeTestRunner(t,
 		"nested arrays",
 		[]rune(`packed array[Boolean] of packed array[1..10] of packed array[TShoeSize] of Integer`),
 		&ast.ArrayType{
@@ -131,7 +131,7 @@ func TestStrucArray(t *testing.T) {
 		tshoeSizeContext,
 	).Run()
 
-	NewTypeTest(t,
+	NewTypeTestRunner(t,
 		"dynamic arrays",
 		[]rune(`array of Real`),
 		&ast.ArrayType{
@@ -140,7 +140,7 @@ func TestStrucArray(t *testing.T) {
 		},
 	).Run().RunVarSection("MyFlexibleArray")
 
-	NewTypeTest(t,
+	NewTypeTestRunner(t,
 		"multidementional dynamic arrays",
 		[]rune(`array of array of string`),
 		&ast.ArrayType{
