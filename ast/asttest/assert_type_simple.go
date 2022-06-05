@@ -27,6 +27,18 @@ func AssertRealType(t *testing.T, expected, actual *ast.RealType) {
 	}
 }
 
+func AssertOrdinalTypes(t *testing.T, expected, actual []ast.OrdinalType) {
+	if !assert.Equal(t, len(expected), len(actual)) {
+		return
+	}
+	for i, exp := range expected {
+		act := actual[i]
+		if !assert.Equal(t, exp, act) {
+			AssertOrdinalType(t, exp, act)
+		}
+	}
+}
+
 func AssertOrdinalType(t *testing.T, expected, actual ast.OrdinalType) {
 	if !assert.IsType(t, expected, actual) {
 		return
