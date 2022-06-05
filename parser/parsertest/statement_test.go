@@ -5,26 +5,9 @@ import (
 
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/asttest"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestStatement(t *testing.T) {
-	run := func(name string, clearLocations bool, text []rune, expected *ast.Program) {
-		t.Run(name, func(t *testing.T) {
-			parser := NewTestProgramParser(&text)
-			parser.NextToken()
-			res, err := parser.ParseProgram()
-			if assert.NoError(t, err) {
-				if clearLocations {
-					asttest.ClearLocations(t, res)
-				}
-				assert.Equal(t, expected, res)
-				assert.Equal(t, expected.ProgramBlock.Block, res.ProgramBlock.Block)
-			}
-
-		})
-	}
-
 	// TODO implement test after class support
 	// 	run(
 	// 		"inherited statement", false,
@@ -43,8 +26,8 @@ func TestStatement(t *testing.T) {
 	// 		},
 	// 	)
 
-	run(
-		"Goto Loop", true,
+	RunProgramTest(t,
+		"Goto Loop",
 		[]rune(`PROGRAM GotoLoop;
 label START1;
 begin

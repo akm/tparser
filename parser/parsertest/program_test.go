@@ -5,24 +5,12 @@ import (
 
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/asttest"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestProgram(t *testing.T) {
 	run := func(name string, clearLocations bool, text []rune, expected *ast.Program) {
-		t.Run(name, func(t *testing.T) {
-			parser := NewTestProgramParser(&text)
-			parser.NextToken()
-			res, err := parser.ParseProgram()
-			if assert.NoError(t, err) {
-				if clearLocations {
-					asttest.ClearLocations(t, res)
-				}
-				if !assert.Equal(t, expected, res) {
-					asttest.AssertProgram(t, expected, res)
-				}
-			}
-
+		RunProgramTest(t, name, text, expected, func(tt *BaseTestRunner) {
+			tt.ClearLocations = clearLocations
 		})
 	}
 

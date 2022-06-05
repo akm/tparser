@@ -5,43 +5,12 @@ import (
 
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/asttest"
-	"github.com/stretchr/testify/assert"
+	"github.com/akm/tparser/parser/parsertest"
 )
 
 func TestIfStmt(t *testing.T) {
-	run := func(name string, clearLocations bool, text []rune, expected *ast.Program) {
-		runProgram(t, name, clearLocations, text, expected, func(expected, actual *ast.CompoundStmt) {
-			if !assert.Equal(t, expected.StmtList, actual.StmtList) {
-				if !assert.Equal(t, expected.StmtList[0], actual.StmtList[0]) {
-					expectBody := expected.StmtList[0].Body.(*ast.IfStmt)
-					actualBody := actual.StmtList[0].Body.(*ast.IfStmt)
-					if !assert.Equal(t, expectBody, actualBody) {
-						assert.Equal(t, expectBody.Condition, actualBody.Condition)
-						if !assert.Equal(t, expectBody.Then, actualBody.Then) {
-							expectBody := expectBody.Then.Body.(*ast.CompoundStmt)
-							actualBody := actualBody.Then.Body.(*ast.CompoundStmt)
-							if !assert.Equal(t, expectBody, actualBody) {
-								if !assert.Equal(t, expectBody.StmtList, actualBody.StmtList) {
-									if !assert.Equal(t, expectBody.StmtList[0], actualBody.StmtList[0]) {
-
-									}
-									if !assert.Equal(t, expectBody.StmtList[1], actualBody.StmtList[1]) {
-										if !assert.Equal(t, expectBody.StmtList[1].Body, actualBody.StmtList[1].Body) {
-
-										}
-									}
-								}
-							}
-						}
-						assert.Equal(t, expectBody.Else, actualBody.Else)
-					}
-				}
-			}
-		})
-	}
-
-	run(
-		"Simple if statement", true,
+	parsertest.RunProgramTest(t,
+		"Simple if statement",
 		[]rune(`PROGRAM IfStmtSimple;
 begin
 	if Flag then
@@ -77,8 +46,8 @@ end.
 		},
 	)
 
-	run(
-		"without ELSE", true,
+	parsertest.RunProgramTest(t,
+		"without ELSE",
 		[]rune(`PROGRAM WihtoutElse;
 var I,J: integer;
 begin
@@ -132,8 +101,8 @@ end.
 		},
 	)
 
-	run(
-		"with ELSE", true,
+	parsertest.RunProgramTest(t,
+		"with ELSE",
 		[]rune(`PROGRAM WihtElse;
 var I,J: integer;
 begin
@@ -195,8 +164,8 @@ end.
 		},
 	)
 
-	run(
-		"with ELSE IF", true,
+	parsertest.RunProgramTest(t,
+		"with ELSE IF",
 		[]rune(`PROGRAM WihtElseIf;
 begin
 	if J = 0 then
