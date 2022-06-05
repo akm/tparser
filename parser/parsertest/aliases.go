@@ -17,3 +17,8 @@ var (
 type TypeSectionTest = runners.TypeSectionTest
 
 var NewTypeSectionTest = runners.NewTypeSectionTest
+
+// type_test_runner.go
+type TypeTest = runners.TypeTest
+
+var NewTypeTest = runners.NewTypeTest

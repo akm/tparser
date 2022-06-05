@@ -1,4 +1,4 @@
-package parsertest
+package runners
 
 import (
 	"testing"
