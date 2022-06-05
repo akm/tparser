@@ -1,6 +1,8 @@
 package ast
 
-import "github.com/akm/tparser/ast/astcore"
+import (
+	"github.com/akm/tparser/ast/astcore"
+)
 
 // - StrucType
 //   ```
@@ -135,7 +137,7 @@ type FieldDecl struct {
 }
 
 func (m *FieldDecl) Children() Nodes {
-	return Nodes{m.Type}
+	return Nodes{m.IdentList, m.Type}
 }
 
 func (m *FieldDecl) ToDeclarations() astcore.Decls {
@@ -156,6 +158,9 @@ type VariantSection struct {
 
 func (m *VariantSection) Children() Nodes {
 	r := Nodes{m.TypeId}
+	if m.Ident != nil {
+		r = append(r, m.Ident)
+	}
 	if m.RecVariants != nil {
 		r = append(r, m.RecVariants)
 	}
