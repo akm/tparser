@@ -163,6 +163,8 @@ func (p *Parser) ParseFieldList(terminator token.Predicator) (*ast.FieldList, er
 			return nil, err
 		}
 		r.VariantSection = variantSection
+	} else if !p.CurrentToken().Is(terminator) {
+		p.NextToken()
 	}
 
 	return r, nil
@@ -219,9 +221,14 @@ func (p *Parser) ParseVariantSection() (*ast.VariantSection, error) {
 	if _, err := p.Current(token.ReservedWord.HasKeyword("OF")); err != nil {
 		return nil, p.TokenErrorf("Expected OF, got %s", p.CurrentToken())
 	}
+	p.NextToken()
 
 	recVariants := ast.RecVariants{}
-	if err := p.Until(token.ReservedWord.HasKeyword("END"), token.Symbol(';'), func() error {
+	endPred := token.ReservedWord.HasKeyword("END")
+	if err := p.Until(endPred, token.Symbol(';'), func() error {
+		if p.CurrentToken().Is(endPred) {
+			return QuitUntil
+		}
 		recVariant, err := p.ParseRecVariant()
 		if err != nil {
 			return err
@@ -232,6 +239,7 @@ func (p *Parser) ParseVariantSection() (*ast.VariantSection, error) {
 		return nil, err
 	}
 	r.RecVariants = recVariants
+	// p.NextToken() // Don't go to next token because ParseRecType check whether current token is END
 
 	return r, nil
 }
@@ -251,11 +259,13 @@ func (p *Parser) ParseRecVariant() (*ast.RecVariant, error) {
 	if _, err := p.Next(token.Symbol('(')); err != nil {
 		return nil, err
 	}
+	p.NextToken()
 
 	fieldList, err := p.ParseFieldList(token.Symbol(')'))
 	if err != nil {
 		return nil, err
 	}
+	p.NextToken() // Go to next token because ParseFieldList doesn't call NextToken which quits by terminator
 	return &ast.RecVariant{
 		ConstExprs: constExprs,
 		FieldList:  fieldList,
