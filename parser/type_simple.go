@@ -96,6 +96,7 @@ func (p *Parser) ParseEnumeratedType() (ast.EnumeratedType, error) {
 			return nil, p.TokenErrorf("Unsupported token %s for EnumeratedType", t)
 		}
 	}
+	p.NextToken()
 	return res, nil
 }
 

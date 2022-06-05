@@ -1,6 +1,8 @@
 package ast
 
-import "github.com/akm/tparser/ast/astcore"
+import (
+	"github.com/akm/tparser/ast/astcore"
+)
 
 // - StrucType
 //   ```
@@ -97,14 +99,29 @@ func (m *RecType) Children() Nodes {
 //   FieldDecl ';'... [VariantSection] [';']
 //   ```
 type FieldList struct {
-	FieldDecl      *FieldDecl
+	FieldDecls     FieldDecls
 	VariantSection *VariantSection
 	// implements
 	Node
 }
 
 func (m *FieldList) Children() Nodes {
-	return Nodes{m.FieldDecl, m.VariantSection}
+	r := Nodes{m.FieldDecls}
+	if m.VariantSection != nil {
+		r = append(r, m.VariantSection)
+	}
+	return r
+}
+
+// implements Node
+type FieldDecls []*FieldDecl
+
+func (s FieldDecls) Children() Nodes {
+	r := make(Nodes, len(s))
+	for i, m := range s {
+		r[i] = m
+	}
+	return r
 }
 
 // - FieldDecl
@@ -120,7 +137,7 @@ type FieldDecl struct {
 }
 
 func (m *FieldDecl) Children() Nodes {
-	return Nodes{m.Type}
+	return Nodes{m.IdentList, m.Type}
 }
 
 func (m *FieldDecl) ToDeclarations() astcore.Decls {
@@ -133,14 +150,21 @@ func (m *FieldDecl) ToDeclarations() astcore.Decls {
 //   ```
 type VariantSection struct {
 	Ident       *Ident
-	TypeId      *TypeId
+	TypeId      OrdinalType
 	RecVariants RecVariants
 	// implements
 	Node
 }
 
 func (m *VariantSection) Children() Nodes {
-	return Nodes{m.TypeId, m.RecVariants}
+	r := Nodes{m.TypeId}
+	if m.Ident != nil {
+		r = append(r, m.Ident)
+	}
+	if m.RecVariants != nil {
+		r = append(r, m.RecVariants)
+	}
+	return r
 }
 
 // implements Node
