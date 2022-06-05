@@ -119,6 +119,14 @@ func (p *Parser) ParseTypeForIdentifier() (ast.Type, error) {
 	}
 }
 
+func (p *Parser) ParseTypeId() (*ast.TypeId, error) {
+	if res, err := p.parseTypeIdWithUnit(); res != nil || err != nil {
+		return res, err
+	} else {
+		return p.parseTypeIdWithoutUnit()
+	}
+}
+
 func (p *Parser) parseTypeIdWithUnit() (*ast.TypeId, error) {
 	if !p.IsUnitIdentifier(p.CurrentToken()) {
 		return nil, nil
