@@ -4,43 +4,42 @@ import (
 	"testing"
 
 	"github.com/akm/tparser/ast"
+	"github.com/akm/tparser/ast/astcore"
 	"github.com/akm/tparser/ast/asttest"
 	"github.com/akm/tparser/parser"
+	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 )
 
 type TypeSectionTestRunner struct {
-	t        *testing.T
-	name     string
-	text     *[]rune
-	expected ast.TypeSection
-	funcs    []func() interface{}
+	*BaseTestRunner
+	Expected ast.TypeSection
 }
 
-func NewTypeSectionTestRunner(t *testing.T, name string, text []rune, expected ast.TypeSection, funcs ...func() interface{}) *TypeSectionTestRunner {
-	return &TypeSectionTestRunner{t: t, name: name, text: &text, expected: expected, funcs: funcs}
-}
-
-func (tt *TypeSectionTestRunner) newParser() *parser.Parser {
-	args := make([]interface{}, len(tt.funcs))
-	for i, f := range tt.funcs {
-		args[i] = f()
+func NewTypeSectionTestRunner(t *testing.T, name string, text []rune, expected ast.TypeSection, args ...interface{}) *TypeSectionTestRunner {
+	parserArgFuncs, rest1 := FilterParserArgFuncs(args)
+	baseRunnerFuncs, rest2 := FilterBaseTestRunnerFuncs(rest1)
+	if len(rest2) > 0 {
+		panic(errors.Errorf("unexpected arguments: %v", rest2))
 	}
-	r := NewTestParser(tt.text, args...)
-	r.NextToken()
-	return r
+	return &TypeSectionTestRunner{
+		BaseTestRunner: NewBaseTestRunner(t, name, &text, true, parserArgFuncs, baseRunnerFuncs),
+		Expected:       expected,
+	}
 }
 
 func (tt *TypeSectionTestRunner) Run() *TypeSectionTestRunner {
-	tt.t.Run(tt.name, func(t *testing.T) {
-		p := tt.newParser()
-		res, err := p.ParseTypeSection(true)
-		if assert.NoError(t, err) {
-			asttest.ClearLocations(t, res)
-			if !assert.Equal(t, tt.expected, res) {
-				asttest.AssertTypeSection(t, tt.expected, res)
+	tt.BaseTestRunner.Run(
+		func(p *parser.Parser) (astcore.Node, error) {
+			return p.ParseTypeSection(true)
+		},
+		func(t *testing.T, actual astcore.Node) {
+			if !assert.Equal(t, tt.Expected, actual) {
+				if assert.IsType(t, tt.Expected, actual) {
+					asttest.AssertTypeSection(t, tt.Expected, actual.(ast.TypeSection))
+				}
 			}
-		}
-	})
+		},
+	)
 	return tt
 }

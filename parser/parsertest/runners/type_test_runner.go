@@ -56,7 +56,7 @@ func (tt *TypeTestRunner) RunTypeSection(declName string) *TypeTestRunner {
 		tt.Name+" in type section",
 		sectionRunes,
 		ast.TypeSection{{Ident: asttest.NewIdent(declName), Type: tt.Expected}},
-		tt.ParserArgFuncs...,
+		tt.ParserArgFuncs.Interfaces()...,
 	)
 	sectRunner.Run()
 	return tt
