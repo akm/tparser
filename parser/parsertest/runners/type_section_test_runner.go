@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type TypeSectionTest struct {
+type TypeSectionTestRunner struct {
 	t        *testing.T
 	name     string
 	text     []rune
@@ -17,11 +17,11 @@ type TypeSectionTest struct {
 	funcs    []func() interface{}
 }
 
-func NewTypeSectionTest(t *testing.T, name string, text []rune, expected ast.TypeSection, funcs ...func() interface{}) *TypeSectionTest {
-	return &TypeSectionTest{t: t, name: name, text: text, expected: expected, funcs: funcs}
+func NewTypeSectionTestRunner(t *testing.T, name string, text []rune, expected ast.TypeSection, funcs ...func() interface{}) *TypeSectionTestRunner {
+	return &TypeSectionTestRunner{t: t, name: name, text: text, expected: expected, funcs: funcs}
 }
 
-func (tt *TypeSectionTest) newParser(text *[]rune) *parser.Parser {
+func (tt *TypeSectionTestRunner) newParser(text *[]rune) *parser.Parser {
 	args := make([]interface{}, len(tt.funcs))
 	for i, f := range tt.funcs {
 		args[i] = f()
@@ -31,7 +31,7 @@ func (tt *TypeSectionTest) newParser(text *[]rune) *parser.Parser {
 	return r
 }
 
-func (tt *TypeSectionTest) Run() *TypeSectionTest {
+func (tt *TypeSectionTestRunner) Run() *TypeSectionTestRunner {
 	tt.t.Run(tt.name, func(t *testing.T) {
 		p := tt.newParser(&tt.text)
 		res, err := p.ParseTypeSection(true)

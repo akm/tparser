@@ -30,7 +30,7 @@ func TestStrucFileType(t *testing.T) {
 		},
 	}
 
-	NewTypeSectionTest(t,
+	NewTypeSectionTestRunner(t,
 		"with TShapeList",
 		[]rune(`
 type

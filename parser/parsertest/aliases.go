@@ -14,9 +14,9 @@ var (
 )
 
 // type_section_test_runner.go
-type TypeSectionTest = runners.TypeSectionTest
+type TypeSectionTestRunner = runners.TypeSectionTestRunner
 
-var NewTypeSectionTest = runners.NewTypeSectionTest
+var NewTypeSectionTestRunner = runners.NewTypeSectionTestRunner
 
 // type_test_runner.go
 type TypeTest = runners.TypeTest

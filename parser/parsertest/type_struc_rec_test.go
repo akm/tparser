@@ -207,7 +207,7 @@ end
 		Ident: asttest.NewIdent("TShapeList"),
 		Type:  ast.EnumeratedType{declRectangle, declTriangle, declCircle, declEllipse, declOther},
 	}
-	NewTypeSectionTest(t,
+	NewTypeSectionTestRunner(t,
 		"with TShapeList",
 		[]rune(`
 type
