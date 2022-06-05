@@ -40,8 +40,8 @@ func AssertType(t *testing.T, expected, actual ast.Type) {
 		AssertTypeId(t, exp, actual.(*ast.TypeId))
 	case ast.SimpleType:
 		AssertSimpleType(t, exp, actual.(ast.SimpleType))
-	// case *ast.StructType:
-	// 	AssertStructType(t, exp, actual.(*ast.StructType))
+	case ast.StrucType:
+		AssertStrucType(t, exp, actual.(ast.StrucType))
 	// case *ast.PointerType:
 	// 	AssertPointerType(t, exp, actual.(*ast.PointerType))
 	case *ast.StringType:
