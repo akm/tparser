@@ -32,6 +32,14 @@ var (
 	RunTypeTest       = runners.RunTypeTest
 )
 
+// statement_test_runner.go
+type StatementTestRunner = runners.StatementTestRunner
+
+var (
+	NewStatementTestRunner = runners.NewStatementTestRunner
+	RunStatementTest       = runners.RunStatementTest
+)
+
 // unit_test_runner.go
 type UnitTestRunner = runners.UnitTestRunner
 

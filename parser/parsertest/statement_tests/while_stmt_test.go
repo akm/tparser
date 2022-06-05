@@ -5,14 +5,11 @@ import (
 
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/asttest"
+	"github.com/akm/tparser/parser/parsertest"
 )
 
 func TestWhileStmt(t *testing.T) {
-	run := func(name string, text []rune, expected *ast.Statement) {
-		runSatement(t, name, true, text, expected)
-	}
-
-	run(
+	parsertest.RunStatementTest(t,
 		"one line",
 		[]rune(`while Data[I] <> X do I := I + 1;`),
 		&ast.Statement{
@@ -49,7 +46,7 @@ func TestWhileStmt(t *testing.T) {
 		},
 	)
 
-	run(
+	parsertest.RunStatementTest(t,
 		"example1",
 		[]rune(`
 while I > 0 do
@@ -128,7 +125,7 @@ end;
 		},
 	)
 
-	run(
+	parsertest.RunStatementTest(t,
 		"example2",
 		[]rune(`
 while not Eof(InputFile) do

@@ -5,28 +5,11 @@ import (
 
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/asttest"
-	"github.com/stretchr/testify/assert"
+	"github.com/akm/tparser/parser/parsertest"
 )
 
 func TestForStmt(t *testing.T) {
-	run := func(name string, text []rune, expected *ast.Statement) {
-		runSatement(t, name, true, text, expected, func(expected, actual *ast.Statement) {
-			if !assert.Equal(t, expected.Body, actual.Body) {
-				expectFor := expected.Body.(*ast.ForStmt)
-				actualFor := actual.Body.(*ast.ForStmt)
-				if !assert.Equal(t, expectFor.QualId, actualFor.QualId) {
-				}
-				if !assert.Equal(t, expectFor.Initial, actualFor.Initial) {
-				}
-				if !assert.Equal(t, expectFor.Terminal, actualFor.Terminal) {
-				}
-				if !assert.Equal(t, expectFor.Statement, actualFor.Statement) {
-				}
-			}
-		})
-	}
-
-	run(
+	parsertest.RunStatementTest(t,
 		"one line",
 		[]rune(`for C := Red to Blue do Check(C);`),
 		&ast.Statement{
@@ -46,7 +29,7 @@ func TestForStmt(t *testing.T) {
 		},
 	)
 
-	run(
+	parsertest.RunStatementTest(t,
 		"example1",
 		[]rune(`
 for I := 2 to 63 do
@@ -97,7 +80,7 @@ for I := 2 to 63 do
 		},
 	)
 
-	run(
+	parsertest.RunStatementTest(t,
 		"example2",
 		[]rune(`
 for I := ListBox1.Items.Count - 1 downto 0 do
@@ -159,7 +142,7 @@ for I := ListBox1.Items.Count - 1 downto 0 do
 		},
 	)
 
-	run(
+	parsertest.RunStatementTest(t,
 		"example3",
 		[]rune(`
 for I := 1 to 10 do

@@ -10,11 +10,7 @@ import (
 )
 
 func TestTryExceptStmt(t *testing.T) {
-	run := func(name string, text []rune, expected *ast.Statement) {
-		runSatement(t, name, true, text, expected)
-	}
-
-	run(
+	parsertest.RunStatementTest(t,
 		"without ExceptionBlockHandlers",
 		[]rune(`
 try
