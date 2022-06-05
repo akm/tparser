@@ -70,7 +70,7 @@ func (tt *TypeTestRunner) RunVarSection(declName string) *TypeTestRunner {
 		tt.Name+" in var section",
 		sectionRunes,
 		ast.VarSection{{IdentList: asttest.NewIdentList(declName), Type: tt.Expected}},
-		tt.ParserArgFuncs...,
+		tt.ParserArgFuncs.Interfaces()...,
 	)
 	sectRunner.Run()
 	return tt
