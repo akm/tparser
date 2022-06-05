@@ -94,7 +94,7 @@ func (p *Parser) ParseType() (ast.Type, error) {
 		return p.ParseConstSubrageType()
 	case token.ReservedWord:
 		switch t1.Value() {
-		case "PACKED", "ARRAY", "SET", "RECORD":
+		case "PACKED", "ARRAY", "SET", "RECORD", "FILE":
 			return p.ParseStrucType()
 		default:
 			return p.ParseStringOfStringType()
@@ -113,6 +113,14 @@ func (p *Parser) ParseTypeForIdentifier() (ast.Type, error) {
 	} else if res, err := p.ParseStringType(false); res != nil || err != nil {
 		return res, err
 	} else if res, err := p.parseSubrangeTypeForIdentifier(false); res != nil || err != nil {
+		return res, err
+	} else {
+		return p.parseTypeIdWithoutUnit()
+	}
+}
+
+func (p *Parser) ParseTypeId() (*ast.TypeId, error) {
+	if res, err := p.parseTypeIdWithUnit(); res != nil || err != nil {
 		return res, err
 	} else {
 		return p.parseTypeIdWithoutUnit()
