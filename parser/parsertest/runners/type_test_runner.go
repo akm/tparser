@@ -6,6 +6,7 @@ import (
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/asttest"
 	"github.com/akm/tparser/parser"
+	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -15,10 +16,32 @@ type TypeTestRunner struct {
 	Text           *[]rune
 	Expected       ast.Type
 	ParserArgFuncs []func() interface{}
+	RunnerFuncs    []TypeTestRunnerFunc
 }
 
-func NewTypeTestRunner(t *testing.T, name string, text []rune, expected ast.Type, funcs ...func() interface{}) *TypeTestRunner {
-	return &TypeTestRunner{t: t, Name: name, Text: &text, Expected: expected, ParserArgFuncs: funcs}
+type TypeTestRunnerFunc = func(*TypeTestRunner)
+
+func NewTypeTestRunner(t *testing.T, name string, text []rune, expected ast.Type, args ...interface{}) *TypeTestRunner {
+	parserArgFuncs := []func() interface{}{}
+	runnerFuncs := []TypeTestRunnerFunc{}
+	for _, arg := range args {
+		switch v := arg.(type) {
+		case func() interface{}:
+			parserArgFuncs = append(parserArgFuncs, v)
+		case TypeTestRunnerFunc:
+			runnerFuncs = append(runnerFuncs, v)
+		default:
+			panic(errors.Errorf("unexpected argument type %T %v", v, v))
+		}
+	}
+	return &TypeTestRunner{
+		t:              t,
+		Name:           name,
+		Text:           &text,
+		Expected:       expected,
+		ParserArgFuncs: parserArgFuncs,
+		RunnerFuncs:    runnerFuncs,
+	}
 }
 
 func (tt *TypeTestRunner) newParser(text *[]rune) *parser.Parser {
