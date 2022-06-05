@@ -39,3 +39,11 @@ var (
 	NewUnitTestRunner = runners.NewUnitTestRunner
 	RunUnitTest       = runners.RunUnitTest
 )
+
+// program_test_runner.go
+type ProgramTestRunner = runners.ProgramTestRunner
+
+var (
+	NewProgramTestRunner = runners.NewProgramTestRunner
+	RunProgramTest       = runners.RunProgramTest
+)
