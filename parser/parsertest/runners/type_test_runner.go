@@ -80,35 +80,29 @@ func (tt *TypeTestRunner) Run() *TypeTestRunner {
 }
 
 func (tt *TypeTestRunner) RunTypeSection(declName string) *TypeTestRunner {
-	expectedSection := ast.TypeSection{{Ident: asttest.NewIdent(declName), Type: tt.Expected}}
 	sectionStr := "type " + declName + " = " + string(*tt.Text) + ";"
 	sectionRunes := []rune(sectionStr)
-	tt.t.Run(tt.Name+" in type section", func(t *testing.T) {
-		p := tt.newParser(&sectionRunes)
-		res, err := p.ParseTypeSection(true)
-		if assert.NoError(t, err) {
-			asttest.ClearLocations(t, res)
-			if !assert.Equal(t, expectedSection, res) {
-				asttest.AssertTypeSection(t, expectedSection, res)
-			}
-		}
-	})
+	sectRunner := NewTypeSectionTestRunner(
+		tt.t,
+		tt.Name+" in type section",
+		sectionRunes,
+		ast.TypeSection{{Ident: asttest.NewIdent(declName), Type: tt.Expected}},
+		tt.ParserArgFuncs...,
+	)
+	sectRunner.Run()
 	return tt
 }
 
 func (tt *TypeTestRunner) RunVarSection(declName string) *TypeTestRunner {
-	expectedSection := ast.VarSection{{IdentList: asttest.NewIdentList(declName), Type: tt.Expected}}
 	sectionStr := "var " + declName + ": " + string(*tt.Text) + ";"
 	sectionRunes := []rune(sectionStr)
-	tt.t.Run(tt.Name+" in var section", func(t *testing.T) {
-		p := tt.newParser(&sectionRunes)
-		res, err := p.ParseVarSection(true)
-		if assert.NoError(t, err) {
-			asttest.ClearLocations(t, res)
-			if !assert.Equal(t, expectedSection, res) {
-				asttest.AssertVarSection(t, expectedSection, res)
-			}
-		}
-	})
+	sectRunner := NewVarSectionTestRunner(
+		tt.t,
+		tt.Name+" in var section",
+		sectionRunes,
+		ast.VarSection{{IdentList: asttest.NewIdentList(declName), Type: tt.Expected}},
+		tt.ParserArgFuncs...,
+	)
+	sectRunner.Run()
 	return tt
 }
