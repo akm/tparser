@@ -198,6 +198,15 @@ end
 		},
 	).Run().RunTypeSection("TPerson")
 
+	declRectangle := &ast.EnumeratedTypeElement{Ident: asttest.NewIdent("Rectangle")}
+	declTriangle := &ast.EnumeratedTypeElement{Ident: asttest.NewIdent("Triangle")}
+	declCircle := &ast.EnumeratedTypeElement{Ident: asttest.NewIdent("Circle")}
+	declEllipse := &ast.EnumeratedTypeElement{Ident: asttest.NewIdent("Ellipse")}
+	declOther := &ast.EnumeratedTypeElement{Ident: asttest.NewIdent("Other")}
+	declTShapeList := &ast.TypeDecl{
+		Ident: asttest.NewIdent("TShapeList"),
+		Type:  ast.EnumeratedType{declRectangle, declTriangle, declCircle, declEllipse, declOther},
+	}
 	NewTypeSectionTest(t,
 		"with TShapeList",
 		[]rune(`
@@ -212,59 +221,61 @@ type
 	end;
 `),
 		ast.TypeSection{
-			{
-				Ident: asttest.NewIdent("TShapeList"),
-				Type: ast.EnumeratedType{
-					{Ident: asttest.NewIdent("Club")},
-					{Ident: asttest.NewIdent("Diamond")},
-					{Ident: asttest.NewIdent("Heart")},
-					{Ident: asttest.NewIdent("Spade")},
-				},
-			},
+			declTShapeList,
 			{
 				Ident: asttest.NewIdent("TFigure"),
 				Type: &ast.RecType{
 					FieldList: &ast.FieldList{
+						FieldDecls: ast.FieldDecls{},
 						VariantSection: &ast.VariantSection{
-							TypeId: &ast.TypeId{Ident: asttest.NewIdent("TShapeList")},
+							TypeId: &ast.TypeId{
+								Ident: asttest.NewIdent("TShapeList"),
+								Ref:   declTShapeList.ToDeclarations()[0],
+							},
 							RecVariants: ast.RecVariants{
 								{
-									ConstExprs: ast.ConstExprs{asttest.NewConstExpr(&ast.ValueFactor{Value: "Rectangle"})},
+									ConstExprs: ast.ConstExprs{
+										asttest.NewConstExpr(ast.NewDesignator(asttest.NewIdentRef("Rectangle", declRectangle.ToDeclarations()[0]))),
+									},
 									FieldList: &ast.FieldList{
 										FieldDecls: ast.FieldDecls{
 											{
 												IdentList: asttest.NewIdentList("Height", "Width"),
-												Type:      &ast.RealType{Ident: asttest.NewIdent("REAL")},
-											},
-										},
-									},
-								},
-								{
-									ConstExprs: ast.ConstExprs{asttest.NewConstExpr(&ast.ValueFactor{Value: "Triangle"})},
-									FieldList: &ast.FieldList{
-										FieldDecls: ast.FieldDecls{
-											{
-												IdentList: asttest.NewIdentList("Side1", "Side2", "Angle"),
-												Type:      &ast.RealType{Ident: asttest.NewIdent("REAL")},
-											},
-										},
-									},
-								},
-								{
-									ConstExprs: ast.ConstExprs{asttest.NewConstExpr(&ast.ValueFactor{Value: "Circle"})},
-									FieldList: &ast.FieldList{
-										FieldDecls: ast.FieldDecls{
-											{
-												IdentList: asttest.NewIdentList("Radius"),
-												Type:      &ast.RealType{Ident: asttest.NewIdent("REAL")},
+												Type:      &ast.RealType{Ident: asttest.NewIdent("Real")},
 											},
 										},
 									},
 								},
 								{
 									ConstExprs: ast.ConstExprs{
-										asttest.NewConstExpr(&ast.ValueFactor{Value: "Ellipse"}),
-										asttest.NewConstExpr(&ast.ValueFactor{Value: "Other"}),
+										asttest.NewConstExpr(ast.NewDesignator(asttest.NewIdentRef("Triangle", declTriangle.ToDeclarations()[0]))),
+									},
+									FieldList: &ast.FieldList{
+										FieldDecls: ast.FieldDecls{
+											{
+												IdentList: asttest.NewIdentList("Side1", "Side2", "Angle"),
+												Type:      &ast.RealType{Ident: asttest.NewIdent("Real")},
+											},
+										},
+									},
+								},
+								{
+									ConstExprs: ast.ConstExprs{
+										asttest.NewConstExpr(ast.NewDesignator(asttest.NewIdentRef("Circle", declCircle.ToDeclarations()[0]))),
+									},
+									FieldList: &ast.FieldList{
+										FieldDecls: ast.FieldDecls{
+											{
+												IdentList: asttest.NewIdentList("Radius"),
+												Type:      &ast.RealType{Ident: asttest.NewIdent("Real")},
+											},
+										},
+									},
+								},
+								{
+									ConstExprs: ast.ConstExprs{
+										asttest.NewConstExpr(ast.NewDesignator(asttest.NewIdentRef("Ellipse", declEllipse.ToDeclarations()[0]))),
+										asttest.NewConstExpr(ast.NewDesignator(asttest.NewIdentRef("Other", declOther.ToDeclarations()[0]))),
 									},
 									FieldList: &ast.FieldList{
 										FieldDecls: ast.FieldDecls{},
@@ -276,5 +287,5 @@ type
 				},
 			},
 		},
-	)
+	).Run()
 }
