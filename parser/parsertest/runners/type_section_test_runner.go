@@ -10,6 +10,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func RunTypeSection(t *testing.T, name string, text []rune, expected ast.TypeSection, args ...interface{}) {
+	NewTypeSectionTestRunner(t, name, text, expected, args...).Run()
+}
+
 type TypeSectionTestRunner struct {
 	*BaseTestRunner
 	Expected ast.TypeSection
