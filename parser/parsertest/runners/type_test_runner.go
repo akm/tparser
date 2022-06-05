@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/akm/tparser/ast"
+	"github.com/akm/tparser/ast/astcore"
 	"github.com/akm/tparser/ast/asttest"
 	"github.com/akm/tparser/parser"
 	"github.com/pkg/errors"
@@ -15,67 +16,40 @@ func RunTypeTest(t *testing.T, name string, text []rune, expected ast.Type, args
 }
 
 type TypeTestRunner struct {
-	t              *testing.T
-	Name           string
-	Text           *[]rune
-	Expected       ast.Type
-	ClearLocations bool
-	ParserArgFuncs []func() interface{}
-	RunnerFuncs    []TypeTestRunnerFunc
+	*BaseTestRunner
+	Expected ast.Type
 }
-
-type TypeTestRunnerFunc = func(*TypeTestRunner)
 
 func NewTypeTestRunner(t *testing.T, name string, text []rune, expected ast.Type, args ...interface{}) *TypeTestRunner {
-	parserArgFuncs := []func() interface{}{}
-	runnerFuncs := []TypeTestRunnerFunc{}
-	for _, arg := range args {
-		switch v := arg.(type) {
-		case func() interface{}:
-			parserArgFuncs = append(parserArgFuncs, v)
-		case TypeTestRunnerFunc:
-			runnerFuncs = append(runnerFuncs, v)
-		default:
-			panic(errors.Errorf("unexpected argument type %T %v", v, v))
-		}
+	parserArgFuncs, rest1 := FilterParserArgFuncs(args)
+	baseRunnerFuncs, rest2 := FilterBaseTestRunnerFuncs(rest1)
+	runnerFuncs, rest3 := FilterTypeTestRunnerFuncs(rest2)
+	if len(rest3) > 0 {
+		panic(errors.Errorf("unexpected arguments: %v", rest3))
 	}
-	return &TypeTestRunner{
-		t:              t,
-		Name:           name,
-		Text:           &text,
+	r := &TypeTestRunner{
+		BaseTestRunner: NewBaseTestRunner(t, name, &text, true, parserArgFuncs, baseRunnerFuncs),
 		Expected:       expected,
-		ParserArgFuncs: parserArgFuncs,
-		RunnerFuncs:    runnerFuncs,
-		ClearLocations: true,
 	}
-}
-
-func (tt *TypeTestRunner) newParser(text *[]rune) *parser.Parser {
-	for _, fn := range tt.RunnerFuncs {
-		fn(tt)
+	for _, f := range runnerFuncs {
+		f(r)
 	}
-	args := make([]interface{}, len(tt.ParserArgFuncs))
-	for i, f := range tt.ParserArgFuncs {
-		args[i] = f()
-	}
-	r := NewTestParser(text, args...)
-	r.NextToken()
 	return r
 }
 
 func (tt *TypeTestRunner) Run() *TypeTestRunner {
-	tt.t.Run(tt.Name, func(t *testing.T) {
-		p := tt.newParser(tt.Text)
-		res, err := p.ParseType()
-		if assert.NoError(t, err) {
-			if tt.ClearLocations {
-				asttest.ClearLocations(t, res)
+	tt.BaseTestRunner.Run(
+		func(p *parser.Parser) (astcore.Node, error) {
+			return p.ParseType()
+		},
+		func(t *testing.T, actual astcore.Node) {
+			if !assert.Equal(t, tt.Expected, actual) {
+				if assert.IsType(t, tt.Expected, actual) {
+					asttest.AssertType(t, tt.Expected, actual.(ast.Type))
+				}
 			}
-			if !assert.Equal(t, tt.Expected, res) {
-				asttest.AssertType(t, tt.Expected, res)
-			}
-		}
-	})
+		},
+	)
 	return tt
 }
 
@@ -83,7 +57,7 @@ func (tt *TypeTestRunner) RunTypeSection(declName string) *TypeTestRunner {
 	sectionStr := "type " + declName + " = " + string(*tt.Text) + ";"
 	sectionRunes := []rune(sectionStr)
 	sectRunner := NewTypeSectionTestRunner(
-		tt.t,
+		tt.T,
 		tt.Name+" in type section",
 		sectionRunes,
 		ast.TypeSection{{Ident: asttest.NewIdent(declName), Type: tt.Expected}},
@@ -97,7 +71,7 @@ func (tt *TypeTestRunner) RunVarSection(declName string) *TypeTestRunner {
 	sectionStr := "var " + declName + ": " + string(*tt.Text) + ";"
 	sectionRunes := []rune(sectionStr)
 	sectRunner := NewVarSectionTestRunner(
-		tt.t,
+		tt.T,
 		tt.Name+" in var section",
 		sectionRunes,
 		ast.VarSection{{IdentList: asttest.NewIdentList(declName), Type: tt.Expected}},
@@ -105,4 +79,20 @@ func (tt *TypeTestRunner) RunVarSection(declName string) *TypeTestRunner {
 	)
 	sectRunner.Run()
 	return tt
+}
+
+type TypeTestRunnerFunc = func(*TypeTestRunner)
+type TypeTestRunnerFuncs []TypeTestRunnerFunc
+
+func FilterTypeTestRunnerFuncs(args []interface{}) (TypeTestRunnerFuncs, []interface{}) {
+	r := TypeTestRunnerFuncs{}
+	rest := []interface{}{}
+	for _, arg := range args {
+		if v, ok := arg.(TypeTestRunnerFunc); ok {
+			r = append(r, v)
+		} else {
+			rest = append(rest, arg)
+		}
+	}
+	return r, rest
 }
