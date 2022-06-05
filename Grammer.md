@@ -4,9 +4,9 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
 
 | Mark | State       | Count |
 | :--: | ----------- | ----: |
-|  🔖  | TODO        |    43 |
-|  🚧  | In progress |     7 |
-|  ✔️  | Done        |    75 |
+|  🔖  | TODO        |    33 |
+|  🚧  | In progress |     6 |
+|  ✔️  | Done        |    83 |
 
 - Goal 🚧
   ```
@@ -307,39 +307,39 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
   STRING '[' ConstExpr ']'
   ```
-- StrucType 🔖
+- StrucType ✔️
   ```
   [PACKED] (ArrayType [PACKED]| SetType | FileType | RecType [PACKED])
   ```
-- ArrayType 🔖
+- ArrayType ✔️
   ```
   ARRAY ['[' OrdinalType ','... ']'] OF Type [PortabilityDirective]
   ```
-- RecType 🔖
+- RecType ✔️
   ```
   RECORD [FieldList] END [PortabilityDirective]
   ```
-- FieldList 🔖
+- FieldList ✔️
   ```
   FieldDecl ';'... [VariantSection] [';']
   ```
-- FieldDecl 🔖
+- FieldDecl ✔️
   ```
   IdentList ':' Type [PortabilityDirective]
   ```
-- VariantSection 🔖
+- VariantSection ✔️
   ```
   CASE [Ident ':'] TypeId OF RecVariant ';'...
   ```
-- RecVariant 🔖
+- RecVariant ✔️
   ```
   ConstExpr ','... ':' '(' [FieldList] ')'
   ```
-- SetType 🔖
+- SetType ✔️
   ```
   SET OF OrdinalType [PortabilityDirective]
   ```
-- FileType 🔖
+- FileType ✔️
   ```
   FILE OF TypeId [PortabilityDirective]
   ```
