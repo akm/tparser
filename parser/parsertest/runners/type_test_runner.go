@@ -10,20 +10,20 @@ import (
 )
 
 type TypeTestRunner struct {
-	t        *testing.T
-	Name     string
-	Text     *[]rune
-	Expected ast.Type
-	Funcs    []func() interface{}
+	t              *testing.T
+	Name           string
+	Text           *[]rune
+	Expected       ast.Type
+	ParserArgFuncs []func() interface{}
 }
 
 func NewTypeTestRunner(t *testing.T, name string, text []rune, expected ast.Type, funcs ...func() interface{}) *TypeTestRunner {
-	return &TypeTestRunner{t: t, Name: name, Text: &text, Expected: expected, Funcs: funcs}
+	return &TypeTestRunner{t: t, Name: name, Text: &text, Expected: expected, ParserArgFuncs: funcs}
 }
 
 func (tt *TypeTestRunner) newParser(text *[]rune) *parser.Parser {
-	args := make([]interface{}, len(tt.Funcs))
-	for i, f := range tt.Funcs {
+	args := make([]interface{}, len(tt.ParserArgFuncs))
+	for i, f := range tt.ParserArgFuncs {
 		args[i] = f()
 	}
 	r := NewTestParser(text, args...)
