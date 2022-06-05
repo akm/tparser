@@ -39,10 +39,7 @@ func NewBaseTestRunner(
 }
 
 func (tt *BaseTestRunner) NewParser() *parser.Parser {
-	args := make([]interface{}, len(tt.ParserArgFuncs))
-	for i, f := range tt.ParserArgFuncs {
-		args[i] = f()
-	}
+	args := tt.ParserArgFuncs.Results()
 	r := NewTestParser(tt.Text, args...)
 	r.NextToken()
 	return r
@@ -83,6 +80,14 @@ func (s ParserArgFuncs) Interfaces() []interface{} {
 	r := make([]interface{}, len(s))
 	for i, f := range s {
 		r[i] = f
+	}
+	return r
+}
+
+func (s ParserArgFuncs) Results() []interface{} {
+	r := make([]interface{}, len(s))
+	for i, f := range s {
+		r[i] = f()
 	}
 	return r
 }
