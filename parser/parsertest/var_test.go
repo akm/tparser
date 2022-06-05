@@ -6,7 +6,6 @@ import (
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/astcore"
 	"github.com/akm/tparser/ast/asttest"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestUnitWithVarSection(t *testing.T) {
@@ -90,13 +89,8 @@ func TestUnitWithVarSection(t *testing.T) {
 
 func TestVarSectionl(t *testing.T) {
 	run := func(name string, text []rune, expected ast.VarSection) {
-		t.Run(name, func(t *testing.T) {
-			parser := NewTestParser(&text)
-			parser.NextToken()
-			res, err := parser.ParseVarSection(true)
-			if assert.NoError(t, err) {
-				assert.Equal(t, expected, res)
-			}
+		RunVarSectionTest(t, name, text, expected, func(tt *BaseTestRunner) {
+			tt.ClearLocations = false
 		})
 	}
 
