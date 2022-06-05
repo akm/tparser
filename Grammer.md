@@ -4,9 +4,9 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
 
 | Mark | State       | Count |
 | :--: | ----------- | ----: |
-|  🔖  | TODO        |    43 |
-|  🚧  | In progress |     7 |
-|  ✔️  | Done        |    75 |
+|  🔖  | TODO        |    33 |
+|  🚧  | In progress |     6 |
+|  ✔️  | Done        |    83 |
 
 - Goal 🚧
   ```
