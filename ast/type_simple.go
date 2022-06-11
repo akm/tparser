@@ -39,41 +39,32 @@ type SimpleType interface {
 //   ```
 //   COMP
 //   ```
-func IsRealTypeName(w string) bool {
-	return realTypeNames.Include(strings.ToUpper(w))
-}
-
-var realTypeNames = ext.Strings{
-	"REAL48",
-	"REAL",
-	"SINGLE",
-	"DOUBLE",
-	"EXTENDED",
-	"CURRENCY",
-	"COMP",
-}.Set()
-
-type RealType struct {
+type RealType interface {
+	IsRealType() bool
+	// implements
 	SimpleType
-	*Ident
 }
 
-func NewRealType(name interface{}) *RealType {
+func NewRealType(name interface{}) RealType {
 	switch v := name.(type) {
-	case *RealType:
+	case RealType:
 		return v
 	case Ident:
-		return &RealType{Ident: &v}
+		if decl := EmbeddedRealTypeDecl(v.Name); decl != nil {
+			return NewTypeId(&v, decl)
+		} else {
+			return NewTypeId(&v)
+		}
 	case *Ident:
-		return &RealType{Ident: v}
+		if decl := EmbeddedRealTypeDecl(v.Name); decl != nil {
+			return NewTypeId(v, decl)
+		} else {
+			return NewTypeId(v)
+		}
 	default:
 		panic(errors.Errorf("invalid type %T for NewRealType %+v", name, name))
 	}
 }
-
-func (*RealType) isType()            {}
-func (*RealType) IsSimpleType() bool { return true }
-func (m *RealType) Children() Nodes  { return Nodes{m.Ident} }
 
 // - OrdinalType
 //   ```

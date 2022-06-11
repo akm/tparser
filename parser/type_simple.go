@@ -6,13 +6,12 @@ import (
 	"github.com/pkg/errors"
 )
 
-var realType = token.PredicatorBy("RealType", ast.IsRealTypeName)
-
-func (p *Parser) ParseRealType(required bool) (*ast.RealType, error) {
+func (p *Parser) ParseRealType(required bool) (ast.RealType, error) {
 	t := p.CurrentToken()
-	if t.Is(realType) {
+	decl := ast.EmbeddedRealTypeDecl(t.Value())
+	if decl != nil {
 		p.NextToken()
-		return &ast.RealType{Ident: p.NewIdent(t)}, nil
+		return ast.NewTypeId(p.NewIdent(t), decl), nil
 	} else if required {
 		return nil, p.TokenErrorf("Unsupported token %s for RealType", t)
 	} else {
