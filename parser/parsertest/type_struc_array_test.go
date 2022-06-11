@@ -42,7 +42,7 @@ func TestStrucArray(t *testing.T) {
 						High: asttest.NewConstExpr(asttest.NewNumber("50")),
 					},
 				},
-				BaseType: &ast.RealType{Ident: asttest.NewIdent("Real")},
+				BaseType: ast.NewRealType(asttest.NewIdent("Real")),
 			},
 		},
 	).Run().RunTypeSection("TMatrix")
@@ -61,7 +61,7 @@ func TestStrucArray(t *testing.T) {
 					High: asttest.NewConstExpr(asttest.NewNumber("50")),
 				},
 			},
-			BaseType: &ast.RealType{Ident: asttest.NewIdent("Real")},
+			BaseType: ast.NewRealType(asttest.NewIdent("Real")),
 		},
 	).Run().RunTypeSection("TMatrix")
 
@@ -136,7 +136,7 @@ func TestStrucArray(t *testing.T) {
 		[]rune(`array of Real`),
 		&ast.ArrayType{
 			IndexTypes: nil,
-			BaseType:   &ast.RealType{Ident: asttest.NewIdent("Real")},
+			BaseType:   ast.NewRealType(asttest.NewIdent("Real")),
 		},
 	).Run().RunVarSection("MyFlexibleArray")
 

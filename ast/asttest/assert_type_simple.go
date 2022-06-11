@@ -12,8 +12,8 @@ func AssertSimpleType(t *testing.T, expected, actual ast.SimpleType) {
 		return
 	}
 	switch exp := expected.(type) {
-	case *ast.RealType:
-		AssertRealType(t, exp, actual.(*ast.RealType))
+	case ast.RealType:
+		AssertRealType(t, exp, actual.(ast.RealType))
 	case ast.OrdinalType:
 		AssertOrdinalType(t, exp, actual.(ast.OrdinalType))
 	default:
@@ -21,9 +21,17 @@ func AssertSimpleType(t *testing.T, expected, actual ast.SimpleType) {
 	}
 }
 
-func AssertRealType(t *testing.T, expected, actual *ast.RealType) {
-	if !assert.Equal(t, expected.Ident, actual.Ident) {
-		AssertIdent(t, expected.Ident, actual.Ident)
+func AssertRealType(t *testing.T, expected, actual ast.RealType) {
+	if !assert.IsType(t, expected, actual) {
+		return
+	}
+	switch exp := expected.(type) {
+	case *ast.TypeEmbedded:
+		AssertTypeEmbedded(t, exp, actual.(*ast.TypeEmbedded))
+	case *ast.TypeId:
+		AssertTypeId(t, exp, actual.(*ast.TypeId))
+	default:
+		assert.Fail(t, "unexpected type: %T", exp)
 	}
 }
 

@@ -111,7 +111,7 @@ end
 								FieldDecls: ast.FieldDecls{
 									{
 										IdentList: asttest.NewIdentList("AnnualSalary"),
-										Type:      &ast.RealType{Ident: asttest.NewIdent("Currency")},
+										Type:      ast.NewRealType(asttest.NewIdent("Currency")),
 									},
 								},
 							},
@@ -122,7 +122,7 @@ end
 								FieldDecls: ast.FieldDecls{
 									{
 										IdentList: asttest.NewIdentList("HourlyWage"),
-										Type:      &ast.RealType{Ident: asttest.NewIdent("Currency")},
+										Type:      ast.NewRealType(asttest.NewIdent("Currency")),
 									},
 								},
 							},
@@ -241,7 +241,7 @@ type
 										FieldDecls: ast.FieldDecls{
 											{
 												IdentList: asttest.NewIdentList("Height", "Width"),
-												Type:      &ast.RealType{Ident: asttest.NewIdent("Real")},
+												Type:      ast.NewRealType(asttest.NewIdent("Real")),
 											},
 										},
 									},
@@ -254,7 +254,7 @@ type
 										FieldDecls: ast.FieldDecls{
 											{
 												IdentList: asttest.NewIdentList("Side1", "Side2", "Angle"),
-												Type:      &ast.RealType{Ident: asttest.NewIdent("Real")},
+												Type:      ast.NewRealType(asttest.NewIdent("Real")),
 											},
 										},
 									},
@@ -267,7 +267,7 @@ type
 										FieldDecls: ast.FieldDecls{
 											{
 												IdentList: asttest.NewIdentList("Radius"),
-												Type:      &ast.RealType{Ident: asttest.NewIdent("Real")},
+												Type:      ast.NewRealType(asttest.NewIdent("Real")),
 											},
 										},
 									},

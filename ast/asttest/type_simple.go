@@ -4,10 +4,10 @@ import (
 	"github.com/akm/tparser/ast"
 )
 
-func NewRealType(name interface{}) *ast.RealType {
+func NewRealType(name interface{}) ast.RealType {
 	switch v := name.(type) {
 	case string:
-		return ast.NewRealType(*NewIdent(v))
+		return ast.NewRealType(NewIdent(v))
 	default:
 		return ast.NewRealType(name)
 	}

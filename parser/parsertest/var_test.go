@@ -25,7 +25,7 @@ func TestUnitWithVarSection(t *testing.T) {
 				InterfaceDecls: ast.InterfaceDecls{
 					ast.VarSection{
 						{IdentList: asttest.NewIdentList("I"), Type: &ast.OrdIdent{Ident: asttest.NewIdent("Integer")}},
-						{IdentList: asttest.NewIdentList("X", "Y"), Type: &ast.RealType{Ident: asttest.NewIdent("Real")}},
+						{IdentList: asttest.NewIdentList("X", "Y"), Type: ast.NewRealType(asttest.NewIdent("Real"))},
 					},
 				},
 			},
@@ -51,7 +51,7 @@ func TestUnitWithVarSection(t *testing.T) {
 			InterfaceSection: &ast.InterfaceSection{
 				InterfaceDecls: []ast.InterfaceDecl{
 					ast.VarSection{
-						{IdentList: asttest.NewIdentList("X", "Y", "Z"), Type: &ast.RealType{Ident: asttest.NewIdent("Double")}},
+						{IdentList: asttest.NewIdentList("X", "Y", "Z"), Type: ast.NewRealType(asttest.NewIdent("Double"))},
 						{IdentList: asttest.NewIdentList("I", "J", "K"), Type: &ast.OrdIdent{Ident: asttest.NewIdent("Integer")}},
 					},
 					ast.VarSection{
