@@ -82,3 +82,21 @@ func (m *TypeId) IsOrdinalType() bool {
 	}
 	return ordinalType.IsOrdinalType()
 }
+
+func (m *TypeId) IsRealType() bool {
+	if m.Ref == nil {
+		return false
+	}
+	if m.Ref.Node == nil {
+		return false
+	}
+	decl, ok := m.Ref.Node.(*TypeDecl)
+	if !ok {
+		return false
+	}
+	ordinalType, ok := decl.Type.(RealType)
+	if !ok {
+		return false
+	}
+	return ordinalType.IsRealType()
+}
