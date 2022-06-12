@@ -11,7 +11,7 @@ type EmbeddedTypeKind int
 const (
 	EtkReal EmbeddedTypeKind = iota + 1
 	EtkOrdIdent
-	EtkString
+	EtkStringType
 )
 
 type TypeEmbedded struct {
@@ -54,12 +54,12 @@ func (m *TypeEmbedded) IsOrdIdent() bool {
 }
 
 func (m *TypeEmbedded) IsStringType() bool {
-	return m.Kind == EtkString
+	return m.Kind == EtkStringType
 }
 
 var embeddedTypeDeclMaps = func() map[EmbeddedTypeKind]map[string]*astcore.Decl {
 	r := make(map[EmbeddedTypeKind]map[string]*astcore.Decl)
-	for _, kind := range []EmbeddedTypeKind{EtkReal, EtkOrdIdent, EtkString} {
+	for _, kind := range []EmbeddedTypeKind{EtkReal, EtkOrdIdent, EtkStringType} {
 		r[kind] = make(map[string]*astcore.Decl)
 	}
 	return r
@@ -101,9 +101,9 @@ var (
 	EmbeddedWideChar = newEmbeddedTypeDecl(EtkOrdIdent, "WideChar")
 	EmbeddedBoolean  = newEmbeddedTypeDecl(EtkOrdIdent, "Boolean")
 
-	EmbeddedString     = newEmbeddedTypeDecl(EtkString, "String")
-	EmbeddedAnsiString = newEmbeddedTypeDecl(EtkString, "AnsiString")
-	EmbeddedWideString = newEmbeddedTypeDecl(EtkString, "WideString")
+	EmbeddedString     = newEmbeddedTypeDecl(EtkStringType, "String")
+	EmbeddedAnsiString = newEmbeddedTypeDecl(EtkStringType, "AnsiString")
+	EmbeddedWideString = newEmbeddedTypeDecl(EtkStringType, "WideString")
 
 	// TODO Define Embedded Pointer Types PChar, PInteger, PByteArray, etc.
 )
