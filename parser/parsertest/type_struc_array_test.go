@@ -147,7 +147,7 @@ func TestStrucArray(t *testing.T) {
 			IndexTypes: nil,
 			BaseType: &ast.ArrayType{
 				IndexTypes: nil,
-				BaseType:   &ast.StringType{Name: "STRING"},
+				BaseType:   asttest.NewStringType("string"),
 			},
 		},
 	).Run().RunTypeSection("TMessageGrid")

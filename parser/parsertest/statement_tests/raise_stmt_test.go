@@ -28,7 +28,7 @@ func TestRaiseStmt(t *testing.T) {
 		Parameter: &ast.Parameter{
 			IdentList: asttest.NewIdentList("Path"),
 			Type: &ast.ParameterType{
-				Type: asttest.NewStringType("STRING"),
+				Type: asttest.NewStringType("string"),
 			},
 		},
 	}

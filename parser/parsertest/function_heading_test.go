@@ -65,7 +65,7 @@ func TestExportHeading(t *testing.T) {
 				Ident: asttest.NewIdent("NumString"),
 				FormalParameters: ast.FormalParameters{
 					asttest.NewFormalParm("N", asttest.NewOrdIdent("Integer")),
-					asttest.NewFormalParm("S", asttest.NewStringType("STRING"), &ast.FpoVar),
+					asttest.NewFormalParm("S", asttest.NewStringType("string"), &ast.FpoVar),
 				},
 			},
 		},
@@ -179,9 +179,9 @@ func TestExportHeading(t *testing.T) {
 				Type:  ast.FtFunction,
 				Ident: asttest.NewIdent("SomeFunction"),
 				FormalParameters: ast.FormalParameters{
-					asttest.NewFormalParm("S", asttest.NewStringType("STRING")),
+					asttest.NewFormalParm("S", asttest.NewStringType("string")),
 				},
-				ReturnType: asttest.NewStringType("STRING"),
+				ReturnType: asttest.NewStringType("string"),
 			},
 			Directives:      []ast.Directive{ast.DrExternal},
 			ExternalOptions: &ast.ExternalOptions{LibraryName: "'strlib.dll'"},
@@ -259,7 +259,7 @@ func TestExportHeading(t *testing.T) {
 				Type:  ast.FtFunction,
 				Ident: asttest.NewIdent("CompareStr"),
 				FormalParameters: ast.FormalParameters{
-					asttest.NewFormalParm([]string{"S1", "S2"}, asttest.NewStringType("STRING"), &ast.FpoConst),
+					asttest.NewFormalParm([]string{"S1", "S2"}, asttest.NewStringType("string"), &ast.FpoConst),
 				},
 				ReturnType: asttest.NewOrdIdent("Integer"),
 			},
@@ -345,7 +345,7 @@ func TestExportHeading(t *testing.T) {
 				FormalParameters: ast.FormalParameters{
 					asttest.NewFormalParm([]string{"Args"}, asttest.NewArrayParameterType(nil), &ast.FpoConst),
 				},
-				ReturnType: asttest.NewStringType("STRING"),
+				ReturnType: asttest.NewStringType("string"),
 			},
 		},
 	)
@@ -399,7 +399,7 @@ func TestExportHeading(t *testing.T) {
 						asttest.NewParameter([]string{"I"}, asttest.NewOrdIdent("Integer"), asttest.NewNumber("0")),
 					),
 					asttest.NewFormalParm(
-						asttest.NewParameter([]string{"S"}, asttest.NewStringType("STRING"), asttest.NewString("''")),
+						asttest.NewParameter([]string{"S"}, asttest.NewStringType("string"), asttest.NewString("''")),
 					),
 				},
 			},
@@ -460,7 +460,7 @@ func TestFormalParameters(t *testing.T) {
 	run(
 		"(var S: string; X: Integer)", true,
 		ast.FormalParameters{
-			asttest.NewFormalParm("S", asttest.NewStringType("STRING"), &ast.FpoVar),
+			asttest.NewFormalParm("S", asttest.NewStringType("string"), &ast.FpoVar),
 			asttest.NewFormalParm("X", asttest.NewOrdIdent("Integer")),
 		},
 	)

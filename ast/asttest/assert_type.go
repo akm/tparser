@@ -44,8 +44,8 @@ func AssertType(t *testing.T, expected, actual ast.Type) {
 		AssertStrucType(t, exp, actual.(ast.StrucType))
 	// case *ast.PointerType:
 	// 	AssertPointerType(t, exp, actual.(*ast.PointerType))
-	case *ast.StringType:
-		AssertStringType(t, exp, actual.(*ast.StringType))
+	case ast.StringType:
+		AssertStringType(t, exp, actual.(ast.StringType))
 	// case *ast.ProcedureType:
 	// 	AssertProcedureType(t, exp, actual.(*ast.ProcedureType))
 	// case *ast.VariantType:

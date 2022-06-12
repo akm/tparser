@@ -103,7 +103,7 @@ func TestVarSectionl(t *testing.T) {
 		ast.VarSection{
 			&ast.VarDecl{
 				IdentList: asttest.NewIdentList(asttest.NewIdent("Str", asttest.NewIdentLocation(2, 3, 6, 6))),
-				Type:      asttest.NewStringType("STRING", asttest.NewConstExpr(asttest.NewNumber("32"))),
+				Type:      asttest.NewFixedStringType(asttest.NewIdent("string", asttest.NewIdentLocation(2, 8, 11, 14)), asttest.NewConstExpr(asttest.NewNumber("32"))),
 			},
 			&ast.VarDecl{
 				IdentList: asttest.NewIdentList(asttest.NewIdent("StrLen", asttest.NewIdentLocation(3, 3, 25, 9))),

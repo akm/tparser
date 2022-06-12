@@ -67,7 +67,7 @@ end
 				FieldDecls: ast.FieldDecls{
 					{
 						IdentList: asttest.NewIdentList("Name"),
-						Type:      &ast.StringType{Name: "STRING"},
+						Type:      asttest.NewStringType("string"),
 					},
 					{
 						IdentList: asttest.NewIdentList("Age"),
@@ -94,7 +94,7 @@ end
 				FieldDecls: ast.FieldDecls{
 					{
 						IdentList: asttest.NewIdentList("FirstName", "LastName"),
-						Type:      &ast.StringType{Name: "STRING", Length: asttest.NewConstExpr(asttest.NewNumber("40"))},
+						Type:      asttest.NewFixedStringType("string", asttest.NewConstExpr(asttest.NewNumber("40"))),
 					},
 					{
 						IdentList: asttest.NewIdentList("BirthDate"),
@@ -151,7 +151,7 @@ end
 				FieldDecls: ast.FieldDecls{
 					{
 						IdentList: asttest.NewIdentList("FirstName", "LastName"),
-						Type:      &ast.StringType{Name: "STRING", Length: asttest.NewConstExpr(asttest.NewNumber("40"))},
+						Type:      asttest.NewFixedStringType("string", asttest.NewConstExpr(asttest.NewNumber("40"))),
 					},
 					{
 						IdentList: asttest.NewIdentList("BirthDate"),
@@ -168,7 +168,7 @@ end
 								FieldDecls: ast.FieldDecls{
 									{
 										IdentList: asttest.NewIdentList("Birthplace"),
-										Type:      &ast.StringType{Name: "STRING", Length: asttest.NewConstExpr(asttest.NewNumber("40"))},
+										Type:      asttest.NewFixedStringType("string", asttest.NewConstExpr(asttest.NewNumber("40"))),
 									},
 								},
 							},
@@ -179,11 +179,11 @@ end
 								FieldDecls: ast.FieldDecls{
 									{
 										IdentList: asttest.NewIdentList("Country"),
-										Type:      &ast.StringType{Name: "STRING", Length: asttest.NewConstExpr(asttest.NewNumber("20"))},
+										Type:      asttest.NewFixedStringType("string", asttest.NewConstExpr(asttest.NewNumber("20"))),
 									},
 									{
 										IdentList: asttest.NewIdentList("EntryPort"),
-										Type:      &ast.StringType{Name: "STRING", Length: asttest.NewConstExpr(asttest.NewNumber("20"))},
+										Type:      asttest.NewFixedStringType("string", asttest.NewConstExpr(asttest.NewNumber("20"))),
 									},
 									{
 										IdentList: asttest.NewIdentList("EntryDate", "ExitDate"),

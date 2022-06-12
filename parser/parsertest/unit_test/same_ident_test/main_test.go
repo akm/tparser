@@ -37,7 +37,7 @@ func TestSameIdent(t *testing.T) {
 	newStringVarDecl := func(name, value string) *ast.VarDecl {
 		return &ast.VarDecl{
 			IdentList: asttest.NewIdentList(asttest.NewIdent(name)),
-			Type:      asttest.NewStringType("STRING"),
+			Type:      asttest.NewStringType("string"),
 			ConstExpr: asttest.NewConstExpr(asttest.NewString("'" + value + "'")),
 		}
 	}

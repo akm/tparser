@@ -73,8 +73,8 @@ func TestUnitWithTypeSection(t *testing.T) {
 						return ast.TypeSection{
 							{Ident: asttest.NewIdent("TMyInteger1"), Type: ast.NewOrdIdent(asttest.NewIdent("INTEGER"))},
 							{Ident: asttest.NewIdent("TMyReal1"), Type: ast.NewRealType(asttest.NewIdent("REAL"))},
-							{Ident: asttest.NewIdent("TMyString1"), Type: &ast.StringType{Name: "STRING"}},
-							{Ident: asttest.NewIdent("TMyString2"), Type: &ast.StringType{Name: "ANSISTRING"}},
+							{Ident: asttest.NewIdent("TMyString1"), Type: asttest.NewStringType("STRING")},
+							{Ident: asttest.NewIdent("TMyString2"), Type: asttest.NewStringType("ANSISTRING")},
 							{Ident: asttest.NewIdent("TMyEnumerated1"), Type: ast.EnumeratedType{tsClick, tsClack, tsClock}},
 							{Ident: asttest.NewIdent("TMySubrange1"), Type: &ast.SubrangeType{
 								Low:  asttest.NewConstExpr(asttest.NewQualId("tsClick", tsClick.ToDeclarations()[0])),
@@ -129,9 +129,9 @@ func TestTypeSection(t *testing.T) {
 			TMyString1 = STRING;
 			TMyReal1 = REAL;`),
 		ast.TypeSection{
-			{Ident: asttest.NewIdent("TMyInteger1"), Type: ast.NewOrdIdent(asttest.NewIdent("INTEGER"))},
-			{Ident: asttest.NewIdent("TMyString1"), Type: &ast.StringType{Name: "STRING"}},
-			{Ident: asttest.NewIdent("TMyReal1"), Type: ast.NewRealType(asttest.NewIdent("REAL"))},
+			{Ident: asttest.NewIdent("TMyInteger1"), Type: asttest.NewOrdIdent(asttest.NewIdent("INTEGER"))},
+			{Ident: asttest.NewIdent("TMyString1"), Type: asttest.NewStringType("STRING")},
+			{Ident: asttest.NewIdent("TMyReal1"), Type: asttest.NewRealType(asttest.NewIdent("REAL"))},
 		},
 	)
 }
