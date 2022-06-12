@@ -118,3 +118,21 @@ func (m *TypeId) IsOrdIdent() bool {
 	}
 	return ordIdent.IsOrdIdent()
 }
+
+func (m *TypeId) IsStringType() bool {
+	if m.Ref == nil {
+		return false
+	}
+	if m.Ref.Node == nil {
+		return false
+	}
+	decl, ok := m.Ref.Node.(*TypeDecl)
+	if !ok {
+		return false
+	}
+	ordIdent, ok := decl.Type.(StringType)
+	if !ok {
+		return false
+	}
+	return ordIdent.IsStringType()
+}
