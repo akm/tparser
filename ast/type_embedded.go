@@ -12,6 +12,7 @@ const (
 	EtkReal EmbeddedTypeKind = iota + 1
 	EtkOrdIdent
 	EtkStringType
+	EtkPointerType
 )
 
 type TypeEmbedded struct {
@@ -105,5 +106,8 @@ var (
 	EmbeddedAnsiString = newEmbeddedTypeDecl(EtkStringType, "AnsiString")
 	EmbeddedWideString = newEmbeddedTypeDecl(EtkStringType, "WideString")
 
-	// TODO Define Embedded Pointer Types PChar, PInteger, PByteArray, etc.
+	EmbeddedPointer   = newEmbeddedTypeDecl(EtkStringType, "Pointer")
+	EmbeddedPChar     = newEmbeddedTypeDecl(EtkStringType, "PChar")
+	EmbeddedPAnsiChar = newEmbeddedTypeDecl(EtkStringType, "PAnsiChar")
+	EmbeddedPWideChar = newEmbeddedTypeDecl(EtkStringType, "PWideChar")
 )
