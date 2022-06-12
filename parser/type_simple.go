@@ -19,13 +19,12 @@ func (p *Parser) ParseRealType(required bool) (ast.RealType, error) {
 	}
 }
 
-var ordIdent = token.PredicatorBy("OrdIdent", ast.IsOrdIdentName)
-
-func (p *Parser) ParseOrdIdent(required bool) (*ast.OrdIdent, error) {
+func (p *Parser) ParseOrdIdent(required bool) (ast.OrdIdent, error) {
 	t := p.CurrentToken()
-	if t.Is(ordIdent) {
+	decl := ast.EmbeddedTypeDecl(ast.EtkOrdIdent, t.Value())
+	if decl != nil {
 		p.NextToken()
-		return &ast.OrdIdent{Ident: p.NewIdent(t)}, nil
+		return ast.NewTypeId(p.NewIdent(t), decl), nil
 	} else if required {
 		return nil, p.TokenErrorf("Unsupported token %s for OrdIdent", t)
 	} else {

@@ -100,3 +100,21 @@ func (m *TypeId) IsRealType() bool {
 	}
 	return ordinalType.IsRealType()
 }
+
+func (m *TypeId) IsOrdIdent() bool {
+	if m.Ref == nil {
+		return false
+	}
+	if m.Ref.Node == nil {
+		return false
+	}
+	decl, ok := m.Ref.Node.(*TypeDecl)
+	if !ok {
+		return false
+	}
+	ordIdent, ok := decl.Type.(OrdIdent)
+	if !ok {
+		return false
+	}
+	return ordIdent.IsOrdIdent()
+}
