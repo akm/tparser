@@ -46,16 +46,24 @@ func (m *TypeId) Children() Nodes {
 	return r
 }
 
-func (*TypeId) isType() {}
-func (m *TypeId) IsSimpleType() bool {
+func (m *TypeId) getRefNodeDecl() *TypeDecl {
 	if m.Ref == nil {
-		return false
+		return nil
 	}
 	if m.Ref.Node == nil {
-		return false
+		return nil
 	}
 	decl, ok := m.Ref.Node.(*TypeDecl)
 	if !ok {
+		return nil
+	}
+	return decl
+}
+
+func (*TypeId) isType() {}
+func (m *TypeId) IsSimpleType() bool {
+	decl := m.getRefNodeDecl()
+	if decl == nil {
 		return false
 	}
 	simpleType, ok := decl.Type.(SimpleType)
@@ -66,14 +74,8 @@ func (m *TypeId) IsSimpleType() bool {
 }
 
 func (m *TypeId) IsOrdinalType() bool {
-	if m.Ref == nil {
-		return false
-	}
-	if m.Ref.Node == nil {
-		return false
-	}
-	decl, ok := m.Ref.Node.(*TypeDecl)
-	if !ok {
+	decl := m.getRefNodeDecl()
+	if decl == nil {
 		return false
 	}
 	ordinalType, ok := decl.Type.(OrdinalType)
@@ -84,14 +86,8 @@ func (m *TypeId) IsOrdinalType() bool {
 }
 
 func (m *TypeId) IsRealType() bool {
-	if m.Ref == nil {
-		return false
-	}
-	if m.Ref.Node == nil {
-		return false
-	}
-	decl, ok := m.Ref.Node.(*TypeDecl)
-	if !ok {
+	decl := m.getRefNodeDecl()
+	if decl == nil {
 		return false
 	}
 	ordinalType, ok := decl.Type.(RealType)
@@ -102,14 +98,8 @@ func (m *TypeId) IsRealType() bool {
 }
 
 func (m *TypeId) IsOrdIdent() bool {
-	if m.Ref == nil {
-		return false
-	}
-	if m.Ref.Node == nil {
-		return false
-	}
-	decl, ok := m.Ref.Node.(*TypeDecl)
-	if !ok {
+	decl := m.getRefNodeDecl()
+	if decl == nil {
 		return false
 	}
 	ordIdent, ok := decl.Type.(OrdIdent)
@@ -120,14 +110,8 @@ func (m *TypeId) IsOrdIdent() bool {
 }
 
 func (m *TypeId) IsStringType() bool {
-	if m.Ref == nil {
-		return false
-	}
-	if m.Ref.Node == nil {
-		return false
-	}
-	decl, ok := m.Ref.Node.(*TypeDecl)
-	if !ok {
+	decl := m.getRefNodeDecl()
+	if decl == nil {
 		return false
 	}
 	ordIdent, ok := decl.Type.(StringType)
