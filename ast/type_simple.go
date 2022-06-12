@@ -50,13 +50,13 @@ func NewRealType(name interface{}) RealType {
 	case RealType:
 		return v
 	case Ident:
-		if decl := EmbeddedRealTypeDecl(v.Name); decl != nil {
+		if decl := EmbeddedTypeDecl(EtkReal, v.Name); decl != nil {
 			return NewTypeId(&v, decl)
 		} else {
 			return NewTypeId(&v)
 		}
 	case *Ident:
-		if decl := EmbeddedRealTypeDecl(v.Name); decl != nil {
+		if decl := EmbeddedTypeDecl(EtkReal, v.Name); decl != nil {
 			return NewTypeId(v, decl)
 		} else {
 			return NewTypeId(v)

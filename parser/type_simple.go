@@ -8,7 +8,7 @@ import (
 
 func (p *Parser) ParseRealType(required bool) (ast.RealType, error) {
 	t := p.CurrentToken()
-	decl := ast.EmbeddedRealTypeDecl(t.Value())
+	decl := ast.EmbeddedTypeDecl(ast.EtkReal, t.Value())
 	if decl != nil {
 		p.NextToken()
 		return ast.NewTypeId(p.NewIdent(t), decl), nil

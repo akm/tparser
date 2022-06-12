@@ -4,7 +4,6 @@ import (
 	"strings"
 
 	"github.com/akm/tparser/ast/astcore"
-	"github.com/pkg/errors"
 )
 
 type EmbeddedTypeKind int
@@ -58,36 +57,25 @@ func (m *TypeEmbedded) IsStringType() bool {
 	return m.Kind == EtkString
 }
 
-var embeddedRealTypeDeclMap = map[string]*astcore.Decl{}
-var embeddedOrdIdentTypeDeclMap = map[string]*astcore.Decl{}
-var embeddedStringTypeDeclMap = map[string]*astcore.Decl{}
+var embeddedTypeDeclMaps = func() map[EmbeddedTypeKind]map[string]*astcore.Decl {
+	r := make(map[EmbeddedTypeKind]map[string]*astcore.Decl)
+	for _, kind := range []EmbeddedTypeKind{EtkReal, EtkOrdIdent, EtkString} {
+		r[kind] = make(map[string]*astcore.Decl)
+	}
+	return r
+}()
 
 func newEmbeddedTypeDecl(kind EmbeddedTypeKind, name string) *TypeDecl {
 	typ := newTypeEmbedded(kind, name)
 	typeDecl := &TypeDecl{Ident: typ.Ident, Type: typ}
 	key := strings.ToUpper(typ.Ident.Name)
 	decl := typeDecl.ToDeclarations()[0]
-	switch kind {
-	case EtkReal:
-		embeddedRealTypeDeclMap[key] = decl
-	case EtkOrdIdent:
-		embeddedOrdIdentTypeDeclMap[key] = decl
-	case EtkString:
-		embeddedStringTypeDeclMap[key] = decl
-	default:
-		panic(errors.Errorf("unexpected embedded type kind"))
-	}
+	embeddedTypeDeclMaps[kind][key] = decl
 	return typeDecl
 }
 
-func EmbeddedRealTypeDecl(name string) *astcore.Decl {
-	return embeddedRealTypeDeclMap[strings.ToUpper(name)]
-}
-func EmbeddedOrdIdentTypeDecl(name string) *astcore.Decl {
-	return embeddedOrdIdentTypeDeclMap[strings.ToUpper(name)]
-}
-func EmbeddedStringTypeDecl(name string) *astcore.Decl {
-	return embeddedStringTypeDeclMap[strings.ToUpper(name)]
+func EmbeddedTypeDecl(kind EmbeddedTypeKind, name string) *astcore.Decl {
+	return embeddedTypeDeclMaps[kind][strings.ToUpper(name)]
 }
 
 var (
