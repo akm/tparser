@@ -71,10 +71,10 @@ func TestUnitWithTypeSection(t *testing.T) {
 						tsClack := &ast.EnumeratedTypeElement{Ident: asttest.NewIdent("tsClack")}
 						tsClock := &ast.EnumeratedTypeElement{Ident: asttest.NewIdent("tsClock")}
 						return ast.TypeSection{
-							{Ident: asttest.NewIdent("TMyInteger1"), Type: &ast.OrdIdent{Ident: asttest.NewIdent("INTEGER")}},
-							{Ident: asttest.NewIdent("TMyReal1"), Type: &ast.RealType{Ident: asttest.NewIdent("REAL")}},
-							{Ident: asttest.NewIdent("TMyString1"), Type: &ast.StringType{Name: "STRING"}},
-							{Ident: asttest.NewIdent("TMyString2"), Type: &ast.StringType{Name: "ANSISTRING"}},
+							{Ident: asttest.NewIdent("TMyInteger1"), Type: ast.NewOrdIdent(asttest.NewIdent("INTEGER"))},
+							{Ident: asttest.NewIdent("TMyReal1"), Type: ast.NewRealType(asttest.NewIdent("REAL"))},
+							{Ident: asttest.NewIdent("TMyString1"), Type: asttest.NewStringType("STRING")},
+							{Ident: asttest.NewIdent("TMyString2"), Type: asttest.NewStringType("ANSISTRING")},
 							{Ident: asttest.NewIdent("TMyEnumerated1"), Type: ast.EnumeratedType{tsClick, tsClack, tsClock}},
 							{Ident: asttest.NewIdent("TMySubrange1"), Type: &ast.SubrangeType{
 								Low:  asttest.NewConstExpr(asttest.NewQualId("tsClick", tsClick.ToDeclarations()[0])),
@@ -129,9 +129,9 @@ func TestTypeSection(t *testing.T) {
 			TMyString1 = STRING;
 			TMyReal1 = REAL;`),
 		ast.TypeSection{
-			{Ident: asttest.NewIdent("TMyInteger1"), Type: &ast.OrdIdent{Ident: asttest.NewIdent("INTEGER")}},
-			{Ident: asttest.NewIdent("TMyString1"), Type: &ast.StringType{Name: "STRING"}},
-			{Ident: asttest.NewIdent("TMyReal1"), Type: &ast.RealType{Ident: asttest.NewIdent("REAL")}},
+			{Ident: asttest.NewIdent("TMyInteger1"), Type: asttest.NewOrdIdent(asttest.NewIdent("INTEGER"))},
+			{Ident: asttest.NewIdent("TMyString1"), Type: asttest.NewStringType("STRING")},
+			{Ident: asttest.NewIdent("TMyReal1"), Type: asttest.NewRealType(asttest.NewIdent("REAL"))},
 		},
 	)
 }
@@ -238,25 +238,25 @@ func TestNamedType(t *testing.T) {
 		RunTypeTest(t, string(text), text, expected)
 	}
 
-	run([]rune(`INTEGER`), &ast.OrdIdent{Ident: asttest.NewIdent("INTEGER")})
-	run([]rune(`CARDINAL`), &ast.OrdIdent{Ident: asttest.NewIdent("CARDINAL")})
-	run([]rune(`SHORTINT`), &ast.OrdIdent{Ident: asttest.NewIdent("SHORTINT")})
-	run([]rune(`SMALLINT`), &ast.OrdIdent{Ident: asttest.NewIdent("SMALLINT")})
-	run([]rune(`LONGINT`), &ast.OrdIdent{Ident: asttest.NewIdent("LONGINT")})
-	run([]rune(`INT64`), &ast.OrdIdent{Ident: asttest.NewIdent("INT64")})
-	run([]rune(`BYTE`), &ast.OrdIdent{Ident: asttest.NewIdent("BYTE")})
-	run([]rune(`WORD`), &ast.OrdIdent{Ident: asttest.NewIdent("WORD")})
-	run([]rune(`LONGWORD`), &ast.OrdIdent{Ident: asttest.NewIdent("LONGWORD")})
-	run([]rune(`CHAR`), &ast.OrdIdent{Ident: asttest.NewIdent("CHAR")})
-	run([]rune(`ANSICHAR`), &ast.OrdIdent{Ident: asttest.NewIdent("ANSICHAR")})
-	run([]rune(`WIDECHAR`), &ast.OrdIdent{Ident: asttest.NewIdent("WIDECHAR")})
-	run([]rune(`BOOLEAN`), &ast.OrdIdent{Ident: asttest.NewIdent("BOOLEAN")})
+	run([]rune(`INTEGER`), ast.NewOrdIdent(asttest.NewIdent("INTEGER")))
+	run([]rune(`CARDINAL`), ast.NewOrdIdent(asttest.NewIdent("CARDINAL")))
+	run([]rune(`SHORTINT`), ast.NewOrdIdent(asttest.NewIdent("SHORTINT")))
+	run([]rune(`SMALLINT`), ast.NewOrdIdent(asttest.NewIdent("SMALLINT")))
+	run([]rune(`LONGINT`), ast.NewOrdIdent(asttest.NewIdent("LONGINT")))
+	run([]rune(`INT64`), ast.NewOrdIdent(asttest.NewIdent("INT64")))
+	run([]rune(`BYTE`), ast.NewOrdIdent(asttest.NewIdent("BYTE")))
+	run([]rune(`WORD`), ast.NewOrdIdent(asttest.NewIdent("WORD")))
+	run([]rune(`LONGWORD`), ast.NewOrdIdent(asttest.NewIdent("LONGWORD")))
+	run([]rune(`CHAR`), ast.NewOrdIdent(asttest.NewIdent("CHAR")))
+	run([]rune(`ANSICHAR`), ast.NewOrdIdent(asttest.NewIdent("ANSICHAR")))
+	run([]rune(`WIDECHAR`), ast.NewOrdIdent(asttest.NewIdent("WIDECHAR")))
+	run([]rune(`BOOLEAN`), ast.NewOrdIdent(asttest.NewIdent("BOOLEAN")))
 
-	run([]rune(`REAL48`), &ast.RealType{Ident: asttest.NewIdent("REAL48")})
-	run([]rune(`REAL`), &ast.RealType{Ident: asttest.NewIdent("REAL")})
-	run([]rune(`SINGLE`), &ast.RealType{Ident: asttest.NewIdent("SINGLE")})
-	run([]rune(`DOUBLE`), &ast.RealType{Ident: asttest.NewIdent("DOUBLE")})
-	run([]rune(`EXTENDED`), &ast.RealType{Ident: asttest.NewIdent("EXTENDED")})
-	run([]rune(`CURRENCY`), &ast.RealType{Ident: asttest.NewIdent("CURRENCY")})
-	run([]rune(`COMP`), &ast.RealType{Ident: asttest.NewIdent("COMP")})
+	run([]rune(`REAL48`), ast.NewRealType(asttest.NewIdent("REAL48")))
+	run([]rune(`REAL`), ast.NewRealType(asttest.NewIdent("REAL")))
+	run([]rune(`SINGLE`), ast.NewRealType(asttest.NewIdent("SINGLE")))
+	run([]rune(`DOUBLE`), ast.NewRealType(asttest.NewIdent("DOUBLE")))
+	run([]rune(`EXTENDED`), ast.NewRealType(asttest.NewIdent("EXTENDED")))
+	run([]rune(`CURRENCY`), ast.NewRealType(asttest.NewIdent("CURRENCY")))
+	run([]rune(`COMP`), ast.NewRealType(asttest.NewIdent("COMP")))
 }

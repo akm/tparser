@@ -23,7 +23,7 @@ end
 				FieldDecls: ast.FieldDecls{
 					{
 						IdentList: asttest.NewIdentList("Year"),
-						Type:      &ast.OrdIdent{Ident: asttest.NewIdent("Integer")},
+						Type:      ast.NewOrdIdent(asttest.NewIdent("Integer")),
 					},
 					{
 						IdentList: asttest.NewIdentList("Month"),
@@ -67,11 +67,11 @@ end
 				FieldDecls: ast.FieldDecls{
 					{
 						IdentList: asttest.NewIdentList("Name"),
-						Type:      &ast.StringType{Name: "STRING"},
+						Type:      asttest.NewStringType("string"),
 					},
 					{
 						IdentList: asttest.NewIdentList("Age"),
-						Type:      &ast.OrdIdent{Ident: asttest.NewIdent("Integer")},
+						Type:      ast.NewOrdIdent(asttest.NewIdent("Integer")),
 					},
 				},
 			},
@@ -94,7 +94,7 @@ end
 				FieldDecls: ast.FieldDecls{
 					{
 						IdentList: asttest.NewIdentList("FirstName", "LastName"),
-						Type:      &ast.StringType{Name: "STRING", Length: asttest.NewConstExpr(asttest.NewNumber("40"))},
+						Type:      asttest.NewFixedStringType("string", asttest.NewConstExpr(asttest.NewNumber("40"))),
 					},
 					{
 						IdentList: asttest.NewIdentList("BirthDate"),
@@ -103,7 +103,7 @@ end
 				},
 				VariantSection: &ast.VariantSection{
 					Ident:  asttest.NewIdent("Salaried"),
-					TypeId: &ast.OrdIdent{Ident: asttest.NewIdent("Boolean")},
+					TypeId: ast.NewOrdIdent(asttest.NewIdent("Boolean")),
 					RecVariants: ast.RecVariants{
 						{
 							ConstExprs: ast.ConstExprs{asttest.NewConstExpr(&ast.ValueFactor{Value: "True"})},
@@ -111,7 +111,7 @@ end
 								FieldDecls: ast.FieldDecls{
 									{
 										IdentList: asttest.NewIdentList("AnnualSalary"),
-										Type:      &ast.RealType{Ident: asttest.NewIdent("Currency")},
+										Type:      ast.NewRealType(asttest.NewIdent("Currency")),
 									},
 								},
 							},
@@ -122,7 +122,7 @@ end
 								FieldDecls: ast.FieldDecls{
 									{
 										IdentList: asttest.NewIdentList("HourlyWage"),
-										Type:      &ast.RealType{Ident: asttest.NewIdent("Currency")},
+										Type:      ast.NewRealType(asttest.NewIdent("Currency")),
 									},
 								},
 							},
@@ -151,7 +151,7 @@ end
 				FieldDecls: ast.FieldDecls{
 					{
 						IdentList: asttest.NewIdentList("FirstName", "LastName"),
-						Type:      &ast.StringType{Name: "STRING", Length: asttest.NewConstExpr(asttest.NewNumber("40"))},
+						Type:      asttest.NewFixedStringType("string", asttest.NewConstExpr(asttest.NewNumber("40"))),
 					},
 					{
 						IdentList: asttest.NewIdentList("BirthDate"),
@@ -160,7 +160,7 @@ end
 				},
 				VariantSection: &ast.VariantSection{
 					Ident:  asttest.NewIdent("Citizen"),
-					TypeId: &ast.OrdIdent{Ident: asttest.NewIdent("Boolean")},
+					TypeId: ast.NewOrdIdent(asttest.NewIdent("Boolean")),
 					RecVariants: ast.RecVariants{
 						{
 							ConstExprs: ast.ConstExprs{asttest.NewConstExpr(&ast.ValueFactor{Value: "True"})},
@@ -168,7 +168,7 @@ end
 								FieldDecls: ast.FieldDecls{
 									{
 										IdentList: asttest.NewIdentList("Birthplace"),
-										Type:      &ast.StringType{Name: "STRING", Length: asttest.NewConstExpr(asttest.NewNumber("40"))},
+										Type:      asttest.NewFixedStringType("string", asttest.NewConstExpr(asttest.NewNumber("40"))),
 									},
 								},
 							},
@@ -179,11 +179,11 @@ end
 								FieldDecls: ast.FieldDecls{
 									{
 										IdentList: asttest.NewIdentList("Country"),
-										Type:      &ast.StringType{Name: "STRING", Length: asttest.NewConstExpr(asttest.NewNumber("20"))},
+										Type:      asttest.NewFixedStringType("string", asttest.NewConstExpr(asttest.NewNumber("20"))),
 									},
 									{
 										IdentList: asttest.NewIdentList("EntryPort"),
-										Type:      &ast.StringType{Name: "STRING", Length: asttest.NewConstExpr(asttest.NewNumber("20"))},
+										Type:      asttest.NewFixedStringType("string", asttest.NewConstExpr(asttest.NewNumber("20"))),
 									},
 									{
 										IdentList: asttest.NewIdentList("EntryDate", "ExitDate"),
@@ -241,7 +241,7 @@ type
 										FieldDecls: ast.FieldDecls{
 											{
 												IdentList: asttest.NewIdentList("Height", "Width"),
-												Type:      &ast.RealType{Ident: asttest.NewIdent("Real")},
+												Type:      ast.NewRealType(asttest.NewIdent("Real")),
 											},
 										},
 									},
@@ -254,7 +254,7 @@ type
 										FieldDecls: ast.FieldDecls{
 											{
 												IdentList: asttest.NewIdentList("Side1", "Side2", "Angle"),
-												Type:      &ast.RealType{Ident: asttest.NewIdent("Real")},
+												Type:      ast.NewRealType(asttest.NewIdent("Real")),
 											},
 										},
 									},
@@ -267,7 +267,7 @@ type
 										FieldDecls: ast.FieldDecls{
 											{
 												IdentList: asttest.NewIdentList("Radius"),
-												Type:      &ast.RealType{Ident: asttest.NewIdent("Real")},
+												Type:      ast.NewRealType(asttest.NewIdent("Real")),
 											},
 										},
 									},

@@ -5,13 +5,12 @@ import (
 	"github.com/akm/tparser/token"
 )
 
-var stringType = token.PredicatorBy("StringType", ast.IsStringTypeName)
-
-func (p *Parser) ParseStringType(required bool) (*ast.StringType, error) {
+func (p *Parser) ParseStringType(required bool) (ast.StringType, error) {
 	t := p.CurrentToken()
-	if t.Is(stringType) {
+	decl := ast.EmbeddedTypeDecl(ast.EtkStringType, t.Value())
+	if decl != nil {
 		p.NextToken()
-		return &ast.StringType{Name: t.Value()}, nil
+		return ast.NewTypeId(p.NewIdent(t), decl), nil
 	} else if required {
 		return nil, p.TokenErrorf("Unsupported token %s for StringType", t)
 	} else {
@@ -20,9 +19,10 @@ func (p *Parser) ParseStringType(required bool) (*ast.StringType, error) {
 }
 
 // This method parses just STRING not ANSISTRING nor WIDESTRING
-func (p *Parser) ParseStringOfStringType() (*ast.StringType, error) {
+func (p *Parser) ParseStringOfStringType() (ast.StringType, error) {
 	t1 := p.CurrentToken()
-	if !t1.Is(token.Value("STRING")) {
+	decl := ast.EmbeddedTypeDecl(ast.EtkStringType, t1.Value())
+	if decl == nil {
 		return nil, nil
 	}
 	t2 := p.NextToken()
@@ -36,8 +36,8 @@ func (p *Parser) ParseStringOfStringType() (*ast.StringType, error) {
 			return nil, err
 		}
 		p.NextToken()
-		return &ast.StringType{Name: "STRING", Length: expr}, nil
+		return ast.NewFixedStringType(p.NewIdent(t1), expr), nil
 	} else {
-		return &ast.StringType{Name: t1.Value()}, nil
+		return ast.NewTypeId(p.NewIdent(t1), decl), nil
 	}
 }

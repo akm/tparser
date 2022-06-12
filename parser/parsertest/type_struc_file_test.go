@@ -15,15 +15,15 @@ func TestStrucFileType(t *testing.T) {
 				FieldDecls: ast.FieldDecls{
 					{
 						IdentList: asttest.NewIdentList("FirstName", "LastName"),
-						Type:      &ast.StringType{Name: "STRING", Length: asttest.NewConstExpr(asttest.NewNumber("20"))},
+						Type:      asttest.NewFixedStringType("string", asttest.NewConstExpr(asttest.NewNumber("20"))),
 					},
 					{
 						IdentList: asttest.NewIdentList("PhoneNumber"),
-						Type:      &ast.StringType{Name: "STRING", Length: asttest.NewConstExpr(asttest.NewNumber("15"))},
+						Type:      asttest.NewFixedStringType("string", asttest.NewConstExpr(asttest.NewNumber("15"))),
 					},
 					{
 						IdentList: asttest.NewIdentList("Listed"),
-						Type:      &ast.OrdIdent{Ident: asttest.NewIdent("Boolean")},
+						Type:      ast.NewOrdIdent(asttest.NewIdent("Boolean")),
 					},
 				},
 			},

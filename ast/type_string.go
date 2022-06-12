@@ -1,21 +1,8 @@
 package ast
 
 import (
-	"strings"
-
-	"github.com/akm/tparser/ext"
 	"github.com/pkg/errors"
 )
-
-func IsStringTypeName(w string) bool {
-	return stringTypeNames.Include(strings.ToUpper(w))
-}
-
-var stringTypeNames = ext.Strings{
-	"STRING",
-	"ANSISTRING",
-	"WIDESTRING",
-}.Set()
 
 // - StringType
 //   ```
@@ -30,36 +17,38 @@ var stringTypeNames = ext.Strings{
 //   ```
 //   STRING '[' ConstExpr ']'
 //   ```
-type StringType struct {
+type StringType interface {
+	IsStringType() bool
+	// implements
 	Type
-	Name   string
+}
+
+func NewStringType(name interface{}) StringType {
+	switch v := name.(type) {
+	case StringType:
+		return v
+	case *Ident:
+		if decl := EmbeddedTypeDecl(EtkStringType, v.Name); decl != nil {
+			return NewTypeId(v, decl)
+		} else {
+			return NewTypeId(v)
+		}
+	default:
+		panic(errors.Errorf("invalid type %T for NewStringType %+v", name, name))
+	}
+}
+
+type FixedStringType struct {
+	StringType
 	Length *ConstExpr
 }
 
-func NewStringType(name string, args ...interface{}) *StringType {
-	if len(args) > 1 {
-		panic(errors.Errorf("too many arguments for NewStringType: %v, %v", name, args))
-	}
-	var length *ConstExpr
-	if len(args) == 1 {
-		switch v := args[0].(type) {
-		case ConstExpr:
-			length = &v
-		case *ConstExpr:
-			length = v
-		}
-	}
-	return &StringType{
-		Name:   name,
-		Length: length,
-	}
+func NewFixedStringType(name interface{}, length *ConstExpr) *FixedStringType {
+	return &FixedStringType{StringType: NewStringType(name), Length: length}
 }
 
-func (*StringType) isType() {}
-func (m *StringType) Children() Nodes {
-	r := Nodes{}
-	if m.Length != nil {
-		r = append(r, m.Length)
-	}
-	return r
+func (*FixedStringType) isType()            {}
+func (*FixedStringType) IsStringType() bool { return true }
+func (m *FixedStringType) Children() Nodes {
+	return Nodes{m.StringType, m.Length}
 }

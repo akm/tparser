@@ -1,10 +1,7 @@
 package ast
 
 import (
-	"strings"
-
 	"github.com/akm/tparser/ast/astcore"
-	"github.com/akm/tparser/ext"
 	"github.com/pkg/errors"
 )
 
@@ -39,41 +36,32 @@ type SimpleType interface {
 //   ```
 //   COMP
 //   ```
-func IsRealTypeName(w string) bool {
-	return realTypeNames.Include(strings.ToUpper(w))
-}
-
-var realTypeNames = ext.Strings{
-	"REAL48",
-	"REAL",
-	"SINGLE",
-	"DOUBLE",
-	"EXTENDED",
-	"CURRENCY",
-	"COMP",
-}.Set()
-
-type RealType struct {
+type RealType interface {
+	IsRealType() bool
+	// implements
 	SimpleType
-	*Ident
 }
 
-func NewRealType(name interface{}) *RealType {
+func NewRealType(name interface{}) RealType {
 	switch v := name.(type) {
-	case *RealType:
+	case RealType:
 		return v
 	case Ident:
-		return &RealType{Ident: &v}
+		if decl := EmbeddedTypeDecl(EtkReal, v.Name); decl != nil {
+			return NewTypeId(&v, decl)
+		} else {
+			return NewTypeId(&v)
+		}
 	case *Ident:
-		return &RealType{Ident: v}
+		if decl := EmbeddedTypeDecl(EtkReal, v.Name); decl != nil {
+			return NewTypeId(v, decl)
+		} else {
+			return NewTypeId(v)
+		}
 	default:
 		panic(errors.Errorf("invalid type %T for NewRealType %+v", name, name))
 	}
 }
-
-func (*RealType) isType()            {}
-func (*RealType) IsSimpleType() bool { return true }
-func (m *RealType) Children() Nodes  { return Nodes{m.Ident} }
 
 // - OrdinalType
 //   ```
@@ -123,58 +111,32 @@ type OrdinalType interface {
 //   ```
 //   PCHAR
 //   ```
-func IsOrdIdentName(w string) bool {
-	return ordIdentNames.Include(strings.ToUpper(w))
-}
-
-var ordIdentNames = ext.Strings{
-	// Integer types
-	"INTEGER",
-	"CARDINAL",
-	"SHORTINT",
-	"SMALLINT",
-	"LONGINT",
-	"INT64",
-	"BYTE",
-	"WORD",
-	"LONGWORD",
-
-	// Character types
-	"CHAR",
-	"ANSICHAR",
-	"WIDECHAR",
-
-	// Boolean types
-	"BOOLEAN",
-
-	// The following are in String Type
-	// "PCHAR",
-	// "PANSICHAR",
-	// "PWIDECHAR",
-}.Set()
-
-type OrdIdent struct {
+type OrdIdent interface {
+	IsOrdIdent() bool
+	// implements
 	OrdinalType
-	*Ident
 }
 
-func NewOrdIdent(name interface{}) *OrdIdent {
+func NewOrdIdent(name interface{}) OrdIdent {
 	switch v := name.(type) {
-	case *OrdIdent:
+	case OrdIdent:
 		return v
 	case Ident:
-		return &OrdIdent{Ident: &v}
+		if decl := EmbeddedTypeDecl(EtkOrdIdent, v.Name); decl != nil {
+			return NewTypeId(&v, decl)
+		} else {
+			return NewTypeId(&v)
+		}
 	case *Ident:
-		return &OrdIdent{Ident: v}
+		if decl := EmbeddedTypeDecl(EtkOrdIdent, v.Name); decl != nil {
+			return NewTypeId(v, decl)
+		} else {
+			return NewTypeId(v)
+		}
 	default:
 		panic(errors.Errorf("invalid type %T for NewOrdIndent %+v", name, name))
 	}
 }
-
-func (*OrdIdent) isType()             {}
-func (*OrdIdent) IsSimpleType() bool  { return true }
-func (*OrdIdent) IsOrdinalType() bool { return true }
-func (m *OrdIdent) Children() Nodes   { return Nodes{m.Ident} }
 
 // - EnumeratedType
 //   ```

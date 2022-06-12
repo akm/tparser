@@ -73,7 +73,7 @@ end.
 					}
 					varDecl := &ast.VarDecl{
 						IdentList: asttest.NewIdentList("msg"),
-						Type:      asttest.NewStringType("STRING"),
+						Type:      asttest.NewStringType("string"),
 					}
 					return &ast.Block{
 						DeclSections: ast.DeclSections{

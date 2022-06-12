@@ -21,7 +21,7 @@ func TestStrucArray(t *testing.T) {
 					High: asttest.NewConstExpr(asttest.NewNumber("100")),
 				},
 			},
-			BaseType: &ast.OrdIdent{Ident: asttest.NewIdent("Char")},
+			BaseType: ast.NewOrdIdent(asttest.NewIdent("Char")),
 		},
 	).Run().RunVarSection("MyArray")
 
@@ -42,7 +42,7 @@ func TestStrucArray(t *testing.T) {
 						High: asttest.NewConstExpr(asttest.NewNumber("50")),
 					},
 				},
-				BaseType: &ast.RealType{Ident: asttest.NewIdent("Real")},
+				BaseType: ast.NewRealType(asttest.NewIdent("Real")),
 			},
 		},
 	).Run().RunTypeSection("TMatrix")
@@ -61,7 +61,7 @@ func TestStrucArray(t *testing.T) {
 					High: asttest.NewConstExpr(asttest.NewNumber("50")),
 				},
 			},
-			BaseType: &ast.RealType{Ident: asttest.NewIdent("Real")},
+			BaseType: ast.NewRealType(asttest.NewIdent("Real")),
 		},
 	).Run().RunTypeSection("TMatrix")
 
@@ -85,7 +85,7 @@ func TestStrucArray(t *testing.T) {
 		&ast.ArrayType{
 			Packed: true,
 			IndexTypes: []ast.OrdinalType{
-				&ast.OrdIdent{Ident: asttest.NewIdent("Boolean")},
+				ast.NewOrdIdent(asttest.NewIdent("Boolean")),
 				&ast.SubrangeType{
 					Low:  asttest.NewConstExpr(asttest.NewNumber("1")),
 					High: asttest.NewConstExpr(asttest.NewNumber("10")),
@@ -95,7 +95,7 @@ func TestStrucArray(t *testing.T) {
 					Ref:   tshoeSizeDecl.ToDeclarations()[0],
 				},
 			},
-			BaseType: &ast.OrdIdent{Ident: asttest.NewIdent("Integer")},
+			BaseType: ast.NewOrdIdent(asttest.NewIdent("Integer")),
 		},
 		tshoeSizeContext,
 	).Run()
@@ -106,7 +106,7 @@ func TestStrucArray(t *testing.T) {
 		&ast.ArrayType{
 			Packed: true,
 			IndexTypes: []ast.OrdinalType{
-				&ast.OrdIdent{Ident: asttest.NewIdent("Boolean")},
+				ast.NewOrdIdent(asttest.NewIdent("Boolean")),
 			},
 			BaseType: &ast.ArrayType{
 				Packed: true,
@@ -124,7 +124,7 @@ func TestStrucArray(t *testing.T) {
 							Ref:   tshoeSizeDecl.ToDeclarations()[0],
 						},
 					},
-					BaseType: &ast.OrdIdent{Ident: asttest.NewIdent("Integer")},
+					BaseType: ast.NewOrdIdent(asttest.NewIdent("Integer")),
 				},
 			},
 		},
@@ -136,7 +136,7 @@ func TestStrucArray(t *testing.T) {
 		[]rune(`array of Real`),
 		&ast.ArrayType{
 			IndexTypes: nil,
-			BaseType:   &ast.RealType{Ident: asttest.NewIdent("Real")},
+			BaseType:   ast.NewRealType(asttest.NewIdent("Real")),
 		},
 	).Run().RunVarSection("MyFlexibleArray")
 
@@ -147,7 +147,7 @@ func TestStrucArray(t *testing.T) {
 			IndexTypes: nil,
 			BaseType: &ast.ArrayType{
 				IndexTypes: nil,
-				BaseType:   &ast.StringType{Name: "STRING"},
+				BaseType:   asttest.NewStringType("string"),
 			},
 		},
 	).Run().RunTypeSection("TMessageGrid")
