@@ -58,3 +58,11 @@ var (
 	NewProgramTestRunner = runners.NewProgramTestRunner
 	RunProgramTest       = runners.RunProgramTest
 )
+
+// block_test_runner.go
+type BlockTestRunner = runners.BlockTestRunner
+
+var (
+	NewBlockTestRunner = runners.NewBlockTestRunner
+	RunBlockTest       = runners.RunBlockTest
+)
