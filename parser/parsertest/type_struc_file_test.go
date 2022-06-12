@@ -23,7 +23,7 @@ func TestStrucFileType(t *testing.T) {
 					},
 					{
 						IdentList: asttest.NewIdentList("Listed"),
-						Type:      &ast.OrdIdent{Ident: asttest.NewIdent("Boolean")},
+						Type:      ast.NewOrdIdent(asttest.NewIdent("Boolean")),
 					},
 				},
 			},

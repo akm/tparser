@@ -23,7 +23,7 @@ end
 				FieldDecls: ast.FieldDecls{
 					{
 						IdentList: asttest.NewIdentList("Year"),
-						Type:      &ast.OrdIdent{Ident: asttest.NewIdent("Integer")},
+						Type:      ast.NewOrdIdent(asttest.NewIdent("Integer")),
 					},
 					{
 						IdentList: asttest.NewIdentList("Month"),
@@ -71,7 +71,7 @@ end
 					},
 					{
 						IdentList: asttest.NewIdentList("Age"),
-						Type:      &ast.OrdIdent{Ident: asttest.NewIdent("Integer")},
+						Type:      ast.NewOrdIdent(asttest.NewIdent("Integer")),
 					},
 				},
 			},
@@ -103,7 +103,7 @@ end
 				},
 				VariantSection: &ast.VariantSection{
 					Ident:  asttest.NewIdent("Salaried"),
-					TypeId: &ast.OrdIdent{Ident: asttest.NewIdent("Boolean")},
+					TypeId: ast.NewOrdIdent(asttest.NewIdent("Boolean")),
 					RecVariants: ast.RecVariants{
 						{
 							ConstExprs: ast.ConstExprs{asttest.NewConstExpr(&ast.ValueFactor{Value: "True"})},
@@ -160,7 +160,7 @@ end
 				},
 				VariantSection: &ast.VariantSection{
 					Ident:  asttest.NewIdent("Citizen"),
-					TypeId: &ast.OrdIdent{Ident: asttest.NewIdent("Boolean")},
+					TypeId: ast.NewOrdIdent(asttest.NewIdent("Boolean")),
 					RecVariants: ast.RecVariants{
 						{
 							ConstExprs: ast.ConstExprs{asttest.NewConstExpr(&ast.ValueFactor{Value: "True"})},

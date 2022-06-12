@@ -52,8 +52,8 @@ func AssertOrdinalType(t *testing.T, expected, actual ast.OrdinalType) {
 		return
 	}
 	switch exp := expected.(type) {
-	case *ast.OrdIdent:
-		AssertOrdIdent(t, exp, actual.(*ast.OrdIdent))
+	case ast.OrdIdent:
+		AssertOrdIdent(t, exp, actual.(ast.OrdIdent))
 	case ast.EnumeratedType:
 		AssertEnumeratedType(t, exp, actual.(ast.EnumeratedType))
 	case *ast.SubrangeType:
@@ -63,9 +63,17 @@ func AssertOrdinalType(t *testing.T, expected, actual ast.OrdinalType) {
 	}
 }
 
-func AssertOrdIdent(t *testing.T, expected, actual *ast.OrdIdent) {
-	if !assert.Equal(t, expected.Ident, actual.Ident) {
-		AssertIdent(t, expected.Ident, actual.Ident)
+func AssertOrdIdent(t *testing.T, expected, actual ast.OrdIdent) {
+	if !assert.IsType(t, expected, actual) {
+		return
+	}
+	switch exp := expected.(type) {
+	case *ast.TypeEmbedded:
+		AssertTypeEmbedded(t, exp, actual.(*ast.TypeEmbedded))
+	case *ast.TypeId:
+		AssertTypeId(t, exp, actual.(*ast.TypeId))
+	default:
+		assert.Fail(t, "unexpected type: %T", exp)
 	}
 }
 

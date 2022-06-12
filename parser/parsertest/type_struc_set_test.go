@@ -63,7 +63,7 @@ func TestStrucSet(t *testing.T) {
 		"Set of Byte",
 		[]rune(`set of Byte`),
 		&ast.SetType{
-			OrdinalType: &ast.OrdIdent{Ident: asttest.NewIdent("Byte")},
+			OrdinalType: ast.NewOrdIdent(asttest.NewIdent("Byte")),
 		},
 	).Run()
 
@@ -84,7 +84,7 @@ func TestStrucSet(t *testing.T) {
 		"Set of Char",
 		[]rune(`set of Char`),
 		&ast.SetType{
-			OrdinalType: &ast.OrdIdent{Ident: asttest.NewIdent("Char")},
+			OrdinalType: ast.NewOrdIdent(asttest.NewIdent("Char")),
 		},
 	).Run()
 }
