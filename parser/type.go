@@ -87,6 +87,8 @@ func (p *Parser) ParseType() (ast.Type, error) {
 	case token.SpecialSymbol:
 		if t1.Is(token.Symbol('(')) {
 			return p.ParseEnumeratedType()
+		} else if t1.Is(token.Symbol('^')) {
+			return p.ParseCustomPointerType()
 		}
 	case token.Identifier:
 		return p.ParseTypeForIdentifier()
@@ -155,4 +157,16 @@ func (p *Parser) parseTypeIdWithoutUnit() (*ast.TypeId, error) {
 	}
 
 	return r, nil
+}
+
+func (p *Parser) ParseCustomPointerType() (*ast.CustomPointerType, error) {
+	if _, err := p.Current(token.Symbol('^')); err != nil {
+		return nil, err
+	}
+	p.NextToken()
+	typ, err := p.ParseTypeId()
+	if err != nil {
+		return nil, err
+	}
+	return &ast.CustomPointerType{TypeId: typ}, nil
 }
