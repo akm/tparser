@@ -15,6 +15,13 @@ const (
 	EtkPointerType
 )
 
+var embeddedTypeKindAll = []EmbeddedTypeKind{
+	EtkReal,
+	EtkOrdIdent,
+	EtkStringType,
+	EtkPointerType,
+}
+
 type TypeEmbedded struct {
 	Kind  EmbeddedTypeKind
 	Ident *Ident
@@ -60,7 +67,7 @@ func (m *TypeEmbedded) IsStringType() bool {
 
 var embeddedTypeDeclMaps = func() map[EmbeddedTypeKind]map[string]*astcore.Decl {
 	r := make(map[EmbeddedTypeKind]map[string]*astcore.Decl)
-	for _, kind := range []EmbeddedTypeKind{EtkReal, EtkOrdIdent, EtkStringType} {
+	for _, kind := range embeddedTypeKindAll {
 		r[kind] = make(map[string]*astcore.Decl)
 	}
 	return r
@@ -106,8 +113,8 @@ var (
 	EmbeddedAnsiString = newEmbeddedTypeDecl(EtkStringType, "AnsiString")
 	EmbeddedWideString = newEmbeddedTypeDecl(EtkStringType, "WideString")
 
-	EmbeddedPointer   = newEmbeddedTypeDecl(EtkStringType, "Pointer")
-	EmbeddedPChar     = newEmbeddedTypeDecl(EtkStringType, "PChar")
-	EmbeddedPAnsiChar = newEmbeddedTypeDecl(EtkStringType, "PAnsiChar")
-	EmbeddedPWideChar = newEmbeddedTypeDecl(EtkStringType, "PWideChar")
+	EmbeddedPointer   = newEmbeddedTypeDecl(EtkPointerType, "Pointer")
+	EmbeddedPChar     = newEmbeddedTypeDecl(EtkPointerType, "PChar")
+	EmbeddedPAnsiChar = newEmbeddedTypeDecl(EtkPointerType, "PAnsiChar")
+	EmbeddedPWideChar = newEmbeddedTypeDecl(EtkPointerType, "PWideChar")
 )
