@@ -10,6 +10,14 @@ type PointerType interface {
 	Type
 }
 
+func NewEmbeddedPointerType(v *Ident) *TypeId {
+	if decl := EmbeddedTypeDecl(EtkPointerType, v.Name); decl != nil {
+		return NewTypeId(v, decl)
+	} else {
+		return NewTypeId(v)
+	}
+}
+
 type CustomPointerType struct {
 	TypeId *TypeId
 	// implements
