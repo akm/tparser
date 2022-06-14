@@ -30,3 +30,6 @@ func NewCustomPointerType(typeId *TypeId) *CustomPointerType {
 
 func (*CustomPointerType) isType()             {}
 func (*CustomPointerType) IsPointerType() bool { return true }
+func (m *CustomPointerType) Children() Nodes {
+	return Nodes{m.TypeId}
+}
