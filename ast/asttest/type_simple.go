@@ -21,3 +21,7 @@ func NewOrdIdent(name interface{}) ast.OrdIdent {
 		return ast.NewOrdIdent(name)
 	}
 }
+
+func NewOrdIdentWithIdent(v *ast.Ident) *ast.TypeId {
+	return ast.NewOrdIdentWithIdent(v)
+}
