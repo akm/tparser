@@ -129,7 +129,7 @@ end;
 								Designator: asttest.NewDesignator(asttest.NewIdentRef("PI", declPI)),
 								Expression: asttest.NewExpression(
 									&ast.TypeCast{
-										TypeId: ast.NewTypeId(asttest.NewIdentRef("PInteger", declPInteger)),
+										TypeId: ast.NewTypeId(asttest.NewIdent("PInteger"), declPInteger),
 										Expression: asttest.NewExpression(
 											asttest.NewQualId(asttest.NewIdentRef("P", declP)),
 										),
@@ -154,5 +154,72 @@ end;
 		}(),
 	)
 
-	// TODO tests for PChar, PAnsiChar, PWideChar
+	RunBlockTest(t,
+		"with PChar",
+		[]rune(`
+var
+	MyArray: array[0..32] of Char;
+	MyPointer: PChar;
+begin
+	MyArray := 'Hello';
+	MyPointer := MyArray;
+	SomeProcedure(MyArray);
+	SomeProcedure(MyPointer);
+end;
+`),
+		func() *ast.Block {
+			varDeclMyArray := &ast.VarDecl{
+				IdentList: asttest.NewIdentList("MyArray"),
+				Type: &ast.ArrayType{
+					IndexTypes: []ast.OrdinalType{
+						&ast.SubrangeType{
+							Low:  asttest.NewConstExpr(asttest.NewNumber("0")),
+							High: asttest.NewConstExpr(asttest.NewNumber("32")),
+						},
+					},
+					BaseType: ast.NewOrdIdent(asttest.NewIdent("Char")),
+				},
+			}
+			varDeclMyPointer := &ast.VarDecl{
+				IdentList: asttest.NewIdentList("MyPointer"),
+				Type:      ast.NewEmbeddedPointerType(asttest.NewIdent("PChar")),
+			}
+			declMyArray := varDeclMyArray.ToDeclarations()[0]
+			declMyPointer := varDeclMyPointer.ToDeclarations()[0]
+			return &ast.Block{
+				DeclSections: ast.DeclSections{
+					ast.VarSection{varDeclMyArray, varDeclMyPointer},
+				},
+				Body: &ast.CompoundStmt{
+					StmtList: ast.StmtList{
+						&ast.Statement{
+							Body: &ast.AssignStatement{
+								Designator: asttest.NewDesignator(asttest.NewIdentRef("MyArray", declMyArray)),
+								Expression: asttest.NewExpression(asttest.NewString("'Hello'")),
+							},
+						},
+						&ast.Statement{
+							Body: &ast.AssignStatement{
+								Designator: asttest.NewDesignator(asttest.NewIdentRef("MyPointer", declMyPointer)),
+								Expression: asttest.NewExpression(asttest.NewIdentRef("MyArray", declMyArray)),
+							},
+						},
+						&ast.Statement{
+							Body: &ast.CallStatement{
+								Designator: asttest.NewDesignator(asttest.NewIdentRef("SomeProcedure")),
+								ExprList:   ast.ExprList{asttest.NewExpression(asttest.NewIdentRef("MyArray", declMyArray))},
+							},
+						},
+						&ast.Statement{
+							Body: &ast.CallStatement{
+								Designator: asttest.NewDesignator(asttest.NewIdentRef("SomeProcedure")),
+								ExprList:   ast.ExprList{asttest.NewExpression(asttest.NewIdentRef("MyPointer", declMyPointer))},
+							},
+						},
+					},
+				},
+			}
+		}(),
+	)
+
 }
