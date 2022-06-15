@@ -32,7 +32,7 @@ func NewProgramContext(args ...interface{}) *ProgramContext {
 		units = ast.Units{}
 	}
 	if declarationMap == nil {
-		declarationMap = astcore.NewDeclMap()
+		declarationMap = astcore.NewChainedDeclMap(ast.EmbeddedTypeDeclMap)
 	}
 	return &ProgramContext{
 		Path:    path,

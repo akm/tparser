@@ -26,7 +26,7 @@ func NewUnitContext(parent *ProgramContext, args ...interface{}) *UnitContext {
 		}
 	}
 	if declarationMap == nil {
-		declarationMap = astcore.NewDeclMap()
+		declarationMap = astcore.NewChainedDeclMap(ast.EmbeddedTypeDeclMap)
 	}
 	return &UnitContext{
 		Parent:  parent,
