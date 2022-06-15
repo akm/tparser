@@ -150,7 +150,7 @@ func TestExportHeading(t *testing.T) {
 				Type:  ast.FtFunction,
 				Ident: asttest.NewIdent("printf"),
 				FormalParameters: ast.FormalParameters{
-					asttest.NewFormalParm("Format", "PChar"),
+					asttest.NewFormalParm("Format", ast.NewEmbeddedPointerType(asttest.NewIdent("PChar"))),
 				},
 				ReturnType: asttest.NewOrdIdent("Integer"),
 			},
@@ -196,7 +196,7 @@ func TestExportHeading(t *testing.T) {
 				Ident: asttest.NewIdent("MessageBox"),
 				FormalParameters: ast.FormalParameters{
 					asttest.NewFormalParm("HWnd", asttest.NewOrdIdent("Integer")),
-					asttest.NewFormalParm([]string{"Text", "Caption"}, "PChar"),
+					asttest.NewFormalParm([]string{"Text", "Caption"}, ast.NewEmbeddedPointerType(asttest.NewIdent("PChar"))),
 					asttest.NewFormalParm("Flags", asttest.NewOrdIdent("Integer")),
 				},
 				ReturnType: asttest.NewOrdIdent("Integer"),
@@ -476,7 +476,7 @@ func TestFormalParameters(t *testing.T) {
 					asttest.NewIdent("Text", asttest.NewIdentLocation(1, 17, 16, 21)),
 					asttest.NewIdent("Caption", asttest.NewIdentLocation(1, 23, 22, 30)),
 				},
-				asttest.NewIdent("PChar", asttest.NewIdentLocation(1, 32, 31, 37)),
+				ast.NewEmbeddedPointerType(asttest.NewIdent("PChar", asttest.NewIdentLocation(1, 32, 31, 37))),
 			),
 			asttest.NewFormalParm(
 				asttest.NewIdent("PChar", asttest.NewIdentLocation(1, 39, 38, 44)),

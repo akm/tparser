@@ -92,7 +92,7 @@ func (p *Parser) ParseArrayType() (*ast.ArrayType, error) {
 	}
 	r.BaseType = baseType
 
-	if p.NextToken().Is(token.ReservedWord.HasKeyword("PACKED")) {
+	if p.CurrentToken().Is(token.ReservedWord.HasKeyword("PACKED")) {
 		r.Packed = true
 		p.NextToken()
 	}

@@ -192,13 +192,11 @@ func TestExpression(t *testing.T) {
 		"value typecast", false,
 		[]rune(`Char(48)`),
 		asttest.NewExpression(
-			&ast.DesignatorFactor{
-				Designator: &ast.Designator{
-					QualId: ast.NewQualId(nil, asttest.NewIdentRef("Char", asttest.NewIdentLocation(1, 1, 0, 1, 5, 4))),
-				},
-				ExprList: ast.ExprList{
-					asttest.NewExpression(asttest.NewNumber("48")),
-				},
+			&ast.TypeCast{
+				TypeId: ast.NewOrdIdentWithIdent(asttest.NewIdent("Char", asttest.NewIdentLocation(1, 1, 0, 5))),
+				Expression: asttest.NewExpression(
+					asttest.NewNumber("48"),
+				),
 			},
 		),
 	)

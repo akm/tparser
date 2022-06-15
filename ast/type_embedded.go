@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/akm/tparser/ast/astcore"
+	"github.com/pkg/errors"
 )
 
 type EmbeddedTypeKind int
@@ -12,7 +13,15 @@ const (
 	EtkReal EmbeddedTypeKind = iota + 1
 	EtkOrdIdent
 	EtkStringType
+	EtkPointerType
 )
+
+var embeddedTypeKindAll = []EmbeddedTypeKind{
+	EtkReal,
+	EtkOrdIdent,
+	EtkStringType,
+	EtkPointerType,
+}
 
 type TypeEmbedded struct {
 	Kind  EmbeddedTypeKind
@@ -59,17 +68,20 @@ func (m *TypeEmbedded) IsStringType() bool {
 
 var embeddedTypeDeclMaps = func() map[EmbeddedTypeKind]map[string]*astcore.Decl {
 	r := make(map[EmbeddedTypeKind]map[string]*astcore.Decl)
-	for _, kind := range []EmbeddedTypeKind{EtkReal, EtkOrdIdent, EtkStringType} {
+	for _, kind := range embeddedTypeKindAll {
 		r[kind] = make(map[string]*astcore.Decl)
 	}
 	return r
 }()
+
+var embeddedTypeDeclMap = map[string]*astcore.Decl{}
 
 func newEmbeddedTypeDecl(kind EmbeddedTypeKind, name string) *TypeDecl {
 	typ := newTypeEmbedded(kind, name)
 	typeDecl := &TypeDecl{Ident: typ.Ident, Type: typ}
 	key := strings.ToUpper(typ.Ident.Name)
 	decl := typeDecl.ToDeclarations()[0]
+	embeddedTypeDeclMap[key] = decl
 	embeddedTypeDeclMaps[kind][key] = decl
 	return typeDecl
 }
@@ -105,5 +117,21 @@ var (
 	EmbeddedAnsiString = newEmbeddedTypeDecl(EtkStringType, "AnsiString")
 	EmbeddedWideString = newEmbeddedTypeDecl(EtkStringType, "WideString")
 
-	// TODO Define Embedded Pointer Types PChar, PInteger, PByteArray, etc.
+	EmbeddedPointer   = newEmbeddedTypeDecl(EtkPointerType, "Pointer")
+	EmbeddedPChar     = newEmbeddedTypeDecl(EtkPointerType, "PChar")
+	EmbeddedPAnsiChar = newEmbeddedTypeDecl(EtkPointerType, "PAnsiChar")
+	EmbeddedPWideChar = newEmbeddedTypeDecl(EtkPointerType, "PWideChar")
 )
+
+type embeddedTypeDeclMapSingleton struct {
+}
+
+func (m *embeddedTypeDeclMapSingleton) Get(name string) *astcore.Decl {
+	return embeddedTypeDeclMap[strings.ToUpper(name)]
+}
+
+func (m *embeddedTypeDeclMapSingleton) Set(astcore.DeclNode) error {
+	return errors.Errorf("Can't set anything to embedded type decl map")
+}
+
+var EmbeddedTypeDeclMap = &embeddedTypeDeclMapSingleton{}

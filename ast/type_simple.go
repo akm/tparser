@@ -122,19 +122,19 @@ func NewOrdIdent(name interface{}) OrdIdent {
 	case OrdIdent:
 		return v
 	case Ident:
-		if decl := EmbeddedTypeDecl(EtkOrdIdent, v.Name); decl != nil {
-			return NewTypeId(&v, decl)
-		} else {
-			return NewTypeId(&v)
-		}
+		return NewOrdIdentWithIdent(&v)
 	case *Ident:
-		if decl := EmbeddedTypeDecl(EtkOrdIdent, v.Name); decl != nil {
-			return NewTypeId(v, decl)
-		} else {
-			return NewTypeId(v)
-		}
+		return NewOrdIdentWithIdent(v)
 	default:
 		panic(errors.Errorf("invalid type %T for NewOrdIndent %+v", name, name))
+	}
+}
+
+func NewOrdIdentWithIdent(v *Ident) *TypeId {
+	if decl := EmbeddedTypeDecl(EtkOrdIdent, v.Name); decl != nil {
+		return NewTypeId(v, decl)
+	} else {
+		return NewTypeId(v)
 	}
 }
 
