@@ -90,6 +90,8 @@ end;
 				Ident: asttest.NewIdent("PInteger"),
 				Type:  ast.NewCustomPointerType(asttest.NewOrdIdentWithIdent(asttest.NewIdent("Integer"))),
 			}
+			declPInteger := typeDeclPInteger.ToDeclarations()[0]
+
 			varDeclR := &ast.VarDecl{
 				IdentList: asttest.NewIdentList("R"),
 				Type:      asttest.NewRealType("Single"),
@@ -104,9 +106,8 @@ end;
 			}
 			varDeclPI := &ast.VarDecl{
 				IdentList: asttest.NewIdentList("PI"),
-				Type:      ast.NewTypeId(asttest.NewIdent("PInteger")),
+				Type:      ast.NewTypeId(asttest.NewIdent("PInteger"), declPInteger),
 			}
-			declPInteger := typeDeclPInteger.ToDeclarations()[0]
 			declR := varDeclR.ToDeclarations()[0]
 			declI := varDeclI.ToDeclarations()[0]
 			declP := varDeclP.ToDeclarations()[0]
