@@ -194,7 +194,13 @@ func TestExpression(t *testing.T) {
 		asttest.NewExpression(
 			&ast.DesignatorFactor{
 				Designator: &ast.Designator{
-					QualId: ast.NewQualId(nil, asttest.NewIdentRef("Char", asttest.NewIdentLocation(1, 1, 0, 1, 5, 4))),
+					QualId: ast.NewQualId(nil,
+						asttest.NewIdentRef(
+							"Char",
+							ast.EmbeddedTypeDeclMap.Get("Char"),
+							asttest.NewIdentLocation(1, 1, 0, 1, 5, 4),
+						),
+					),
 				},
 				ExprList: ast.ExprList{
 					asttest.NewExpression(asttest.NewNumber("48")),
