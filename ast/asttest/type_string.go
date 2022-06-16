@@ -4,7 +4,7 @@ import (
 	"github.com/akm/tparser/ast"
 )
 
-func NewStringType(name interface{}) ast.StringType {
+func NewStringType(name interface{}) *ast.TypeId {
 	return ast.NewStringType(NewIdent(name))
 }
 

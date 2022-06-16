@@ -5,7 +5,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func NewRealType(name interface{}) ast.RealType {
+func NewRealType(name interface{}) *ast.TypeId {
 	switch v := name.(type) {
 	case string:
 		return ast.NewRealType(NewIdent(v))
@@ -16,7 +16,7 @@ func NewRealType(name interface{}) ast.RealType {
 	}
 }
 
-func NewOrdIdent(name interface{}) ast.OrdIdent {
+func NewOrdIdent(name interface{}) *ast.TypeId {
 	switch v := name.(type) {
 	case string:
 		return ast.NewOrdIdent(NewIdent(v))
