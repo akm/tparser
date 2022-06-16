@@ -117,15 +117,11 @@ type OrdIdent interface {
 	OrdinalType
 }
 
-func NewOrdIdent(ident *Ident) OrdIdent {
-	return NewOrdIdentWithIdent(ident)
-}
-
-func NewOrdIdentWithIdent(v *Ident) *TypeId {
-	if decl := EmbeddedTypeDecl(EtkOrdIdent, v.Name); decl != nil {
-		return NewTypeId(v, decl)
+func NewOrdIdent(ident *Ident) *TypeId {
+	if decl := EmbeddedTypeDecl(EtkOrdIdent, ident.Name); decl != nil {
+		return NewTypeId(ident, decl)
 	} else {
-		return NewTypeId(v)
+		return NewTypeId(ident)
 	}
 }
 

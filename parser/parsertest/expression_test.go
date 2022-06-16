@@ -193,7 +193,7 @@ func TestExpression(t *testing.T) {
 		[]rune(`Char(48)`),
 		asttest.NewExpression(
 			&ast.TypeCast{
-				TypeId: ast.NewOrdIdentWithIdent(asttest.NewIdent("Char", asttest.NewIdentLocation(1, 1, 0, 5))),
+				TypeId: ast.NewOrdIdent(asttest.NewIdent("Char", asttest.NewIdentLocation(1, 1, 0, 5))),
 				Expression: asttest.NewExpression(
 					asttest.NewNumber("48"),
 				),
