@@ -41,7 +41,7 @@ type RealType interface {
 	SimpleType
 }
 
-func NewRealType(ident *Ident) RealType {
+func NewRealType(ident *Ident) *TypeId {
 	if decl := EmbeddedTypeDecl(EtkReal, ident.Name); decl != nil {
 		return NewTypeId(ident, decl)
 	} else {
