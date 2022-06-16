@@ -19,7 +19,7 @@ type StringType interface {
 	Type
 }
 
-func NewStringType(ident *Ident) StringType {
+func NewStringType(ident *Ident) *TypeId {
 	if decl := EmbeddedTypeDecl(EtkStringType, ident.Name); decl != nil {
 		return NewTypeId(ident, decl)
 	} else {
