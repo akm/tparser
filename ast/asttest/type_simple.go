@@ -9,8 +9,10 @@ func NewRealType(name interface{}) ast.RealType {
 	switch v := name.(type) {
 	case string:
 		return ast.NewRealType(NewIdent(v))
+	case *ast.Ident:
+		return ast.NewRealType(v)
 	default:
-		return ast.NewRealType(name)
+		panic(errors.Errorf("invalid type %T for asttest.NewRealType %+v", name, name))
 	}
 }
 

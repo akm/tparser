@@ -2,7 +2,6 @@ package ast
 
 import (
 	"github.com/akm/tparser/ast/astcore"
-	"github.com/pkg/errors"
 )
 
 // - SimpleType
@@ -42,24 +41,11 @@ type RealType interface {
 	SimpleType
 }
 
-func NewRealType(name interface{}) RealType {
-	switch v := name.(type) {
-	case RealType:
-		return v
-	case Ident:
-		if decl := EmbeddedTypeDecl(EtkReal, v.Name); decl != nil {
-			return NewTypeId(&v, decl)
-		} else {
-			return NewTypeId(&v)
-		}
-	case *Ident:
-		if decl := EmbeddedTypeDecl(EtkReal, v.Name); decl != nil {
-			return NewTypeId(v, decl)
-		} else {
-			return NewTypeId(v)
-		}
-	default:
-		panic(errors.Errorf("invalid type %T for NewRealType %+v", name, name))
+func NewRealType(ident *Ident) RealType {
+	if decl := EmbeddedTypeDecl(EtkReal, ident.Name); decl != nil {
+		return NewTypeId(ident, decl)
+	} else {
+		return NewTypeId(ident)
 	}
 }
 
