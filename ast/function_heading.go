@@ -54,7 +54,7 @@ type FunctionHeading struct {
 	Type FunctionType
 	*Ident
 	FormalParameters FormalParameters
-	ReturnType       Type
+	ReturnType       *TypeId
 }
 
 func (*FunctionHeading) isExportedHeading() {}

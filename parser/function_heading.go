@@ -170,7 +170,7 @@ func (p *Parser) ParseFunctionHeading() (*ast.FunctionHeading, error) {
 		return nil, err
 	}
 	p.NextToken()
-	typ, err := p.ParseType()
+	typ, err := p.ParseTypeId()
 	if err != nil {
 		return nil, err
 	}
