@@ -2,6 +2,7 @@ package asttest
 
 import (
 	"github.com/akm/tparser/ast"
+	"github.com/pkg/errors"
 )
 
 func NewRealType(name interface{}) ast.RealType {
@@ -17,8 +18,10 @@ func NewOrdIdent(name interface{}) ast.OrdIdent {
 	switch v := name.(type) {
 	case string:
 		return ast.NewOrdIdent(NewIdent(v))
+	case *ast.Ident:
+		return ast.NewOrdIdent(v)
 	default:
-		return ast.NewOrdIdent(name)
+		panic(errors.Errorf("invalid type %T for NewOrdIdent %+v", name, name))
 	}
 }
 

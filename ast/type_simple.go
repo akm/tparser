@@ -117,17 +117,8 @@ type OrdIdent interface {
 	OrdinalType
 }
 
-func NewOrdIdent(name interface{}) OrdIdent {
-	switch v := name.(type) {
-	case OrdIdent:
-		return v
-	case Ident:
-		return NewOrdIdentWithIdent(&v)
-	case *Ident:
-		return NewOrdIdentWithIdent(v)
-	default:
-		panic(errors.Errorf("invalid type %T for NewOrdIndent %+v", name, name))
-	}
+func NewOrdIdent(ident *Ident) OrdIdent {
+	return NewOrdIdentWithIdent(ident)
 }
 
 func NewOrdIdentWithIdent(v *Ident) *TypeId {
