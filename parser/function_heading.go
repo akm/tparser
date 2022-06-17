@@ -14,13 +14,7 @@ func (p *Parser) ParseExportedHeading() (*ast.ExportedHeading, error) {
 
 	var functionHeading *ast.FunctionHeading
 	switch p.CurrentToken().Value() {
-	case "PROCEDURE":
-		var err error
-		functionHeading, err = p.ParseProcedureHeading()
-		if err != nil {
-			return nil, err
-		}
-	case "FUNCTION":
+	case "PROCEDURE", "FUNCTION":
 		var err error
 		functionHeading, err = p.ParseFunctionHeading()
 		if err != nil {
@@ -122,42 +116,24 @@ func (p *Parser) ParseExternalOptions() (*ast.ExternalOptions, error) {
 	return r, nil
 }
 
-func (p *Parser) ParseProcedureHeading() (*ast.FunctionHeading, error) {
-	if _, err := p.Current(token.ReservedWord.HasKeyword("PROCEDURE")); err != nil {
-		return nil, err
-	}
-	ident, err := p.Next(token.Identifier)
-	if err != nil {
-		return nil, err
-	}
-	res := &ast.FunctionHeading{
-		Type:       ast.FtProcedure,
-		Ident:      p.NewIdent(ident),
-		ReturnType: nil,
-	}
-	t := p.NextToken()
-	if t.Is(token.Symbol('(')) {
-		formalParameters, err := p.ParseFormalParameters()
-		if err != nil {
-			return nil, err
-		}
-		res.FormalParameters = formalParameters
-	}
-	return res, nil
-}
-
 func (p *Parser) ParseFunctionHeading() (*ast.FunctionHeading, error) {
-	if _, err := p.Current(token.ReservedWord.HasKeyword("FUNCTION")); err != nil {
-		return nil, err
+	res := &ast.FunctionHeading{}
+
+	t0 := p.CurrentToken()
+	switch t0.Value() {
+	case "FUNCTION":
+		res.Type = ast.FtFunction
+	case "PROCEDURE":
+		res.Type = ast.FtProcedure
+	default:
+		return nil, p.TokenErrorf("expects FUNCTION or PROCEDURE, but got %s (%s)", t0, string(t0.Raw()))
 	}
+
 	ident, err := p.Next(token.Identifier)
 	if err != nil {
 		return nil, err
 	}
-	res := &ast.FunctionHeading{
-		Type:  ast.FtFunction,
-		Ident: p.NewIdent(ident),
-	}
+	res.Ident = p.NewIdent(ident)
 	t := p.NextToken()
 	if t.Is(token.Symbol('(')) {
 		formalParameters, err := p.ParseFormalParameters()
@@ -166,15 +142,17 @@ func (p *Parser) ParseFunctionHeading() (*ast.FunctionHeading, error) {
 		}
 		res.FormalParameters = formalParameters
 	}
-	if _, err := p.Current(token.Symbol(':')); err != nil {
-		return nil, err
+	if res.Type == ast.FtFunction {
+		if _, err := p.Current(token.Symbol(':')); err != nil {
+			return nil, err
+		}
+		p.NextToken()
+		typ, err := p.ParseTypeId()
+		if err != nil {
+			return nil, err
+		}
+		res.ReturnType = typ
 	}
-	p.NextToken()
-	typ, err := p.ParseTypeId()
-	if err != nil {
-		return nil, err
-	}
-	res.ReturnType = typ
 	return res, nil
 }
 
