@@ -8,14 +8,7 @@ import (
 func (p *Parser) ParseProcedureDeclSection() (*ast.FunctionDecl, error) {
 	var functionHeading *ast.FunctionHeading
 	switch p.CurrentToken().Value() {
-	case "PROCEDURE":
-		defer p.context.StackDeclMap()()
-		var err error
-		functionHeading, err = p.ParseProcedureHeading()
-		if err != nil {
-			return nil, err
-		}
-	case "FUNCTION":
+	case "PROCEDURE", "FUNCTION":
 		defer p.context.StackDeclMap()()
 		var err error
 		functionHeading, err = p.ParseFunctionHeading()

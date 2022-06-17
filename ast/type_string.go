@@ -1,9 +1,5 @@
 package ast
 
-import (
-	"github.com/pkg/errors"
-)
-
 // - StringType
 //   ```
 //   STRING
@@ -23,18 +19,11 @@ type StringType interface {
 	Type
 }
 
-func NewStringType(name interface{}) StringType {
-	switch v := name.(type) {
-	case StringType:
-		return v
-	case *Ident:
-		if decl := EmbeddedTypeDecl(EtkStringType, v.Name); decl != nil {
-			return NewTypeId(v, decl)
-		} else {
-			return NewTypeId(v)
-		}
-	default:
-		panic(errors.Errorf("invalid type %T for NewStringType %+v", name, name))
+func NewStringType(ident *Ident) *TypeId {
+	if decl := EmbeddedTypeDecl(EtkStringType, ident.Name); decl != nil {
+		return NewTypeId(ident, decl)
+	} else {
+		return NewTypeId(ident)
 	}
 }
 
@@ -43,8 +32,8 @@ type FixedStringType struct {
 	Length *ConstExpr
 }
 
-func NewFixedStringType(name interface{}, length *ConstExpr) *FixedStringType {
-	return &FixedStringType{StringType: NewStringType(name), Length: length}
+func NewFixedStringType(ident *Ident, length *ConstExpr) *FixedStringType {
+	return &FixedStringType{StringType: NewStringType(ident), Length: length}
 }
 
 func (*FixedStringType) isType()            {}

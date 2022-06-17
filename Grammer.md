@@ -4,9 +4,9 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
 
 | Mark | State       | Count |
 | :--: | ----------- | ----: |
-|  🔖  | TODO        |    33 |
+|  🔖  | TODO        |    31 |
 |  🚧  | In progress |     6 |
-|  ✔️  | Done        |    83 |
+|  ✔️  | Done        |    85 |
 
 - Goal 🚧
   ```
@@ -343,11 +343,11 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
   FILE OF TypeId [PortabilityDirective]
   ```
-- PointerType 🔖
+- PointerType ✔️
   ```
   '^' TypeId [PortabilityDirective]
   ```
-- ProcedureType 🔖
+- ProcedureType ✔️
   ```
   (ProcedureHeading | FunctionHeading) [OF OBJECT]
   ```

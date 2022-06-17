@@ -98,6 +98,8 @@ func (p *Parser) ParseType() (ast.Type, error) {
 		switch t1.Value() {
 		case "PACKED", "ARRAY", "SET", "RECORD", "FILE":
 			return p.ParseStrucType()
+		case "FUNCTION", "PROCEDURE":
+			return p.ParseProcedureType()
 		default:
 			return p.ParseStringOfStringType()
 		}

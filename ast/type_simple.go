@@ -2,7 +2,6 @@ package ast
 
 import (
 	"github.com/akm/tparser/ast/astcore"
-	"github.com/pkg/errors"
 )
 
 // - SimpleType
@@ -42,24 +41,11 @@ type RealType interface {
 	SimpleType
 }
 
-func NewRealType(name interface{}) RealType {
-	switch v := name.(type) {
-	case RealType:
-		return v
-	case Ident:
-		if decl := EmbeddedTypeDecl(EtkReal, v.Name); decl != nil {
-			return NewTypeId(&v, decl)
-		} else {
-			return NewTypeId(&v)
-		}
-	case *Ident:
-		if decl := EmbeddedTypeDecl(EtkReal, v.Name); decl != nil {
-			return NewTypeId(v, decl)
-		} else {
-			return NewTypeId(v)
-		}
-	default:
-		panic(errors.Errorf("invalid type %T for NewRealType %+v", name, name))
+func NewRealType(ident *Ident) *TypeId {
+	if decl := EmbeddedTypeDecl(EtkReal, ident.Name); decl != nil {
+		return NewTypeId(ident, decl)
+	} else {
+		return NewTypeId(ident)
 	}
 }
 
@@ -117,24 +103,11 @@ type OrdIdent interface {
 	OrdinalType
 }
 
-func NewOrdIdent(name interface{}) OrdIdent {
-	switch v := name.(type) {
-	case OrdIdent:
-		return v
-	case Ident:
-		return NewOrdIdentWithIdent(&v)
-	case *Ident:
-		return NewOrdIdentWithIdent(v)
-	default:
-		panic(errors.Errorf("invalid type %T for NewOrdIndent %+v", name, name))
-	}
-}
-
-func NewOrdIdentWithIdent(v *Ident) *TypeId {
-	if decl := EmbeddedTypeDecl(EtkOrdIdent, v.Name); decl != nil {
-		return NewTypeId(v, decl)
+func NewOrdIdent(ident *Ident) *TypeId {
+	if decl := EmbeddedTypeDecl(EtkOrdIdent, ident.Name); decl != nil {
+		return NewTypeId(ident, decl)
 	} else {
-		return NewTypeId(v)
+		return NewTypeId(ident)
 	}
 }
 
