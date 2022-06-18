@@ -14,6 +14,7 @@ const (
 	EtkOrdIdent
 	EtkStringType
 	EtkPointerType
+	EtkVariantType
 )
 
 var embeddedTypeKindAll = []EmbeddedTypeKind{
@@ -21,6 +22,7 @@ var embeddedTypeKindAll = []EmbeddedTypeKind{
 	EtkOrdIdent,
 	EtkStringType,
 	EtkPointerType,
+	EtkVariantType,
 }
 
 type TypeEmbedded struct {
@@ -64,6 +66,10 @@ func (m *TypeEmbedded) IsOrdIdent() bool {
 
 func (m *TypeEmbedded) IsStringType() bool {
 	return m.Kind == EtkStringType
+}
+
+func (m *TypeEmbedded) IsVariantType() bool {
+	return m.Kind == EtkVariantType
 }
 
 var embeddedTypeDeclMaps = func() map[EmbeddedTypeKind]map[string]*astcore.Decl {
@@ -121,6 +127,9 @@ var (
 	EmbeddedPChar     = newEmbeddedTypeDecl(EtkPointerType, "PChar")
 	EmbeddedPAnsiChar = newEmbeddedTypeDecl(EtkPointerType, "PAnsiChar")
 	EmbeddedPWideChar = newEmbeddedTypeDecl(EtkPointerType, "PWideChar")
+
+	EmbeddedVariant    = newEmbeddedTypeDecl(EtkVariantType, "Variant")
+	EmbeddedOleVariant = newEmbeddedTypeDecl(EtkVariantType, "OleVariant")
 )
 
 type embeddedTypeDeclMapSingleton struct {
