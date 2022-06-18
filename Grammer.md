@@ -715,43 +715,6 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
   ABSTRACT
   ```
-- ObjectType 🔖
-  ```
-  OBJECT [ObjHeritage] [ObjFieldList] [MethodList] END
-  ```
-- ObjHeritage 🔖
-  ```
-  '(' QualId ')'
-  ```
-- MethodList 🔖
-  ```
-  (MethodHeading [';' VIRTUAL]) ';'...
-  ```
-- MethodHeading 🔖
-  ```
-  ProcedureHeading
-  ```
-  ```
-  FunctionHeading
-  ```
-  ```
-  ConstructorHeading
-  ```
-  ```
-  DestructorHeading
-  ```
-- ConstructorHeading 🔖
-  ```
-  CONSTRUCTOR Ident [FormalParameters]
-  ```
-- DestructorHeading 🔖
-  ```
-  DESTRUCTOR Ident [FormalParameters]
-  ```
-- ObjFieldList 🔖
-  ```
-  (IdentList ':' Type) ';'
-  ```
 - InitSection 🔖
   ```
   INITIALIZATION StmtList [FINALIZATION StmtList] END
@@ -765,15 +728,29 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
 - ClassType 🔖
   ```
   CLASS [ClassHeritage]
-  [ClassVisibility]
-  [ClassFieldList]
-  [ClassMethodList]
-  [ClassPropertyList]
+  [ClassMemberSections]
+  END
+  ```
+- ObjectType 🔖
+  ```
+  OBJECT [ClassHeritage]
+  [ClassMemberSections]
   END
   ```
 - ClassHeritage 🔖
   ```
-  '(' IdentList ')'
+  '(' TypeId ',' ... ')'
+  ```
+- ClassMemberSections
+  ```
+  ClassMemberSection ...
+  ```
+- ClassMemberSection
+  ```
+  ClassVisibility
+  [ClassFieldList]
+  [ClassMethodList]
+  [ClassPropertyList]
   ```
 - ClassVisibility 🔖
   ```
@@ -781,19 +758,72 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
 - ClassFieldList 🔖
   ```
-  (ClassVisibility ObjFieldList) ';'...
+  ClassField ';' ...
+  ```
+- ClassField 🔖
+  ```
+  IdentList ':' Type
   ```
 - ClassMethodList 🔖
   ```
-  (ClassVisibility MethodList) ';'...
+  ClassMethod ';' ...
+  ```
+- ClassMethod 🔖
+  ```
+  [CLASS] ClassMethodHeading [';' ClassMethodDirective ...]
+  ```
+- ClassMethodHeading 🔖
+  ```
+  ProcedureHeading
+  ```
+  ```
+  FunctionHeading
+  ```
+  ```
+  ConstructorHeading
+  ```
+  ```
+  DestructorHeading
+  ```
+- ClassMethodDirective
+  ```
+  ABSTRACT
+  ```
+  ```
+  VIRTUAL
+  ```
+  ```
+  OVERRIDE
+  ```
+  ```
+  OVERLOAD
+  ```
+  ```
+  REINTRODUCE
+  ```
+- ConstructorHeading 🔖
+  ```
+  CONSTRUCTOR Ident [FormalParameters]
+  ```
+- DestructorHeading 🔖
+  ```
+  DESTRUCTOR Ident [FormalParameters]
   ```
 - ClassPropertyList 🔖
   ```
-  (ClassVisibility PropertyList ';')...
+  ClassProperty ';' ...
   ```
-- PropertyList 🔖
+- ClassProperty 🔖
   ```
-  PROPERTY Ident [PropertyInterface] [PropertySpecifiers] [PortabilityDirective]
+	 PROPERTY Ident
+  [PropertyInterface]
+  [INDEX ConstExpr]
+  [READ Ident]
+  [WRITE Ident]
+  [STORED (Ident | Constant)]
+  [(DEFAULT ConstExpr) | NODEFAULT]
+  [IMPLEMENTS TypeId]
+  [PortabilityDirective]
   ```
 - PropertyInterface 🔖
   ```
@@ -801,29 +831,58 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
 - PropertyParameterList 🔖
   ```
-  '[' (IdentList ':' TypeId) ';'... ']'
+  '[' PropertyParameter ';'... ']'
   ```
-- PropertySpecifiers 🔖
+- PropertyParameter 🔖
   ```
-  [INDEX ConstExpr]
-  [READ Ident]
-  [WRITE Ident]
-  [STORED (Ident | Constant)]
-  [(DEFAULT ConstExpr) | NODEFAULT]
-  [IMPLEMENTS TypeId]
+  IdentList ':' TypeId
   ```
 - InterfaceType 🔖
   ```
   INTERFACE
   [InterfaceHeritage]
-  [ClassMethodList]
-  [ClassPropertyList]
+  [InterfaceGuid]
+  [InterfaceMemberList]
   ...
   END
   ```
 - InterfaceHeritage 🔖
   ```
-  '(' IdentList ')'
+  '(' TypeId ',' ... ')'
+  ```
+- InterfaceGuid
+  ```
+  '[' ConstExpr of string ']'
+  ```
+- InterfaceMemberList
+  ```
+  InterfaceMember ';'...
+  ```
+- InterfaceMember
+  ```
+  InterfaceMethod
+  ```
+  ```
+  InterfaceProperty
+  ```
+- InterfaceMethod
+  ```
+  InterfaceMethodHeading; [InterfaceMethodDirective ';'...];
+  ```
+- InterfaceMethodHeading
+  ```
+  ProcedureHeading
+  ```
+  ```
+  FunctionHeading
+  ```
+- InterfaceMethodDirective
+  ```
+  stdcall
+  ```
+- InterfaceProperty 🔖
+  ```
+  PROPERTY Ident PropertyInterface PropertyAccessor
   ```
 - RequiresClause 🔖
   ```
