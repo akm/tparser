@@ -132,3 +132,15 @@ func (m *TypeId) IsPointerType() bool {
 	}
 	return ordIdent.IsPointerType()
 }
+
+func (m *TypeId) IsVariantType() bool {
+	decl := m.getRefNodeDecl()
+	if decl == nil {
+		return false
+	}
+	ordIdent, ok := decl.Type.(VariantType)
+	if !ok {
+		return false
+	}
+	return ordIdent.IsVariantType()
+}
