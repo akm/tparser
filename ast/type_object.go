@@ -38,48 +38,50 @@ func (m *ObjHeritage) Children() Nodes {
 //   ```
 //   (IdentList ':' Type) ';'
 //   ```
-type ObjFieldList []*ObjField
-
-func (s ObjFieldList) Children() Nodes {
-	r := make(Nodes, len(s))
-	for idx, i := range s {
-		r[idx] = i
-	}
-	return r
-}
-
-type ObjField struct {
+type ObjFieldList struct {
 	IdentList IdentList
 	Type      Type
 }
 
-func (m *ObjField) Children() Nodes {
+func (m *ObjFieldList) Children() Nodes {
 	return Nodes{m.IdentList, m.Type}
 }
+
+type MethodDirective string
+
+const (
+	MdAbstract    MethodDirective = "ABSTRACT"
+	MdVirtual     MethodDirective = "VIRTUAL"
+	MdOverride    MethodDirective = "OVERRIDE"
+	MdOverload    MethodDirective = "OVERLOAD"
+	MdReintroduce MethodDirective = "REINTRODUCE"
+)
+
+type MethodDirectives []MethodDirective
 
 // - MethodList
 //   ```
 //   (MethodHeading [';' VIRTUAL]) ';'...
 //   ```
-type MethodList struct {
-	Methods MethodHeadings
-	Virtual bool
-	// implements
-	Node
-}
+type MethodList []*Method
 
-func (m *MethodList) Children() Nodes {
-	return Nodes{m.Methods}
-}
-
-type MethodHeadings []MethodHeading
-
-func (s MethodHeadings) Children() Nodes {
+func (s MethodList) Children() Nodes {
 	r := make(Nodes, len(s))
 	for idx, i := range s {
 		r[idx] = i
 	}
 	return r
+}
+
+type Method struct {
+	MethodHeading MethodHeading
+	Directives    MethodDirectives
+	// implements
+	Node
+}
+
+func (m *Method) Children() Nodes {
+	return Nodes{m.MethodHeading}
 }
 
 // - MethodHeading
