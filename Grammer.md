@@ -4,9 +4,9 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
 
 | Mark | State       | Count |
 | :--: | ----------- | ----: |
-|  🔖  | TODO        |    31 |
+|  🔖  | TODO        |    30 |
 |  🚧  | In progress |     6 |
-|  ✔️  | Done        |    85 |
+|  ✔️  | Done        |    86 |
 
 - Goal 🚧
   ```
@@ -275,7 +275,7 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
   PCHAR
   ```
-- VariantType 🔖
+- VariantType ✔️
   ```
   VARIANT
   ```
