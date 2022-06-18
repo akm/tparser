@@ -730,8 +730,14 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
 - MethodHeading 🔖
   ```
   ProcedureHeading
+  ```
+  ```
   FunctionHeading
+  ```
+  ```
   ConstructorHeading
+  ```
+  ```
   DestructorHeading
   ```
 - ConstructorHeading 🔖
