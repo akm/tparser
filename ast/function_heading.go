@@ -59,8 +59,11 @@ type FunctionHeading struct {
 }
 
 var _ Node = (*FunctionHeading)(nil)
+var _ MethodHeading = (*FunctionHeading)(nil)
 
 func (s *FunctionHeading) GetIdent() *Ident { return s.Ident }
+func (*FunctionHeading) isMethodHeading()   {}
+
 func (s FunctionHeading) Children() Nodes {
 	r := Nodes{s.Ident}
 	if s.FormalParameters != nil {
