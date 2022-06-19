@@ -807,7 +807,7 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
 - DestructorHeading 🔖
   ```
-  DESTRUCTOR Ident [FormalParameters]
+  DESTRUCTOR Ident
   ```
 - ClassPropertyList 🔖
   ```
