@@ -6,28 +6,62 @@ type ClassType interface {
 	Type
 }
 
+type ObjectType interface {
+	IsObjectType() bool
+	// implements
+	Type
+}
+
 // - ClassType
 //   ```
 //   CLASS [ClassHeritage]
-//   [ClassVisibility]
-//   [ClassFieldList]
-//   [ClassMethodList]
-//   [ClassPropertyList]
+//   [ClassMemberSection]
 //   END
 //   ```
 type CustomClassType struct {
 	ClassHeritage *ClassHeritage
-	Fields        ClassFieldList
-	Methods       *ClassMethodList
-	Properties    ClassPropertyList
+	Members       ClassMemberSections
+	// implements
+	ClassType
+}
+
+// - ObjectType
+//   ```
+//   OBJECT [ClassHeritage]
+//   [ClassMemberSection]
+//   END
+//   ```
+type CustomObjectType struct {
+	ClassHeritage ClassHeritage
+	Members       ClassMemberSections
+	// implements
+	ObjectType
 }
 
 // - ClassHeritage
 //   ```
-//   '(' IdentList ')'
+//   '(' TypeId ',' ... ')'
 //   ```
-type ClassHeritage struct {
-	IdentList IdentList
+type ClassHeritage []*TypeId
+
+// - ClassMemberSections
+//   ```
+//   ClassMemberSection ...
+//   ```
+type ClassMemberSections []*ClassMemberSection
+
+// - ClassMemberSection
+//   ```
+//   ClassVisibility
+//   [ClassFieldList]
+//   [ClassMethodList]
+//   [ClassPropertyList]
+//   ```
+type ClassMemberSection struct {
+	Visibility        ClassVisibility
+	ClassFieldList    ClassFieldList
+	ClassMethodList   ClassMethodList
+	ClassPropertyList ClassPropertyList
 }
 
 // - ClassVisibility
@@ -45,41 +79,132 @@ const (
 
 // - ClassFieldList
 //   ```
-//   (ClassVisibility ObjFieldList) ';'...
+//   (ClassField) ';'...
 //   ```
-type ClassFieldList struct {
-	Visibility ClassVisibility
-	*ObjFieldList
+type ClassFieldList []*ClassField
+
+// - ClassField
+//   ```
+//   IdentList ':' Type
+//   ```
+type ClassField struct {
+	IdentList IdentList
+	Type      Type
 }
 
 // - ClassMethodList
 //   ```
-//   (ClassVisibility MethodList) ';'...
+//   ClassMethod ';'...
 //   ```
-type ClassMethodList struct {
-	Visibility ClassVisibility
-	MethodList
+type ClassMethodList []*ClassMethod
+
+// - ClassMethod
+//   ```
+//   [CLASS] MethodHeading [';' ClassMethodDirective ...]
+//   ```
+type ClassMethod struct {
+	Static bool
+	ClassMethodHeading
+	Directives ClassMethodDirectives
+}
+
+// - ClassMethodHeading
+//   ```
+//   ProcedureHeading
+//   ```
+//   ```
+//   FunctionHeading
+//   ```
+//   ```
+//   ConstructorHeading
+//   ```
+//   ```
+//   DestructorHeading
+//   ```
+type ClassMethodHeading interface {
+	isClassMethodHeading()
+	// implements
+	Node
+}
+
+// - ClassMethodDirective
+//   ```
+//   ABSTRACT
+//   ```
+//   ```
+//   VIRTUAL
+//   ```
+//   ```
+//   OVERRIDE
+//   ```
+//   ```
+//   OVERLOAD
+//   ```
+//   ```
+//   REINTRODUCE
+//   ```
+type ClassMethodDirective string
+
+const (
+	CmdAbstract    ClassMethodDirective = "ABSTRACT"
+	CmdVirtual     ClassMethodDirective = "VIRTUAL"
+	CmdOverride    ClassMethodDirective = "OVERRIDE"
+	CmdOverload    ClassMethodDirective = "OVERLOAD"
+	CmdReintroduce ClassMethodDirective = "REINTRODUCE"
+)
+
+type ClassMethodDirectives []ClassMethodDirective
+
+// - ConstructorHeading
+//   ```
+//   CONSTRUCTOR Ident [FormalParameters]
+//   ```
+
+type ConstructorHeading struct {
+	*Ident
+	FormalParameters FormalParameters
+	// implements
+	ClassMethodHeading
+}
+
+// - DestructorHeading
+//   ```
+//   DESTRUCTOR Ident [FormalParameters]
+//   ```
+type DestructorHeading struct {
+	*Ident
+	FormalParameters FormalParameters
+	// implements
+	ClassMethodHeading
 }
 
 // - ClassPropertyList
 //   ```
-//   (ClassVisibility PropertyList ';')...
+//   ClassProperty ';' ...
 //   ```
-type ClassPropertyList []*ClassPropertyList
+type ClassPropertyList []*ClassProperty
 
+// - ClassProperty
+//   ```
+// 	 PROPERTY Ident
+//   [PropertyInterface]
+//   [INDEX ConstExpr]
+//   [READ Ident]
+//   [WRITE Ident]
+//   [STORED (Ident | Constant)]
+//   [(DEFAULT ConstExpr) | NODEFAULT]
+//   [IMPLEMENTS TypeId]
+//   [PortabilityDirective]
+//   ```
 type ClassProperty struct {
-	Visibility ClassVisibility
-	*Property
-}
-
-// - Property
-//   ```
-//   PROPERTY Ident [PropertyInterface] [PropertySpecifiers] [PortabilityDirective]
-//   ```
-type Property struct {
 	Ident                *Ident
 	PropertyInterface    *PropertyInterface
-	PropertySpecifiers   *PropertySpecifiers
+	Index                *ConstExpr
+	Read                 *IdentRef
+	Write                *IdentRef
+	Stored               *PropertyStoredSpecifier
+	Default              *PropertyDefaultSpecifier
+	Implements           *TypeId
 	PortabilityDirective PortabilityDirective
 }
 
@@ -89,43 +214,30 @@ type Property struct {
 //   ```
 type PropertyInterface struct {
 	PropertyParameterList *PropertyParameterList
+	Type                  *TypeId
 }
 
 // - PropertyParameterList
 //   ```
-//   '[' (IdentList ':' TypeId) ';'... ']'
+//   '[' PropertyParameter ';'... ']'
 //   ```
 type PropertyParameterList []*PropertyParameter
 
+// - PropertyParameter
+//   ```
+//   IdentList ':' TypeId
+//   ```
 type PropertyParameter struct {
 	IdentList IdentList
 	TypeId    *TypeId
 }
 
-// - PropertySpecifiers
-//   ```
-//   [INDEX ConstExpr]
-//   [READ Ident]
-//   [WRITE Ident]
-//   [STORED (Ident | Constant)]
-//   [(DEFAULT ConstExpr) | NODEFAULT]
-//   [IMPLEMENTS TypeId]
-//   ```
-type PropertySpecifiers struct {
-	Index      *ConstExpr
-	Read       *IdentRef
-	Write      *IdentRef
-	Stored     *PropertyStoredDirective
-	Default    *PropertyDefaultDirective
-	Implements *TypeId
-}
-
-type PropertyStoredDirective struct {
+type PropertyStoredSpecifier struct {
 	IdentRef *IdentRef
 	Constant *bool
 }
 
-type PropertyDefaultDirective struct {
+type PropertyDefaultSpecifier struct {
 	Value     *ConstExpr
 	NoDefault *bool
 }
