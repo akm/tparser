@@ -208,4 +208,201 @@ TSquare = class(TRectangle);
 			}
 		}(),
 	)
+
+	RunTypeSection(t,
+		"array properties",
+		[]rune(`type
+TArrayPropExample1 = class
+private
+	function GetObject(Index: Integer): TObject;
+	function GetPixel(X, Y: Integer): TColor;
+	function GetValue(const Name: string): string;
+	procedure SetObject(Index: Integer; Value: TObject);
+	procedure SetPixel(X, Y: Integer; Value: TColor);
+	procedure SetValue(const Name, Value: string);
+public
+	property Objects[Index: Integer]: TObject read GetObject write SetObject;
+	property Pixels[X, Y: Integer]: TColor read GetPixel write SetPixel;
+	property Values[const Name: string]: string read GetValue write SetValue;
+end;
+`),
+		func() ast.TypeSection {
+			// function GetObject(Index: Integer): TObject;
+			methodDeclGetObject := &ast.ClassMethod{
+				Heading: &ast.FunctionHeading{
+					Type:  ast.FtFunction,
+					Ident: asttest.NewIdent("GetObject"),
+					FormalParameters: ast.FormalParameters{{
+						Parameter: &ast.Parameter{
+							IdentList: asttest.NewIdentList("Index"),
+							Type:      &ast.ParameterType{Type: asttest.NewOrdIdent("Integer")},
+						},
+					}},
+					ReturnType: asttest.NewTypeId(asttest.NewIdent("TObject")),
+				},
+			}
+			// function GetPixel(X, Y: Integer): TColor;
+			methodDeclGetPixel := &ast.ClassMethod{
+				Heading: &ast.FunctionHeading{
+					Type:  ast.FtFunction,
+					Ident: asttest.NewIdent("GetPixel"),
+					FormalParameters: ast.FormalParameters{{
+						Parameter: &ast.Parameter{
+							IdentList: asttest.NewIdentList("X", "Y"),
+							Type:      &ast.ParameterType{Type: asttest.NewOrdIdent("Integer")},
+						},
+					}},
+					ReturnType: asttest.NewTypeId(asttest.NewIdent("TColor")),
+				},
+			}
+			// function GetValue(const Name: string): string;
+			methodDeclGetValue := &ast.ClassMethod{
+				Heading: &ast.FunctionHeading{
+					Type:  ast.FtFunction,
+					Ident: asttest.NewIdent("GetValue"),
+					FormalParameters: ast.FormalParameters{{
+						Opt: &ast.FpoConst,
+						Parameter: &ast.Parameter{
+							IdentList: asttest.NewIdentList("Name"),
+							Type:      &ast.ParameterType{Type: asttest.NewStringType("string")},
+						},
+					}},
+					ReturnType: asttest.NewTypeId(asttest.NewIdent("string")),
+				},
+			}
+			// procedure SetObject(Index: Integer; Value: TObject);
+			methodDeclSetObject := &ast.ClassMethod{
+				Heading: &ast.FunctionHeading{
+					Type:  ast.FtProcedure,
+					Ident: asttest.NewIdent("SetObject"),
+					FormalParameters: ast.FormalParameters{
+						{
+							Parameter: &ast.Parameter{
+								IdentList: asttest.NewIdentList("Index"),
+								Type:      &ast.ParameterType{Type: asttest.NewOrdIdent("Integer")},
+							},
+						},
+						{
+							Parameter: &ast.Parameter{
+								IdentList: asttest.NewIdentList("Value"),
+								Type:      &ast.ParameterType{Type: asttest.NewTypeId(asttest.NewIdent("TObject"))},
+							},
+						},
+					},
+				},
+			}
+			// procedure SetPixel(X, Y: Integer; Value: TColor);
+			methodDeclSetPixel := &ast.ClassMethod{
+				Heading: &ast.FunctionHeading{
+					Type:  ast.FtProcedure,
+					Ident: asttest.NewIdent("SetPixel"),
+					FormalParameters: ast.FormalParameters{
+						{
+							Parameter: &ast.Parameter{
+								IdentList: asttest.NewIdentList("X", "Y"),
+								Type:      &ast.ParameterType{Type: asttest.NewOrdIdent("Integer")},
+							},
+						},
+						{
+							Parameter: &ast.Parameter{
+								IdentList: asttest.NewIdentList("Value"),
+								Type:      &ast.ParameterType{Type: asttest.NewTypeId(asttest.NewIdent("TColor"))},
+							},
+						},
+					},
+				},
+			}
+			// procedure SetValue(const Name, Value: string);
+			methodDeclSetValue := &ast.ClassMethod{
+				Heading: &ast.FunctionHeading{
+					Type:  ast.FtProcedure,
+					Ident: asttest.NewIdent("SetValue"),
+					FormalParameters: ast.FormalParameters{
+						{
+							Opt: &ast.FpoConst,
+							Parameter: &ast.Parameter{
+								IdentList: asttest.NewIdentList("Name", "Value"),
+								Type:      &ast.ParameterType{Type: asttest.NewStringType("string")},
+							},
+						},
+					},
+				},
+			}
+
+			return ast.TypeSection{
+				&ast.TypeDecl{
+					Ident: asttest.NewIdent("TArrayPropExample1"),
+					Type: &ast.CustomClassType{
+						Members: ast.ClassMemberSections{
+							&ast.ClassMemberSection{
+								Visibility: ast.CvPrivate,
+								ClassMethodList: ast.ClassMethodList{
+									methodDeclGetObject,
+									methodDeclGetPixel,
+									methodDeclGetValue,
+									methodDeclSetObject,
+									methodDeclSetPixel,
+									methodDeclSetValue,
+								},
+							},
+							&ast.ClassMemberSection{
+								Visibility: ast.CvPblic,
+								ClassPropertyList: ast.ClassPropertyList{
+									// property Objects[Index: Integer]: TObject read GetObject write SetObject;
+									{
+										Ident: asttest.NewIdent("Objects"),
+										Interface: &ast.PropertyInterface{
+											Parameters: ast.FormalParameters{
+												{
+													Parameter: &ast.Parameter{
+														IdentList: asttest.NewIdentList("Index"),
+														Type:      &ast.ParameterType{Type: asttest.NewOrdIdent("Integer")},
+													},
+												},
+											},
+										},
+										Read:  asttest.NewIdentRef("GetObject", methodDeclGetObject.ToDeclarations()[0]),
+										Write: asttest.NewIdentRef("SetObject", methodDeclSetObject.ToDeclarations()[0]),
+									},
+									// property Pixels[X, Y: Integer]: TColor read GetPixel write SetPixel;
+									{
+										Ident: asttest.NewIdent("Pixels"),
+										Interface: &ast.PropertyInterface{
+											Parameters: ast.FormalParameters{
+												{
+													Parameter: &ast.Parameter{
+														IdentList: asttest.NewIdentList("X", "Y"),
+														Type:      &ast.ParameterType{Type: asttest.NewOrdIdent("Integer")},
+													},
+												},
+											},
+										},
+										Read:  asttest.NewIdentRef("GetPixel", methodDeclGetPixel.ToDeclarations()[0]),
+										Write: asttest.NewIdentRef("SetPixel", methodDeclSetPixel.ToDeclarations()[0]),
+									},
+									// property Values[const Name: string]: string read GetValue write SetValue;
+									{
+										Ident: asttest.NewIdent("Values"),
+										Interface: &ast.PropertyInterface{
+											Parameters: ast.FormalParameters{
+												{
+													Opt: &ast.FpoConst,
+													Parameter: &ast.Parameter{
+														IdentList: asttest.NewIdentList("Name"),
+														Type:      &ast.ParameterType{Type: asttest.NewStringType("string")},
+													},
+												},
+											},
+										},
+										Read:  asttest.NewIdentRef("GetValue", methodDeclGetValue.ToDeclarations()[0]),
+										Write: asttest.NewIdentRef("SetValue", methodDeclSetValue.ToDeclarations()[0]),
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+		}(),
+	)
 }
