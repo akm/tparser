@@ -363,39 +363,12 @@ func (m *ClassProperty) Children() Nodes {
 //   [PropertyParameterList] ':' TypeId
 //   ```
 type PropertyInterface struct {
-	PropertyParameterList *PropertyParameterList
-	Type                  *TypeId
+	Parameters FormalParameters
+	Type       *TypeId
 }
 
 func (m *PropertyInterface) Children() Nodes {
-	return Nodes{m.PropertyParameterList, m.Type}
-}
-
-// - PropertyParameterList
-//   ```
-//   '[' PropertyParameter ';'... ']'
-//   ```
-type PropertyParameterList []*PropertyParameter
-
-func (s PropertyParameterList) Children() Nodes {
-	r := make(Nodes, len(s))
-	for i, m := range s {
-		r[i] = m
-	}
-	return r
-}
-
-// - PropertyParameter
-//   ```
-//   IdentList ':' TypeId
-//   ```
-type PropertyParameter struct {
-	IdentList IdentList
-	TypeId    *TypeId
-}
-
-func (m *PropertyParameter) Children() Nodes {
-	return Nodes{m.IdentList, m.TypeId}
+	return Nodes{m.Parameters, m.Type}
 }
 
 type PropertyStoredSpecifier struct {
