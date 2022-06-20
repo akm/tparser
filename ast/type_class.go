@@ -190,9 +190,9 @@ func (s ClassMethodList) Children() Nodes {
 //   [CLASS] ClassMethodHeading [';' ClassMethodDirective ...]
 //   ```
 type ClassMethod struct {
-	Static     bool
-	Heading    ClassMethodHeading
-	Directives ClassMethodDirectives
+	ClassMethod bool
+	Heading     ClassMethodHeading
+	Directives  ClassMethodDirectives
 	// implements
 	astcore.DeclNode
 }
