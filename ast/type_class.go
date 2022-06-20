@@ -1,5 +1,7 @@
 package ast
 
+import "github.com/akm/tparser/ast/astcore"
+
 type ClassType interface {
 	IsClassType() bool
 	// implements
@@ -19,7 +21,7 @@ type ObjectType interface {
 //   END
 //   ```
 type CustomClassType struct {
-	Heritage *ClassHeritage
+	Heritage ClassHeritage
 	Members  ClassMemberSections
 	// implements
 	ClassType
@@ -154,10 +156,19 @@ func (s ClassFieldList) Children() Nodes {
 type ClassField struct {
 	IdentList IdentList
 	Type      Type
+	// implements
+	astcore.DeclNode
 }
 
 func (m *ClassField) Children() Nodes {
 	return Nodes{m.IdentList, m.Type}
+}
+func (m *ClassField) ToDeclarations() astcore.Decls {
+	r := make(astcore.Decls, len(m.IdentList))
+	for i, ident := range m.IdentList {
+		r[i] = &astcore.Decl{Ident: ident, Node: m}
+	}
+	return r
 }
 
 // - ClassMethodList
@@ -182,6 +193,12 @@ type ClassMethod struct {
 	Static     bool
 	Heading    ClassMethodHeading
 	Directives ClassMethodDirectives
+	// implements
+	astcore.DeclNode
+}
+
+func (m *ClassMethod) ToDeclarations() astcore.Decls {
+	return astcore.Decls{{Ident: m.Heading.GetIdent(), Node: m}}
 }
 
 func (m *ClassMethod) Children() Nodes {
@@ -202,6 +219,7 @@ func (m *ClassMethod) Children() Nodes {
 //   DestructorHeading
 //   ```
 type ClassMethodHeading interface {
+	GetIdent() *Ident
 	isClassMethodHeading()
 	// implements
 	Node
@@ -247,6 +265,7 @@ type ConstructorHeading struct {
 	ClassMethodHeading
 }
 
+func (m *ConstructorHeading) GetIdent() *Ident { return m.Ident }
 func (m *ConstructorHeading) Children() Nodes {
 	r := Nodes{m.Ident}
 	if m.FormalParameters != nil {
@@ -265,6 +284,7 @@ type DestructorHeading struct {
 	ClassMethodHeading
 }
 
+func (m *DestructorHeading) GetIdent() *Ident { return m.Ident }
 func (m *DestructorHeading) Children() Nodes {
 	return Nodes{m.Ident}
 }
@@ -305,8 +325,13 @@ type ClassProperty struct {
 	Default              *PropertyDefaultSpecifier
 	Implements           *TypeId
 	PortabilityDirective PortabilityDirective
+	// implements
+	astcore.DeclNode
 }
 
+func (m *ClassProperty) ToDeclarations() astcore.Decls {
+	return astcore.Decls{{Ident: m.Ident, Node: m}}
+}
 func (m *ClassProperty) Children() Nodes {
 	r := Nodes{m.Ident}
 	if m.Interface != nil {

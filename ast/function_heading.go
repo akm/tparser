@@ -62,12 +62,11 @@ var _ Node = (*FunctionHeading)(nil)
 var _ ClassMethodHeading = (*FunctionHeading)(nil)
 var _ InterfaceMethodHeading = (*FunctionHeading)(nil)
 
-func (s *FunctionHeading) GetIdent() *Ident { return s.Ident }
-
 func (*FunctionHeading) isClassMethodHeading()     {}
 func (*FunctionHeading) isInterfaceMethodHeading() {}
 
-func (s FunctionHeading) Children() Nodes {
+func (s *FunctionHeading) GetIdent() *Ident { return s.Ident }
+func (s *FunctionHeading) Children() Nodes {
 	r := Nodes{s.Ident}
 	if s.FormalParameters != nil {
 		r = append(r, s.FormalParameters)
