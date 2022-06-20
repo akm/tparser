@@ -17,6 +17,14 @@ func NewEmbeddedPointerType(v *Ident) *TypeId {
 	}
 }
 
+func NewPointerType(ident *Ident) *TypeId {
+	if decl := EmbeddedTypeDecl(EtkPointerType, ident.Name); decl != nil {
+		return NewTypeId(ident, decl)
+	} else {
+		return NewTypeId(ident)
+	}
+}
+
 type CustomPointerType struct {
 	TypeId *TypeId
 }
