@@ -827,15 +827,7 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
 - PropertyInterface 🔖
   ```
-  [PropertyParameterList] ':' Ident
-  ```
-- PropertyParameterList 🔖
-  ```
-  '[' PropertyParameter ';'... ']'
-  ```
-- PropertyParameter 🔖
-  ```
-  IdentList ':' TypeId
+  [FormalParameters] ':' Ident
   ```
 - InterfaceType 🔖
   ```
