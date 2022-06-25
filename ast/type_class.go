@@ -325,6 +325,8 @@ type ClassProperty struct {
 	Default              *PropertyDefaultSpecifier
 	Implements           *TypeId
 	PortabilityDirective PortabilityDirective
+	// See "Property overrides and redeclarations" in Object Pascal Language Guide
+	Parent *ClassProperty
 	// implements
 	astcore.DeclNode
 }
