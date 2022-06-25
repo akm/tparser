@@ -210,6 +210,78 @@ TSquare = class(TRectangle);
 		}(),
 	)
 
+	// The following type sections are invalid. The class declarated by forward declaration must be declarated completely in the same type section.
+	// type
+	// 		TFigure = class; // forward declaration
+	// 		TDrawing = class
+	// 			Figure: TFigure;
+	// 		end;
+	// type
+	// 		TFigure = class // defining declaration
+	// 			Drawing: TDrawing;
+	// 		end;
+
+	RunTypeSection(t,
+		"Forward declarations and mutually dependent classes",
+		[]rune(`
+type
+	TFigure = class; // forward declaration
+	TDrawing = class
+		Figure: TFigure;
+	end;
+	TFigure = class // defining declaration
+		Drawing: TDrawing;
+	end;
+`),
+		func() ast.TypeSection {
+			classDeclFigure0 := &ast.TypeDecl{
+				Ident: asttest.NewIdent("TFigure"),
+				// Type:  &ast.ForwardDeclaredClassType{},
+			}
+			classDeclDrawing := &ast.TypeDecl{
+				Ident: asttest.NewIdent("TDrawing"),
+				Type: &ast.CustomClassType{
+					Members: ast.ClassMemberSections{
+						&ast.ClassMemberSection{
+							Visibility: ast.CvPrivate,
+							ClassFieldList: ast.ClassFieldList{
+								&ast.ClassField{
+									IdentList: asttest.NewIdentList("Figure"),
+									Type:      asttest.NewTypeId("TFigure", classDeclFigure0.ToDeclarations()[0]),
+								},
+							},
+						},
+					},
+				},
+			}
+			classFigure := &ast.CustomClassType{
+				Members: ast.ClassMemberSections{
+					&ast.ClassMemberSection{
+						Visibility: ast.CvPrivate,
+						ClassFieldList: ast.ClassFieldList{
+							&ast.ClassField{
+								IdentList: asttest.NewIdentList("Drawing"),
+								Type:      asttest.NewTypeId("TDrawing", classDeclDrawing.ToDeclarations()[0]),
+							},
+						},
+					},
+				},
+			}
+			classDeclFigure1 := &ast.TypeDecl{
+				Ident: asttest.NewIdent("Figure"),
+				Type:  classFigure,
+			}
+			classDeclFigure0.Type = &ast.ForwardDeclaredClassType{
+				Actual: classFigure,
+			}
+			return ast.TypeSection{
+				classDeclFigure0,
+				classDeclDrawing,
+				classDeclFigure1,
+			}
+		}(),
+	)
+
 	RunTypeSection(t,
 		"array properties",
 		[]rune(`type
