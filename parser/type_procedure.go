@@ -22,7 +22,7 @@ func (p *Parser) ParseProcedureType() (*ast.ProcedureType, error) {
 
 	t := p.NextToken()
 	if t.Is(token.Symbol('(')) {
-		formalParameters, err := p.ParseFormalParameters()
+		formalParameters, err := p.ParseFormalParameters('(', ')')
 		if err != nil {
 			return nil, err
 		}

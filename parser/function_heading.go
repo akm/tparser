@@ -136,7 +136,7 @@ func (p *Parser) ParseFunctionHeading() (*ast.FunctionHeading, error) {
 	res.Ident = p.NewIdent(ident)
 	t := p.NextToken()
 	if t.Is(token.Symbol('(')) {
-		formalParameters, err := p.ParseFormalParameters()
+		formalParameters, err := p.ParseFormalParameters('(', ')')
 		if err != nil {
 			return nil, err
 		}
@@ -156,13 +156,13 @@ func (p *Parser) ParseFunctionHeading() (*ast.FunctionHeading, error) {
 	return res, nil
 }
 
-func (p *Parser) ParseFormalParameters() (ast.FormalParameters, error) {
-	if _, err := p.Current(token.Symbol('(')); err != nil {
+func (p *Parser) ParseFormalParameters(startRune, endRune rune) (ast.FormalParameters, error) {
+	if _, err := p.Current(token.Symbol(startRune)); err != nil {
 		return nil, err
 	}
 	p.NextToken()
 	r := ast.FormalParameters{}
-	if err := p.Until(token.Symbol(')'), token.Symbol(';'), func() error {
+	if err := p.Until(token.Symbol(endRune), token.Symbol(';'), func() error {
 		formalParm, err := p.ParseFormalParm()
 		if err != nil {
 			return err
