@@ -144,6 +144,7 @@ func (m *ClassMemberSection) Children() Nodes {
 type ClassVisibility string
 
 const (
+	CvDefault   ClassVisibility = "default" // implicitly public
 	CvPrivate   ClassVisibility = "PRIVATE"
 	CvProtected ClassVisibility = "PROTECTED"
 	CvPblic     ClassVisibility = "PUBLIC"
