@@ -14,6 +14,21 @@ type ObjectType interface {
 	Type
 }
 
+// - ForwardDeclaredClassType
+//   ```
+//   CLASS
+//   ```
+type ForwardDeclaredClassType struct {
+	// This will be set at the end of actual class type declaration.
+	Actual *CustomClassType
+}
+
+func (*ForwardDeclaredClassType) isType()           {}
+func (*ForwardDeclaredClassType) IsClassType() bool { return true }
+func (m *ForwardDeclaredClassType) Children() Nodes {
+	return Nodes{}
+}
+
 // - ClassType
 //   ```
 //   CLASS [ClassHeritage]
