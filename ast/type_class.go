@@ -1,6 +1,10 @@
 package ast
 
-import "github.com/akm/tparser/ast/astcore"
+import (
+	"strings"
+
+	"github.com/akm/tparser/ast/astcore"
+)
 
 type ClassType interface {
 	IsClassType() bool
@@ -269,6 +273,24 @@ const (
 
 type ClassMethodDirectiveList []ClassMethodDirective
 
+func (s ClassMethodDirectiveList) Include(w string) bool {
+	kw := ClassMethodDirective(strings.ToUpper(w))
+	for _, m := range s {
+		if m == kw {
+			return true
+		}
+	}
+	return false
+}
+
+var ClassMethodDirectives = ClassMethodDirectiveList{
+	CmdAbstract,
+	CmdVirtual,
+	CmdOverride,
+	CmdOverload,
+	CmdReintroduce,
+}
+
 // - ConstructorHeading
 //   ```
 //   CONSTRUCTOR Ident [FormalParameters]
@@ -378,7 +400,7 @@ func (m *ClassProperty) Children() Nodes {
 
 // - PropertyInterface
 //   ```
-//   [PropertyParameterList] ':' TypeId
+//   [FormalParameters] ':' TypeId
 //   ```
 type PropertyInterface struct {
 	Parameters FormalParameters
