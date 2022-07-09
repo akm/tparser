@@ -97,7 +97,7 @@ type
 									// destructor Destroy; override;
 									{
 										Heading:    &ast.DestructorHeading{Ident: asttest.NewIdent("Destroy")},
-										Directives: ast.ClassMethodDirectives{ast.CmdOverride},
+										Directives: ast.ClassMethodDirectiveList{ast.CmdOverride},
 									},
 									// procedure Clear;
 									{Heading: &ast.FunctionHeading{Type: ast.FtProcedure, Ident: asttest.NewIdent("Clear")}},
@@ -137,7 +137,7 @@ type
 												},
 											}},
 										},
-										Directives: ast.ClassMethodDirectives{ast.CmdOverride},
+										Directives: ast.ClassMethodDirectiveList{ast.CmdOverride},
 									},
 									// function Write(const Buffer; Count: Longint): Longint; override;
 									{
@@ -152,7 +152,7 @@ type
 											}},
 											ReturnType: asttest.NewOrdIdent("Longint"),
 										},
-										Directives: ast.ClassMethodDirectives{ast.CmdOverride},
+										Directives: ast.ClassMethodDirectiveList{ast.CmdOverride},
 									},
 								},
 							},

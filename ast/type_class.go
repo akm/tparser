@@ -208,7 +208,7 @@ func (s ClassMethodList) Children() Nodes {
 type ClassMethod struct {
 	ClassMethod bool
 	Heading     ClassMethodHeading
-	Directives  ClassMethodDirectives
+	Directives  ClassMethodDirectiveList
 	// implements
 	astcore.DeclNode
 }
@@ -267,7 +267,7 @@ const (
 	CmdReintroduce ClassMethodDirective = "REINTRODUCE"
 )
 
-type ClassMethodDirectives []ClassMethodDirective
+type ClassMethodDirectiveList []ClassMethodDirective
 
 // - ConstructorHeading
 //   ```
