@@ -2,6 +2,7 @@ package astcore
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/akm/tparser/runes"
 	"github.com/akm/tparser/token"
@@ -125,4 +126,14 @@ func (s IdentList) Children() Nodes {
 		r[idx] = i
 	}
 	return r
+}
+
+func (s IdentList) Find(name string) *Ident {
+	kw := strings.ToLower(name)
+	for _, i := range s {
+		if strings.ToLower(i.Name) == kw {
+			return i
+		}
+	}
+	return nil
 }
