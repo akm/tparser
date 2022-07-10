@@ -100,6 +100,8 @@ func (p *Parser) ParseType() (ast.Type, error) {
 			return p.ParseStrucType()
 		case "FUNCTION", "PROCEDURE":
 			return p.ParseProcedureType()
+		case "CLASS":
+			return p.ParseClassType()
 		default:
 			return p.ParseStringOfStringType()
 		}
