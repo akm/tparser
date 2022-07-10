@@ -1,5 +1,7 @@
 package astcore
 
+import "strings"
+
 type Decl struct {
 	*Ident
 	Node Node
@@ -17,4 +19,14 @@ func NewDeclarations(identList IdentList, node Node) Decls {
 		r[idx] = NewDeclaration(i, node)
 	}
 	return r
+}
+
+func (s Decls) Find(name string) *Decl {
+	kw := strings.ToLower(name)
+	for _, i := range s {
+		if strings.ToLower(i.Name) == kw {
+			return i
+		}
+	}
+	return nil
 }
