@@ -58,6 +58,44 @@ func (m *CustomClassType) Children() Nodes {
 	}
 	return r
 }
+func (m *CustomClassType) FindMemberDecl(name string) *astcore.Decl {
+	kw := strings.ToLower(name)
+	for _, m := range m.Members {
+		if m.ClassFieldList != nil {
+			for _, f := range m.ClassFieldList {
+				if r := f.IdentList.Find(kw); r != nil {
+					return f.ToDeclarations().Find(kw)
+				}
+			}
+		}
+		if m.ClassMethodList != nil {
+			for _, method := range m.ClassMethodList {
+				if strings.ToLower(method.Heading.GetIdent().Name) == kw {
+					return method.ToDeclarations().Find(kw)
+				}
+			}
+		}
+		if m.ClassPropertyList != nil {
+			for _, prop := range m.ClassPropertyList {
+				if strings.ToLower(prop.Ident.Name) == kw {
+					return prop.ToDeclarations().Find(kw)
+				}
+			}
+		}
+	}
+
+	if m.Heritage != nil && len(m.Heritage) > 0 {
+		parent := m.Heritage[0]
+		if parent.Ref != nil {
+			if typeDecl, ok := parent.Ref.Node.(*TypeDecl); ok {
+				if parentClass, ok := typeDecl.Type.(*CustomClassType); ok {
+					return parentClass.FindMemberDecl(name)
+				}
+			}
+		}
+	}
+	return nil
+}
 
 // - ObjectType
 //   ```
