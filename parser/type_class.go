@@ -360,7 +360,7 @@ func (p *Parser) ParseClassProperty(classType *ast.CustomClassType) (*ast.ClassP
 		if decl := classType.FindMemberDecl(t.Value()); decl != nil {
 			res.Read = ast.NewIdentRef(ast.NewIdent(t), decl)
 		} else {
-			return nil, fmt.Errorf("unknown member %s", t.Value())
+			return nil, p.TokenErrorf("unknown member %s", t)
 		}
 		p.NextToken()
 	}
@@ -371,7 +371,7 @@ func (p *Parser) ParseClassProperty(classType *ast.CustomClassType) (*ast.ClassP
 		if decl := classType.FindMemberDecl(t.Value()); decl != nil {
 			res.Write = ast.NewIdentRef(ast.NewIdent(t), decl)
 		} else {
-			return nil, fmt.Errorf("unknown member %s", t.Value())
+			return nil, p.TokenErrorf("unknown member %s", t)
 		}
 		p.NextToken()
 	}
@@ -389,7 +389,7 @@ func (p *Parser) ParseClassProperty(classType *ast.CustomClassType) (*ast.ClassP
 			v := false
 			res.Stored = &ast.PropertyStoredSpecifier{Constant: &v}
 		} else {
-			return nil, fmt.Errorf("unknown member %s", t.Value())
+			return nil, p.TokenErrorf("unknown member %s", t)
 		}
 		p.NextToken()
 	}
