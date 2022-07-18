@@ -214,6 +214,8 @@ func (p *Parser) ParseClassMethod() (*ast.ClassMethod, error) {
 		return nil, err
 	}
 
+	defer p.context.StackDeclMap()()
+
 	switch strings.ToUpper(t0.Value()) {
 	case "FUNCTION", "PROCEDURE":
 		heading, err := p.ParseFunctionHeading()
