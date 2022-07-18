@@ -207,6 +207,8 @@ func (p *UnitParser) ParseImplUses() error {
 		return err
 	}
 	p.NextToken()
+
+	// Ignore returned func
 	p.context.StackDeclMap()
 
 	impl := &ast.ImplementationSection{}
