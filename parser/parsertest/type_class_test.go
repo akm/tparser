@@ -6,9 +6,11 @@ import (
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/ast/asttest"
 	"github.com/akm/tparser/ext"
+	"github.com/akm/tparser/log/testlog"
 )
 
 func TestClassType(t *testing.T) {
+	defer testlog.Setup(t)()
 
 	RunTypeSection(t,
 		"class example1",
