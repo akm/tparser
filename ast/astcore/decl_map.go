@@ -24,8 +24,8 @@ func (m DeclMapImpl) Set(decl DeclNode) error {
 		// 	err := errors.Errorf("bar found")
 		// 	fmt.Printf("%+v\n", err)
 		// }
-		if _, ok := m[s]; ok {
-			return errors.Errorf("duplicate declaration: %s", i.Ident.Name)
+		if old, ok := m[s]; ok {
+			return errors.Errorf("duplicate declaration: %s at %s but was %s", i.Ident.Name, i.Ident.Location.String(), old.Location.String())
 		}
 		m[s] = i
 	}
