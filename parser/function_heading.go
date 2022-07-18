@@ -134,6 +134,9 @@ func (p *Parser) ParseFunctionHeading() (*ast.FunctionHeading, error) {
 		return nil, err
 	}
 	res.Ident = p.NewIdent(ident)
+
+	defer p.TraceMethod("Parser.ParseFunctionHeading")()
+
 	t := p.NextToken()
 	if t.Is(token.Symbol('(')) {
 		formalParameters, err := p.ParseFormalParameters('(', ')')

@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/akm/tparser/ast/astcore"
+	"github.com/akm/tparser/log"
 )
 
 type ClassType interface {
@@ -59,6 +60,8 @@ func (m *CustomClassType) Children() Nodes {
 	return r
 }
 func (m *CustomClassType) FindMemberDecl(name string) *astcore.Decl {
+	defer log.TraceMethod("CustomClassType.FindMemberDecl: " + name)()
+
 	kw := strings.ToLower(name)
 	for _, m := range m.Members {
 		if m.ClassFieldList != nil {

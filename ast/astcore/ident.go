@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/akm/tparser/log"
 	"github.com/akm/tparser/runes"
 	"github.com/akm/tparser/token"
 	"github.com/pkg/errors"
@@ -129,6 +130,8 @@ func (s IdentList) Children() Nodes {
 }
 
 func (s IdentList) Find(name string) *Ident {
+	log.Printf("IdentList.Find(%s) from %v", name, s.Names())
+
 	kw := strings.ToLower(name)
 	for _, i := range s {
 		if strings.ToLower(i.Name) == kw {

@@ -25,10 +25,8 @@ func (p *Parser) ParseClassType() (ast.ClassType, error) {
 	} else {
 		res.Heritage = heritage
 	}
-	if memebrs, err := p.ParseClassMemberSections(res); err != nil {
+	if _, err := p.ParseClassMemberSections(res); err != nil {
 		return nil, err
-	} else {
-		res.Members = memebrs
 	}
 
 	return nil, nil
@@ -60,24 +58,24 @@ func (p *Parser) ParseClassHeritage() (ast.ClassHeritage, error) {
 func (p *Parser) ParseClassMemberSections(classType *ast.CustomClassType) (ast.ClassMemberSections, error) {
 	defer p.TraceMethod("Parser.ParseClassMemberSections")()
 
-	res := ast.ClassMemberSections{}
+	classType.Members = ast.ClassMemberSections{}
 	if err := p.Until(token.ReservedWord.HasKeyword("END"), nil, func() error {
-		sect, err := p.ParseClassMemberSection(classType)
-		if err != nil {
+		if _, err := p.ParseClassMemberSection(classType); err != nil {
 			return err
 		}
-		res = append(res, sect)
 		return nil
 	}); err != nil {
 		return nil, err
 	}
-	return res, nil
+	return classType.Members, nil
 }
 
 func (p *Parser) ParseClassMemberSection(classType *ast.CustomClassType) (*ast.ClassMemberSection, error) {
 	defer p.TraceMethod("Parser.ParseClassMemberSection")()
 
 	res := &ast.ClassMemberSection{}
+	classType.Members = append(classType.Members, res)
+
 	if t0, err := p.Current(token.Identifier); err != nil {
 		return nil, err
 	} else {
@@ -165,6 +163,7 @@ func (p *Parser) ParseClassFieldList() (ast.ClassFieldList, error) {
 	}); err != nil {
 		return nil, err
 	}
+
 	return res, nil
 }
 
@@ -335,49 +334,63 @@ func (p *Parser) ParseClassProperty(classType *ast.CustomClassType) (*ast.ClassP
 	}
 	res := &ast.ClassProperty{}
 
+	p.Logf("Parser.ParseClassProperty #01")
+
 	t0 := p.NextToken()
 	res.Ident = ast.NewIdent(t0)
 	p.NextToken()
 
 	intf, err := p.ParsePropertyInterface()
 	if err != nil {
+		p.Logf("Parser.ParseClassProperty #02")
 		return nil, err
 	}
 	res.Interface = intf
 
+	p.Logf("Parser.ParseClassProperty #03")
 	if strings.ToUpper(p.CurrentToken().Value()) == "INDEX" {
+		p.Logf("Parser.ParseClassProperty #04")
 		p.NextToken()
 		expr, err := p.ParseConstExpr()
 		if err != nil {
+			p.Logf("Parser.ParseClassProperty #05")
 			return nil, err
 		}
 		res.Index = expr
 	}
+	p.Logf("Parser.ParseClassProperty #06")
 
 	//   [READ Ident]
 	if strings.ToUpper(p.CurrentToken().Value()) == "READ" {
+		p.Logf("Parser.ParseClassProperty #07")
 		t := p.NextToken()
 		if decl := classType.FindMemberDecl(t.Value()); decl != nil {
 			res.Read = ast.NewIdentRef(ast.NewIdent(t), decl)
 		} else {
+			p.Logf("Parser.ParseClassProperty #08")
 			return nil, p.TokenErrorf("unknown member %s", t)
 		}
 		p.NextToken()
 	}
+	p.Logf("Parser.ParseClassProperty #09")
 
 	//   [WRITE Ident]
 	if strings.ToUpper(p.CurrentToken().Value()) == "WRITE" {
+		p.Logf("Parser.ParseClassProperty #10")
 		t := p.NextToken()
 		if decl := classType.FindMemberDecl(t.Value()); decl != nil {
 			res.Write = ast.NewIdentRef(ast.NewIdent(t), decl)
 		} else {
+			p.Logf("Parser.ParseClassProperty #11")
 			return nil, p.TokenErrorf("unknown member %s", t)
 		}
 		p.NextToken()
 	}
+	p.Logf("Parser.ParseClassProperty #12")
 
 	//   [STORED (Ident | Constant)]
 	if strings.ToUpper(p.CurrentToken().Value()) == "STORED" {
+		p.Logf("Parser.ParseClassProperty #13")
 		t := p.NextToken()
 		tVal := strings.ToLower(t.Value())
 		if decl := classType.FindMemberDecl(tVal); decl != nil {
@@ -389,32 +402,42 @@ func (p *Parser) ParseClassProperty(classType *ast.CustomClassType) (*ast.ClassP
 			v := false
 			res.Stored = &ast.PropertyStoredSpecifier{Constant: &v}
 		} else {
+			p.Logf("Parser.ParseClassProperty #14")
 			return nil, p.TokenErrorf("unknown member %s", t)
 		}
 		p.NextToken()
 	}
+	p.Logf("Parser.ParseClassProperty #15")
 
 	//   [(DEFAULT ConstExpr) | NODEFAULT]
 	if strings.ToUpper(p.CurrentToken().Value()) == "DEFAULT" {
+		p.Logf("Parser.ParseClassProperty #16")
 		p.NextToken()
 		expr, err := p.ParseConstExpr()
 		if err != nil {
+			p.Logf("Parser.ParseClassProperty #17")
 			return nil, err
 		}
 		res.Default = &ast.PropertyDefaultSpecifier{Value: expr}
 	} else if strings.ToUpper(p.CurrentToken().Value()) == "NODEFAULT" {
+		p.Logf("Parser.ParseClassProperty #18")
 		v := true
 		res.Default = &ast.PropertyDefaultSpecifier{NoDefault: &v}
 	}
 
+	p.Logf("Parser.ParseClassProperty #19")
+
 	//   [IMPLEMENTS TypeId]
 	if strings.ToUpper(p.CurrentToken().Value()) == "IMPLEMENTS" {
+		p.Logf("Parser.ParseClassProperty #20")
 		typeId, err := p.ParseTypeId()
 		if err != nil {
+			p.Logf("Parser.ParseClassProperty #21")
 			return nil, err
 		}
 		res.Implements = typeId
 	}
+	p.Logf("Parser.ParseClassProperty #22")
 
 	//   [PortabilityDirective]
 	//    TODO
