@@ -9,6 +9,8 @@ import (
 )
 
 func (p *Parser) ParseClassType() (ast.ClassType, error) {
+	defer p.TraceMethod("Parser.ParseClassType")()
+
 	if _, err := p.Current(token.ReservedWord.HasKeyword("CLASS")); err != nil {
 		return nil, err
 	}
@@ -33,6 +35,8 @@ func (p *Parser) ParseClassType() (ast.ClassType, error) {
 }
 
 func (p *Parser) ParseClassHeritage() (ast.ClassHeritage, error) {
+	defer p.TraceMethod("Parser.ParseClassHeritage")()
+
 	if !p.CurrentToken().Is(token.Symbol('(')) {
 		return nil, nil
 	}
@@ -53,6 +57,8 @@ func (p *Parser) ParseClassHeritage() (ast.ClassHeritage, error) {
 }
 
 func (p *Parser) ParseClassMemberSections(classType *ast.CustomClassType) (ast.ClassMemberSections, error) {
+	defer p.TraceMethod("Parser.ParseClassMemberSections")()
+
 	res := ast.ClassMemberSections{}
 	if err := p.Until(token.ReservedWord.HasKeyword("END"), nil, func() error {
 		sect, err := p.ParseClassMemberSection(classType)
@@ -68,6 +74,8 @@ func (p *Parser) ParseClassMemberSections(classType *ast.CustomClassType) (ast.C
 }
 
 func (p *Parser) ParseClassMemberSection(classType *ast.CustomClassType) (*ast.ClassMemberSection, error) {
+	defer p.TraceMethod("Parser.ParseClassMemberSection")()
+
 	res := &ast.ClassMemberSection{}
 	if t0, err := p.Current(token.Identifier); err != nil {
 		return nil, err
@@ -132,6 +140,8 @@ var (
 )
 
 func (p *Parser) ParseClassFieldList() (ast.ClassFieldList, error) {
+	defer p.TraceMethod("Parser.ParseClassFieldList")()
+
 	res := ast.ClassFieldList{}
 	if err := p.Until(fieldListBreak, token.Symbol(';'), func() error {
 		if fieldListBreak.Predicate(p.CurrentToken()) {
@@ -150,10 +160,13 @@ func (p *Parser) ParseClassFieldList() (ast.ClassFieldList, error) {
 }
 
 func (p *Parser) ParseClassField() (*ast.ClassField, error) {
+	defer p.TraceMethod("Parser.ParseClassField")()
+
 	identList, err := p.ParseIdentList(':')
 	if err != nil {
 		return nil, err
 	}
+
 	typ, err := p.ParseType()
 	if err != nil {
 		return nil, err
@@ -163,6 +176,8 @@ func (p *Parser) ParseClassField() (*ast.ClassField, error) {
 }
 
 func (p *Parser) ParseClassMethodList() (ast.ClassMethodList, error) {
+	defer p.TraceMethod("Parser.ParseClassMethodList")()
+
 	res := ast.ClassMethodList{}
 	if err := p.Until(methodBreak, token.Symbol(';'), func() error {
 		if methodBreak.Predicate(p.CurrentToken()) {
@@ -181,6 +196,8 @@ func (p *Parser) ParseClassMethodList() (ast.ClassMethodList, error) {
 }
 
 func (p *Parser) ParseClassMethod() (*ast.ClassMethod, error) {
+	defer p.TraceMethod("Parser.ParseClassMethod")()
+
 	res := &ast.ClassMethod{}
 	t0, err := p.Current(token.ReservedWord)
 	if err != nil {
@@ -220,6 +237,8 @@ func (p *Parser) ParseClassMethod() (*ast.ClassMethod, error) {
 }
 
 func (p *Parser) ClassMethodDirectiveList() (ast.ClassMethodDirectiveList, error) {
+	defer p.TraceMethod("Parser.ClassMethodDirectiveList")()
+
 	res := ast.ClassMethodDirectiveList{}
 	if err := p.Until(methodBreak, token.Symbol(';'), func() error {
 		w := p.CurrentToken().Value()
