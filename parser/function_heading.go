@@ -172,10 +172,9 @@ func (p *Parser) ParseFormalParameters(startRune, endRune rune) (ast.FormalParam
 	}); err != nil {
 		return nil, err
 	}
-	// // Until で以下はチェック済み
-	// if _, err := p.Current(token.Symbol(')')); err != nil {
-	// 	return nil, err
-	// }
+	if _, err := p.Current(token.Symbol(')')); err != nil {
+		return nil, err
+	}
 	p.NextToken()
 	return r, nil
 }
