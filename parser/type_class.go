@@ -124,7 +124,15 @@ func (p *Parser) ParseClassMemberSection(classType *ast.CustomClassType) (*ast.C
 }
 
 var (
+	visibilityBreak = token.Some(
+		token.UpperCase("PRIVATE"),
+		token.UpperCase("PROTECTED"),
+		token.UpperCase("PUBLIC"),
+		token.UpperCase("PUBLISHED"),
+	)
+
 	propertyBreak = token.Some(
+		visibilityBreak,
 		token.ReservedWord.HasKeyword("END"),
 	)
 	methodBreak = token.Some(
