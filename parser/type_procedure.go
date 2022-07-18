@@ -18,6 +18,8 @@ func (p *Parser) ParseProcedureType() (*ast.ProcedureType, error) {
 		return nil, p.TokenErrorf("expects FUNCTION or PROCEDURE, but got %s (%s)", t0, string(t0.Raw()))
 	}
 
+	defer p.context.StackDeclMap()()
+
 	t := p.NextToken()
 	if t.Is(token.Symbol('(')) {
 		formalParameters, err := p.ParseFormalParameters()

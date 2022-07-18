@@ -114,6 +114,143 @@ end.`),
 		}(),
 	)
 
+	RunUnitTest(t,
+		"procedures with same name parameter",
+		[]rune(`UNIT U1;
+interface
+type
+	TStrProc1 = procedure(S: string);
+	TStrProc2 = procedure(S: string);
+
+procedure Proc1(S: string);
+procedure Proc2(S: string);
+
+implementation
+
+procedure Proc1(S: string);
+begin
+	Writeln(S);
+end;
+
+procedure Proc2(S: string);
+begin
+	Writeln(S);
+end;
+
+end.`),
+		func() *ast.Unit {
+			typeDeclTStrProc1 := &ast.TypeDecl{
+				Ident: asttest.NewIdent("TStrProc1"),
+				Type: &ast.ProcedureType{
+					FunctionType:     ast.FtProcedure,
+					FormalParameters: ast.FormalParameters{asttest.NewFormalParm("S", asttest.NewStringType("string"))},
+				},
+			}
+			typeDeclTStrProc2 := &ast.TypeDecl{
+				Ident: asttest.NewIdent("TStrProc2"),
+				Type: &ast.ProcedureType{
+					FunctionType:     ast.FtProcedure,
+					FormalParameters: ast.FormalParameters{asttest.NewFormalParm("S", asttest.NewStringType("string"))},
+				},
+			}
+
+			paramSinProc1 := asttest.NewFormalParm("S", asttest.NewStringType("string"))
+			paramSinProc2 := asttest.NewFormalParm("S", asttest.NewStringType("string"))
+
+			return &ast.Unit{
+				Ident: asttest.NewIdent("U1"),
+				InterfaceSection: &ast.InterfaceSection{
+					InterfaceDecls: ast.InterfaceDecls{
+						ast.TypeSection{
+							typeDeclTStrProc1,
+							typeDeclTStrProc2,
+						},
+						&ast.ExportedHeading{
+							FunctionHeading: &ast.FunctionHeading{
+								Type:             ast.FtProcedure,
+								Ident:            asttest.NewIdent("Proc1"),
+								FormalParameters: ast.FormalParameters{asttest.NewFormalParm("S", asttest.NewStringType("string"))},
+							},
+						},
+						&ast.ExportedHeading{
+							FunctionHeading: &ast.FunctionHeading{
+								Type:             ast.FtProcedure,
+								Ident:            asttest.NewIdent("Proc2"),
+								FormalParameters: ast.FormalParameters{asttest.NewFormalParm("S", asttest.NewStringType("string"))},
+							},
+						},
+					},
+				},
+				ImplementationSection: &ast.ImplementationSection{
+					DeclSections: ast.DeclSections{
+						&ast.FunctionDecl{
+							FunctionHeading: &ast.FunctionHeading{
+								Type:             ast.FtProcedure,
+								Ident:            asttest.NewIdent("Proc1"),
+								FormalParameters: ast.FormalParameters{paramSinProc1},
+							},
+							Block: &ast.Block{
+								Body: &ast.CompoundStmt{
+									StmtList: ast.StmtList{
+										{
+											Body: &ast.CallStatement{
+												Designator: asttest.NewDesignator(
+													asttest.NewQualId(
+														asttest.NewIdent("Writeln"),
+													),
+												),
+												ExprList: ast.ExprList{
+													asttest.NewExpression(
+														&ast.DesignatorFactor{
+															Designator: asttest.NewDesignator(
+																&ast.QualId{Ident: asttest.NewIdentRef("S", paramSinProc1.ToDeclarations()[0])},
+															),
+														},
+													),
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+						&ast.FunctionDecl{
+							FunctionHeading: &ast.FunctionHeading{
+								Type:             ast.FtProcedure,
+								Ident:            asttest.NewIdent("Proc2"),
+								FormalParameters: ast.FormalParameters{asttest.NewFormalParm("S", asttest.NewStringType("string"))},
+							},
+							Block: &ast.Block{
+								Body: &ast.CompoundStmt{
+									StmtList: ast.StmtList{
+										{
+											Body: &ast.CallStatement{
+												Designator: asttest.NewDesignator(
+													asttest.NewQualId(
+														asttest.NewIdent("Writeln"),
+													),
+												),
+												ExprList: ast.ExprList{
+													asttest.NewExpression(
+														&ast.DesignatorFactor{
+															Designator: asttest.NewDesignator(
+																&ast.QualId{Ident: asttest.NewIdentRef("S", paramSinProc2.ToDeclarations()[0])},
+															),
+														},
+													),
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+		}(),
+	)
+
 	RunTypeSection(t,
 		"Object method type declaration",
 		[]rune(`
