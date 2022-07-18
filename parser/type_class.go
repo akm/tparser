@@ -53,6 +53,7 @@ func (p *Parser) ParseClassHeritage() (ast.ClassHeritage, error) {
 	}); err != nil {
 		return nil, err
 	}
+	p.NextToken()
 	return res, nil
 }
 
@@ -166,6 +167,7 @@ func (p *Parser) ParseClassField() (*ast.ClassField, error) {
 	if err != nil {
 		return nil, err
 	}
+	p.NextToken()
 
 	typ, err := p.ParseType()
 	if err != nil {
