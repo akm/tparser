@@ -265,6 +265,8 @@ func (p *Parser) ClassMethodDirectiveList() (ast.ClassMethodDirectiveList, error
 }
 
 func (p *Parser) ParseConstructorHeading() (*ast.ConstructorHeading, error) {
+	defer p.TraceMethod("Parser.ParseConstructorHeading")()
+
 	if _, err := p.Current(token.ReservedWord.HasKeyword("CONSTRUCTOR")); err != nil {
 		return nil, err
 	}
@@ -285,6 +287,8 @@ func (p *Parser) ParseConstructorHeading() (*ast.ConstructorHeading, error) {
 }
 
 func (p *Parser) ParseDestructorHeading() (*ast.DestructorHeading, error) {
+	defer p.TraceMethod("Parser.ParseDestructorHeading")()
+
 	if _, err := p.Current(token.ReservedWord.HasKeyword("DESTRUCTOR")); err != nil {
 		return nil, err
 	}
@@ -297,6 +301,8 @@ func (p *Parser) ParseDestructorHeading() (*ast.DestructorHeading, error) {
 }
 
 func (p *Parser) ParseClassPropertyList(classType *ast.CustomClassType) (ast.ClassPropertyList, error) {
+	defer p.TraceMethod("Parser.ParseClassPropertyList")()
+
 	res := ast.ClassPropertyList{}
 	if err := p.Until(methodBreak, token.Symbol(';'), func() error {
 		if methodBreak.Predicate(p.CurrentToken()) {
@@ -315,6 +321,8 @@ func (p *Parser) ParseClassPropertyList(classType *ast.CustomClassType) (ast.Cla
 }
 
 func (p *Parser) ParseClassProperty(classType *ast.CustomClassType) (*ast.ClassProperty, error) {
+	defer p.TraceMethod("Parser.ParseClassProperty")()
+
 	if _, err := p.Current(token.ReservedWord.HasKeyword("PROPERTY")); err != nil {
 		return nil, err
 	}
