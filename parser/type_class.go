@@ -247,6 +247,10 @@ func (p *Parser) ParseClassMethod() (*ast.ClassMethod, error) {
 }
 
 func (p *Parser) ClassMethodDirectiveList() (ast.ClassMethodDirectiveList, error) {
+	if p.CurrentToken().Is(token.Symbol(';')) {
+		p.NextToken()
+	}
+
 	defer p.TraceMethod("Parser.ClassMethodDirectiveList")()
 
 	res := ast.ClassMethodDirectiveList{}
@@ -254,6 +258,7 @@ func (p *Parser) ClassMethodDirectiveList() (ast.ClassMethodDirectiveList, error
 		w := p.CurrentToken().Value()
 		if ast.ClassMethodDirectives.Include(w) {
 			res = append(res, ast.ClassMethodDirective(w))
+			p.NextToken()
 			return nil
 		} else {
 			return QuitUntil
