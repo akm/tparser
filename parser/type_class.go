@@ -311,8 +311,8 @@ func (p *Parser) ParseClassPropertyList(classType *ast.CustomClassType) (ast.Cla
 	defer p.TraceMethod("Parser.ParseClassPropertyList")()
 
 	res := ast.ClassPropertyList{}
-	if err := p.Until(methodBreak, token.Symbol(';'), func() error {
-		if methodBreak.Predicate(p.CurrentToken()) {
+	if err := p.Until(propertyBreak, token.Symbol(';'), func() error {
+		if propertyBreak.Predicate(p.CurrentToken()) {
 			return QuitUntil
 		}
 		prop, err := p.ParseClassProperty(classType)
