@@ -25,8 +25,10 @@ func (p *Parser) ParseClassType() (ast.ClassType, error) {
 	} else {
 		res.Heritage = heritage
 	}
-	if _, err := p.ParseClassMemberSections(res); err != nil {
-		return nil, err
+	if !p.CurrentToken().Is(token.Symbol(';')) {
+		if _, err := p.ParseClassMemberSections(res); err != nil {
+			return nil, err
+		}
 	}
 
 	return res, nil
