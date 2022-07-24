@@ -267,7 +267,7 @@ func (p *Parser) ClassMethodDirectiveList() (ast.ClassMethodDirectiveList, error
 
 	res := ast.ClassMethodDirectiveList{}
 	if err := p.Until(methodBreak, token.Symbol(';'), func() error {
-		w := p.CurrentToken().Value()
+		w := strings.ToUpper(p.CurrentToken().Value())
 		if ast.ClassMethodDirectives.Include(w) {
 			res = append(res, ast.ClassMethodDirective(w))
 			p.NextToken()
