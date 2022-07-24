@@ -44,7 +44,6 @@ type
 					Type:  ast.FtProcedure,
 					Ident: asttest.NewIdent("SetCapacity"),
 					FormalParameters: ast.FormalParameters{{
-						Opt: &ast.FpoVar,
 						Parameter: &ast.Parameter{
 							IdentList: asttest.NewIdentList("NewCapacity"),
 							Type:      &ast.ParameterType{Type: asttest.NewOrdIdent("Longint")},
@@ -67,7 +66,6 @@ type
 							&ast.ClassMemberSection{
 								Visibility: ast.CvProtected,
 								ClassMethodList: ast.ClassMethodList{
-									// function Realloc(var NewCapacity: Longint): Pointer; virtual;
 									{
 										Heading: &ast.FunctionHeading{
 											Type:  ast.FtFunction,
@@ -81,6 +79,7 @@ type
 											}},
 											ReturnType: ast.NewPointerType(asttest.NewIdent("Pointer")),
 										},
+										Directives: ast.ClassMethodDirectiveList{ast.CmdVirtual},
 									},
 								},
 								ClassPropertyList: ast.ClassPropertyList{
@@ -145,13 +144,20 @@ type
 									{
 										Heading: &ast.FunctionHeading{Type: ast.FtFunction,
 											Ident: asttest.NewIdent("Write"),
-											FormalParameters: ast.FormalParameters{{
-												Opt: &ast.FpoConst,
-												Parameter: &ast.Parameter{
-													IdentList: asttest.NewIdentList("Buffer", "Count"),
-													Type:      &ast.ParameterType{Type: asttest.NewOrdIdent("Longint")},
+											FormalParameters: ast.FormalParameters{
+												{
+													Opt: &ast.FpoConst,
+													Parameter: &ast.Parameter{
+														IdentList: asttest.NewIdentList("Buffer"),
+													},
 												},
-											}},
+												{
+													Parameter: &ast.Parameter{
+														IdentList: asttest.NewIdentList("Count"),
+														Type:      &ast.ParameterType{Type: asttest.NewOrdIdent("Longint")},
+													},
+												},
+											},
 											ReturnType: asttest.NewOrdIdent("Longint"),
 										},
 										Directives: ast.ClassMethodDirectiveList{ast.CmdOverride},
