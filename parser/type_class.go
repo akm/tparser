@@ -87,7 +87,7 @@ func (p *Parser) ParseClassMemberSection(classType *ast.CustomClassType) (*ast.C
 			res.Visibility = ast.CvProtected
 			p.NextToken()
 		case "PUBLIC":
-			res.Visibility = ast.CvPblic
+			res.Visibility = ast.CvPublic
 			p.NextToken()
 		case "PUBLISHED":
 			res.Visibility = ast.CvPublished

@@ -94,7 +94,7 @@ type
 								},
 							},
 							&ast.ClassMemberSection{
-								Visibility: ast.CvPublished,
+								Visibility: ast.CvPublic,
 								ClassMethodList: ast.ClassMethodList{
 									// destructor Destroy; override;
 									{
@@ -389,7 +389,7 @@ end;
 								},
 							},
 							&ast.ClassMemberSection{
-								Visibility: ast.CvPblic,
+								Visibility: ast.CvPublic,
 								ClassPropertyList: ast.ClassPropertyList{
 									// property Objects[Index: Integer]: TObject read GetObject write SetObject;
 									{
@@ -518,7 +518,7 @@ type
 								},
 							},
 							&ast.ClassMemberSection{
-								Visibility: ast.CvPblic,
+								Visibility: ast.CvPublic,
 								ClassPropertyList: ast.ClassPropertyList{
 									// property Left: Longint index 0 read GetCoordinate write SetCoordinate;
 									{

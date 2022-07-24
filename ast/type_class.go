@@ -192,7 +192,7 @@ const (
 	CvDefault   ClassVisibility = "default" // implicitly public
 	CvPrivate   ClassVisibility = "PRIVATE"
 	CvProtected ClassVisibility = "PROTECTED"
-	CvPblic     ClassVisibility = "PUBLIC"
+	CvPublic    ClassVisibility = "PUBLIC"
 	CvPublished ClassVisibility = "PUBLISHED"
 )
 
