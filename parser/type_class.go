@@ -104,19 +104,25 @@ func (p *Parser) ParseClassMemberSection(classType *ast.CustomClassType) (*ast.C
 	if err != nil {
 		return nil, err
 	}
-	res.ClassFieldList = fieldList
+	if len(fieldList) > 0 {
+		res.ClassFieldList = fieldList
+	}
 
 	methodList, err := p.ParseClassMethodList()
 	if err != nil {
 		return nil, err
 	}
-	res.ClassMethodList = methodList
+	if len(methodList) > 0 {
+		res.ClassMethodList = methodList
+	}
 
 	propList, err := p.ParseClassPropertyList(classType)
 	if err != nil {
 		return nil, err
 	}
-	res.ClassPropertyList = propList
+	if len(propList) > 0 {
+		res.ClassPropertyList = propList
+	}
 
 	return res, nil
 }
@@ -245,7 +251,9 @@ func (p *Parser) ParseClassMethod() (*ast.ClassMethod, error) {
 	if err != nil {
 		return nil, err
 	}
-	res.Directives = directiveList
+	if len(directiveList) > 0 {
+		res.Directives = directiveList
+	}
 
 	return res, nil
 }
