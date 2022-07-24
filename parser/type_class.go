@@ -188,7 +188,7 @@ func (p *Parser) ParseClassMethodList() (ast.ClassMethodList, error) {
 	defer p.TraceMethod("Parser.ParseClassMethodList")()
 
 	res := ast.ClassMethodList{}
-	if err := p.Until(methodBreak, token.Symbol(';'), func() error {
+	if err := p.Until(methodBreak, nil, func() error {
 		if methodBreak.Predicate(p.CurrentToken()) {
 			return QuitUntil
 		}
@@ -197,6 +197,9 @@ func (p *Parser) ParseClassMethodList() (ast.ClassMethodList, error) {
 			return err
 		}
 		res = append(res, method)
+		if p.CurrentToken().Is(token.Symbol(';')) {
+			p.NextToken()
+		}
 		return nil
 	}); err != nil {
 		return nil, err
@@ -310,7 +313,7 @@ func (p *Parser) ParseClassPropertyList(classType *ast.CustomClassType) (ast.Cla
 	defer p.TraceMethod("Parser.ParseClassPropertyList")()
 
 	res := ast.ClassPropertyList{}
-	if err := p.Until(propertyBreak, token.Symbol(';'), func() error {
+	if err := p.Until(propertyBreak, nil, func() error {
 		if propertyBreak.Predicate(p.CurrentToken()) {
 			return QuitUntil
 		}
@@ -319,6 +322,9 @@ func (p *Parser) ParseClassPropertyList(classType *ast.CustomClassType) (ast.Cla
 			return err
 		}
 		res = append(res, prop)
+		if p.CurrentToken().Is(token.Symbol(';')) {
+			p.NextToken()
+		}
 		return nil
 	}); err != nil {
 		return nil, err
