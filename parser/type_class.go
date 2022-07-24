@@ -341,8 +341,6 @@ func (p *Parser) ParseClassPropertyList(classType *ast.CustomClassType) (ast.Cla
 }
 
 func (p *Parser) ParseClassProperty(classType *ast.CustomClassType) (*ast.ClassProperty, error) {
-	defer p.TraceMethod("Parser.ParseClassProperty")()
-
 	if _, err := p.Current(token.ReservedWord.HasKeyword("PROPERTY")); err != nil {
 		return nil, err
 	}
@@ -352,6 +350,8 @@ func (p *Parser) ParseClassProperty(classType *ast.CustomClassType) (*ast.ClassP
 
 	t0 := p.NextToken()
 	res.Ident = ast.NewIdent(t0)
+	defer p.TraceMethod("Parser.ParseClassProperty")()
+
 	p.NextToken()
 
 	intf, err := p.ParsePropertyInterface()
