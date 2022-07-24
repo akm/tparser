@@ -29,7 +29,7 @@ func (p *Parser) ParseClassType() (ast.ClassType, error) {
 		return nil, err
 	}
 
-	return nil, nil
+	return res, nil
 }
 
 func (p *Parser) ParseClassHeritage() (ast.ClassHeritage, error) {
