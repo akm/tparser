@@ -242,9 +242,10 @@ type
 	end;
 `),
 		func() ast.TypeSection {
+			forwardDeclaredFigure := &ast.ForwardDeclaredClassType{}
 			classDeclFigure0 := &ast.TypeDecl{
 				Ident: asttest.NewIdent("TFigure"),
-				// Type:  &ast.ForwardDeclaredClassType{},
+				Type:  forwardDeclaredFigure,
 			}
 			classDeclDrawing := &ast.TypeDecl{
 				Ident: asttest.NewIdent("TDrawing"),
@@ -275,6 +276,7 @@ type
 					},
 				},
 			}
+			forwardDeclaredFigure.Actual = classFigure
 			classDeclFigure1 := &ast.TypeDecl{
 				Ident: asttest.NewIdent("Figure"),
 				Type:  classFigure,
