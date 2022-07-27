@@ -152,4 +152,7 @@ func (m *embeddedTypeDeclMapSingleton) Set(astcore.DeclNode) error {
 	return errors.Errorf("Can't set anything to embedded type decl map")
 }
 
+func (m *embeddedTypeDeclMapSingleton) Overwrite(name string, decl *astcore.Decl) {
+}
+
 var EmbeddedTypeDeclMap = &embeddedTypeDeclMapSingleton{}

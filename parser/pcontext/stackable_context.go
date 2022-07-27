@@ -36,6 +36,10 @@ func (c *StackableContext) Set(decl astcore.DeclNode) error {
 	return c.declarationMap.Set(decl)
 }
 
+func (c *StackableContext) Overwrite(name string, decl *astcore.Decl) {
+	c.declarationMap.Overwrite(name, decl)
+}
+
 func (c *StackableContext) GetPath() string {
 	if c.path != nil {
 		return *c.path
