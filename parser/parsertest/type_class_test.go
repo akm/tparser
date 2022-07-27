@@ -252,7 +252,7 @@ type
 				Type: &ast.CustomClassType{
 					Members: ast.ClassMemberSections{
 						&ast.ClassMemberSection{
-							Visibility: ast.CvPrivate,
+							Visibility: ast.CvDefault,
 							ClassFieldList: ast.ClassFieldList{
 								&ast.ClassField{
 									IdentList: asttest.NewIdentList("Figure"),
@@ -266,7 +266,7 @@ type
 			classFigure := &ast.CustomClassType{
 				Members: ast.ClassMemberSections{
 					&ast.ClassMemberSection{
-						Visibility: ast.CvPrivate,
+						Visibility: ast.CvDefault,
 						ClassFieldList: ast.ClassFieldList{
 							&ast.ClassField{
 								IdentList: asttest.NewIdentList("Drawing"),
@@ -278,7 +278,7 @@ type
 			}
 			forwardDeclaredFigure.Actual = classFigure
 			classDeclFigure1 := &ast.TypeDecl{
-				Ident: asttest.NewIdent("Figure"),
+				Ident: asttest.NewIdent("TFigure"),
 				Type:  classFigure,
 			}
 			classDeclFigure0.Type = &ast.ForwardDeclaredClassType{
