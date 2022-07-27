@@ -9,6 +9,7 @@ import (
 type DeclMap interface {
 	Get(name string) *Decl
 	Set(DeclNode) error
+	Overwrite(name string, decl *Decl)
 }
 
 type DeclMapImpl map[string]*Decl
@@ -17,6 +18,10 @@ var _ DeclMap = (DeclMapImpl)(nil)
 
 func NewDeclMap() DeclMap {
 	return make(DeclMapImpl)
+}
+
+func (m DeclMapImpl) Overwrite(name string, decl *Decl) {
+	m[m.regularize(name)] = decl
 }
 
 func (m DeclMapImpl) Set(decl DeclNode) error {
@@ -64,6 +69,10 @@ func (m *ChainedDeclMap) Set(n DeclNode) error {
 	return m.Impl.Set(n)
 }
 
+func (m *ChainedDeclMap) Overwrite(name string, decl *Decl) {
+	m.Impl.Overwrite(name, decl)
+}
+
 type CompositeDeclMap struct {
 	maps []DeclMap
 }
@@ -85,6 +94,10 @@ func (c *CompositeDeclMap) Get(name string) *Decl {
 
 func (c *CompositeDeclMap) Set(decl DeclNode) error {
 	return c.maps[0].Set(decl)
+}
+
+func (c *CompositeDeclMap) Overwrite(name string, decl *Decl) {
+	c.maps[0].Overwrite(name, decl)
 }
 
 type DeclMaps []DeclMap
