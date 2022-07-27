@@ -3,6 +3,7 @@ package parser
 import (
 	"github.com/akm/tparser/ast"
 	"github.com/akm/tparser/token"
+	"github.com/pkg/errors"
 )
 
 func (p *Parser) ParseTypeSection(required bool) (ast.TypeSection, error) {
@@ -62,8 +63,25 @@ func (p *Parser) ParseTypeDecl() (*ast.TypeDecl, error) {
 		return nil, err
 	}
 	res.Type = typ
-	if err := p.context.Set(res); err != nil {
-		return nil, err
+	if old := p.context.Get(res.Ident.Name); old != nil {
+		typeDecl, ok := old.Node.(*ast.TypeDecl)
+		if !ok {
+			return nil, errors.Errorf("expects type declaration but was %T", old.Node)
+		}
+		fwd, ok := typeDecl.Type.(ast.ForwardDeclaration)
+		if !ok {
+			return nil, errors.Errorf("expects forward declaration but was %T", typeDecl.Type)
+		}
+		if err := fwd.SetActualType(typ); err != nil {
+			return nil, err
+		}
+		for _, decl := range res.ToDeclarations() {
+			p.context.Overwrite(res.Ident.Name, decl)
+		}
+	} else {
+		if err := p.context.Set(res); err != nil {
+			return nil, err
+		}
 	}
 
 	{
