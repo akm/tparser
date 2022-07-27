@@ -5,6 +5,7 @@ import (
 
 	"github.com/akm/tparser/ast/astcore"
 	"github.com/akm/tparser/log"
+	"github.com/pkg/errors"
 )
 
 type ClassType interface {
@@ -27,6 +28,17 @@ type ForwardDeclaredClassType struct {
 	// This will be set at the end of actual class type declaration.
 	Actual *CustomClassType
 }
+
+func (m *ForwardDeclaredClassType) SetActualType(t Type) error {
+	if class, ok := t.(*CustomClassType); ok {
+		m.Actual = class
+		return nil
+	} else {
+		return errors.Errorf("%T is not a valid CustomClassType", t)
+	}
+}
+
+var _ ForwardDeclaration = (*ForwardDeclaredClassType)(nil)
 
 func (*ForwardDeclaredClassType) isType()           {}
 func (*ForwardDeclaredClassType) IsClassType() bool { return true }
