@@ -341,10 +341,13 @@ end;
 					Type:  ast.FtFunction,
 					Ident: asttest.NewIdent("GetValue"),
 					FormalParameters: ast.FormalParameters{{
-						Opt:       &ast.FpoConst,
-						Parameter: &ast.Parameter{IdentList: asttest.NewIdentList("Name"), Type: &ast.ParameterType{Type: asttest.NewStringType("string")}},
+						Opt: &ast.FpoConst,
+						Parameter: &ast.Parameter{
+							IdentList: asttest.NewIdentList("Name"),
+							Type:      &ast.ParameterType{Type: asttest.NewStringType("string")},
+						},
 					}},
-					ReturnType: asttest.NewTypeId(asttest.NewIdent("string")),
+					ReturnType: asttest.NewTypeId(asttest.NewIdent("string"), ast.EmbeddedString.ToDeclarations()[0]),
 				},
 			}
 			// procedure SetObject(Index: Integer; Value: TObject);
