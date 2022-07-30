@@ -17,12 +17,13 @@ import "github.com/akm/tparser/ast/astcore"
 //   AssemberStatement
 //   ```
 type Block struct {
-	Node
 	DeclSections  DeclSections
 	ExportsStmts1 ExportsStmts
 	Body          BlockBody
 	ExportsStmts2 ExportsStmts
 }
+
+var _ Node = (*Block)(nil)
 
 func (m *Block) Children() Nodes {
 	res := Nodes{}
@@ -39,7 +40,10 @@ func (m *Block) Children() Nodes {
 	return res
 }
 
-type ExportsStmts []*ExportsStmt // must implements Node
+type ExportsStmts []*ExportsStmt
+
+var _ Node = (ExportsStmts)(nil)
+
 func (s ExportsStmts) Children() Nodes {
 	r := make(Nodes, len(s))
 	for idx, i := range s {
@@ -59,9 +63,10 @@ type BlockBody interface {
 //   EXPORTS ExportsItem [, ExportsItem]...
 //   ```
 type ExportsStmt struct {
-	Node
 	ExportsItems []*ExportsItem
 }
+
+var _ Node = (*ExportsStmt)(nil)
 
 func (m *ExportsStmt) Children() Nodes {
 	r := make(Nodes, len(m.ExportsItems))
@@ -77,11 +82,12 @@ func (m *ExportsStmt) Children() Nodes {
 //         [INDEX|NAME “‘” ConstExpr “‘”]
 //   ```
 type ExportsItem struct {
-	Node
 	*Ident
 	Name  *ConstExpr
 	Index *ConstExpr
 }
+
+var _ Node = (*ExportsItem)(nil)
 
 func (m *ExportsItem) Children() Nodes {
 	res := Nodes{m.Ident}
@@ -117,6 +123,8 @@ type DeclSection interface {
 
 type DeclSections []DeclSection // must implement Node
 
+var _ Node = (DeclSections)(nil)
+
 func (m DeclSections) Children() Nodes {
 	r := make(Nodes, len(m))
 	for idx, i := range m {
@@ -131,9 +139,10 @@ func (m DeclSections) Children() Nodes {
 //   ```
 type LabelDeclSection struct {
 	*LabelId
-	DeclSection
-	astcore.DeclNode
 }
+
+var _ DeclSection = (*LabelDeclSection)(nil)
+var _ astcore.DeclNode = (*LabelDeclSection)(nil)
 
 func (*LabelDeclSection) canBeDeclSection() {}
 func (m *LabelDeclSection) Children() Nodes { return Nodes{m.LabelId} }
