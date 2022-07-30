@@ -442,7 +442,7 @@ end;
 	)
 
 	RunTypeSection(t,
-		"array properties",
+		"Property index specifiers",
 		[]rune(`
 type
 	TRectangle = class
