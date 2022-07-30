@@ -25,13 +25,16 @@ type ProcedureDeclSection interface {
 //   Block ';'
 //   ```
 type FunctionDecl struct {
-	astcore.DeclNode
 	*FunctionHeading
 	Directives           []Directive
 	ExternalOptions      *ExternalOptions
 	PortabilityDirective *PortabilityDirective
 	Block                *Block
 }
+
+var _ astcore.DeclNode = (*FunctionDecl)(nil)
+var _ DeclSection = (*FunctionDecl)(nil)
+var _ ProcedureDeclSection = (*FunctionDecl)(nil)
 
 func (*FunctionDecl) canBeDeclSection()       {}
 func (*FunctionDecl) isProcedureDeclSection() {}
