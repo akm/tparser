@@ -14,6 +14,8 @@ type Expression struct {
 	RelOpSimpleExpressions RelOpSimpleExpressions
 }
 
+var _ Node = (*Expression)(nil)
+
 func NewExpression(arg interface{}) *Expression {
 	switch v := arg.(type) {
 	case *Expression:
@@ -38,6 +40,8 @@ func (m *Expression) Children() Nodes {
 //   Expression ','...
 //   ```
 type ExprList []*Expression
+
+var _ Node = (ExprList)(nil)
 
 func (s ExprList) Children() Nodes {
 	r := make(Nodes, len(s))
@@ -77,11 +81,15 @@ type RelOpSimpleExpression struct {
 	*SimpleExpression
 }
 
+var _ Node = (*RelOpSimpleExpression)(nil)
+
 func (m *RelOpSimpleExpression) Children() Nodes {
 	return Nodes{m.SimpleExpression}
 }
 
 type RelOpSimpleExpressions []*RelOpSimpleExpression
+
+var _ Node = (RelOpSimpleExpressions)(nil)
 
 func (s RelOpSimpleExpressions) Children() Nodes {
 	r := make(Nodes, len(s))
@@ -100,6 +108,8 @@ type SimpleExpression struct {
 	*Term
 	AddOpTerms AddOpTerms
 }
+
+var _ Node = (*SimpleExpression)(nil)
 
 func NewSimpleExpression(arg interface{}) *SimpleExpression {
 	switch v := arg.(type) {
@@ -138,9 +148,13 @@ type AddOpTerm struct {
 	*Term
 }
 
+var _ Node = (*AddOpTerm)(nil)
+
 func (m *AddOpTerm) Children() Nodes { return Nodes{m.Term} }
 
 type AddOpTerms []*AddOpTerm
+
+var _ Node = (AddOpTerms)(nil)
 
 func (s AddOpTerms) Children() Nodes {
 	r := make(Nodes, len(s))
@@ -155,9 +169,11 @@ func (s AddOpTerms) Children() Nodes {
 //   Factor [MulOp Factor]...
 //   ```
 type Term struct {
-	Factor
+	Factor       Factor
 	MulOpFactors MulOpFactors
 }
+
+var _ Node = (*Term)(nil)
 
 func NewTerm(arg interface{}) *Term {
 	switch v := arg.(type) {
@@ -205,13 +221,17 @@ func (m *Term) Children() Nodes {
 //   ```
 //
 type MulOpFactor struct {
-	MulOp string // '*' | '/' | "DIV" | "MOD", "AND", "SHL", "SHR"
-	Factor
+	MulOp  string // '*' | '/' | "DIV" | "MOD", "AND", "SHL", "SHR"
+	Factor Factor
 }
+
+var _ Node = (*MulOpFactor)(nil)
 
 func (m *MulOpFactor) Children() Nodes { return Nodes{m.Factor} }
 
 type MulOpFactors []*MulOpFactor
+
+var _ Node = (MulOpFactors)(nil)
 
 func (s MulOpFactors) Children() Nodes {
 	r := make(Nodes, len(s))
@@ -257,10 +277,11 @@ type Factor interface {
 // Designator ['(' ExprList ')']
 
 type DesignatorFactor struct {
-	Factor
 	*Designator
 	ExprList ExprList
 }
+
+var _ Factor = (*DesignatorFactor)(nil)
 
 func NewDesignatorFactor(arg interface{}) *DesignatorFactor {
 	switch v := arg.(type) {
@@ -283,9 +304,10 @@ func (m *DesignatorFactor) Children() Nodes {
 // '@' Designator
 
 type Address struct {
-	Factor
 	*Designator
 }
+
+var _ Factor = (*Address)(nil)
 
 func (m *Address) Children() Nodes { return Nodes{m.Designator} }
 func (*Address) isFactor()         {}
@@ -298,6 +320,8 @@ type Designator struct {
 	*QualId
 	Items DesignatorItems
 }
+
+var _ Node = (*Address)(nil)
 
 func NewDesignator(arg interface{}) *Designator {
 	switch v := arg.(type) {
@@ -332,6 +356,8 @@ func (m *Designator) Children() Nodes {
 
 type DesignatorItems []DesignatorItem
 
+var _ Node = (DesignatorItems)(nil)
+
 func (s DesignatorItems) Children() Nodes {
 	r := make(Nodes, len(s))
 	for i, v := range s {
@@ -347,8 +373,9 @@ type DesignatorItem interface {
 
 type DesignatorItemIdent struct {
 	*Ident
-	DesignatorItem
 }
+
+var _ DesignatorItem = (*DesignatorItemIdent)(nil)
 
 func NewDesignatorItemIdent(arg interface{}) *DesignatorItemIdent {
 	switch v := arg.(type) {
@@ -380,8 +407,9 @@ func (s DesignatorItemExprList) Children() Nodes {
 }
 
 type DesignatorItemDereference struct {
-	DesignatorItem
 }
+
+var _ DesignatorItem = (*DesignatorItemDereference)(nil)
 
 func (*DesignatorItemDereference) Children() Nodes   { return Nodes{} }
 func (*DesignatorItemDereference) isDesignatorItem() {}
@@ -391,9 +419,10 @@ func (*DesignatorItemDereference) isDesignatorItem() {}
 //   ```
 
 type NumberFactor struct {
-	Factor
 	Value string
 }
+
+var _ Factor = (*NumberFactor)(nil)
 
 func NewNumber(v string) *NumberFactor { return &NumberFactor{Value: v} }
 func (*NumberFactor) Children() Nodes  { return Nodes{} }
@@ -403,9 +432,10 @@ func (*NumberFactor) isFactor()        {}
 //   String
 //   ```
 type StringFactor struct {
-	Factor
 	Value string
 }
+
+var _ Factor = (*StringFactor)(nil)
 
 func NewString(v string) *StringFactor { return &StringFactor{Value: v} }
 func (*StringFactor) Children() Nodes  { return Nodes{} }
@@ -414,9 +444,10 @@ func (*StringFactor) isFactor()        {}
 // ValueFactor for true, false or other values
 
 type ValueFactor struct {
-	Factor
 	Value string
 }
+
+var _ Factor = (*ValueFactor)(nil)
 
 func NewValueFactor(v string) *ValueFactor { return &ValueFactor{Value: v} }
 func (*ValueFactor) Children() Nodes       { return Nodes{} }
@@ -425,8 +456,9 @@ func (*ValueFactor) isFactor()             {}
 // Ninl
 
 type Nil struct {
-	Factor
 }
+
+var _ Factor = (*Nil)(nil)
 
 func NewNil() *Nil           { return &Nil{} }
 func (*Nil) Children() Nodes { return Nodes{} }
@@ -434,9 +466,10 @@ func (*Nil) isFactor()       {}
 
 // Parentheses
 type Parentheses struct { // Round brackets
-	Factor
 	Expression *Expression
 }
+
+var _ Factor = (*Parentheses)(nil)
 
 func (m *Parentheses) Children() Nodes { return Nodes{m.Expression} }
 func (*Parentheses) isFactor()         {}
@@ -449,6 +482,8 @@ type Not struct {
 	Factor
 }
 
+var _ Factor = (*Not)(nil)
+
 func (m *Not) Children() Nodes { return Nodes{m.Factor} }
 func (*Not) isFactor()         {}
 
@@ -457,9 +492,10 @@ func (*Not) isFactor()         {}
 //   '[' [SetElement ','...] ']'
 //   ```
 type SetConstructor struct {
-	Factor
 	SetElements []*SetElement
 }
+
+var _ Factor = (*SetConstructor)(nil)
 
 func (SetConstructor) isFactor() {}
 func (m *SetConstructor) Children() Nodes {
@@ -479,6 +515,8 @@ type SetElement struct {
 	SubRangeEnd *Expression
 }
 
+var _ Node = (*SetElement)(nil)
+
 func NewSetElement(expr *Expression) *SetElement {
 	return &SetElement{Expression: expr}
 }
@@ -495,10 +533,11 @@ func (m *SetElement) Children() Nodes {
 //   TypeId '(' Expression ')'
 //   ```
 type TypeCast struct {
-	Factor
 	TypeId     *TypeId
 	Expression *Expression
 }
+
+var _ Factor = (*TypeCast)(nil)
 
 func (*TypeCast) isFactor()         {}
 func (m *TypeCast) Children() Nodes { return Nodes{m.TypeId, m.Expression} }
