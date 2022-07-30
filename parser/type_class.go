@@ -464,6 +464,8 @@ func (p *Parser) ParseClassProperty(classType *ast.CustomClassType) (*ast.ClassP
 func (p *Parser) ParsePropertyInterface() (*ast.PropertyInterface, error) {
 	res := &ast.PropertyInterface{}
 	if p.CurrentToken().Is(token.Symbol('[')) {
+		defer p.context.StackDeclMap()()
+
 		params, err := p.ParseFormalParameters('[', ']')
 		if err != nil {
 			return nil, err
