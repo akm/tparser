@@ -18,9 +18,10 @@ type ExportedHeading struct {
 	*FunctionHeading
 	Directives      []Directive
 	ExternalOptions *ExternalOptions
-	astcore.DeclNode
-	InterfaceDecl
 }
+
+var _ astcore.DeclNode = (*ExportedHeading)(nil)
+var _ InterfaceDecl = (*ExportedHeading)(nil)
 
 func (*ExportedHeading) canBeInterfaceDecl() {}
 func (m *ExportedHeading) Children() Nodes   { return Nodes{m.FunctionHeading} }
@@ -57,7 +58,9 @@ type FunctionHeading struct {
 	ReturnType       *TypeId
 }
 
-func (*FunctionHeading) isExportedHeading() {}
+var _ Node = (*FunctionHeading)(nil)
+
+func (s *FunctionHeading) GetIdent() *Ident { return s.Ident }
 func (s FunctionHeading) Children() Nodes {
 	r := Nodes{s.Ident}
 	if s.FormalParameters != nil {
@@ -98,8 +101,9 @@ var (
 type FormalParm struct {
 	Opt *FormalParmOption
 	*Parameter
-	astcore.DeclNode
 }
+
+var _ astcore.DeclNode = (*FormalParm)(nil)
 
 func (m *FormalParm) Children() Nodes {
 	return Nodes{m.Parameter}
@@ -157,9 +161,11 @@ func (m *FormalParm) ToDeclarations() astcore.Decls {
 //   Ident ':' SimpleType '=' ConstExpr
 //   ```
 type ParameterType struct {
-	Type
+	Type    Type
 	IsArray bool
 }
+
+var _ Node = (*ParameterType)(nil)
 
 func (m *ParameterType) Children() Nodes {
 	return Nodes{m.Type}
@@ -191,6 +197,8 @@ type Parameter struct {
 	Type      *ParameterType
 	ConstExpr *ConstExpr
 }
+
+var _ Node = (*Parameter)(nil)
 
 func (m *Parameter) Children() Nodes {
 	r := Nodes{m.IdentList}
