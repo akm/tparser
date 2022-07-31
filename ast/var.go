@@ -6,7 +6,10 @@ import "github.com/akm/tparser/ast/astcore"
 //   ```
 //   VAR (VarDecl ';')...
 //   ```
-type VarSection []*VarDecl // must implement InterfaceDecl
+type VarSection []*VarDecl
+
+var _ InterfaceDecl = (VarSection)(nil)
+var _ DeclSection = (VarSection)(nil)
 
 func (VarSection) canBeInterfaceDecl() {}
 func (VarSection) canBeDeclSection()   {}
@@ -40,8 +43,9 @@ type VarDecl struct {
 	Absolute             VarDeclAbsolute
 	ConstExpr            *ConstExpr
 	PortabilityDirective *PortabilityDirective
-	astcore.DeclNode
 }
+
+var _ astcore.DeclNode = (*VarDecl)(nil)
 
 func (m *VarDecl) Children() Nodes {
 	r := Nodes{m.IdentList}
@@ -68,6 +72,8 @@ type VarDeclAbsolute interface {
 
 type VarDeclAbsoluteIdent Ident
 
+var _ VarDeclAbsolute = (*VarDeclAbsoluteIdent)(nil)
+
 func NewVarDeclAbsoluteIdent(arg interface{}) *VarDeclAbsoluteIdent {
 	switch v := arg.(type) {
 	case Ident:
@@ -88,6 +94,8 @@ func (*VarDeclAbsoluteIdent) Children() Nodes {
 
 type VarDeclAbsoluteConstExpr ConstExpr
 
+var _ VarDeclAbsolute = (*VarDeclAbsoluteConstExpr)(nil)
+
 func (*VarDeclAbsoluteConstExpr) isVarDeclAbsolute() {}
 
 // threadvar X: Integer;
@@ -96,6 +104,9 @@ func (*VarDeclAbsoluteConstExpr) isVarDeclAbsolute() {}
 // • cannot include initializations.
 // • cannot specify the absolute directive.
 type ThreadVarSection []*ThreadVarDecl // must implement InterfaceDecl
+
+var _ InterfaceDecl = (ThreadVarSection)(nil)
+var _ DeclSection = (ThreadVarSection)(nil)
 
 func (ThreadVarSection) canBeInterfaceDecl() {}
 func (ThreadVarSection) canBeDeclSection()   {}
@@ -117,8 +128,9 @@ func (s ThreadVarSection) GetDeclNodes() astcore.DeclNodes {
 type ThreadVarDecl struct {
 	IdentList
 	Type Type
-	astcore.DeclNode
 }
+
+var _ astcore.DeclNode = (*ThreadVarDecl)(nil)
 
 func (m *ThreadVarDecl) Children() Nodes {
 	r := Nodes{m.IdentList}
