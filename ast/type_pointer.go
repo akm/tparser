@@ -5,9 +5,8 @@ package ast
 //   '^' TypeId [PortabilityDirective]
 //   ```
 type PointerType interface {
-	IsPointerType() bool
-	// implements
 	Type
+	IsPointerType() bool
 }
 
 func NewEmbeddedPointerType(v *Ident) *TypeId {
@@ -20,9 +19,9 @@ func NewEmbeddedPointerType(v *Ident) *TypeId {
 
 type CustomPointerType struct {
 	TypeId *TypeId
-	// implements
-	PointerType
 }
+
+var _ PointerType = (*CustomPointerType)(nil)
 
 func NewCustomPointerType(typeId *TypeId) *CustomPointerType {
 	return &CustomPointerType{TypeId: typeId}
