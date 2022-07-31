@@ -5,39 +5,39 @@ import (
 )
 
 type StackableContext struct {
-	path           *string
-	parent         Context
-	declarationMap astcore.DeclMap
+	path    *string
+	parent  Context
+	declMap astcore.DeclMap
 }
 
 var _ Context = (*StackableContext)(nil)
 
 func NewStackableContext(parent Context, args ...interface{}) Context {
 	return &StackableContext{
-		parent:         parent,
-		declarationMap: astcore.NewDeclMap(),
+		parent:  parent,
+		declMap: astcore.NewDeclMap(),
 	}
 }
 
 func (c *StackableContext) Clone() Context {
 	return &ProgramContext{
-		DeclMap: c.declarationMap,
+		DeclMap: c.declMap,
 	}
 }
 
 func (c *StackableContext) Get(name string) *astcore.Decl {
-	if r := c.declarationMap.Get(name); r != nil {
+	if r := c.declMap.Get(name); r != nil {
 		return r
 	}
 	return c.parent.Get(name)
 }
 
 func (c *StackableContext) Set(decl astcore.DeclNode) error {
-	return c.declarationMap.Set(decl)
+	return c.declMap.Set(decl)
 }
 
 func (c *StackableContext) Overwrite(name string, decl *astcore.Decl) {
-	c.declarationMap.Overwrite(name, decl)
+	c.declMap.Overwrite(name, decl)
 }
 
 func (c *StackableContext) GetPath() string {
@@ -49,8 +49,8 @@ func (c *StackableContext) GetPath() string {
 
 func (c *StackableContext) StackDeclMap() func() {
 	var backup astcore.DeclMap
-	c.declarationMap, backup = astcore.NewChainedDeclMap(c.declarationMap), c.declarationMap
+	c.declMap, backup = astcore.NewChainedDeclMap(c.declMap), c.declMap
 	return func() {
-		c.declarationMap = backup
+		c.declMap = backup
 	}
 }
