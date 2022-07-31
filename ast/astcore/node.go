@@ -8,6 +8,8 @@ type Node interface {
 
 type Nodes []Node
 
+var _ Node = (Nodes)(nil)
+
 func (s Nodes) Children() Nodes {
 	return s
 }
