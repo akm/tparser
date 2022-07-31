@@ -409,6 +409,7 @@ end;
 											Parameters: ast.FormalParameters{
 												{Parameter: &ast.Parameter{IdentList: asttest.NewIdentList("Index"), Type: &ast.ParameterType{Type: asttest.NewOrdIdent("Integer")}}},
 											},
+											Type: asttest.NewTypeId("TObject"),
 										},
 										Read:  asttest.NewIdentRef("GetObject", methodDeclGetObject.ToDeclarations()[0]),
 										Write: asttest.NewIdentRef("SetObject", methodDeclSetObject.ToDeclarations()[0]),
@@ -420,6 +421,7 @@ end;
 											Parameters: ast.FormalParameters{
 												{Parameter: &ast.Parameter{IdentList: asttest.NewIdentList("X", "Y"), Type: &ast.ParameterType{Type: asttest.NewOrdIdent("Integer")}}},
 											},
+											Type: asttest.NewTypeId("TColor"),
 										},
 										Read:  asttest.NewIdentRef("GetPixel", methodDeclGetPixel.ToDeclarations()[0]),
 										Write: asttest.NewIdentRef("SetPixel", methodDeclSetPixel.ToDeclarations()[0]),
@@ -431,6 +433,7 @@ end;
 											Parameters: ast.FormalParameters{
 												{Opt: &ast.FpoConst, Parameter: &ast.Parameter{IdentList: asttest.NewIdentList("Name"), Type: &ast.ParameterType{Type: asttest.NewStringType("string")}}},
 											},
+											Type: asttest.NewTypeId("string", ast.EmbeddedString.ToDeclarations()[0]),
 										},
 										Read:  asttest.NewIdentRef("GetValue", methodDeclGetValue.ToDeclarations()[0]),
 										Write: asttest.NewIdentRef("SetValue", methodDeclSetValue.ToDeclarations()[0]),
