@@ -518,7 +518,7 @@ type
 
 			return ast.TypeSection{
 				&ast.TypeDecl{
-					Ident: asttest.NewIdent("TArrayPropExample1"),
+					Ident: asttest.NewIdent("TRectangle"),
 					Type: &ast.CustomClassType{
 						Members: ast.ClassMemberSections{
 							&ast.ClassMemberSection{
@@ -539,32 +539,32 @@ type
 										Ident:     asttest.NewIdent("Left"),
 										Interface: &ast.PropertyInterface{Type: asttest.NewOrdIdent("Longint")},
 										Index:     asttest.NewExpression(asttest.NewNumber("0")),
-										Read:      asttest.NewIdentRef("GetObject", declGetCoordinate),
-										Write:     asttest.NewIdentRef("SetObject", declSetCoordinate),
+										Read:      asttest.NewIdentRef("GetCoordinate", declGetCoordinate),
+										Write:     asttest.NewIdentRef("SetCoordinate", declSetCoordinate),
 									},
 									// property Top: Longint index 1 read GetCoordinate write SetCoordinate;
 									{
 										Ident:     asttest.NewIdent("Top"),
 										Interface: &ast.PropertyInterface{Type: asttest.NewOrdIdent("Longint")},
 										Index:     asttest.NewExpression(asttest.NewNumber("1")),
-										Read:      asttest.NewIdentRef("GetObject", declGetCoordinate),
-										Write:     asttest.NewIdentRef("SetObject", declSetCoordinate),
+										Read:      asttest.NewIdentRef("GetCoordinate", declGetCoordinate),
+										Write:     asttest.NewIdentRef("SetCoordinate", declSetCoordinate),
 									},
 									// property Right: Longint index 2 read GetCoordinate write SetCoordinate;
 									{
 										Ident:     asttest.NewIdent("Right"),
 										Interface: &ast.PropertyInterface{Type: asttest.NewOrdIdent("Longint")},
 										Index:     asttest.NewExpression(asttest.NewNumber("2")),
-										Read:      asttest.NewIdentRef("GetObject", declGetCoordinate),
-										Write:     asttest.NewIdentRef("SetObject", declSetCoordinate),
+										Read:      asttest.NewIdentRef("GetCoordinate", declGetCoordinate),
+										Write:     asttest.NewIdentRef("SetCoordinate", declSetCoordinate),
 									},
 									// property Bottom: Longint index 3 read GetCoordinate write SetCoordinate;
 									{
 										Ident:     asttest.NewIdent("Bottom"),
 										Interface: &ast.PropertyInterface{Type: asttest.NewOrdIdent("Longint")},
 										Index:     asttest.NewExpression(asttest.NewNumber("3")),
-										Read:      asttest.NewIdentRef("GetObject", declGetCoordinate),
-										Write:     asttest.NewIdentRef("SetObject", declSetCoordinate),
+										Read:      asttest.NewIdentRef("GetCoordinate", declGetCoordinate),
+										Write:     asttest.NewIdentRef("SetCoordinate", declSetCoordinate),
 									},
 									// property Coordinates[Index: Integer]: Longint read GetCoordinate write SetCoordinate;
 									{
@@ -578,8 +578,8 @@ type
 											},
 											Type: asttest.NewOrdIdent("Longint"),
 										},
-										Read:  asttest.NewIdentRef("GetObject", declGetCoordinate),
-										Write: asttest.NewIdentRef("SetObject", declSetCoordinate),
+										Read:  asttest.NewIdentRef("GetCoordinate", declGetCoordinate),
+										Write: asttest.NewIdentRef("SetCoordinate", declSetCoordinate),
 									},
 								},
 							},
