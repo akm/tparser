@@ -8,9 +8,8 @@ package ast
 //   OLEVARIANT
 //   ```
 type VariantType interface {
-	IsVariantType() bool
-	// implements
 	Type
+	IsVariantType() bool
 }
 
 func NewVariantType(v *Ident) *TypeId {
