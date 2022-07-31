@@ -356,12 +356,14 @@ func (p *Parser) ParseClassProperty(classType *ast.CustomClassType) (*ast.ClassP
 
 	p.NextToken()
 
-	intf, err := p.ParsePropertyInterface()
-	if err != nil {
-		p.Logf("Parser.ParseClassProperty #02")
-		return nil, err
+	if p.CurrentToken().Is(token.Some(token.Symbol(':'), token.Symbol('['))) {
+		intf, err := p.ParsePropertyInterface()
+		if err != nil {
+			p.Logf("Parser.ParseClassProperty #02")
+			return nil, err
+		}
+		res.Interface = intf
 	}
-	res.Interface = intf
 
 	p.Logf("Parser.ParseClassProperty #03")
 	if strings.ToUpper(p.CurrentToken().Value()) == "INDEX" {
