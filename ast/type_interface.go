@@ -19,9 +19,9 @@ type CustomInterfaceType struct {
 	Heritage InterfaceHeritage
 	Guid     *InterfaceGuid
 	Members  InterfaceMemberList
-	// implements
-	InterfaceType
 }
+
+var _ InterfaceType = (*CustomInterfaceType)(nil)
 
 func (*CustomInterfaceType) isType()               {}
 func (*CustomInterfaceType) IsInterfaceType() bool { return true }
@@ -45,6 +45,8 @@ func (m *CustomInterfaceType) Children() Nodes {
 //   ```
 type InterfaceHeritage []*TypeId
 
+var _ Node = (InterfaceHeritage)(nil)
+
 func (s InterfaceHeritage) Children() Nodes {
 	r := make(Nodes, len(s))
 	for i, m := range s {
@@ -61,6 +63,8 @@ type InterfaceGuid struct {
 	*ConstExpr
 }
 
+var _ Node = (*InterfaceGuid)(nil)
+
 func (m *InterfaceGuid) Children() Nodes {
 	return Nodes{m.ConstExpr}
 }
@@ -70,6 +74,8 @@ func (m *InterfaceGuid) Children() Nodes {
 //   InterfaceMember ';'...
 //   ```
 type InterfaceMemberList []InterfaceMember
+
+var _ Node = (InterfaceMemberList)(nil)
 
 func (s InterfaceMemberList) Children() Nodes {
 	r := make(Nodes, len(s))
@@ -87,9 +93,8 @@ func (s InterfaceMemberList) Children() Nodes {
 //   InterfaceProperty
 //   ```
 type InterfaceMember interface {
-	isInterfaceMember()
-	// implements
 	Node
+	isInterfaceMember()
 }
 
 // - InterfaceMethod
@@ -100,6 +105,8 @@ type InterfaceMethod struct {
 	Heading    InterfaceMethodHeading
 	Directives InterfaceMethodDirectives
 }
+
+var _ Node = (*InterfaceMethod)(nil)
 
 func (m *InterfaceMethod) Children() Nodes {
 	return Nodes{m.Heading}
@@ -113,9 +120,8 @@ func (m *InterfaceMethod) Children() Nodes {
 //   FunctionHeading
 //   ```
 type InterfaceMethodHeading interface {
-	isInterfaceMethodHeading()
-	// implements
 	Node
+	isInterfaceMethodHeading()
 }
 
 // - InterfaceMethodDirective
@@ -140,6 +146,8 @@ type InterfaceProperty struct {
 	Read      *IdentRef
 	Write     *IdentRef
 }
+
+var _ Node = (*InterfaceProperty)(nil)
 
 func (m *InterfaceProperty) Children() Nodes {
 	r := Nodes{m.Ident}
