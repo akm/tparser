@@ -8,7 +8,10 @@ import (
 //   ```
 //   TYPE (TypeDecl ';')...
 //   ```
-type TypeSection []*TypeDecl // must implement InterfaceDecl
+type TypeSection []*TypeDecl
+
+var _ Node = (TypeSection)(nil)
+var _ InterfaceDecl = (TypeSection)(nil)
 
 func (TypeSection) canBeInterfaceDecl() {}
 func (TypeSection) canBeDeclSection()   {}
@@ -38,8 +41,9 @@ type TypeDecl struct {
 	*Ident
 	Type                 Type
 	PortabilityDirective *PortabilityDirective
-	astcore.DeclNode
 }
+
+var _ astcore.DeclNode = (*TypeDecl)(nil)
 
 func (m *TypeDecl) Children() Nodes {
 	return Nodes{m.Ident, m.Type}
