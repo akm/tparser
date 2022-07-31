@@ -19,6 +19,8 @@ import (
 //     uses Windows, Messages, SysUtils, Strings in 'C:\Classes\Strings.pas', Classes;
 type UsesClause []*UsesClauseItem
 
+var _ Node = (UsesClause)(nil)
+
 func (s UsesClause) IdentList() IdentList {
 	var ids IdentList
 	for _, u := range s {
@@ -59,6 +61,8 @@ type UsesClauseItem struct {
 	Unit *Unit
 	astcore.DeclNode
 }
+
+var _ astcore.DeclNode = (*UsesClauseItem)(nil)
 
 func NewUnitRef(name interface{}, paths ...string) *UsesClauseItem {
 	var nameIdent *Ident

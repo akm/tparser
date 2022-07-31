@@ -13,6 +13,8 @@ type DeclMap interface {
 
 type DeclMapImpl map[string]*Decl
 
+var _ DeclMap = (DeclMapImpl)(nil)
+
 func NewDeclMap() DeclMap {
 	return make(DeclMapImpl)
 }
@@ -45,6 +47,8 @@ type ChainedDeclMap struct {
 	Impl   DeclMapImpl
 }
 
+var _ DeclMap = (*ChainedDeclMap)(nil)
+
 func NewChainedDeclMap(parent DeclMap) *ChainedDeclMap {
 	return &ChainedDeclMap{Parent: parent, Impl: DeclMapImpl{}}
 }
@@ -63,6 +67,8 @@ func (m *ChainedDeclMap) Set(n DeclNode) error {
 type CompositeDeclMap struct {
 	maps []DeclMap
 }
+
+var _ DeclMap = (*CompositeDeclMap)(nil)
 
 func NewCompositeDeclMap(maps ...DeclMap) *CompositeDeclMap {
 	return &CompositeDeclMap{maps: maps}

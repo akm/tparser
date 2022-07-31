@@ -130,6 +130,8 @@ type InterfaceDecl interface {
 
 type InterfaceDecls []InterfaceDecl
 
+var _ Node = (InterfaceDecls)(nil)
+
 func (s InterfaceDecls) Children() Nodes {
 	r := make(Nodes, len(s))
 	for i, m := range s {
@@ -151,6 +153,8 @@ type ImplementationSection struct {
 	ExportsStmts ExportsStmts
 	Node
 }
+
+var _ Node = (*ImplementationSection)(nil)
 
 func (m *ImplementationSection) Children() Nodes {
 	r := Nodes{}
@@ -180,6 +184,8 @@ type InitSection struct {
 	InitializationStmts StmtList
 	FinalizationStmts   StmtList
 }
+
+var _ Node = (*InitSection)(nil)
 
 func (m *InitSection) Children() Nodes {
 	r := Nodes{m.InitializationStmts}
@@ -221,6 +227,8 @@ type QualId struct {
 	Ident       *IdentRef
 }
 
+var _ Node = (*QualId)(nil)
+
 func NewQualId(unitId *IdentRef, ident *IdentRef) *QualId {
 	return &QualId{NamespaceId: unitId, Ident: ident}
 }
@@ -235,7 +243,9 @@ func (m *QualId) Children() Nodes {
 }
 
 // QualIds
-type QualIds []*QualId // must implement Node
+type QualIds []*QualId
+
+var _ Node = (QualIds)(nil)
 
 func (s QualIds) Children() Nodes {
 	r := make(Nodes, len(s))

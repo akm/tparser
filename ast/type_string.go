@@ -14,9 +14,8 @@ package ast
 //   STRING '[' ConstExpr ']'
 //   ```
 type StringType interface {
-	IsStringType() bool
-	// implements
 	Type
+	IsStringType() bool
 }
 
 func NewStringType(ident *Ident) *TypeId {
@@ -31,6 +30,8 @@ type FixedStringType struct {
 	StringType
 	Length *ConstExpr
 }
+
+var _ StringType = (*FixedStringType)(nil)
 
 func NewFixedStringType(ident *Ident, length *ConstExpr) *FixedStringType {
 	return &FixedStringType{StringType: NewStringType(ident), Length: length}

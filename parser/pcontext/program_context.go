@@ -12,6 +12,8 @@ type ProgramContext struct {
 	astcore.DeclMap
 }
 
+var _ Context = (*ProgramContext)(nil)
+
 func NewProgramContext(args ...interface{}) *ProgramContext {
 	var path string
 	var units ast.Units

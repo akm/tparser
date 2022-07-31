@@ -10,10 +10,9 @@ import (
 //   ```
 // NOTICE this is NOT "StructType" but "StrucType"
 type StrucType interface {
+	Type
 	isStrucType()
 	IsPacked() bool
-	// inherits
-	Type
 }
 
 // - ArrayType
@@ -24,9 +23,9 @@ type ArrayType struct {
 	IndexTypes []OrdinalType
 	BaseType   Type
 	Packed     bool
-	// implements
-	StrucType
 }
+
+var _ StrucType = (*ArrayType)(nil)
 
 func (*ArrayType) isType()          {}
 func (*ArrayType) isStrucType()     {}
@@ -47,9 +46,9 @@ func (m *ArrayType) Children() Nodes {
 type SetType struct {
 	OrdinalType
 	Packed bool
-	// implements
-	StrucType
 }
+
+var _ StrucType = (*SetType)(nil)
 
 func (*SetType) isType()          {}
 func (*SetType) isStrucType()     {}
@@ -65,9 +64,9 @@ func (m *SetType) Children() Nodes {
 type FileType struct {
 	*TypeId
 	Packed bool
-	// implements
-	StrucType
 }
+
+var _ StrucType = (*FileType)(nil)
 
 func (*FileType) isType()          {}
 func (*FileType) isStrucType()     {}
@@ -83,9 +82,9 @@ func (m *FileType) Children() Nodes {
 type RecType struct {
 	FieldList *FieldList
 	Packed    bool
-	// implements
-	StrucType
 }
+
+var _ StrucType = (*RecType)(nil)
 
 func (*RecType) isType()          {}
 func (*RecType) isStrucType()     {}
@@ -101,9 +100,9 @@ func (m *RecType) Children() Nodes {
 type FieldList struct {
 	FieldDecls     FieldDecls
 	VariantSection *VariantSection
-	// implements
-	Node
 }
+
+var _ Node = (*FieldList)(nil)
 
 func (m *FieldList) Children() Nodes {
 	r := Nodes{m.FieldDecls}
@@ -113,8 +112,9 @@ func (m *FieldList) Children() Nodes {
 	return r
 }
 
-// implements Node
 type FieldDecls []*FieldDecl
+
+var _ Node = (FieldDecls)(nil)
 
 func (s FieldDecls) Children() Nodes {
 	r := make(Nodes, len(s))
@@ -132,9 +132,9 @@ type FieldDecl struct {
 	IdentList IdentList
 	Type      Type
 	//PortabilityDirective
-	// implements
-	astcore.DeclNode
 }
+
+var _ astcore.DeclNode = (*FieldDecl)(nil)
 
 func (m *FieldDecl) Children() Nodes {
 	return Nodes{m.IdentList, m.Type}
@@ -152,9 +152,9 @@ type VariantSection struct {
 	Ident       *Ident
 	TypeId      OrdinalType
 	RecVariants RecVariants
-	// implements
-	Node
 }
+
+var _ Node = (*VariantSection)(nil)
 
 func (m *VariantSection) Children() Nodes {
 	r := Nodes{m.TypeId}
@@ -167,8 +167,9 @@ func (m *VariantSection) Children() Nodes {
 	return r
 }
 
-// implements Node
 type RecVariants []*RecVariant
+
+var _ Node = (RecVariants)(nil)
 
 func (s RecVariants) Children() Nodes {
 	r := make(Nodes, len(s))
@@ -185,9 +186,9 @@ func (s RecVariants) Children() Nodes {
 type RecVariant struct {
 	ConstExprs ConstExprs
 	FieldList  *FieldList
-	// implements
-	Node
 }
+
+var _ Node = (*RecVariant)(nil)
 
 func (m *RecVariant) Children() Nodes {
 	return Nodes{m.ConstExprs, m.FieldList}

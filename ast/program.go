@@ -17,10 +17,10 @@ type Program struct {
 
 	ProgramBlock *ProgramBlock
 	DeclMap      astcore.DeclMap
-
-	Namespace
-	Goal
 }
+
+var _ Goal = (*Program)(nil)
+var _ Namespace = (*Program)(nil)
 
 func (*Program) isGoal() {}
 func (m *Program) GetPath() string {
@@ -55,6 +55,8 @@ type ProgramBlock struct {
 	UsesClause UsesClause
 	*Block
 }
+
+var _ Node = (*ProgramBlock)(nil)
 
 func (m *ProgramBlock) Children() Nodes {
 	res := Nodes{}

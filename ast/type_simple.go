@@ -36,9 +36,8 @@ type SimpleType interface {
 //   COMP
 //   ```
 type RealType interface {
-	IsRealType() bool
-	// implements
 	SimpleType
+	IsRealType() bool
 }
 
 func NewRealType(ident *Ident) *TypeId {
@@ -55,9 +54,8 @@ func NewRealType(ident *Ident) *TypeId {
 //   ```
 
 type OrdinalType interface {
-	IsOrdinalType() bool
-	// implements
 	SimpleType
+	IsOrdinalType() bool
 }
 
 // - OrdIdent
@@ -98,9 +96,8 @@ type OrdinalType interface {
 //   PCHAR
 //   ```
 type OrdIdent interface {
-	IsOrdIdent() bool
-	// implements
 	OrdinalType
+	IsOrdIdent() bool
 }
 
 func NewOrdIdent(ident *Ident) *TypeId {
@@ -121,6 +118,8 @@ func NewOrdIdent(ident *Ident) *TypeId {
 //   ```
 type EnumeratedType []*EnumeratedTypeElement // must implement OrdinalType
 
+var _ OrdinalType = (EnumeratedType)(nil)
+
 func (EnumeratedType) isType()             {}
 func (EnumeratedType) IsSimpleType() bool  { return true }
 func (EnumeratedType) IsOrdinalType() bool { return true }
@@ -137,6 +136,8 @@ type EnumeratedTypeElement struct {
 	*Ident
 	ConstExpr *ConstExpr
 }
+
+var _ Node = (*EnumeratedTypeElement)(nil)
 
 func (m *EnumeratedTypeElement) Children() Nodes {
 	r := Nodes{m.Ident}
@@ -158,6 +159,8 @@ type SubrangeType struct {
 	Low  *ConstExpr
 	High *ConstExpr
 }
+
+var _ OrdinalType = (*SubrangeType)(nil)
 
 func (*SubrangeType) isType()             {}
 func (*SubrangeType) IsSimpleType() bool  { return true }

@@ -12,6 +12,8 @@ type UnitContext struct {
 	astcore.DeclMap
 }
 
+var _ Context = (*UnitContext)(nil)
+
 func NewUnitContext(parent *ProgramContext, args ...interface{}) *UnitContext {
 	var path string
 	var declarationMap astcore.DeclMap

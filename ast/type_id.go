@@ -16,6 +16,15 @@ type TypeId struct {
 	Ref    *astcore.Decl // Actual Type object
 }
 
+var _ Type = (*TypeId)(nil)
+var _ SimpleType = (*TypeId)(nil)
+var _ RealType = (*TypeId)(nil)
+var _ OrdinalType = (*TypeId)(nil)
+var _ OrdIdent = (*TypeId)(nil)
+var _ StringType = (*TypeId)(nil)
+var _ PointerType = (*TypeId)(nil)
+var _ VariantType = (*TypeId)(nil)
+
 func NewTypeId(unitIdOrIdent interface{}, args ...interface{}) *TypeId {
 	var ref *astcore.Decl
 	if len(args) > 0 {

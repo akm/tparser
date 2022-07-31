@@ -16,8 +16,9 @@ type ProcedureType struct {
 	FormalParameters FormalParameters
 	ReturnType       *TypeId
 	OfObject         bool
-	Type
 }
+
+var _ Type = (*ProcedureType)(nil)
 
 func (*ProcedureType) isType() {}
 func (m ProcedureType) Children() Nodes {

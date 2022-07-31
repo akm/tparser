@@ -28,11 +28,16 @@ var embeddedTypeKindAll = []EmbeddedTypeKind{
 type TypeEmbedded struct {
 	Kind  EmbeddedTypeKind
 	Ident *Ident
-	// implements
-	Type
-	SimpleType
-	OrdinalType
 }
+
+var _ Type = (*TypeEmbedded)(nil)
+var _ SimpleType = (*TypeEmbedded)(nil)
+var _ RealType = (*TypeEmbedded)(nil)
+var _ OrdinalType = (*TypeEmbedded)(nil)
+var _ OrdIdent = (*TypeEmbedded)(nil)
+var _ StringType = (*TypeEmbedded)(nil)
+var _ PointerType = (*TypeEmbedded)(nil)
+var _ VariantType = (*TypeEmbedded)(nil)
 
 func newTypeEmbedded(kind EmbeddedTypeKind, name string) *TypeEmbedded {
 	return &TypeEmbedded{
@@ -66,6 +71,10 @@ func (m *TypeEmbedded) IsOrdIdent() bool {
 
 func (m *TypeEmbedded) IsStringType() bool {
 	return m.Kind == EtkStringType
+}
+
+func (m *TypeEmbedded) IsPointerType() bool {
+	return m.Kind == EtkPointerType
 }
 
 func (m *TypeEmbedded) IsVariantType() bool {

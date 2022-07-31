@@ -8,6 +8,9 @@ import "github.com/akm/tparser/ast/astcore"
 //   ```
 type ConstSection []*ConstantDecl // must implement InterfaceDecl
 
+var _ InterfaceDecl = (ConstSection)(nil)
+var _ DeclSection = (ConstSection)(nil)
+
 func (ConstSection) canBeInterfaceDecl() {}
 func (ConstSection) canBeDeclSection()   {}
 func (s ConstSection) Children() Nodes {
@@ -37,8 +40,9 @@ type ConstantDecl struct {
 	Type                 Type
 	ConstExpr            *ConstExpr
 	PortabilityDirective *PortabilityDirective
-	astcore.DeclNode
 }
+
+var _ astcore.DeclNode = (*ConstantDecl)(nil)
 
 func (m *ConstantDecl) Children() Nodes {
 	r := Nodes{m.Ident}

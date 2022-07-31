@@ -7,10 +7,13 @@ import "github.com/akm/tparser/ast/astcore"
 //   BEGIN StmtList END
 //   ```
 type CompoundStmt struct {
-	BlockBody
-	StmtList
+	StmtList StmtList
 }
 
+var _ StructStmt = (*CompoundStmt)(nil)
+var _ BlockBody = (*CompoundStmt)(nil)
+
+func (*CompoundStmt) isStatementBody()  {}
 func (*CompoundStmt) isStructStmt()     {}
 func (*CompoundStmt) isBlockBody()      {}
 func (m *CompoundStmt) Children() Nodes { return Nodes{m.StmtList} }
@@ -19,7 +22,10 @@ func (m *CompoundStmt) Children() Nodes { return Nodes{m.StmtList} }
 //   ```
 //   (Statement ';') ...
 //   ```
-type StmtList []*Statement // must implement Node
+type StmtList []*Statement
+
+var _ Node = (StmtList)(nil)
+
 func (s StmtList) Children() Nodes {
 	r := make(Nodes, len(s))
 	for idx, i := range s {
@@ -33,10 +39,11 @@ func (s StmtList) Children() Nodes {
 //   [LabelId ':'] [SimpleStatement | StructStmt]
 //   ```
 type Statement struct {
-	Node
 	LabelId *LabelId
 	Body    StatementBody
 }
+
+var _ Node = (*Statement)(nil)
 
 func (m *Statement) Children() Nodes {
 	res := Nodes{}
@@ -115,10 +122,12 @@ type DesignatorStatement interface {
 //   Designator ['(' [ExprList] ')']
 //   ```
 type CallStatement struct {
-	DesignatorStatement
 	Designator *Designator
 	ExprList   ExprList // nil able
 }
+
+var _ SimpleStatement = (*CallStatement)(nil)
+var _ DesignatorStatement = (*CallStatement)(nil)
 
 func (*CallStatement) isStatementBody()         {}
 func (*CallStatement) isSimpleStatement()       {}
@@ -136,10 +145,12 @@ func (m *CallStatement) Children() Nodes {
 //   Designator ':=' Expression
 //   ```
 type AssignStatement struct {
-	DesignatorStatement
 	Designator *Designator
 	Expression *Expression
 }
+
+var _ SimpleStatement = (*AssignStatement)(nil)
+var _ DesignatorStatement = (*AssignStatement)(nil)
 
 func (*AssignStatement) isStatementBody()         {}
 func (*AssignStatement) isSimpleStatement()       {}
@@ -153,9 +164,10 @@ func (m *AssignStatement) Children() Nodes {
 //   INHERITED
 //   ```
 type InheritedStatement struct {
-	SimpleStatement
 	Ref *astcore.Decl // reference to the ancestor method
 }
+
+var _ SimpleStatement = (*InheritedStatement)(nil)
 
 func (*InheritedStatement) isStatementBody()   {}
 func (*InheritedStatement) isSimpleStatement() {}
@@ -166,10 +178,11 @@ func (*InheritedStatement) Children() Nodes    { return Nodes{} }
 //   GOTO LabelId
 //   ```
 type GotoStatement struct {
-	SimpleStatement
 	LabelId *LabelId
 	Ref     *astcore.Decl
 }
+
+var _ SimpleStatement = (*GotoStatement)(nil)
 
 func (*GotoStatement) isStatementBody()   {}
 func (*GotoStatement) isSimpleStatement() {}
@@ -196,8 +209,10 @@ type IfStmt struct {
 	Condition *Expression
 	Then      *Statement
 	Else      *Statement
-	ConditionalStmt
 }
+
+var _ StructStmt = (*IfStmt)(nil)
+var _ ConditionalStmt = (*IfStmt)(nil)
 
 func (*IfStmt) isStatementBody()   {}
 func (*IfStmt) isStructStmt()      {}
@@ -221,6 +236,9 @@ type CaseStmt struct {
 	Else       StmtList
 }
 
+var _ StructStmt = (*CaseStmt)(nil)
+var _ ConditionalStmt = (*CaseStmt)(nil)
+
 func (*CaseStmt) isStatementBody()   {}
 func (*CaseStmt) isStructStmt()      {}
 func (*CaseStmt) isConditionalStmt() {}
@@ -232,7 +250,10 @@ func (m *CaseStmt) Children() Nodes {
 	return r
 }
 
-type CaseSelectors []*CaseSelector // must implements Node
+type CaseSelectors []*CaseSelector
+
+var _ Node = (CaseSelectors)(nil)
+
 func (s CaseSelectors) Children() Nodes {
 	r := make(Nodes, len(s))
 	for idx, i := range s {
@@ -248,14 +269,18 @@ func (s CaseSelectors) Children() Nodes {
 type CaseSelector struct {
 	Labels    CaseLabels
 	Statement *Statement
-	Node
 }
+
+var _ Node = (*CaseSelector)(nil)
 
 func (m *CaseSelector) Children() Nodes {
 	return Nodes{m.Labels, m.Statement}
 }
 
-type CaseLabels []*CaseLabel // must implements Node
+type CaseLabels []*CaseLabel
+
+var _ Node = (CaseLabels)(nil)
+
 func (s CaseLabels) Children() Nodes {
 	r := make(Nodes, len(s))
 	for idx, i := range s {
@@ -272,8 +297,9 @@ func (s CaseLabels) Children() Nodes {
 type CaseLabel struct {
 	ConstExpr      *ConstExpr
 	ExtraConstExpr *ConstExpr
-	Node
 }
+
+var _ Node = (*CaseLabel)(nil)
 
 func NewCaseLabel(expr *ConstExpr, extras ...*ConstExpr) *CaseLabel {
 	switch len(extras) {
@@ -316,8 +342,10 @@ type LoopStmt interface {
 type RepeatStmt struct {
 	StmtList  StmtList
 	Condition *Expression
-	LoopStmt
 }
+
+var _ StructStmt = (*RepeatStmt)(nil)
+var _ LoopStmt = (*RepeatStmt)(nil)
 
 func (*RepeatStmt) isStatementBody() {}
 func (*RepeatStmt) isStructStmt()    {}
@@ -333,8 +361,10 @@ func (m *RepeatStmt) Children() Nodes {
 type WhileStmt struct {
 	Condition *Expression
 	Statement *Statement
-	LoopStmt
 }
+
+var _ StructStmt = (*WhileStmt)(nil)
+var _ LoopStmt = (*WhileStmt)(nil)
 
 func (*WhileStmt) isStatementBody() {}
 func (*WhileStmt) isStructStmt()    {}
@@ -353,8 +383,10 @@ type ForStmt struct {
 	Terminal  *Expression
 	Down      bool // false: TO, true: DOWNTO
 	Statement *Statement
-	LoopStmt
 }
+
+var _ StructStmt = (*ForStmt)(nil)
+var _ LoopStmt = (*ForStmt)(nil)
 
 func (*ForStmt) isStatementBody() {}
 func (*ForStmt) isStructStmt()    {}
@@ -371,8 +403,9 @@ func (m *ForStmt) Children() Nodes {
 type WithStmt struct {
 	Objects   QualIds
 	Statement *Statement
-	StructStmt
 }
+
+var _ StructStmt = (*WithStmt)(nil)
 
 func (*WithStmt) isStatementBody() {}
 func (*WithStmt) isStructStmt()    {}
@@ -396,8 +429,10 @@ type TryStmt interface {
 type TryExceptStmt struct {
 	Statements     StmtList
 	ExceptionBlock *ExceptionBlock
-	TryStmt
 }
+
+var _ StructStmt = (*TryExceptStmt)(nil)
+var _ TryStmt = (*TryExceptStmt)(nil)
 
 func (*TryExceptStmt) isStatementBody() {}
 func (*TryExceptStmt) isStructStmt()    {}
@@ -414,14 +449,18 @@ func (m *TryExceptStmt) Children() Nodes {
 type ExceptionBlock struct {
 	Handlers ExceptionBlockHandlers
 	Else     StmtList
-	Node
 }
+
+var _ Node = (*ExceptionBlock)(nil)
 
 func (m *ExceptionBlock) Children() Nodes {
 	return Nodes{m.Handlers, m.Else}
 }
 
-type ExceptionBlockHandlers []*ExceptionBlockHandler // must implements Node
+type ExceptionBlockHandlers []*ExceptionBlockHandler
+
+var _ Node = (ExceptionBlockHandlers)(nil)
+
 func (s ExceptionBlockHandlers) Children() Nodes {
 	r := make(Nodes, len(s))
 	for idx, i := range s {
@@ -433,8 +472,9 @@ func (s ExceptionBlockHandlers) Children() Nodes {
 type ExceptionBlockHandler struct {
 	Decl      *ExceptionBlockHandlerDecl
 	Statement *Statement
-	Node
 }
+
+var _ Node = (*ExceptionBlockHandler)(nil)
 
 func (m *ExceptionBlockHandler) Children() Nodes {
 	return Nodes{m.Decl, m.Statement}
@@ -443,8 +483,9 @@ func (m *ExceptionBlockHandler) Children() Nodes {
 type ExceptionBlockHandlerDecl struct {
 	Ident *Ident
 	Type  Type
-	astcore.DeclNode
 }
+
+var _ astcore.DeclNode = (*ExceptionBlockHandlerDecl)(nil)
 
 func (m *ExceptionBlockHandlerDecl) Children() Nodes {
 	r := Nodes{}
@@ -470,8 +511,10 @@ func (m *ExceptionBlockHandlerDecl) ToDeclarations() astcore.Decls {
 type TryFinallyStmt struct {
 	Statements1 StmtList
 	Statements2 StmtList
-	TryStmt
 }
+
+var _ StructStmt = (*TryFinallyStmt)(nil)
+var _ TryStmt = (*TryFinallyStmt)(nil)
 
 func (*TryFinallyStmt) isStatementBody() {}
 func (*TryFinallyStmt) isStructStmt()    {}
@@ -487,8 +530,9 @@ func (m *TryFinallyStmt) Children() Nodes {
 type RaiseStmt struct {
 	Object  *Expression
 	Address *Expression
-	StructStmt
 }
+
+var _ StructStmt = (*RaiseStmt)(nil)
 
 func (*RaiseStmt) isStatementBody() {}
 func (*RaiseStmt) isStructStmt()    {}
@@ -510,8 +554,10 @@ func (m *RaiseStmt) Children() Nodes {
 //   END
 //   ```
 type AssemblerStatement struct {
-	StructStmt
 }
+
+var _ StructStmt = (*AssemblerStatement)(nil)
+var _ BlockBody = (*AssemblerStatement)(nil)
 
 func (*AssemblerStatement) isStatementBody() {}
 func (*AssemblerStatement) isStructStmt()    {}
