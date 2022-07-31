@@ -10,6 +10,8 @@ type StackableContext struct {
 	declarationMap astcore.DeclMap
 }
 
+var _ Context = (*StackableContext)(nil)
+
 func NewStackableContext(parent Context, args ...interface{}) Context {
 	return &StackableContext{
 		parent:         parent,
