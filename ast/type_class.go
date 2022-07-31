@@ -9,15 +9,13 @@ import (
 )
 
 type ClassType interface {
-	IsClassType() bool
-	// implements
 	Type
+	IsClassType() bool
 }
 
 type ObjectType interface {
-	IsObjectType() bool
-	// implements
 	Type
+	IsObjectType() bool
 }
 
 // - ForwardDeclaredClassType
@@ -55,9 +53,9 @@ func (m *ForwardDeclaredClassType) Children() Nodes {
 type CustomClassType struct {
 	Heritage ClassHeritage
 	Members  ClassMemberSections
-	// implements
-	ClassType
 }
+
+var _ ClassType = (*CustomClassType)(nil)
 
 func (*CustomClassType) isType()           {}
 func (*CustomClassType) IsClassType() bool { return true }
@@ -121,9 +119,9 @@ func (m *CustomClassType) FindMemberDecl(name string) *astcore.Decl {
 type CustomObjectType struct {
 	Heritage ClassHeritage
 	Members  ClassMemberSections
-	// implements
-	ObjectType
 }
+
+var _ ObjectType = (*CustomObjectType)(nil)
 
 func (*CustomObjectType) isType()            {}
 func (*CustomObjectType) IsObjectType() bool { return true }
@@ -144,6 +142,8 @@ func (m *CustomObjectType) Children() Nodes {
 //   ```
 type ClassHeritage []*TypeId
 
+var _ Node = (ClassHeritage)(nil)
+
 func (s ClassHeritage) Children() Nodes {
 	r := make(Nodes, len(s))
 	for i, m := range s {
@@ -157,6 +157,8 @@ func (s ClassHeritage) Children() Nodes {
 //   ClassMemberSection ...
 //   ```
 type ClassMemberSections []*ClassMemberSection
+
+var _ Node = (ClassMemberSections)(nil)
 
 func (s ClassMemberSections) Children() Nodes {
 	r := make(Nodes, len(s))
@@ -179,6 +181,8 @@ type ClassMemberSection struct {
 	ClassMethodList   ClassMethodList
 	ClassPropertyList ClassPropertyList
 }
+
+var _ Node = (*ClassMemberSection)(nil)
 
 func (m *ClassMemberSection) Children() Nodes {
 	r := Nodes{}
@@ -214,6 +218,8 @@ const (
 //   ```
 type ClassFieldList []*ClassField
 
+var _ Node = (ClassFieldList)(nil)
+
 func (s ClassFieldList) Children() Nodes {
 	r := make(Nodes, len(s))
 	for i, m := range s {
@@ -229,9 +235,9 @@ func (s ClassFieldList) Children() Nodes {
 type ClassField struct {
 	IdentList IdentList
 	Type      Type
-	// implements
-	astcore.DeclNode
 }
+
+var _ astcore.DeclNode = (*ClassField)(nil)
 
 func (m *ClassField) Children() Nodes {
 	return Nodes{m.IdentList, m.Type}
@@ -250,6 +256,8 @@ func (m *ClassField) ToDeclarations() astcore.Decls {
 //   ```
 type ClassMethodList []*ClassMethod
 
+var _ Node = (ClassMethodList)(nil)
+
 func (s ClassMethodList) Children() Nodes {
 	r := make(Nodes, len(s))
 	for i, m := range s {
@@ -266,9 +274,9 @@ type ClassMethod struct {
 	ClassMethod bool
 	Heading     ClassMethodHeading
 	Directives  ClassMethodDirectiveList
-	// implements
-	astcore.DeclNode
 }
+
+var _ astcore.DeclNode = (*ClassMethod)(nil)
 
 func (m *ClassMethod) ToDeclarations() astcore.Decls {
 	return astcore.Decls{{Ident: m.Heading.GetIdent(), Node: m}}
@@ -292,10 +300,9 @@ func (m *ClassMethod) Children() Nodes {
 //   DestructorHeading
 //   ```
 type ClassMethodHeading interface {
+	Node
 	GetIdent() *Ident
 	isClassMethodHeading()
-	// implements
-	Node
 }
 
 // - ClassMethodDirective
@@ -352,11 +359,12 @@ var ClassMethodDirectives = ClassMethodDirectiveList{
 type ConstructorHeading struct {
 	*Ident
 	FormalParameters FormalParameters
-	// implements
-	ClassMethodHeading
 }
 
-func (m *ConstructorHeading) GetIdent() *Ident { return m.Ident }
+var _ ClassMethodHeading = (*ConstructorHeading)(nil)
+
+func (m *ConstructorHeading) isClassMethodHeading() {}
+func (m *ConstructorHeading) GetIdent() *Ident      { return m.Ident }
 func (m *ConstructorHeading) Children() Nodes {
 	r := Nodes{m.Ident}
 	if m.FormalParameters != nil {
@@ -371,11 +379,12 @@ func (m *ConstructorHeading) Children() Nodes {
 //   ```
 type DestructorHeading struct {
 	*Ident
-	// implements
-	ClassMethodHeading
 }
 
-func (m *DestructorHeading) GetIdent() *Ident { return m.Ident }
+var _ ClassMethodHeading = (*DestructorHeading)(nil)
+
+func (m *DestructorHeading) isClassMethodHeading() {}
+func (m *DestructorHeading) GetIdent() *Ident      { return m.Ident }
 func (m *DestructorHeading) Children() Nodes {
 	return Nodes{m.Ident}
 }
@@ -385,6 +394,8 @@ func (m *DestructorHeading) Children() Nodes {
 //   ClassProperty ';' ...
 //   ```
 type ClassPropertyList []*ClassProperty
+
+var _ Node = (ClassPropertyList)(nil)
 
 func (s ClassPropertyList) Children() Nodes {
 	r := make(Nodes, len(s))
@@ -418,9 +429,9 @@ type ClassProperty struct {
 	PortabilityDirective PortabilityDirective
 	// See "Property overrides and redeclarations" in Object Pascal Language Guide
 	Parent *ClassProperty
-	// implements
-	astcore.DeclNode
 }
+
+var _ astcore.DeclNode = (*ClassProperty)(nil)
 
 func (m *ClassProperty) ToDeclarations() astcore.Decls {
 	return astcore.Decls{{Ident: m.Ident, Node: m}}
@@ -460,6 +471,8 @@ type PropertyInterface struct {
 	Type       *TypeId
 }
 
+var _ Node = (*PropertyInterface)(nil)
+
 func (m *PropertyInterface) Children() Nodes {
 	return Nodes{m.Parameters, m.Type}
 }
@@ -469,6 +482,8 @@ type PropertyStoredSpecifier struct {
 	Constant *bool
 }
 
+var _ Node = (*PropertyStoredSpecifier)(nil)
+
 func (m *PropertyStoredSpecifier) Children() Nodes {
 	return Nodes{m.IdentRef}
 }
@@ -477,6 +492,8 @@ type PropertyDefaultSpecifier struct {
 	Value     *ConstExpr
 	NoDefault *bool
 }
+
+var _ Node = (*PropertyDefaultSpecifier)(nil)
 
 func (m *PropertyDefaultSpecifier) Children() Nodes {
 	return Nodes{m.Value}
