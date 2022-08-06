@@ -474,7 +474,14 @@ type PropertyInterface struct {
 var _ Node = (*PropertyInterface)(nil)
 
 func (m *PropertyInterface) Children() Nodes {
-	return Nodes{m.Parameters, m.Type}
+	r := Nodes{}
+	if m.Parameters != nil {
+		r = append(r, m.Parameters)
+	}
+	if m.Type != nil {
+		r = append(r, m.Type)
+	}
+	return r
 }
 
 type PropertyStoredSpecifier struct {
@@ -485,7 +492,11 @@ type PropertyStoredSpecifier struct {
 var _ Node = (*PropertyStoredSpecifier)(nil)
 
 func (m *PropertyStoredSpecifier) Children() Nodes {
-	return Nodes{m.IdentRef}
+	r := Nodes{}
+	if m.IdentRef != nil {
+		r = append(r, m.IdentRef)
+	}
+	return r
 }
 
 type PropertyDefaultSpecifier struct {
@@ -496,5 +507,9 @@ type PropertyDefaultSpecifier struct {
 var _ Node = (*PropertyDefaultSpecifier)(nil)
 
 func (m *PropertyDefaultSpecifier) Children() Nodes {
-	return Nodes{m.Value}
+	r := Nodes{}
+	if m.Value != nil {
+		r = append(r, m.Value)
+	}
+	return r
 }
