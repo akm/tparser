@@ -492,6 +492,48 @@ func (m *ClassProperty) Children() Nodes {
 	return r
 }
 
+func (m *ClassProperty) ComputedProperty() *ClassProperty {
+	if m.Parent == nil {
+		res := *m // Shallow copy
+		return &res
+	}
+	res := m.Parent.ComputedProperty()
+	if m.Interface != nil {
+		res.Interface = m.Interface
+	}
+	if m.Index != nil {
+		res.Index = m.Index
+	}
+	if m.Read != nil {
+		res.Read = m.Read
+	}
+	if m.Write != nil {
+		res.Write = m.Write
+	}
+	if m.Stored != nil {
+		res.Stored = m.Stored
+	}
+	if m.Default != nil {
+		res.Default = m.Default
+	}
+	if m.Implements != nil {
+		res.Implements = m.Implements
+	}
+	return res
+}
+
+func (m *ClassProperty) InheritsFrom(parent *ClassProperty) bool {
+	// TODO Consider complicated cases
+	if m.Parent == nil {
+		return false
+	}
+	prop := parent.ComputedProperty()
+	return (prop.Interface != nil && (m.Interface == nil)) ||
+		(prop.Index != nil && (m.Index == nil)) ||
+		(prop.Read != nil && (m.Read == nil)) ||
+		(prop.Write != nil && (m.Write == nil))
+}
+
 // - PropertyInterface
 //   ```
 //   [FormalParameters] ':' TypeId
