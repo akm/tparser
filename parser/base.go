@@ -9,9 +9,10 @@ import (
 )
 
 type Parser struct {
-	tokenizer *token.Tokenizer
-	curr      *token.Token
-	context   Context
+	tokenizer        *token.Tokenizer
+	curr             *token.Token
+	context          Context
+	postSectionFuncs []func()
 }
 
 func NewParser(ctx Context) *Parser {
@@ -122,4 +123,20 @@ func (p *Parser) TokenErrorf(format string, t *token.Token, args ...interface{})
 
 func (p *Parser) PlaceString(t *token.Token) string {
 	return fmt.Sprintf("%s:%d:%d", p.context.GetPath(), t.Start.Line, t.Start.Col)
+}
+
+func (p *Parser) SetupPostSectionFuncs() func() {
+	var backup []func()
+	p.postSectionFuncs, backup = []func(){}, p.postSectionFuncs
+	return func() { p.postSectionFuncs = backup }
+}
+
+func (p *Parser) AddPostSection(fn func()) {
+	p.postSectionFuncs = append(p.postSectionFuncs, fn)
+}
+
+func (p *Parser) RunPostSectionFuncs() {
+	for _, fn := range p.postSectionFuncs {
+		fn()
+	}
 }

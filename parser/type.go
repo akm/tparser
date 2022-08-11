@@ -17,6 +17,8 @@ func (p *Parser) ParseTypeSection(required bool) (ast.TypeSection, error) {
 			return nil, nil
 		}
 	}
+	defer p.SetupPostSectionFuncs()()
+
 	p.NextToken()
 	res := ast.TypeSection{}
 	for {
@@ -40,6 +42,8 @@ func (p *Parser) ParseTypeSection(required bool) (ast.TypeSection, error) {
 			break
 		}
 	}
+	p.RunPostSectionFuncs()
+
 	return res, nil
 }
 
@@ -175,6 +179,12 @@ func (p *Parser) parseTypeIdWithoutUnit() (*ast.TypeId, error) {
 
 	decl := p.context.Get(ident.Name)
 	if decl == nil {
+		p.AddPostSection(func() {
+			decl := p.context.Get(ident.Name)
+			if decl != nil {
+				r.Ref = decl
+			}
+		})
 		p.Logf("%s is not declared", ident.Name)
 	} else {
 		r.Ref = decl

@@ -223,4 +223,65 @@ end;
 		}(),
 	)
 
+	NewTypeSectionTestRunner(t,
+		"Forward declaration of PointerType",
+		[]rune(`
+type
+	PGUID = ^TGUID;
+	TGUID = packed record
+		D1: Longword;
+		D2: Word;
+		D3: Word;
+		D4: array[0..7] of Byte;
+	end;
+`),
+		func() ast.TypeSection {
+			tguidType := &ast.RecType{
+				Packed: true,
+				FieldList: &ast.FieldList{
+					FieldDecls: ast.FieldDecls{
+						{
+							IdentList: asttest.NewIdentList("D1"),
+							Type:      asttest.NewOrdIdent("Longword"),
+						},
+						{
+							IdentList: asttest.NewIdentList("D2"),
+							Type:      asttest.NewOrdIdent("Word"),
+						},
+						{
+							IdentList: asttest.NewIdentList("D3"),
+							Type:      asttest.NewOrdIdent("Word"),
+						},
+						{
+							IdentList: asttest.NewIdentList("D4"),
+							Type: &ast.ArrayType{
+								IndexTypes: []ast.OrdinalType{
+									&ast.SubrangeType{
+										Low:  asttest.NewConstExpr(asttest.NewNumber("0")),
+										High: asttest.NewConstExpr(asttest.NewNumber("7")),
+									},
+								},
+								BaseType: ast.NewOrdIdent(asttest.NewIdent("Byte")),
+							},
+						},
+					},
+				},
+			}
+
+			recDecl := &ast.TypeDecl{
+				Ident: asttest.NewIdent("TGUID"),
+				Type:  tguidType,
+			}
+			pointerDecl := &ast.TypeDecl{
+				Ident: asttest.NewIdent("PGUID"),
+				Type:  ast.NewCustomPointerType(asttest.NewTypeId("TGUID", recDecl.ToDeclarations()[0])),
+			}
+
+			return ast.TypeSection{
+				pointerDecl,
+				recDecl,
+			}
+		}(),
+	).Run()
+
 }
