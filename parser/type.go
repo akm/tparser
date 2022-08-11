@@ -44,6 +44,8 @@ func (p *Parser) ParseTypeSection(required bool) (ast.TypeSection, error) {
 }
 
 func (p *Parser) ParseTypeDecl() (*ast.TypeDecl, error) {
+	defer p.TraceMethod("Parser.ParseTypeDecl")()
+
 	res := &ast.TypeDecl{}
 	ident, err := p.Current(token.Identifier)
 	if err != nil {
