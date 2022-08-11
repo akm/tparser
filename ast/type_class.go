@@ -73,23 +73,23 @@ func (m *CustomClassType) FindMemberDecl(name string) *astcore.Decl {
 	defer log.TraceMethod("CustomClassType.FindMemberDecl: " + name)()
 
 	kw := strings.ToLower(name)
-	for _, m := range m.Members {
-		if m.ClassFieldList != nil {
-			for _, f := range m.ClassFieldList {
+	for _, mb := range m.Members {
+		if mb.ClassFieldList != nil {
+			for _, f := range mb.ClassFieldList {
 				if r := f.IdentList.Find(kw); r != nil {
 					return f.ToDeclarations().Find(kw)
 				}
 			}
 		}
-		if m.ClassMethodList != nil {
-			for _, method := range m.ClassMethodList {
+		if mb.ClassMethodList != nil {
+			for _, method := range mb.ClassMethodList {
 				if strings.ToLower(method.Heading.GetIdent().Name) == kw {
 					return method.ToDeclarations().Find(kw)
 				}
 			}
 		}
-		if m.ClassPropertyList != nil {
-			for _, prop := range m.ClassPropertyList {
+		if mb.ClassPropertyList != nil {
+			for _, prop := range mb.ClassPropertyList {
 				if strings.ToLower(prop.Ident.Name) == kw {
 					return prop.ToDeclarations().Find(kw)
 				}
