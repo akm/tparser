@@ -69,6 +69,21 @@ func (m *CustomClassType) Children() Nodes {
 	}
 	return r
 }
+
+func (m *CustomClassType) GetParentClass() *CustomClassType {
+	if m.Heritage != nil && len(m.Heritage) > 0 {
+		parent := m.Heritage[0]
+		if parent.Ref != nil {
+			if typeDecl, ok := parent.Ref.Node.(*TypeDecl); ok {
+				if parentClass, ok := typeDecl.Type.(*CustomClassType); ok {
+					return parentClass
+				}
+			}
+		}
+	}
+	return nil
+}
+
 func (m *CustomClassType) FindMemberDecl(name string, includePrivate bool) *astcore.Decl {
 	defer log.TraceMethod("CustomClassType.FindMemberDecl: " + name)()
 
@@ -100,15 +115,8 @@ func (m *CustomClassType) FindMemberDecl(name string, includePrivate bool) *astc
 		}
 	}
 
-	if m.Heritage != nil && len(m.Heritage) > 0 {
-		parent := m.Heritage[0]
-		if parent.Ref != nil {
-			if typeDecl, ok := parent.Ref.Node.(*TypeDecl); ok {
-				if parentClass, ok := typeDecl.Type.(*CustomClassType); ok {
-					return parentClass.FindMemberDecl(name, false)
-				}
-			}
-		}
+	if parentClass := m.GetParentClass(); parentClass != nil {
+		return parentClass.FindMemberDecl(name, false)
 	}
 	return nil
 }
