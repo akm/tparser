@@ -376,7 +376,13 @@ func (p *Parser) ParseClassProperty(classType *ast.CustomClassType) (*ast.ClassP
 		}
 		res.Index = expr
 	}
-	p.Logf("Parser.ParseClassProperty #06")
+
+	parentProp := classType.FindProperty(res.Ident.Name, true)
+	if parentProp != nil {
+		p.Logf("Parser.ParseClassProperty #06 parentProp %s\n", parentProp.Ident.Name)
+	} else {
+		p.Logf("Parser.ParseClassProperty #06 parentProp is nil\n")
+	}
 
 	//   [READ Ident]
 	if strings.ToUpper(p.CurrentToken().Value()) == "READ" {
@@ -408,17 +414,17 @@ func (p *Parser) ParseClassProperty(classType *ast.CustomClassType) (*ast.ClassP
 
 	//   [STORED (Ident | Constant)]
 	if strings.ToUpper(p.CurrentToken().Value()) == "STORED" {
-		p.Logf("Parser.ParseClassProperty #13")
 		t := p.NextToken()
 		tVal := strings.ToLower(t.Value())
-		if decl := classType.FindMemberDecl(tVal, true); decl != nil {
-			res.Stored = &ast.PropertyStoredSpecifier{IdentRef: ast.NewIdentRef(ast.NewIdent(t), decl)}
-		} else if tVal == "true" {
+		p.Logf("Parser.ParseClassProperty #13 %s", tVal)
+		if tVal == "true" {
 			v := true
 			res.Stored = &ast.PropertyStoredSpecifier{Constant: &v}
 		} else if tVal == "false" {
 			v := false
 			res.Stored = &ast.PropertyStoredSpecifier{Constant: &v}
+		} else if decl := classType.FindMemberDecl(tVal, true); decl != nil {
+			res.Stored = &ast.PropertyStoredSpecifier{IdentRef: ast.NewIdentRef(ast.NewIdent(t), decl)}
 		} else {
 			p.Logf("Parser.ParseClassProperty #14")
 			return nil, p.TokenErrorf("unknown member %s", t)
@@ -455,7 +461,15 @@ func (p *Parser) ParseClassProperty(classType *ast.CustomClassType) (*ast.ClassP
 		}
 		res.Implements = typeId
 	}
-	p.Logf("Parser.ParseClassProperty #22")
+
+	if res.InheritsFrom(parentProp) {
+		res.Parent = parentProp
+		p.Logf("Parser.ParseClassProperty #22 %s inherits %s\n", res.Ident.Name, parentProp.Ident.Name)
+	} else if parentProp != nil {
+		p.Logf("Parser.ParseClassProperty #22 %s does not inherit %s\n", res.Ident.Name, parentProp.Ident.Name)
+	} else {
+		p.Logf("Parser.ParseClassProperty #22 %s without parent %s\n", res.Ident.Name)
+	}
 
 	//   [PortabilityDirective]
 	//    TODO
