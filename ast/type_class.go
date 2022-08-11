@@ -121,6 +121,25 @@ func (m *CustomClassType) FindMemberDecl(name string, includePrivate bool) *astc
 	return nil
 }
 
+func (m *CustomClassType) FindProperty(name string, acendant bool) *ClassProperty {
+	kw := strings.ToLower(name)
+	for _, mm := range m.Members {
+		if mm.ClassPropertyList != nil {
+			for _, prop := range mm.ClassPropertyList {
+				if strings.ToLower(prop.Ident.Name) == kw {
+					return prop
+				}
+			}
+		}
+	}
+	if acendant {
+		if parentClass := m.GetParentClass(); parentClass != nil {
+			return parentClass.FindProperty(name, true)
+		}
+	}
+	return nil
+}
+
 // - ObjectType
 //   ```
 //   OBJECT [ClassHeritage]
