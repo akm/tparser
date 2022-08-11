@@ -676,7 +676,7 @@ type
 				Interface: &ast.PropertyInterface{Type: asttest.NewTypeId("TColor")},
 				Read:      asttest.NewIdentRef("FColor", fieldDeclFColor.ToDeclarations()[0]),
 				Write:     asttest.NewIdentRef("SetColor", methodDeclSetColor.ToDeclarations()[0]),
-				Stored:    &ast.PropertyStoredSpecifier{Constant: ext.BoolPtr(true)},
+				Stored:    &ast.PropertyStoredSpecifier{Constant: ext.BoolPtr(false)},
 			}
 
 			classDeclAncestor := &ast.TypeDecl{
@@ -697,8 +697,12 @@ type
 							ClassMethodList: ast.ClassMethodList{methodDeclSetColor},
 						},
 						&ast.ClassMemberSection{
-							Visibility:        ast.CvProtected,
-							ClassPropertyList: ast.ClassPropertyList{propertyDeclSize1, propertyDeclText1, propertyDeclColor1},
+							Visibility: ast.CvProtected,
+							ClassPropertyList: ast.ClassPropertyList{
+								propertyDeclSize1,
+								propertyDeclText1,
+								propertyDeclColor1,
+							},
 						},
 					},
 				},
@@ -732,10 +736,10 @@ type
 			}
 			// 	property Color stored True default clBlue;
 			propertyDeclColor2 := &ast.ClassProperty{
-				Ident:     asttest.NewIdent("Color"),
-				Interface: &ast.PropertyInterface{Type: asttest.NewTypeId("TColor")},
-				Stored:    &ast.PropertyStoredSpecifier{Constant: ext.BoolPtr(true)},
-				Default:   &ast.PropertyDefaultSpecifier{Value: asttest.NewConstExpr(ast.NewValueFactor("clBlue"))},
+				Parent:  propertyDeclColor1,
+				Ident:   asttest.NewIdent("Color"),
+				Stored:  &ast.PropertyStoredSpecifier{Constant: ext.BoolPtr(true)},
+				Default: &ast.PropertyDefaultSpecifier{Value: asttest.NewConstExpr(asttest.NewDesignatorFactor("clBlue"))},
 			}
 
 			classDeclDerived := &ast.TypeDecl{
@@ -754,8 +758,11 @@ type
 							ClassPropertyList: ast.ClassPropertyList{propertyDeclSize2},
 						},
 						&ast.ClassMemberSection{
-							Visibility:        ast.CvPrivate,
-							ClassPropertyList: ast.ClassPropertyList{propertyDeclText2, propertyDeclColor2},
+							Visibility: ast.CvPublished,
+							ClassPropertyList: ast.ClassPropertyList{
+								propertyDeclText2,
+								propertyDeclColor2,
+							},
 						},
 					},
 				},
