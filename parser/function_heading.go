@@ -134,9 +134,12 @@ func (p *Parser) ParseFunctionHeading() (*ast.FunctionHeading, error) {
 		return nil, err
 	}
 	res.Ident = p.NewIdent(ident)
+
+	defer p.TraceMethod("Parser.ParseFunctionHeading")()
+
 	t := p.NextToken()
 	if t.Is(token.Symbol('(')) {
-		formalParameters, err := p.ParseFormalParameters()
+		formalParameters, err := p.ParseFormalParameters('(', ')')
 		if err != nil {
 			return nil, err
 		}
@@ -156,14 +159,14 @@ func (p *Parser) ParseFunctionHeading() (*ast.FunctionHeading, error) {
 	return res, nil
 }
 
-func (p *Parser) ParseFormalParameters() (ast.FormalParameters, error) {
-	if _, err := p.Current(token.Symbol('(')); err != nil {
+func (p *Parser) ParseFormalParameters(startRune, endRune rune) (ast.FormalParameters, error) {
+	if _, err := p.Current(token.Symbol(startRune)); err != nil {
 		return nil, err
 	}
 	p.NextToken()
 	r := ast.FormalParameters{}
-	if err := p.Until(token.Symbol(')'), token.Symbol(';'), func() error {
-		formalParm, err := p.ParseFormalParm()
+	if err := p.Until(token.Symbol(endRune), token.Symbol(';'), func() error {
+		formalParm, err := p.ParseFormalParm(endRune)
 		if err != nil {
 			return err
 		}
@@ -172,15 +175,14 @@ func (p *Parser) ParseFormalParameters() (ast.FormalParameters, error) {
 	}); err != nil {
 		return nil, err
 	}
-	// // Until で以下はチェック済み
-	// if _, err := p.Current(token.Symbol(')')); err != nil {
-	// 	return nil, err
-	// }
+	if _, err := p.Current(token.Symbol(endRune)); err != nil {
+		return nil, err
+	}
 	p.NextToken()
 	return r, nil
 }
 
-func (p *Parser) ParseFormalParm() (*ast.FormalParm, error) {
+func (p *Parser) ParseFormalParm(endRune rune) (*ast.FormalParm, error) {
 	r := &ast.FormalParm{}
 	t := p.CurrentToken()
 	if t.Is(token.ReservedWord) {
@@ -196,7 +198,7 @@ func (p *Parser) ParseFormalParm() (*ast.FormalParm, error) {
 		}
 		p.NextToken()
 	}
-	parameter, err := p.ParseParameter()
+	parameter, err := p.ParseParameter(endRune)
 	if err != nil {
 		return nil, err
 	}
@@ -207,21 +209,23 @@ func (p *Parser) ParseFormalParm() (*ast.FormalParm, error) {
 	return r, nil
 }
 
-var parameterTerminators = token.Some(
-	token.Symbol(';'),
-	token.Symbol(')'),
-)
-var parameterIdentListTerminators = token.Some(
-	token.Symbol(':'),
-	token.Symbol(';'),
-	token.Symbol(')'),
-)
+func (p *Parser) ParseParameter(endRune rune) (*ast.Parameter, error) {
+	parameterIdentListTerminators := token.Some(
+		token.Symbol(':'),
+		token.Symbol(';'),
+		token.Symbol(endRune),
+	)
 
-func (p *Parser) ParseParameter() (*ast.Parameter, error) {
 	identList, err := p.ParseIdentListBy(parameterIdentListTerminators)
 	if err != nil {
 		return nil, err
 	}
+
+	parameterTerminators := token.Some(
+		token.Symbol(';'),
+		token.Symbol(endRune),
+	)
+
 	r := &ast.Parameter{
 		IdentList: *identList,
 	}

@@ -109,6 +109,11 @@ func (p *Parser) Logf(format string, args ...interface{}) {
 	log.Printf(format, args...)
 }
 
+func (p *Parser) TraceMethod(name string) func() {
+	p.Logf("%s START %s\n", name, p.CurrentToken().String())
+	return func() { p.Logf("%s END   %s\n", name, p.CurrentToken().String()) }
+}
+
 func (p *Parser) TokenErrorf(format string, t *token.Token, args ...interface{}) error {
 	fmtArgs := append([]interface{}{t.RawString()}, args...)
 	fmtArgs = append(fmtArgs, p.PlaceString(t))

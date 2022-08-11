@@ -1,5 +1,7 @@
 package astcore
 
+import "github.com/pkg/errors"
+
 // Ident with reference to Declaration
 type IdentRef struct {
 	*Ident
@@ -12,5 +14,8 @@ func NewIdentRef(ident *Ident, ref *Decl) *IdentRef {
 }
 
 func (m *IdentRef) Children() Nodes {
+	if m == nil {
+		panic(errors.Errorf("IdentRef is nil. Something wrong"))
+	}
 	return Nodes{m.Ident}
 }

@@ -441,7 +441,7 @@ func TestFormalParameters(t *testing.T) {
 			runes := []rune(text)
 			parser := NewTestParser(&runes, parser.NewContext())
 			parser.NextToken()
-			res, err := parser.ParseFormalParameters()
+			res, err := parser.ParseFormalParameters('(', ')')
 			if assert.NoError(t, err) {
 				if clearLocations {
 					asttest.ClearLocations(t, res)

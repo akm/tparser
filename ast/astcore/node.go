@@ -1,7 +1,5 @@
 package astcore
 
-import "github.com/pkg/errors"
-
 type Node interface {
 	Children() Nodes
 }
@@ -30,14 +28,8 @@ func (s Nodes) Children() Nodes {
 // }
 
 func WalkDown(n Node, f func(Node) error) error {
-	if n == nil {
-		return nil
-	}
 	if err := f(n); err != nil {
 		return err
-	}
-	if n == nil {
-		panic(errors.Errorf("WalkDown got nil"))
 	}
 	for _, m := range n.Children() {
 		if m != nil {
