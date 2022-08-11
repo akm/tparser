@@ -382,7 +382,7 @@ func (p *Parser) ParseClassProperty(classType *ast.CustomClassType) (*ast.ClassP
 	if strings.ToUpper(p.CurrentToken().Value()) == "READ" {
 		p.Logf("Parser.ParseClassProperty #07")
 		t := p.NextToken()
-		if decl := classType.FindMemberDecl(t.Value()); decl != nil {
+		if decl := classType.FindMemberDecl(t.Value(), true); decl != nil {
 			res.Read = ast.NewIdentRef(ast.NewIdent(t), decl)
 		} else {
 			p.Logf("Parser.ParseClassProperty #08")
@@ -396,7 +396,7 @@ func (p *Parser) ParseClassProperty(classType *ast.CustomClassType) (*ast.ClassP
 	if strings.ToUpper(p.CurrentToken().Value()) == "WRITE" {
 		p.Logf("Parser.ParseClassProperty #10")
 		t := p.NextToken()
-		if decl := classType.FindMemberDecl(t.Value()); decl != nil {
+		if decl := classType.FindMemberDecl(t.Value(), true); decl != nil {
 			res.Write = ast.NewIdentRef(ast.NewIdent(t), decl)
 		} else {
 			p.Logf("Parser.ParseClassProperty #11")
@@ -411,7 +411,7 @@ func (p *Parser) ParseClassProperty(classType *ast.CustomClassType) (*ast.ClassP
 		p.Logf("Parser.ParseClassProperty #13")
 		t := p.NextToken()
 		tVal := strings.ToLower(t.Value())
-		if decl := classType.FindMemberDecl(tVal); decl != nil {
+		if decl := classType.FindMemberDecl(tVal, true); decl != nil {
 			res.Stored = &ast.PropertyStoredSpecifier{IdentRef: ast.NewIdentRef(ast.NewIdent(t), decl)}
 		} else if tVal == "true" {
 			v := true

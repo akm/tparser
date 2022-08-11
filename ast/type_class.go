@@ -69,11 +69,14 @@ func (m *CustomClassType) Children() Nodes {
 	}
 	return r
 }
-func (m *CustomClassType) FindMemberDecl(name string) *astcore.Decl {
+func (m *CustomClassType) FindMemberDecl(name string, includePrivate bool) *astcore.Decl {
 	defer log.TraceMethod("CustomClassType.FindMemberDecl: " + name)()
 
 	kw := strings.ToLower(name)
 	for _, mb := range m.Members {
+		if !includePrivate && (mb.Visibility == CvPrivate) {
+			continue
+		}
 		if mb.ClassFieldList != nil {
 			for _, f := range mb.ClassFieldList {
 				if r := f.IdentList.Find(kw); r != nil {
@@ -102,7 +105,7 @@ func (m *CustomClassType) FindMemberDecl(name string) *astcore.Decl {
 		if parent.Ref != nil {
 			if typeDecl, ok := parent.Ref.Node.(*TypeDecl); ok {
 				if parentClass, ok := typeDecl.Type.(*CustomClassType); ok {
-					return parentClass.FindMemberDecl(name)
+					return parentClass.FindMemberDecl(name, false)
 				}
 			}
 		}
