@@ -17,9 +17,9 @@ go test ./...
 
 | Mark | State       | Count | Percentage |
 | :--: | ----------- | ----: |---------:|
-|  🔖  | TODO        |    30 |  24.6% |
-|  🚧  | In progress |     6 | 4.9% |
-|  ✔️  | Done        |    86 | **70.5%** |
-|     | Total        | 122 |  100.0%  |
+|  🔖  | TODO        |    19 |  14.7% |
+|  🚧  | In progress |     7 |   5.4% |
+|  ✔️  | Done        |   103 | **79.8%** |
+|     | Total        | 129 |  100.0%  |
 
 See [Grammer.md](./Grammer.md) for more details.

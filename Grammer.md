@@ -4,9 +4,9 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
 
 | Mark | State       | Count |
 | :--: | ----------- | ----: |
-|  🔖  | TODO        |    30 |
-|  🚧  | In progress |     6 |
-|  ✔️  | Done        |    86 |
+|  🔖  | TODO        |    19 |
+|  🚧  | In progress |     7 |
+|  ✔️  | Done        |    103 |
 
 - Goal 🚧
   ```
@@ -194,7 +194,7 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
   ClassRefType
   ```
-- RestrictedType 🔖
+- RestrictedType 🚧
   ```
   ObjectType
   ```
@@ -715,7 +715,7 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
   ABSTRACT
   ```
-- InitSection 🔖
+- InitSection ✔️
   ```
   INITIALIZATION StmtList [FINALIZATION StmtList] END
   ```
@@ -725,7 +725,7 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
   END
   ```
-- ClassType 🔖
+- ClassType ✔️
   ```
   CLASS [ClassHeritage]
   [ClassMemberSections]
@@ -737,42 +737,42 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   [ClassMemberSections]
   END
   ```
-- ClassHeritage 🔖
+- ClassHeritage ✔️
   ```
   '(' TypeId ',' ... ')'
   ```
-- ClassMemberSections
+- ClassMemberSections ✔️
   ```
   ClassMemberSection ...
   ```
-- ClassMemberSection
+- ClassMemberSection ✔️
   ```
   ClassVisibility
   [ClassFieldList]
   [ClassMethodList]
   [ClassPropertyList]
   ```
-- ClassVisibility 🔖
+- ClassVisibility ✔️
   ```
   [PUBLIC | PROTECTED | PRIVATE | PUBLISHED]
   ```
-- ClassFieldList 🔖
+- ClassFieldList ✔️
   ```
   ClassField ';' ...
   ```
-- ClassField 🔖
+- ClassField ✔️
   ```
   IdentList ':' Type
   ```
-- ClassMethodList 🔖
+- ClassMethodList ✔️
   ```
   ClassMethod ';' ...
   ```
-- ClassMethod 🔖
+- ClassMethod ✔️
   ```
   [CLASS] ClassMethodHeading [';' ClassMethodDirective ...]
   ```
-- ClassMethodHeading 🔖
+- ClassMethodHeading ✔️
   ```
   ProcedureHeading
   ```
@@ -785,7 +785,7 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
   DestructorHeading
   ```
-- ClassMethodDirective
+- ClassMethodDirective ✔️
   ```
   ABSTRACT
   ```
@@ -801,19 +801,19 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
   REINTRODUCE
   ```
-- ConstructorHeading 🔖
+- ConstructorHeading ✔️
   ```
   CONSTRUCTOR Ident [FormalParameters]
   ```
-- DestructorHeading 🔖
+- DestructorHeading ✔️
   ```
   DESTRUCTOR Ident
   ```
-- ClassPropertyList 🔖
+- ClassPropertyList ✔️
   ```
   ClassProperty ';' ...
   ```
-- ClassProperty 🔖
+- ClassProperty ✔️
   ```
 	 PROPERTY Ident
   [PropertyInterface]
@@ -825,7 +825,7 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   [IMPLEMENTS TypeId]
   [PortabilityDirective]
   ```
-- PropertyInterface 🔖
+- PropertyInterface ✔️
   ```
   [FormalParameters] ':' Ident
   ```
@@ -842,33 +842,33 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
   '(' TypeId ',' ... ')'
   ```
-- InterfaceGuid
+- InterfaceGuid 🔖
   ```
   '[' ConstExpr of string ']'
   ```
-- InterfaceMemberList
+- InterfaceMemberList 🔖
   ```
   InterfaceMember ';'...
   ```
-- InterfaceMember
+- InterfaceMember 🔖
   ```
   InterfaceMethod
   ```
   ```
   InterfaceProperty
   ```
-- InterfaceMethod
+- InterfaceMethod 🔖
   ```
   InterfaceMethodHeading; [InterfaceMethodDirective ';'...];
   ```
-- InterfaceMethodHeading
+- InterfaceMethodHeading 🔖
   ```
   ProcedureHeading
   ```
   ```
   FunctionHeading
   ```
-- InterfaceMethodDirective
+- InterfaceMethodDirective 🔖
   ```
   stdcall
   ```
