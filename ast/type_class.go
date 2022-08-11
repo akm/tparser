@@ -524,7 +524,7 @@ func (m *ClassProperty) ComputedProperty() *ClassProperty {
 
 func (m *ClassProperty) InheritsFrom(parent *ClassProperty) bool {
 	// TODO Consider complicated cases
-	if m.Parent == nil {
+	if parent == nil {
 		return false
 	}
 	prop := parent.ComputedProperty()
