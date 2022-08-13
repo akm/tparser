@@ -14,12 +14,11 @@ go test ./...
 
 ## Status
 
-
 | Mark | State       | Count | Percentage |
-| :--: | ----------- | ----: |---------:|
-|  🔖  | TODO        |    19 |  14.7% |
-|  🚧  | In progress |     7 |   5.4% |
-|  ✔️  | Done        |   103 | **79.8%** |
-|     | Total        | 129 |  100.0%  |
+| :--: | ----------- | ----: | ---------: |
+|  🔖  | TODO        |    18 |      14.0% |
+|  🚧  | In progress |     6 |       4.7% |
+|  ✔️  | Done        |   105 |  **81.4%** |
+|      | Total       |   129 |     100.0% |
 
 See [Grammer.md](./Grammer.md) for more details.
