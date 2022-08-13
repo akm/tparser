@@ -4,9 +4,9 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
 
 | Mark | State       | Count |
 | :--: | ----------- | ----: |
-|  🔖  | TODO        |    19 |
-|  🚧  | In progress |     7 |
-|  ✔️  | Done        |    103 |
+|  🔖  | TODO        |    18 |
+|  🚧  | In progress |     6 |
+|  ✔️  | Done        |   105 |
 
 - Goal 🚧
   ```
@@ -169,7 +169,7 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
   Ident ':' TypedConstant
   ```
-- Type 🚧
+- Type ✔️
   ```
   TypeId
   ```
@@ -204,7 +204,7 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
   InterfaceType
   ```
-- ClassRefType 🔖
+- ClassRefType ✔️
   ```
   CLASS OF TypeId
   ```
@@ -815,7 +815,7 @@ See also [Object Pascal Guide](https://docs.embarcadero.com/products/rad_studio/
   ```
 - ClassProperty ✔️
   ```
-	 PROPERTY Ident
+   PROPERTY Ident
   [PropertyInterface]
   [INDEX ConstExpr]
   [READ Ident]
