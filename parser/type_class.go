@@ -8,8 +8,8 @@ import (
 	"github.com/akm/tparser/token"
 )
 
-func (p *Parser) ParseClassType() (ast.ClassType, error) {
-	defer p.TraceMethod("Parser.ParseClassType")()
+func (p *Parser) ParseClassTypeOrClassRefType() (ast.Type, error) {
+	defer p.TraceMethod("Parser.ParseClassTypeOrClassRefType")()
 
 	if _, err := p.Current(token.ReservedWord.HasKeyword("CLASS")); err != nil {
 		return nil, err
@@ -19,18 +19,44 @@ func (p *Parser) ParseClassType() (ast.ClassType, error) {
 		return &ast.ForwardDeclaredClassType{}, nil
 	}
 
+	if p.CurrentToken().Is(token.ReservedWord.HasKeyword("OF")) {
+		t, err := p.Next(token.Identifier)
+		if err != nil {
+			return nil, err
+		}
+		var typeId *ast.TypeId
+		decl := p.context.Get(t.Value())
+		if decl != nil {
+			if _, ok := decl.Node.(*ast.TypeDecl); ok {
+				typeId = ast.NewTypeId(ast.NewIdent(t), decl)
+			}
+		}
+		if typeId == nil {
+			typeId = ast.NewTypeId(ast.NewIdent(t))
+		}
+		return ast.NewCustomClassRefType(typeId), nil
+	}
+
+	return p.ParseClassType()
+}
+
+func (p *Parser) ParseClassType() (ast.ClassType, error) {
+	defer p.TraceMethod("Parser.ParseClassType")()
+
 	res := &ast.CustomClassType{}
 	if heritage, err := p.ParseClassHeritage(); err != nil {
 		return nil, err
 	} else {
 		res.Heritage = heritage
 	}
+	if p.CurrentToken().Is(token.ReservedWord.HasKeyword("END")) {
+		return res, nil
+	}
 	if !p.CurrentToken().Is(token.Symbol(';')) {
 		if _, err := p.ParseClassMemberSections(res); err != nil {
 			return nil, err
 		}
 	}
-
 	return res, nil
 }
 
