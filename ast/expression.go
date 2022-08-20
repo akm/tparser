@@ -354,6 +354,11 @@ func (m *Designator) Children() Nodes {
 	return r
 }
 
+func (m *Designator) Add(newItems ...DesignatorItem) *Designator {
+	m.Items = append(m.Items, newItems...)
+	return m
+}
+
 type DesignatorItems []DesignatorItem
 
 var _ Node = (DesignatorItems)(nil)
@@ -396,6 +401,8 @@ func (m *DesignatorItemIdent) Children() Nodes {
 }
 
 type DesignatorItemExprList ExprList // Must implement DesignatorItem, and ancestor ExprList implements Node.
+
+var _ DesignatorItem = (DesignatorItemExprList)(nil)
 
 func (DesignatorItemExprList) isDesignatorItem() {}
 func (s DesignatorItemExprList) Children() Nodes {
