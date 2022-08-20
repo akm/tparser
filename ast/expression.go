@@ -377,7 +377,7 @@ type DesignatorItem interface {
 }
 
 type DesignatorItemIdent struct {
-	*Ident
+	*Ident // TODO Use IdentRef instead
 }
 
 var _ DesignatorItem = (*DesignatorItemIdent)(nil)
