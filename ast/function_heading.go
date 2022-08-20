@@ -52,7 +52,8 @@ func (m *ExportedHeading) ToDeclarations() astcore.Decls {
 //   ```
 
 type FunctionHeading struct {
-	Type FunctionType
+	Type  FunctionType
+	Class *IdentRef // reference to class type desclaration in implementation section
 	*Ident
 	FormalParameters FormalParameters
 	ReturnType       *TypeId
@@ -67,7 +68,11 @@ func (*FunctionHeading) isInterfaceMethodHeading() {}
 
 func (s *FunctionHeading) GetIdent() *Ident { return s.Ident }
 func (s *FunctionHeading) Children() Nodes {
-	r := Nodes{s.Ident}
+	r := Nodes{}
+	if s.Class != nil {
+		r = append(r, s.Class)
+	}
+	r = append(r, s.Ident)
 	if s.FormalParameters != nil {
 		r = append(r, s.FormalParameters)
 	}
