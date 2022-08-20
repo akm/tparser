@@ -26,7 +26,7 @@ type ProcedureDeclSection interface {
 //   ```
 type FunctionDecl struct {
 	*FunctionHeading
-	Directives           []Directive
+	Directives           []Directive // TODO : remove this field
 	ExternalOptions      *ExternalOptions
 	PortabilityDirective *PortabilityDirective
 	Block                *Block
